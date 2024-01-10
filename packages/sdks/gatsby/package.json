@@ -14,5 +14,5 @@
     "react": ">=16.8.0",
     "gatsby": ">=2.27.4"
   },
-  "license": "BSL-1.1"
+  "license": "MIT"
 }
