@@ -287,11 +287,7 @@ export class NinetailedPreviewPlugin
         this.pluginApi.experienceVariantIndexes
       );
       const experience = experiences.find((experience) => {
-        const hasActiveAudience = this.pluginApi.activeAudiences.some(
-          (activeAudienceId) => experience.audience?.id === activeAudienceId
-        );
-
-        return hasActiveAudience && experienceIds.includes(experience.id);
+        return experienceIds.includes(experience.id);
       });
 
       if (!experience) {
