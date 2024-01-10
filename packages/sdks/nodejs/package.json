@@ -1,6 +1,7 @@
 {
   "name": "@ninetailed/experience.js-node",
   "version": "7.6.0-beta.1",
+  "description": "Ninetailed SDK for Node.js",
   "dependencies": {
     "node-fetch": "2",
     "uuid": "9.0.0",

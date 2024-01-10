@@ -26,5 +26,5 @@
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/gatsby"
   },
-  "license": "BSL-1.1"
+  "license": "MIT"
 }

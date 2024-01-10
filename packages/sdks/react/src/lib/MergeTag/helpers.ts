@@ -1,12 +1,5 @@
-import React from 'react';
+import { Profile } from '@ninetailed/experience.js-shared';
 import { get } from 'radash';
-import type { Profile } from '@ninetailed/experience.js';
-
-import { useProfile } from './useProfile';
-
-type MergeTagProps = {
-  id: string;
-};
 
 export const generateSelectors = (id: string) => {
   return id.split('_').map((path, index, paths) => {
@@ -26,19 +19,4 @@ export const selectValueFromProfile = (profile: Profile, id: string) => {
   }
 
   return get(profile, matchingSelector);
-};
-
-export const MergeTag: React.FC<React.PropsWithChildren<MergeTagProps>> = ({
-  id,
-}) => {
-  const { loading, profile } = useProfile();
-
-  if (loading || !profile) {
-    return null;
-  }
-
-  const value = selectValueFromProfile(profile, id);
-
-  // DON'T CHANGE
-  return <>{value}</>;
 };
