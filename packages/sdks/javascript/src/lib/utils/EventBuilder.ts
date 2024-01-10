@@ -10,7 +10,7 @@ import {
   buildTrackEvent,
 } from '@ninetailed/experience.js-shared';
 import { v4 as uuid } from 'uuid';
-import { buildClientNinetailedRequestContext } from '../ninetailedCorePlugin';
+import { buildClientNinetailedRequestContext } from '../NinetailedCorePlugin';
 
 export class EventBuilder {
   private readonly buildRequestContext: () => NinetailedRequestContext;

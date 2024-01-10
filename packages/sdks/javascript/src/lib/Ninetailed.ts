@@ -28,29 +28,21 @@ import {
 import {
   EMPTY_MERGE_ID,
   NinetailedCorePlugin,
-  ninetailedCorePlugin,
   OnInitProfileId,
   PLUGIN_NAME,
   PROFILE_CHANGE,
-} from './ninetailedCorePlugin';
+} from './NinetailedCorePlugin';
 import {
   EventFunctionOptions,
   NinetailedInstance,
-  NinetailedPlugin,
   OnIsInitializedCallback,
   OnProfileChangeCallback,
   ProfileState,
   TrackHasSeenComponent,
   AnalyticsInstance,
-  ElementSeenPayload,
   TrackComponentView,
 } from './types';
-import {
-  HAS_SEEN_COMPONENT,
-  HAS_SEEN_ELEMENT,
-  PAGE_HIDDEN,
-  HAS_SEEN_STICKY_COMPONENT,
-} from './constants';
+import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
 import { acceptsCredentials } from './guards/acceptsCredentials';
 import { isInterestedInHiddenPage } from './guards/isInterestedInHiddenPage';
@@ -62,7 +54,15 @@ import {
 import { makeExperienceSelectMiddleware } from './experience';
 import { ExperienceSelectionMiddleware } from './types/interfaces/HasExperienceSelectionMiddleware';
 import { RemoveOnChangeListener } from './utils/OnChangeEmitter';
+import {
+  ElementSeenPayload,
+  HAS_SEEN_COMPONENT,
+  HAS_SEEN_ELEMENT,
+  NinetailedPlugin,
+} from '@ninetailed/experience.js-plugin-analytics';
 import { EventBuilder } from './utils/EventBuilder';
+import { hasComponentViewTrackingThreshold } from './guards/hasComponentViewTrackingThreshold';
+import { HasComponentViewTrackingThreshold } from './types/interfaces/HasComponentViewTrackingThreshold';
 
 declare global {
   interface Window {
@@ -226,7 +226,7 @@ export class Ninetailed implements NinetailedInstance {
     this.eventBuilder = new EventBuilder(buildClientContext);
 
     this.logger = logger;
-    this.ninetailedCorePlugin = ninetailedCorePlugin({
+    this.ninetailedCorePlugin = new NinetailedCorePlugin({
       apiClient: this.apiClient,
       locale,
       requestTimeout,
@@ -453,8 +453,17 @@ export class Ninetailed implements NinetailedInstance {
   };
 
   public trackComponentView: TrackComponentView = (properties) => {
-    return this.instance.dispatch({ ...properties, type: HAS_SEEN_ELEMENT });
+    return this.instance.dispatch({
+      ...properties,
+      type: HAS_SEEN_ELEMENT,
+    });
   };
+
+  private get pluginsWithCustomComponentViewThreshold() {
+    return [this.ninetailedCorePlugin, ...this.plugins].filter((plugin) =>
+      hasComponentViewTrackingThreshold(plugin)
+    ) as (NinetailedPlugin & HasComponentViewTrackingThreshold)[];
+  }
 
   public observeElement = (
     payload: ElementSeenPayload,
@@ -475,9 +484,21 @@ export class Ninetailed implements NinetailedInstance {
       );
     } else {
       this.observedElements.set(element, remaingPayload);
-      this.elementSeenObserver.observe(element, {
-        delay: this.componentViewTrackingThreshold,
-        ...options,
+
+      const delays = this.pluginsWithCustomComponentViewThreshold.map(
+        (plugin) => plugin.componentViewTrackingThreshold
+      );
+      const uniqueDelays = Array.from(
+        new Set([
+          ...delays,
+          options?.delay || this.componentViewTrackingThreshold,
+        ])
+      );
+
+      uniqueDelays.forEach((delay) => {
+        this.elementSeenObserver.observe(element, {
+          delay,
+        });
       });
     }
   };
@@ -487,16 +508,44 @@ export class Ninetailed implements NinetailedInstance {
     this.elementSeenObserver.unobserve(element);
   };
 
-  private onElementSeen = (element: Element) => {
+  private onElementSeen = (element: Element, delay?: number) => {
     const payload = this.observedElements.get(element);
 
     if (typeof payload !== 'undefined') {
-      this.trackComponentView({ element, ...payload });
+      const pluginNamesInterestedInSeenElementMessage = [
+        ...this.pluginsWithCustomComponentViewThreshold.filter(
+          (plugin) => plugin.componentViewTrackingThreshold === delay
+        ),
+        ...this.plugins.filter(
+          (plugin) => !hasComponentViewTrackingThreshold(plugin)
+        ),
+      ].map((plugin) => plugin.name);
+
+      if (pluginNamesInterestedInSeenElementMessage.length === 0) {
+        return;
+      }
+
+      this.instance.dispatch({
+        ...payload,
+        element,
+        type: HAS_SEEN_ELEMENT,
+        plugins: {
+          all: false,
+          ...pluginNamesInterestedInSeenElementMessage.reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr]: true,
+            }),
+            {}
+          ),
+        },
+      });
     }
   };
 
   public reset = async () => {
     await this.waitUntilInitialized();
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.instance.plugins[PLUGIN_NAME].reset();

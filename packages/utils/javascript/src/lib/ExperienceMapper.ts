@@ -37,7 +37,7 @@ export class ExperienceMapper {
 
     const { id, type, name, description, audience, config, variants } =
       parsedExperience.data;
-    const { components, traffic } = config;
+    const { components, traffic, sticky } = config;
 
     return {
       id,
@@ -51,6 +51,7 @@ export class ExperienceMapper {
         start: config.distribution.slice(0, index).reduce((a, b) => a + b, 0),
         end: config.distribution.slice(0, index + 1).reduce((a, b) => a + b, 0),
       })),
+      sticky,
       components: components.map((component) => ({
         baseline: component.baseline,
         variants: component.variants

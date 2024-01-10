@@ -1,14 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import {
-  NinetailedPlugin,
-  HAS_SEEN_ELEMENT,
   COMPONENT,
   COMPONENT_START,
   PROFILE_CHANGE,
   PAGE_HIDDEN,
   buildClientNinetailedRequestContext,
-  type ElementSeenPayload,
-  type EventHandler,
   type ProfileChangedPayload,
   type Profile,
   type InterestedInSeenElements,
@@ -25,6 +21,12 @@ import {
 } from '@ninetailed/experience.js-shared';
 import type { ComponentViewEventBatch } from './types/Event/ComponentViewEventBatch';
 import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
+import {
+  ElementSeenPayload,
+  EventHandler,
+  HAS_SEEN_ELEMENT,
+  NinetailedPlugin,
+} from '@ninetailed/experience.js-plugin-analytics';
 
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin

@@ -1,13 +1,15 @@
 import { logger, template } from '@ninetailed/experience.js-shared';
+
 import {
   type ElementSeenPayload,
   ElementSeenPayloadSchema,
-  EventHandler,
-  HAS_SEEN_COMPONENT,
-  HAS_SEEN_ELEMENT,
-  NinetailedPlugin,
-  TrackComponentProperties,
-} from '@ninetailed/experience.js';
+} from './ElementSeenPayload';
+import {
+  type TrackComponentProperties,
+  TrackComponentPropertiesSchema,
+} from './TrackingProperties';
+import { EventHandler, NinetailedPlugin } from './NinetailedPlugin';
+import { HAS_SEEN_COMPONENT, HAS_SEEN_ELEMENT } from './constants';
 
 export type Template = Record<string, string>;
 
@@ -131,7 +133,7 @@ export abstract class NinetailedAnalyticsPlugin<
    * @deprecated
    */
   public [HAS_SEEN_COMPONENT]: EventHandler = ({ payload }) => {
-    const sanitizedPayload = TrackComponentProperties.safeParse(payload);
+    const sanitizedPayload = TrackComponentPropertiesSchema.safeParse(payload);
 
     if (!sanitizedPayload.success) {
       logger.error(

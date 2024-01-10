@@ -1,8 +1,8 @@
 import { Reference } from '@ninetailed/experience.js-shared';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { hasExperienceSelectionMiddleware } from '../guards/hasExperienceSelectionMiddleware';
 import { HasExperienceSelectionMiddleware } from '../types/interfaces/HasExperienceSelectionMiddleware';
-import { NinetailedPlugin } from '../types/NinetailedPlugin';
 
 export const selectPluginsHavingExperienceSelectionMiddleware = <
   Baseline extends Reference,

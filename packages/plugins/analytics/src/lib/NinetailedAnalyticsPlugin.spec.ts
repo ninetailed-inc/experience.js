@@ -1,16 +1,13 @@
 import { Analytics } from 'analytics';
 import { generateMock } from '@anatine/zod-mock';
-import {
-  AnalyticsInstance,
-  ElementSeenPayloadSchema,
-  HAS_SEEN_COMPONENT,
-  HAS_SEEN_ELEMENT,
-  TrackComponentProperties,
-} from '@ninetailed/experience.js';
 import { sleep } from '@ninetailed/testing-utils/sleep';
 
+import { ElementSeenPayloadSchema } from './ElementSeenPayload';
 import { Template } from './NinetailedAnalyticsPlugin';
 import { TestAnalyticsPlugin } from '../../test';
+import { AnalyticsInstance } from './AnalyticsInstance';
+import { HAS_SEEN_COMPONENT, HAS_SEEN_ELEMENT } from './constants';
+import { TrackComponentPropertiesSchema } from './TrackingProperties';
 
 const setup = (template: Template = {}) => {
   const testAnalyticsPlugin = new TestAnalyticsPlugin(
@@ -77,7 +74,7 @@ describe('NinetailedAnalyticsPlugin', () => {
 
   describe('trackComponent', () => {
     it(`should receive the has_seen_component event`, async () => {
-      const data = generateMock(TrackComponentProperties);
+      const data = generateMock(TrackComponentPropertiesSchema);
 
       await analytics.dispatch({
         type: HAS_SEEN_COMPONENT,
