@@ -1,5 +1,5 @@
 import { Ninetailed } from '@ninetailed/experience.js';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { sleep } from '@ninetailed/testing-utils/sleep';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 
 import { NinetailedSegmentPlugin } from './NinetailedSegmentPlugin';

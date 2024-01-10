@@ -1,6 +1,6 @@
 {
   "name": "@ninetailed/experience.js-gatsby",
-  "version": "7.5.1",
+  "version": "7.6.0-beta.1",
   "keywords": [
     "gatsby",
     "gatsby-plugin",
@@ -14,5 +14,5 @@
     "react": ">=16.8.0",
     "gatsby": ">=2.27.4"
   },
-  "license": "MIT"
+  "license": "BSL-1.1"
 }

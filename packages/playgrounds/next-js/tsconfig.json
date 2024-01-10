@@ -5,7 +5,7 @@
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "types": ["node", "jest"],
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "resolveJsonModule": true,
@@ -24,6 +24,7 @@
     "**/*.js",
     "**/*.jsx",
     "next-env.d.ts",
+    "../../../jest.setup.ts",
     "../../../dist/packages/playgrounds/next-js/.next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

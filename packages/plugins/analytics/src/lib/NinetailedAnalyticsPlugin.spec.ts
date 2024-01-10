@@ -7,7 +7,7 @@ import {
   HAS_SEEN_ELEMENT,
   TrackComponentProperties,
 } from '@ninetailed/experience.js';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { sleep } from '@ninetailed/testing-utils/sleep';
 
 import { Template } from './NinetailedAnalyticsPlugin';
 import { TestAnalyticsPlugin } from '../../test';

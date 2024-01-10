@@ -1,7 +1,8 @@
 {
   "name": "@ninetailed/experience.js-utils",
-  "version": "7.5.1",
-  "description": "Ninetailed Experience.js Utils",
-  "devDependencies": {},
-  "license": "MIT"
+  "version": "7.6.0-beta.1",
+  "devDependencies": {
+    "@ninetailed/testing-utils": "*"
+  },
+  "license": "BSL-1.1"
 }

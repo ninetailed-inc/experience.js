@@ -22,6 +22,7 @@ export type NinetailedProviderInstantiationProps = {
   preview?: boolean;
   url?: string;
   plugins?: (NinetailedPlugin | NinetailedPlugin[])[];
+  profile?: Profile;
   locale?: Locale;
   requestTimeout?: number;
   onLog?: OnLogHandler;
@@ -30,6 +31,8 @@ export type NinetailedProviderInstantiationProps = {
   buildClientContext?: () => NinetailedRequestContext;
   onInitProfileId?: OnInitProfileId;
   storageImpl?: Storage;
+
+  useClientSideEvaluation?: boolean;
 };
 
 export type NinetailedProviderProps =
@@ -58,6 +61,7 @@ export const NinetailedProvider = (
       onInitProfileId,
       componentViewTrackingThreshold,
       storageImpl,
+      useClientSideEvaluation,
     } = props;
 
     return new Ninetailed(
@@ -73,6 +77,7 @@ export const NinetailedProvider = (
         onInitProfileId,
         componentViewTrackingThreshold,
         storageImpl,
+        useClientSideEvaluation,
       }
     );
   }, []);

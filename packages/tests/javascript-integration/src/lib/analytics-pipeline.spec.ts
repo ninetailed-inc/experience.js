@@ -1,6 +1,6 @@
 import { generateMock } from '@anatine/zod-mock';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { sleep } from '@ninetailed/testing-utils/sleep';
 import {
   ElementSeenPayloadSchema,
   Ninetailed,

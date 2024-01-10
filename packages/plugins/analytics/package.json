@@ -1,8 +1,9 @@
 {
   "name": "@ninetailed/experience.js-plugin-analytics",
-  "version": "7.5.1",
+  "version": "7.6.0-beta.1",
   "type": "commonjs",
-  "devDependencies": {},
-  "description": "Ninetailed SDK plugin for analytics",
-  "license": "MIT"
+  "devDependencies": {
+    "@ninetailed/testing-utils": "*"
+  },
+  "license": "BSL-1.1"
 }

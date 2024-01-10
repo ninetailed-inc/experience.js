@@ -41,6 +41,9 @@ const isSerializedPreviewPlugin = (
 const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
   children,
 }) => {
+  const { onRouteChange, ...functions } =
+    deserializePluginOptionFunctions(options);
+
   if (!ninetailed) {
     const resolvedPlugins = ninetailedPlugins.map(
       ({ PluginCtor, options }: ResolvedPlugin) => {
@@ -63,9 +66,15 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
       }
     ) as NinetailedPlugin[];
 
-    const { clientId, environment, preview, url, locale, requestTimeout } =
-      options;
-    const functions = deserializePluginOptionFunctions(options);
+    const {
+      clientId,
+      environment,
+      preview,
+      url,
+      locale,
+      requestTimeout,
+      useClientSideEvaluation,
+    } = options;
 
     ninetailed = new Ninetailed(
       { clientId, environment, preview },
@@ -74,6 +83,7 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
         plugins: resolvedPlugins,
         locale,
         requestTimeout,
+        useClientSideEvaluation,
         ...functions,
       }
     );
@@ -81,7 +91,7 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
 
   return (
     <NinetailedProvider ninetailed={ninetailed}>
-      <Tracker />
+      <Tracker onRouteChange={onRouteChange} />
       {children}
     </NinetailedProvider>
   );

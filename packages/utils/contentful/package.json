@@ -1,10 +1,10 @@
 {
   "name": "@ninetailed/experience.js-utils-contentful",
-  "version": "7.5.1",
-  "description": "Contentful utilities for Experience.js",
+  "version": "7.6.0-beta.1",
   "devDependencies": {
     "contentful": "^9.1.32",
-    "@contentful/rich-text-types": "16.2.0"
+    "@contentful/rich-text-types": "16.2.0",
+    "@ninetailed/testing-utils": "*"
   },
-  "license": "MIT"
+  "license": "BSL-1.1"
 }

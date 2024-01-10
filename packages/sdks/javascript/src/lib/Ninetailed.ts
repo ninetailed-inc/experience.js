@@ -13,6 +13,16 @@ import {
   NinetailedApiClient,
   NinetailedApiClientOptions,
   NinetailedRequestContext,
+  Reference,
+  selectHasVariants,
+  selectExperience,
+  selectVariant,
+  selectBaselineWithVariants,
+  Event,
+  isPageViewEvent,
+  isTrackEvent,
+  isIdentifyEvent,
+  isComponentViewEvent,
 } from '@ninetailed/experience.js-shared';
 
 import {
@@ -35,10 +45,24 @@ import {
   ElementSeenPayload,
   TrackComponentView,
 } from './types';
-import { HAS_SEEN_COMPONENT, HAS_SEEN_ELEMENT, PAGE_HIDDEN } from './constants';
+import {
+  HAS_SEEN_COMPONENT,
+  HAS_SEEN_ELEMENT,
+  PAGE_HIDDEN,
+  HAS_SEEN_STICKY_COMPONENT,
+} from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
 import { acceptsCredentials } from './guards/acceptsCredentials';
 import { isInterestedInHiddenPage } from './guards/isInterestedInHiddenPage';
+import {
+  OnSelectVariantArgs,
+  OnSelectVariantCallback,
+  OnSelectVariantCallbackArgs,
+} from './types/OnSelectVariant';
+import { makeExperienceSelectMiddleware } from './experience';
+import { ExperienceSelectionMiddleware } from './types/interfaces/HasExperienceSelectionMiddleware';
+import { RemoveOnChangeListener } from './utils/OnChangeEmitter';
+import { EventBuilder } from './utils/EventBuilder';
 
 declare global {
   interface Window {
@@ -74,11 +98,45 @@ type Options = {
   onInitProfileId?: OnInitProfileId;
   buildClientContext?: () => NinetailedRequestContext;
   storageImpl?: Storage;
+  useClientSideEvaluation?: boolean;
 };
 
 type NinetailedApiClientInstanceOrOptions =
   | NinetailedApiClient
   | NinetailedApiClientOptions;
+
+const buildOverrideMiddleware =
+  <TBaseline extends Reference, TVariant extends Reference>(
+    experienceSelectionMiddleware: ExperienceSelectionMiddleware<
+      TBaseline,
+      TVariant
+    >
+  ) =>
+  ({
+    experience: originalExperience,
+    variant: originalVariant,
+    variantIndex: originalVariantIndex,
+    ...other
+  }: OnSelectVariantCallbackArgs<
+    TBaseline,
+    TVariant
+  >): OnSelectVariantCallbackArgs<TBaseline, TVariant> => {
+    const { experience, variant, variantIndex } = experienceSelectionMiddleware(
+      {
+        experience: originalExperience,
+        variant: originalVariant,
+        variantIndex: originalVariantIndex,
+      }
+    );
+
+    return {
+      ...other,
+      audience: experience?.audience ? experience.audience : null,
+      experience,
+      variant,
+      variantIndex,
+    } as OnSelectVariantCallbackArgs<TBaseline, TVariant>;
+  };
 
 export class Ninetailed implements NinetailedInstance {
   private readonly instance: AnalyticsInstance;
@@ -100,6 +158,10 @@ export class Ninetailed implements NinetailedInstance {
 
   private readonly componentViewTrackingThreshold: number;
 
+  private readonly useClientSideEvaluation: boolean;
+
+  public readonly eventBuilder: EventBuilder;
+
   constructor(
     ninetailedApiClientInstanceOrOptions: NinetailedApiClientInstanceOrOptions,
     {
@@ -113,8 +175,11 @@ export class Ninetailed implements NinetailedInstance {
       onInitProfileId,
       componentViewTrackingThreshold = 2000,
       storageImpl,
+      useClientSideEvaluation = false,
     }: Options = {}
   ) {
+    this.useClientSideEvaluation = useClientSideEvaluation;
+
     if (ninetailedApiClientInstanceOrOptions instanceof NinetailedApiClient) {
       this.apiClient = ninetailedApiClientInstanceOrOptions;
     } else {
@@ -157,6 +222,8 @@ export class Ninetailed implements NinetailedInstance {
     if (typeof onError === 'function') {
       logger.addSink(new OnErrorLogSink(onError));
     }
+
+    this.eventBuilder = new EventBuilder(buildClientContext);
 
     this.logger = logger;
     this.ninetailedCorePlugin = ninetailedCorePlugin({
@@ -270,6 +337,113 @@ export class Ninetailed implements NinetailedInstance {
     }
   };
 
+  public identify = async (
+    uid: string,
+    traits?: Traits,
+    options?: EventFunctionOptions
+  ) => {
+    try {
+      const result = Traits.default({}).safeParse(traits);
+      if (!result.success) {
+        throw new Error(
+          `[Validation Error] "identify" was called with invalid params. Traits are no valid json: ${result.error.format()}`
+        );
+      }
+
+      await this.waitUntilInitialized();
+      await this.instance.identify(
+        uid && uid.toString() !== '' ? uid.toString() : EMPTY_MERGE_ID,
+        result.data,
+        this.buildOptions(options)
+      );
+      return this.ninetailedCorePlugin.flush();
+    } catch (error) {
+      logger.error(error as Error);
+
+      if (error instanceof RangeError) {
+        throw new Error(
+          `[Validation Error] "identify" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
+        );
+      }
+      throw error;
+    }
+  };
+
+  public batch = async (events: Event[]) => {
+    try {
+      await this.waitUntilInitialized();
+
+      const promises = events.map((event) => {
+        if (isPageViewEvent(event)) {
+          return this.instance.page(event.properties);
+        }
+
+        if (isTrackEvent(event)) {
+          return this.instance.track(event.event, event.properties);
+        }
+
+        if (isIdentifyEvent(event)) {
+          return this.instance.identify(
+            event.userId || EMPTY_MERGE_ID,
+            event.traits
+          );
+        }
+
+        if (isComponentViewEvent(event)) {
+          return this.instance.dispatch({
+            experienceId: event.experienceId,
+            componentId: event.componentId,
+            variantIndex: event.variantIndex,
+            type: HAS_SEEN_STICKY_COMPONENT,
+          });
+        }
+
+        return Promise.resolve();
+      });
+      await Promise.all(promises);
+      return this.ninetailedCorePlugin.flush();
+    } catch (error) {
+      logger.error(error as Error);
+
+      if (error instanceof RangeError) {
+        throw new Error(
+          `[Validation Error] "batch" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
+        );
+      }
+      throw error;
+    }
+  };
+
+  public trackStickyComponentView = async ({
+    experienceId,
+    componentId,
+    variantIndex,
+  }: {
+    experienceId: string;
+    componentId: string;
+    variantIndex: number;
+  }) => {
+    try {
+      await this.waitUntilInitialized();
+      await this.instance.dispatch({
+        experienceId,
+        componentId,
+        variantIndex,
+        type: HAS_SEEN_STICKY_COMPONENT,
+      });
+      return this.ninetailedCorePlugin.flush();
+    } catch (error) {
+      logger.error(error as Error);
+
+      if (error instanceof RangeError) {
+        throw new Error(
+          `[Validation Error] "trackStickyComponentView" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
+        );
+      }
+      throw error;
+    }
+  };
+
   /**
    * @deprecated The legacy datamodel is not recommended anymore
    * Will be removed in the next version of the SDK
@@ -321,38 +495,6 @@ export class Ninetailed implements NinetailedInstance {
     }
   };
 
-  public identify = async (
-    uid: string,
-    traits?: Traits,
-    options?: EventFunctionOptions
-  ) => {
-    try {
-      const result = Traits.default({}).safeParse(traits);
-      if (!result.success) {
-        throw new Error(
-          `[Validation Error] "identify" was called with invalid params. Traits are no valid json: ${result.error.format()}`
-        );
-      }
-
-      await this.waitUntilInitialized();
-      await this.instance.identify(
-        uid && uid.toString() !== '' ? uid.toString() : EMPTY_MERGE_ID,
-        result.data,
-        this.buildOptions(options)
-      );
-      return this.ninetailedCorePlugin.flush();
-    } catch (error) {
-      logger.error(error as Error);
-
-      if (error instanceof RangeError) {
-        throw new Error(
-          `[Validation Error] "identify" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
-        );
-      }
-      throw error;
-    }
-  };
-
   public reset = async () => {
     await this.waitUntilInitialized();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -389,6 +531,225 @@ export class Ninetailed implements NinetailedInstance {
         });
       }
     });
+  };
+
+  public onSelectVariant = <
+    Baseline extends Reference,
+    Variant extends Reference
+  >(
+    { baseline, experiences }: OnSelectVariantArgs<Baseline, Variant>,
+    cb: OnSelectVariantCallback<Baseline, Variant>
+  ) => {
+    let middlewareChangeListeners: RemoveOnChangeListener[] = [];
+    let state: OnSelectVariantCallbackArgs<Baseline, Variant> | null = null;
+
+    const removeMiddlewareChangeListeners: RemoveOnChangeListener = () => {
+      middlewareChangeListeners.forEach((removeListener) => removeListener());
+      middlewareChangeListeners = [];
+    };
+
+    const setSelectedVariant = (
+      newState: OnSelectVariantCallbackArgs<Baseline, Variant>
+    ) => {
+      state = newState;
+      cb(state);
+    };
+
+    const removeProfileChangeListener = this.onProfileChange((profileState) => {
+      const {
+        addListeners,
+        removeListeners,
+        middleware: experienceSelectionMiddleware,
+      } = makeExperienceSelectMiddleware<Baseline, Variant>({
+        plugins: this.plugins,
+        experiences,
+        baseline,
+        profile: profileState.profile,
+        onChange: (middleware) => {
+          const overrideResult = buildOverrideMiddleware(middleware);
+          if (state !== null) {
+            setSelectedVariant(overrideResult(state));
+          }
+        },
+      });
+
+      addListeners();
+      middlewareChangeListeners.push(removeListeners);
+
+      const overrideResult = buildOverrideMiddleware(
+        experienceSelectionMiddleware
+      );
+
+      const hasVariants = experiences
+        .map((experience) => selectHasVariants(experience, baseline))
+        .reduce((acc, curr) => acc || curr, false);
+
+      const baseReturn = {
+        ...profileState,
+        hasVariants,
+        baseline,
+      };
+      const emptyReturn = {
+        ...baseReturn,
+        experience: null,
+        variant: baseline,
+        variantIndex: 0,
+        audience: null,
+        isPersonalized: false,
+        profile: null,
+        error: null,
+      };
+
+      if (profileState.status === 'loading') {
+        setSelectedVariant(
+          overrideResult({
+            ...emptyReturn,
+            loading: true,
+            status: 'loading',
+          })
+        );
+        return;
+      }
+
+      if (profileState.status === 'error') {
+        setSelectedVariant(
+          overrideResult({
+            ...emptyReturn,
+            loading: false,
+            status: 'error',
+            error: profileState.error,
+          })
+        );
+        return;
+      }
+
+      const { profile, experiences: selectedExperiences } = profileState;
+
+      if (!profile || !selectedExperiences) {
+        setSelectedVariant(
+          overrideResult({
+            ...emptyReturn,
+            loading: false,
+            status: 'error',
+            error: new Error(
+              'No Profile or Selected Experiences were returned by the API'
+            ),
+          })
+        );
+        return;
+      }
+
+      if (this.useClientSideEvaluation) {
+        const experience = selectExperience({
+          experiences,
+          profile,
+        });
+
+        if (!experience) {
+          setSelectedVariant(
+            overrideResult({
+              ...emptyReturn,
+              loading: false,
+              status: 'success',
+              profile,
+            })
+          );
+          return;
+        }
+
+        const { variant, index } = selectVariant({
+          baseline,
+          experience,
+          profile,
+        });
+
+        setSelectedVariant(
+          overrideResult({
+            ...baseReturn,
+            status: 'success',
+            loading: false,
+            error: null,
+            experience,
+            variant,
+            variantIndex: index,
+            audience: experience.audience ? experience.audience : null,
+            profile,
+            isPersonalized: true,
+          })
+        );
+        return;
+      }
+
+      const experience = experiences.find((experience) =>
+        selectedExperiences.some(
+          (selectedExperience) =>
+            selectedExperience.experienceId === experience.id
+        )
+      );
+      const selectedExperience = selectedExperiences.find(
+        ({ experienceId }) => experienceId === experience?.id
+      );
+
+      if (!experience || !selectedExperience) {
+        setSelectedVariant(
+          overrideResult({
+            ...emptyReturn,
+            loading: false,
+            status: 'success',
+            profile,
+          })
+        );
+        return;
+      }
+
+      const baselineVariants = selectBaselineWithVariants(experience, baseline);
+      if (!baselineVariants) {
+        setSelectedVariant(
+          overrideResult({
+            ...emptyReturn,
+            loading: false,
+            status: 'success',
+            profile,
+          })
+        );
+        return;
+      }
+
+      const { variants } = baselineVariants;
+      const variant = variants[selectedExperience.variantIndex - 1];
+
+      if (!variant) {
+        setSelectedVariant(
+          overrideResult({
+            ...emptyReturn,
+            loading: false,
+            status: 'success',
+            profile,
+          })
+        );
+        return;
+      }
+
+      setSelectedVariant(
+        overrideResult({
+          ...baseReturn,
+          status: 'success',
+          loading: false,
+          error: null,
+          experience,
+          variant,
+          variantIndex: selectedExperience.variantIndex,
+          audience: experience.audience ? experience.audience : null,
+          profile,
+          isPersonalized: true,
+        })
+      );
+    });
+
+    return () => {
+      removeProfileChangeListener();
+      removeMiddlewareChangeListeners();
+    };
   };
 
   public onIsInitialized = (onIsInitialized: OnIsInitializedCallback) => {

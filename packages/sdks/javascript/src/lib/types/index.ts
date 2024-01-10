@@ -5,6 +5,8 @@ import {
   Properties,
   Traits,
   SelectedVariantInfo,
+  Reference,
+  Event,
 } from '@ninetailed/experience.js-shared';
 import { DetachListeners } from 'analytics';
 
@@ -12,6 +14,8 @@ import { TrackComponentProperties } from './TrackingProperties';
 import { NinetailedPlugin } from './NinetailedPlugin';
 import { type Ninetailed } from '../Ninetailed';
 import { ElementSeenPayload } from './ElementSeenPayload';
+import { OnSelectVariant } from './OnSelectVariant';
+import { EventBuilder } from '../utils/EventBuilder';
 
 type Loading = {
   status: 'loading';
@@ -78,6 +82,8 @@ export type Identify = (
   options?: EventFunctionOptions
 ) => Promise<FlushResult>;
 
+export type Batch = (events: Event[]) => Promise<FlushResult>;
+
 export type Reset = () => void;
 
 export type Debug = (enable: boolean) => void;
@@ -87,7 +93,10 @@ export type OnProfileChange = (cb: OnProfileChangeCallback) => DetachListeners;
 type ObserveElement = Ninetailed['observeElement'];
 type UnObserveElement = Ninetailed['unobserveElement'];
 
-export interface NinetailedInstance {
+export interface NinetailedInstance<
+  TBaseline extends Reference = Reference,
+  TVariant extends Reference = Reference
+> {
   page: Page;
   track: Track;
   /**
@@ -96,15 +105,18 @@ export interface NinetailedInstance {
   trackHasSeenComponent: TrackHasSeenComponent;
   trackComponentView: TrackComponentView;
   identify: Identify;
+  batch: Batch;
   reset: Reset;
   debug: Debug;
   profileState: ProfileState;
   onProfileChange: OnProfileChange;
   plugins: NinetailedPlugin[];
   logger: Logger;
+  eventBuilder: EventBuilder;
   onIsInitialized: OnIsInitialized;
   observeElement: ObserveElement;
   unobserveElement: UnObserveElement;
+  onSelectVariant: OnSelectVariant<TBaseline, TVariant>;
 }
 
 export { NinetailedPlugin, TrackComponentProperties };

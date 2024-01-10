@@ -38,12 +38,7 @@ export const renderRichText = (
     renderNode: {
       [INLINES.EMBEDDED_ENTRY]: (node) => {
         if (isMergeTag(node.data.target)) {
-          return (
-            <MergeTag
-              id={node.data.target.fields.nt_mergetag_id}
-              fallback={node.data.target.fields.nt_fallback}
-            />
-          );
+          return <MergeTag id={node.data.target.fields.nt_mergetag_id} />;
         }
         return null;
       },

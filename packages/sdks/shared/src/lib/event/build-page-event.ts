@@ -5,7 +5,7 @@ import type { Properties } from '../types/Event/Properties';
 import { buildEvent, BuildEventArgs } from './build-event';
 import { buildPage } from './build-page';
 
-type BuildPageEventArgs = Object.Omit<
+export type BuildPageEventArgs = Object.Omit<
   Object.Merge<
     BuildEventArgs,
     {

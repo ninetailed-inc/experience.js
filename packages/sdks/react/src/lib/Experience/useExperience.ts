@@ -1,24 +1,21 @@
 import {
-  Baseline,
   ExperienceConfiguration,
   selectHasExperienceVariants,
-  selectExperience,
-  selectExperienceVariant,
   Profile,
   Reference,
   VariantRef,
 } from '@ninetailed/experience.js';
 
-import { useProfile } from '../useProfile';
-import { useExperienceSelectionMiddleware } from './useExperienceSelectionMiddleware';
+import { useNinetailed } from '../useNinetailed';
+import { useEffect, useState } from 'react';
 
-type Load<Variant extends Reference> = {
+type Load<TBaseline extends Reference> = {
   status: 'loading';
   loading: boolean;
   hasVariants: boolean;
-  baseline: Baseline;
+  baseline: TBaseline;
   experience: null;
-  variant: Variant;
+  variant: TBaseline;
   variantIndex: 0;
   audience: null;
   isPersonalized: boolean;
@@ -26,13 +23,13 @@ type Load<Variant extends Reference> = {
   error: null;
 };
 
-type Success<Variant extends Reference> = {
+type Success<TBaseline extends Reference, TVariant extends Reference> = {
   status: 'success';
   loading: boolean;
   hasVariants: boolean;
-  baseline: Baseline;
-  experience: ExperienceConfiguration<Variant> | null;
-  variant: Variant;
+  baseline: TBaseline;
+  experience: ExperienceConfiguration<TVariant> | null;
+  variant: TBaseline | TVariant;
   variantIndex: number;
   audience: { id: string } | null;
   isPersonalized: boolean;
@@ -40,13 +37,13 @@ type Success<Variant extends Reference> = {
   error: null;
 };
 
-type Fail<Variant extends Reference> = {
+type Fail<TBaseline extends Reference> = {
   status: 'error';
   loading: boolean;
   hasVariants: boolean;
-  baseline: Baseline;
+  baseline: TBaseline;
   experience: null;
-  variant: Variant;
+  variant: TBaseline;
   variantIndex: 0;
   audience: null;
   isPersonalized: boolean;
@@ -54,119 +51,59 @@ type Fail<Variant extends Reference> = {
   error: Error;
 };
 
-type UseExperienceArgs<Variant extends Reference> = {
-  baseline: Baseline;
-  experiences: ExperienceConfiguration<Variant>[];
+type UseExperienceArgs<
+  TBaseline extends Reference,
+  TVariant extends Reference
+> = {
+  baseline: TBaseline;
+  experiences: ExperienceConfiguration<TVariant>[];
 };
 
-type UseExperienceResponse<Variant extends Reference> =
-  | Load<Variant | VariantRef>
-  | Success<Variant | VariantRef>
-  | Fail<Variant | VariantRef>;
+type UseExperienceReturn<
+  TBaseline extends Reference,
+  TVariant extends Reference
+> =
+  | Load<TBaseline>
+  | Success<TBaseline, TVariant | VariantRef>
+  | Fail<TBaseline>;
 
-export const useExperience = <Variant extends Reference>({
+export const useExperience = <
+  TBaseline extends Reference,
+  TVariant extends Reference
+>({
   baseline,
   experiences,
-}: UseExperienceArgs<Variant>): UseExperienceResponse<Variant> => {
-  const profileState = useProfile();
+}: UseExperienceArgs<TBaseline, TVariant>): UseExperienceReturn<
+  TBaseline,
+  TVariant
+> => {
+  const ninetailed = useNinetailed<TBaseline, TVariant>();
 
   const hasVariants = experiences
     .map((experience) => selectHasExperienceVariants(experience, baseline))
     .reduce((acc, curr) => acc || curr, false);
 
-  const { status, profile } = profileState;
-
-  const experienceSelectionMiddleware = useExperienceSelectionMiddleware({
-    experiences,
-    baseline,
-    profile,
-  });
-
-  const overrideResult = ({
-    experience: originalExperience,
-    variant: originalVariant,
-    variantIndex: originalVariantIndex,
-    ...other
-  }: UseExperienceResponse<Variant>): UseExperienceResponse<Variant> => {
-    const { experience, variant, variantIndex } = experienceSelectionMiddleware(
-      {
-        experience: originalExperience,
-        variant: originalVariant,
-        variantIndex: originalVariantIndex,
-      }
-    );
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return {
-      ...other,
-      audience: experience?.audience ? experience.audience : null,
-      experience,
-      variant,
-      variantIndex,
-    };
-  };
-
-  const baseReturn = {
-    ...profileState,
+  const [experience, setExperience] = useState<
+    UseExperienceReturn<TBaseline, TVariant | VariantRef>
+  >({
     hasVariants,
     baseline,
-  };
-  const emptyReturn = {
-    ...baseReturn,
+    error: null,
+    loading: true,
+    status: 'loading',
     experience: null,
     variant: baseline,
     variantIndex: 0,
     audience: null,
     isPersonalized: false,
     profile: null,
-  };
-
-  if (status === 'loading') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return overrideResult(emptyReturn);
-  }
-
-  if (status === 'error') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return overrideResult(emptyReturn);
-  }
-
-  if (!profile) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return overrideResult(emptyReturn);
-  }
-
-  const experience = selectExperience({
-    experiences,
-    profile,
   });
 
-  if (!experience) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return overrideResult({ ...emptyReturn, profile });
-  }
+  useEffect(() => {
+    return ninetailed.onSelectVariant({ baseline, experiences }, (state) => {
+      setExperience(state as UseExperienceReturn<TBaseline, TVariant>);
+    });
+  }, [JSON.stringify(baseline), JSON.stringify(experiences)]);
 
-  const { variant, index } = selectExperienceVariant({
-    baseline,
-    experience,
-    profile,
-  });
-
-  return overrideResult({
-    ...baseReturn,
-    status: 'success',
-    loading: false,
-    error: null,
-    experience,
-    variant,
-    variantIndex: index,
-    audience: experience.audience ? experience.audience : null,
-    profile,
-    isPersonalized: true,
-  });
+  return experience;
 };
