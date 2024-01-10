@@ -1,5 +1,5 @@
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 import { hasOnChangeEmitter } from '../guards/hasOnChangeEmitter';
-import { NinetailedPlugin } from '../types/NinetailedPlugin';
 import { HasOnChangeEmitter } from '../types/interfaces/HasOnChangeEmitter';
 
 export const selectPluginsHavingOnChangeEmitter = (

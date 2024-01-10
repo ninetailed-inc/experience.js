@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import {
   Ninetailed,
-  NinetailedPlugin,
   OnInitProfileId,
   Storage,
 } from '@ninetailed/experience.js';
@@ -12,6 +11,7 @@ import {
   OnLogHandler,
   NinetailedRequestContext,
 } from '@ninetailed/experience.js-shared';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { NinetailedContext } from './NinetailedContext';
 

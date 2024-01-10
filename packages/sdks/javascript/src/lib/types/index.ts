@@ -1,3 +1,4 @@
+import { DetachListeners } from 'analytics';
 import {
   Logger,
   PageviewProperties,
@@ -8,12 +9,13 @@ import {
   Reference,
   Event,
 } from '@ninetailed/experience.js-shared';
-import { DetachListeners } from 'analytics';
+import {
+  ElementSeenPayload,
+  NinetailedPlugin,
+  TrackComponentProperties,
+} from '@ninetailed/experience.js-plugin-analytics';
 
-import { TrackComponentProperties } from './TrackingProperties';
-import { NinetailedPlugin } from './NinetailedPlugin';
 import { type Ninetailed } from '../Ninetailed';
-import { ElementSeenPayload } from './ElementSeenPayload';
 import { OnSelectVariant } from './OnSelectVariant';
 import { EventBuilder } from '../utils/EventBuilder';
 
@@ -119,14 +121,7 @@ export interface NinetailedInstance<
   onSelectVariant: OnSelectVariant<TBaseline, TVariant>;
 }
 
-export { NinetailedPlugin, TrackComponentProperties };
-
-export type { EventHandler } from './EventHandler';
-
 export type { AnalyticsInstance } from './AnalyticsInstance';
-
-export { ElementSeenPayloadSchema } from './ElementSeenPayload';
-export type { ElementSeenPayload } from './ElementSeenPayload';
 
 export type { ProfileChangedPayload } from './ProfileChangedPayload';
 

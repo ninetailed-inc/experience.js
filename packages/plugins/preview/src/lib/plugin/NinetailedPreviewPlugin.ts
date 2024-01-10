@@ -12,12 +12,12 @@ import {
   HasExperienceSelectionMiddleware,
   OnChangeEmitter,
   BuildExperienceSelectionMiddleware,
-  NinetailedPlugin,
 } from '@ninetailed/experience.js';
 import type {
   PreviewPluginApi,
   ExposedAudienceDefinition,
 } from '@ninetailed/experience.js-preview-bridge';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { WidgetContainer } from './WidgetContainer';
 
@@ -287,7 +287,11 @@ export class NinetailedPreviewPlugin
         this.pluginApi.experienceVariantIndexes
       );
       const experience = experiences.find((experience) => {
-        return experienceIds.includes(experience.id);
+        const hasActiveAudience = this.pluginApi.activeAudiences.some(
+          (activeAudienceId) => experience.audience?.id === activeAudienceId
+        );
+
+        return hasActiveAudience && experienceIds.includes(experience.id);
       });
 
       if (!experience) {

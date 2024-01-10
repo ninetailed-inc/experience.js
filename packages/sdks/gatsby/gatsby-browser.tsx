@@ -1,7 +1,8 @@
 import React from 'react';
 import { WrapRootElementBrowserArgs } from 'gatsby';
-import { Ninetailed, type NinetailedPlugin } from '@ninetailed/experience.js';
+import { Ninetailed } from '@ninetailed/experience.js';
 import { NinetailedProvider } from '@ninetailed/experience.js-react';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { Tracker } from './src/lib/Tracker';
 import {

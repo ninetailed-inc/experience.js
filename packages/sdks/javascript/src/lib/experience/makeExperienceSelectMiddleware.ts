@@ -4,8 +4,8 @@ import {
   Reference,
   pipe,
 } from '@ninetailed/experience.js-shared';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
-import { NinetailedPlugin } from '../types/NinetailedPlugin';
 import { RemoveOnChangeListener } from '../utils/OnChangeEmitter';
 import { selectPluginsHavingOnChangeEmitter } from '../plugins/selectPluginsHavingOnChangeEmitter';
 import { selectPluginsHavingExperienceSelectionMiddleware } from '../plugins/selectPluginsHavingExperienceSelectionMiddleware';
