@@ -5,13 +5,15 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/node:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/playgrounds/node",
         "main": "packages/playgrounds/node/src/main.ts",
         "tsConfig": "packages/playgrounds/node/tsconfig.app.json",
-        "assets": ["packages/playgrounds/node/src/assets"]
+        "assets": ["packages/playgrounds/node/src/assets"],
+        "compiler": "tsc",
+        "target": "node"
       },
       "configurations": {
         "production": {
