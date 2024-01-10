@@ -1,7 +1,6 @@
 import { Analytics } from 'analytics';
 import { generateMock } from '@anatine/zod-mock';
 import { setTimeout as sleep } from 'node:timers/promises';
-
 import { ElementSeenPayloadSchema } from './ElementSeenPayload';
 import { Template } from './NinetailedAnalyticsPlugin';
 import { TestAnalyticsPlugin } from '../../test';
