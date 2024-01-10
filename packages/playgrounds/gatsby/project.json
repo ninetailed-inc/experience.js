@@ -5,7 +5,7 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/gatsby:build",
+      "executor": "@nx/gatsby:build",
       "options": {
         "outputPath": "packages/playgrounds/gatsby/public",
         "uglify": true,
@@ -18,7 +18,7 @@
       "dependsOn": ["^build"]
     },
     "serve": {
-      "executor": "@nrwl/gatsby:server",
+      "executor": "@nx/gatsby:server",
       "options": {
         "buildTarget": "playgrounds-gatsby:build"
       },
