@@ -1,0 +1,36 @@
+{
+  "name": "plugins-google-tagmanager",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/plugins/google-tagmanager",
+  "sourceRoot": "packages/plugins/google-tagmanager/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/plugins/google-tagmanager",
+        "main": "packages/plugins/google-tagmanager/src/index.ts",
+        "tsConfig": "packages/plugins/google-tagmanager/tsconfig.lib.json",
+        "assets": ["packages/plugins/google-tagmanager/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/plugins/google-tagmanager/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/plugins/google-tagmanager"],
+      "options": {
+        "jestConfig": "packages/plugins/google-tagmanager/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

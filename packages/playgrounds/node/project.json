@@ -1,0 +1,59 @@
+{
+  "name": "playgrounds-node",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/playgrounds/node",
+  "sourceRoot": "packages/playgrounds/node/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/playgrounds/node",
+        "main": "packages/playgrounds/node/src/main.ts",
+        "tsConfig": "packages/playgrounds/node/tsconfig.app.json",
+        "assets": ["packages/playgrounds/node/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "packages/playgrounds/node/src/environments/environment.ts",
+              "with": "packages/playgrounds/node/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "options": {
+        "buildTarget": "playgrounds-node:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "playgrounds-node:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/playgrounds/node/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/playgrounds/node"],
+      "options": {
+        "jestConfig": "packages/playgrounds/node/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

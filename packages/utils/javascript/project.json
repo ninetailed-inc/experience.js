@@ -1,0 +1,51 @@
+{
+  "name": "utils-javascript",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/utils/javascript/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/utils/javascript",
+        "tsConfig": "packages/utils/javascript/tsconfig.lib.json",
+        "project": "packages/utils/javascript/package.json",
+        "entryFile": "packages/utils/javascript/src/index.ts",
+        "external": [],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "packages/utils/javascript/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "dependencies"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/utils/javascript/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/utils/javascript"],
+      "options": {
+        "jestConfig": "packages/utils/javascript/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

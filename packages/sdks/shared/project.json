@@ -1,0 +1,53 @@
+{
+  "name": "sdks-shared",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sdks/shared/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sdks/shared",
+        "tsConfig": "packages/sdks/shared/tsconfig.lib.json",
+        "project": "packages/sdks/shared/package.json",
+        "entryFile": "packages/sdks/shared/src/index.ts",
+        "external": [],
+        "rollupConfig": "packages/sdks/shared/rollup.config.js",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "packages/sdks/shared/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "get-package-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["./get-package-version.sh"],
+        "cwd": "packages/sdks/shared"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/sdks/shared/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/sdks/shared"],
+      "options": {
+        "jestConfig": "packages/sdks/shared/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

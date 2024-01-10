@@ -1,0 +1,57 @@
+{
+  "name": "plugins-google-analytics",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/plugins/google-analytics/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/plugins/google-analytics",
+        "tsConfig": "packages/plugins/google-analytics/tsconfig.lib.json",
+        "project": "packages/plugins/google-analytics/package.json",
+        "entryFile": "packages/plugins/google-analytics/src/index.ts",
+        "external": [],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "format": ["cjs", "esm"],
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": [
+          {
+            "glob": "packages/plugins/google-analytics/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "bundle": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["echo bundling experience.js-plugin-google-analytics"]
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/plugins/google-analytics/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/plugins/google-analytics"],
+      "options": {
+        "jestConfig": "packages/plugins/google-analytics/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

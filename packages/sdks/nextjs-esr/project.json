@@ -1,0 +1,44 @@
+{
+  "name": "sdks-nextjs-esr",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sdks/nextjs-esr/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sdks/nextjs-esr",
+        "tsConfig": "packages/sdks/nextjs-esr/tsconfig.lib.json",
+        "project": "packages/sdks/nextjs-esr/package.json",
+        "entryFile": "packages/sdks/nextjs-esr/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "format": ["cjs", "esm"],
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "packages/sdks/nextjs-esr/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/sdks/nextjs-esr"],
+      "options": {
+        "jestConfig": "packages/sdks/nextjs-esr/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

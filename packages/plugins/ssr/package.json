@@ -1,0 +1,6 @@
+{
+  "name": "@ninetailed/experience.js-plugin-ssr",
+  "version": "7.5.1",
+  "description": "Ninetailed SDK plugin for SSR",
+  "license": "MIT"
+}

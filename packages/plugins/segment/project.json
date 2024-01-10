@@ -1,0 +1,36 @@
+{
+  "name": "plugins-segment",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/plugins/segment",
+  "sourceRoot": "packages/plugins/segment/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/plugins/segment",
+        "main": "packages/plugins/segment/src/index.ts",
+        "tsConfig": "packages/plugins/segment/tsconfig.lib.json",
+        "assets": ["packages/plugins/segment/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/plugins/segment/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/plugins/segment"],
+      "options": {
+        "jestConfig": "packages/plugins/segment/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

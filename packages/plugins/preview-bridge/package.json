@@ -1,0 +1,6 @@
+{
+  "name": "@ninetailed/experience.js-preview-bridge",
+  "description": "Ninetailed SDK plugin for Experience.js preview bridge",
+  "version": "7.5.1",
+  "license": "MIT"
+}

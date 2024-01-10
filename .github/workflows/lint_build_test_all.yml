@@ -1,0 +1,177 @@
+name: Main Pipeline
+
+on:
+  pull_request_target:
+
+jobs:
+  setup:
+    name: Yarn install 🛠️
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      # node_module cache helps to avoid 1 minute copying from yarn cache on every job run
+      - name: node_modules cache
+        id: node-modules-cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-yarn-
+
+      - name: Yarn install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn install --prefer-offline --frozen-lockfile
+
+  lint:
+    name: Lint 🎨
+    runs-on: ubuntu-latest
+    needs: setup
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          # fetch-depth gives the complete git history which is needed for nx.
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+
+      - name: Check Format
+        run: yarn nx format:check
+
+      - name: Lint 🎨
+        run: yarn nx affected --target=lint
+
+  tests:
+    name: Tests 🧪
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: setup
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v2
+
+      - name: Test 🧪
+        run: >
+          doppler run --mount .env -- yarn nx affected --target=test
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+
+  build:
+    name: Build 📦
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: setup
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v2
+
+      - name: Build 📦
+        run: >
+          doppler run --mount .env -- yarn nx affected --target=build
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+
+  license-check:
+    name: License check 📄
+    runs-on: ubuntu-latest
+    needs: setup
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            lock:
+              - 'yarn.lock'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        if: steps.filter.outputs.lock == 'true'
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Run License Checker
+        if: steps.filter.outputs.lock == 'true'
+        run: >
+          echo "In case of error, please check ./docs/Licenses.md"
+          yarn license-checker \
+          --summary \
+          --production \
+          --relativeLicensePath \
+          --onlyAllow 'MIT;Apache-2.0;ISC;BSD-3-Clause;BSD-2-Clause;MIT*;Apache 2.0;Unlicense;:CC0-1.0;CC-BY-4.0;WTFPL;0BSD;UNLICENSED;Python-2.0;MPL-2.0;CC-BY-3.0;CC0-1.0'

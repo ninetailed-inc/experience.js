@@ -1,0 +1,7 @@
+{
+  "name": "@ninetailed/experience.js-plugin-insights",
+  "version": "7.5.1",
+  "type": "commonjs",
+  "description": "Ninetailed SDK plugin for Adobe Analytics",
+  "license": "MIT"
+}

@@ -1,0 +1,49 @@
+{
+  "name": "playgrounds-gatsby",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/playgrounds/gatsby",
+  "sourceRoot": "packages/playgrounds/gatsby/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/gatsby:build",
+      "options": {
+        "outputPath": "packages/playgrounds/gatsby/public",
+        "uglify": true,
+        "color": true,
+        "profile": false
+      },
+      "configurations": {
+        "production": {}
+      },
+      "dependsOn": ["^build"]
+    },
+    "serve": {
+      "executor": "@nrwl/gatsby:server",
+      "options": {
+        "buildTarget": "playgrounds-gatsby:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "playgrounds-gatsby:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/playgrounds/gatsby/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/playgrounds/gatsby"],
+      "options": {
+        "jestConfig": "packages/playgrounds/gatsby/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

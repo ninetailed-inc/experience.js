@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Contentful Experience Mapper should map experiences 1`] = `
+Array [
+  Object {
+    "audience": Object {
+      "description": "",
+      "id": "6a26biS02WxlM4WqTiwEZm",
+      "name": "Is Cool",
+    },
+    "components": Array [
+      Object {
+        "baseline": Object {
+          "id": "2t0zGNkAgnSyhUAFigL1Fe",
+        },
+        "variants": Array [
+          Object {
+            "headline": "[Ninetailed Variant] Home Page Hero Banner",
+            "id": "6Vlth4dgPIflvvWbGo8yd",
+            "x": Array [
+              Object {
+                "bytes": 911720,
+                "context": Object {
+                  "custom": Object {
+                    "alt": "lady gazing to the right",
+                  },
+                },
+                "created_at": "2022-08-16T06:59:26Z",
+                "duration": null,
+                "format": "png",
+                "height": 826,
+                "metadata": Array [],
+                "original_secure_url": "https://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+                "original_url": "http://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+                "public_id": "brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa",
+                "raw_transformation": "f_auto/q_auto",
+                "resource_type": "image",
+                "secure_url": "https://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/f_auto/q_auto/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+                "tags": Array [],
+                "type": "upload",
+                "url": "http://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/f_auto/q_auto/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+                "version": 1660633166,
+                "width": 1920,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    "description": "Do you have isCool=true in your query params?",
+    "distribution": Array [
+      Object {
+        "end": 0,
+        "index": 0,
+        "start": 0,
+      },
+      Object {
+        "end": 1,
+        "index": 1,
+        "start": 0,
+      },
+    ],
+    "id": "1zPgxFzQNPjhvjRKBPr203",
+    "name": "are-you-cool",
+    "trafficAllocation": 1,
+    "type": "nt_personalization",
+  },
+]
+`;

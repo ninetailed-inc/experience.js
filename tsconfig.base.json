@@ -1,0 +1,69 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ninetailed/experience.js": ["packages/sdks/javascript/src/index.ts"],
+      "@ninetailed/experience.js-gatsby": ["packages/sdks/gatsby/src/index.ts"],
+      "@ninetailed/experience.js-next": ["packages/sdks/nextjs/src/index.ts"],
+      "@ninetailed/experience.js-node": ["packages/sdks/nodejs/src/index.ts"],
+      "@ninetailed/experience.js-plugin-analytics": [
+        "packages/plugins/analytics/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-analytics/test": [
+        "packages/plugins/analytics/test/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-contentsquare": [
+        "packages/plugins/contentsquare/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-google-analytics": [
+        "packages/plugins/google-analytics/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-google-tagmanager": [
+        "packages/plugins/google-tagmanager/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-insights": [
+        "packages/plugins/insights/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-preview": [
+        "packages/plugins/preview/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-privacy": [
+        "packages/plugins/privacy/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-segment": [
+        "packages/plugins/segment/src/index.ts"
+      ],
+      "@ninetailed/experience.js-plugin-ssr": [
+        "packages/plugins/ssr/src/index.ts"
+      ],
+      "@ninetailed/experience.js-preview-bridge": [
+        "packages/plugins/preview-bridge/src/index.ts"
+      ],
+      "@ninetailed/experience.js-react": ["packages/sdks/react/src/index.ts"],
+      "@ninetailed/experience.js-shared": ["packages/sdks/shared/src/index.ts"],
+      "@ninetailed/experience.js-utils": [
+        "packages/utils/javascript/src/index.ts"
+      ],
+      "@ninetailed/experience.js-utils-contentful": [
+        "packages/utils/contentful/src/index.ts"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "tmp"],
+  "include": []
+}

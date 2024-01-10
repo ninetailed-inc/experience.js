@@ -1,0 +1,319 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExperienceEntry should parse an ExperienceEntry without linkType 1`] = `
+Object {
+  "fields": Object {
+    "nt_audience": null,
+    "nt_config": Object {
+      "components": Array [
+        Object {
+          "baseline": Object {
+            "id": "50LFM6YHR9NoqPilYKEGeT",
+          },
+          "variants": Array [
+            Object {
+              "hidden": false,
+              "id": "2Q5ZkLPpEs5ZOmEttJMh42",
+            },
+          ],
+        },
+      ],
+      "distribution": Array [
+        0.5,
+        0.5,
+      ],
+      "traffic": 1,
+    },
+    "nt_description": null,
+    "nt_name": "OS Testing",
+    "nt_type": "nt_experiment",
+    "nt_variants": Array [
+      Object {
+        "fields": Object {
+          "anchor": "professional-professional-art-pass",
+          "animation": null,
+          "body": Object {
+            "content": Array [
+              Object {
+                "content": Array [
+                  Object {
+                    "content": Array [],
+                    "marks": Array [],
+                    "nodeType": "text",
+                    "value": "A Professional Art Pass lets you enjoy free entry to hundreds of museums, galleries and historic houses across the UK as well as 50% off major exhibitions.",
+                  },
+                ],
+                "data": Array [],
+                "nodeType": "paragraph",
+              },
+            ],
+            "nodeType": "document",
+          },
+          "buttonLabel": "Get your pass",
+          "buttonUrl": "#professional-get-your-pass",
+          "campaignOptions": null,
+          "category": null,
+          "component": "Professional Art Pass",
+          "homepageCountdown": null,
+          "homepageLayout": "Full Screen",
+          "homepagePanelColour": "Art Fund Pastel Pink",
+          "homepagePanelOptions": "None",
+          "homepageStyle": "Images",
+          "images": Array [
+            Object {
+              "alt": null,
+              "bynder": Object {
+                "expires": null,
+                "id": "D7C80D4A-EA34-4958-A5E98E720AAEC1CB",
+              },
+              "caption": null,
+              "copyright": null,
+              "primary": false,
+              "srcset": Object {
+                "lg": "https://dnztw2jgbuerz.cloudfront.net/D7C80D4A-EA34-4958-A5E98E720AAEC1CB/e72d4ee9468dbde96be601c11d0d6f10-lg.jpg",
+                "md": "https://dnztw2jgbuerz.cloudfront.net/D7C80D4A-EA34-4958-A5E98E720AAEC1CB/e72d4ee9468dbde96be601c11d0d6f10-md.jpg",
+                "xl": "https://dnztw2jgbuerz.cloudfront.net/D7C80D4A-EA34-4958-A5E98E720AAEC1CB/e72d4ee9468dbde96be601c11d0d6f10-xl.jpg",
+                "xs": "https://dnztw2jgbuerz.cloudfront.net/D7C80D4A-EA34-4958-A5E98E720AAEC1CB/e72d4ee9468dbde96be601c11d0d6f10-xs.jpg",
+                "xxs": "https://dnztw2jgbuerz.cloudfront.net/D7C80D4A-EA34-4958-A5E98E720AAEC1CB/e72d4ee9468dbde96be601c11d0d6f10-xxs.jpg",
+              },
+            },
+            Object {
+              "alt": null,
+              "bynder": Object {
+                "expires": null,
+                "id": "F948EE60-5012-4C0A-B9355CF25E631BD8",
+              },
+              "caption": null,
+              "copyright": null,
+              "primary": true,
+              "srcset": Object {
+                "lg": "https://dnztw2jgbuerz.cloudfront.net/F948EE60-5012-4C0A-B9355CF25E631BD8/62e7be1dda70d6be7f5449b6d0a54158-lg.jpg",
+                "md": "https://dnztw2jgbuerz.cloudfront.net/F948EE60-5012-4C0A-B9355CF25E631BD8/62e7be1dda70d6be7f5449b6d0a54158-md.jpg",
+                "xl": "https://dnztw2jgbuerz.cloudfront.net/F948EE60-5012-4C0A-B9355CF25E631BD8/62e7be1dda70d6be7f5449b6d0a54158-xl.jpg",
+                "xs": "https://dnztw2jgbuerz.cloudfront.net/F948EE60-5012-4C0A-B9355CF25E631BD8/62e7be1dda70d6be7f5449b6d0a54158-xs.jpg",
+                "xxs": "https://dnztw2jgbuerz.cloudfront.net/F948EE60-5012-4C0A-B9355CF25E631BD8/62e7be1dda70d6be7f5449b6d0a54158-xxs.jpg",
+              },
+            },
+          ],
+          "internalTitle": "Professional - Professional Art Pass",
+          "layout": "Image on Left",
+          "loginOptions": false,
+          "nt_experiences": Array [],
+          "title": "Get your pass",
+          "video": null,
+          "videoId": null,
+          "videoType": null,
+        },
+        "metadata": Object {
+          "tagNames": Array [],
+          "tags": Array [],
+        },
+        "sys": Object {
+          "contentType": Object {
+            "description": "",
+            "displayField": "internalTitle",
+            "fields": Array [
+              Object {
+                "id": "internalTitle",
+                "localized": false,
+                "name": "Internal title",
+                "required": true,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "component",
+                "localized": false,
+                "name": "Type",
+                "required": true,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "images",
+                "localized": false,
+                "name": "Images",
+                "required": false,
+                "type": "Object",
+              },
+              Object {
+                "id": "videoId",
+                "linkType": "Entry",
+                "localized": false,
+                "name": "Video",
+                "required": false,
+                "type": "Link",
+              },
+              Object {
+                "id": "category",
+                "localized": false,
+                "name": "Pre-title",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "title",
+                "localized": false,
+                "name": "Title",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "body",
+                "localized": false,
+                "name": "Summary",
+                "required": false,
+                "type": "RichText",
+              },
+              Object {
+                "id": "layout",
+                "localized": false,
+                "name": "Layout",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "homepageLayout",
+                "localized": false,
+                "name": "Homepage Layout",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "homepageStyle",
+                "localized": false,
+                "name": "Homepage Style",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "videoType",
+                "localized": false,
+                "name": "Video Type",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "video",
+                "localized": false,
+                "name": "Video",
+                "required": false,
+                "type": "Object",
+              },
+              Object {
+                "id": "animation",
+                "localized": false,
+                "name": "Animation",
+                "required": false,
+                "type": "Object",
+              },
+              Object {
+                "id": "homepagePanelColour",
+                "localized": false,
+                "name": "Homepage Panel Colour",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "homepagePanelOptions",
+                "localized": false,
+                "name": "Homepage Panel Options",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "homepageCountdown",
+                "localized": false,
+                "name": "Countdown End Date/Time",
+                "required": false,
+                "type": "Date",
+              },
+              Object {
+                "id": "buttonLabel",
+                "localized": false,
+                "name": "Button Label",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "buttonUrl",
+                "localized": false,
+                "name": "Button URL",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "loginOptions",
+                "localized": false,
+                "name": "Login options?",
+                "required": false,
+                "type": "Boolean",
+              },
+              Object {
+                "id": "campaignOptions",
+                "localized": false,
+                "name": "Campaign Options",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "anchor",
+                "localized": false,
+                "name": "Anchor Key",
+                "required": false,
+                "type": "Symbol",
+              },
+              Object {
+                "id": "nt_experiences",
+                "items": Object {
+                  "linkType": "Entry",
+                  "type": "Link",
+                },
+                "localized": false,
+                "name": "Ninetailed",
+                "required": false,
+                "type": "Array",
+              },
+            ],
+            "name": "Module : Hero Panel",
+            "sys": Object {
+              "createdAt": "2022-10-17T10:01:55.847Z",
+              "environment": Object {
+                "sys": Object {
+                  "id": "QA",
+                  "linkType": "Environment",
+                  "type": "Link",
+                },
+              },
+              "id": "moduleHero",
+              "revision": 68,
+              "space": Object {
+                "sys": Object {
+                  "id": "idkl71bhxp9d",
+                  "linkType": "Space",
+                  "type": "Link",
+                },
+              },
+              "type": "ContentType",
+              "updatedAt": "2023-08-10T14:54:11.067Z",
+            },
+          },
+          "firstPublishedAt": "2023-04-18T15:57:59.920000Z",
+          "id": "2Q5ZkLPpEs5ZOmEttJMh42",
+          "publishedAt": "2023-04-19T14:33:35.274000Z",
+        },
+      },
+    ],
+  },
+  "metadata": Object {
+    "tags": Array [],
+  },
+  "sys": Object {
+    "contentType": Object {
+      "sys": Object {
+        "id": "nt_experience",
+        "type": "ContentType",
+      },
+    },
+    "id": "4l5B7sToaNGT0pL8wNAtsP",
+  },
+}
+`;

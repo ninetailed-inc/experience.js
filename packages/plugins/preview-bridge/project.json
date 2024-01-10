@@ -1,0 +1,47 @@
+{
+  "name": "plugins-preview-bridge",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/plugins/preview-bridge/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/plugins/preview-bridge",
+        "tsConfig": "packages/plugins/preview-bridge/tsconfig.lib.json",
+        "project": "packages/plugins/preview-bridge/package.json",
+        "entryFile": "packages/plugins/preview-bridge/src/index.ts",
+        "external": [],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "packages/plugins/preview-bridge/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/plugins/preview-bridge/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/plugins/preview-bridge"],
+      "options": {
+        "jestConfig": "packages/plugins/preview-bridge/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "tags": []
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "4948ib063ngm"
+      }
+    },
+    "id": "2yi8uo3GWMYI5GZA7VbSPk",
+    "type": "Entry",
+    "createdAt": "2022-11-28T15:07:58.780Z",
+    "updatedAt": "2022-11-28T15:15:48.995Z",
+    "environment": {
+      "sys": {
+        "id": "sdk-v3",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "revision": 2,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "product"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "productName": "Orchid Sprout",
+    "nt_experiences": [
+      {
+        "metadata": {
+          "tags": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "4948ib063ngm"
+            }
+          },
+          "id": "3j4nCGLDLVyQ4Ycs51ih9L",
+          "type": "Entry",
+          "createdAt": "2022-11-28T15:15:30.833Z",
+          "updatedAt": "2022-11-28T15:15:30.833Z",
+          "environment": {
+            "sys": {
+              "id": "sdk-v3",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "nt_experience"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "nt_name": "A flower like your personality",
+          "nt_type": "nt_personalization",
+          "nt_config": {
+            "traffic": 0.9,
+            "distribution": [0.5, 0.5],
+            "components": [
+              {
+                "baseline": {
+                  "id": "2yi8uo3GWMYI5GZA7VbSPk",
+                  "title": "Orchid Sprout"
+                },
+                "variants": [
+                  {
+                    "id": "61gykQmZCQ11rqXKPXoYWQ",
+                    "hidden": false
+                  }
+                ]
+              }
+            ]
+          },
+          "nt_audience": {
+            "metadata": {
+              "tags": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "4948ib063ngm"
+                }
+              },
+              "id": "64ducOq8OgG6N0zK3SuRnq",
+              "type": "Entry",
+              "createdAt": "2022-11-16T10:23:07.569Z",
+              "updatedAt": "2022-11-16T10:23:07.569Z",
+              "environment": {
+                "sys": {
+                  "id": "sdk-v3",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "revision": 1,
+              "contentType": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "ContentType",
+                  "id": "nt_audience"
+                }
+              },
+              "locale": "en-US"
+            },
+            "fields": {
+              "nt_name": "AudienceName",
+              "nt_audience_id": "6PWkVDirbFw7HL60QlAOc3"
+            }
+          },
+          "nt_variants": [
+            {
+              "metadata": {
+                "tags": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "4948ib063ngm"
+                  }
+                },
+                "id": "61gykQmZCQ11rqXKPXoYWQ",
+                "type": "Entry",
+                "createdAt": "2022-11-28T15:14:42.576Z",
+                "updatedAt": "2022-11-28T15:14:42.576Z",
+                "environment": {
+                  "sys": {
+                    "id": "sdk-v3",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "product"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "productName": "Blooming Rose"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

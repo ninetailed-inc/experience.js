@@ -1,0 +1,594 @@
+{
+  "metadata": {
+    "tags": []
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "4bvjgh4g0mad"
+      }
+    },
+    "id": "3DVqIYj4dOwwcKu6sgqOgg",
+    "type": "Entry",
+    "createdAt": "2022-07-02T09:35:00.347Z",
+    "updatedAt": "2022-07-04T09:27:15.179Z",
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "revision": 3,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "product"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "productName": "Hudson Wall Cup",
+    "slug": "hudson-wall-cup",
+    "productDescription": "Wall Hanging Glass Flower Vase and Terrarium",
+    "sizetypecolor": "3 x 3 x 5 inches; 5.3 ounces",
+    "image": [
+      {
+        "metadata": {
+          "tags": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "4bvjgh4g0mad"
+            }
+          },
+          "id": "Xc0ny7GWsMEMCeASWO2um",
+          "type": "Asset",
+          "createdAt": "2022-07-02T09:34:58.517Z",
+          "updatedAt": "2022-07-02T09:34:58.517Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "revision": 1,
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "Hudson Wall Cup ",
+          "description": "Merchandise image",
+          "file": {
+            "url": "//images.ctfassets.net/4bvjgh4g0mad/Xc0ny7GWsMEMCeASWO2um/5fa6b7973317033e8a507216d1263c55/jqvtazcyfwseah9fmysz.jpg",
+            "details": {
+              "size": 48751,
+              "image": {
+                "width": 600,
+                "height": 600
+              }
+            },
+            "fileName": "jqvtazcyfwseah9fmysz.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      }
+    ],
+    "tags": ["vase", "flowers", "accessories"],
+    "categories": [
+      {
+        "metadata": {
+          "tags": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "4bvjgh4g0mad"
+            }
+          },
+          "id": "7LAnCobuuWYSqks6wAwY2a",
+          "type": "Entry",
+          "createdAt": "2022-07-02T09:35:01.340Z",
+          "updatedAt": "2022-07-02T09:35:01.340Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "category"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "Home & Kitchen",
+          "icon": {
+            "metadata": {
+              "tags": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "4bvjgh4g0mad"
+                }
+              },
+              "id": "6m5AJ9vMPKc8OUoQeoCS4o",
+              "type": "Asset",
+              "createdAt": "2022-07-02T09:34:57.298Z",
+              "updatedAt": "2022-07-02T09:34:57.298Z",
+              "environment": {
+                "sys": {
+                  "id": "master",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "revision": 1,
+              "locale": "en-US"
+            },
+            "fields": {
+              "title": "Home and Kitchen",
+              "description": "category icon",
+              "file": {
+                "url": "//images.ctfassets.net/4bvjgh4g0mad/6m5AJ9vMPKc8OUoQeoCS4o/702fbee67c724cd69e8f1d530ac8b991/1418244847_Streamline-18-256.png",
+                "details": {
+                  "size": 2977,
+                  "image": {
+                    "width": 256,
+                    "height": 256
+                  }
+                },
+                "fileName": "1418244847_Streamline-18-256.png",
+                "contentType": "image/png"
+              }
+            }
+          },
+          "categoryDescription": "Shop for furniture, bedding, bath, vacuums, kitchen products, and more"
+        }
+      }
+    ],
+    "price": 11,
+    "brand": {
+      "metadata": {
+        "tags": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "4bvjgh4g0mad"
+          }
+        },
+        "id": "651CQ8rLoIYCeY6G0QG22q",
+        "type": "Entry",
+        "createdAt": "2022-07-02T09:35:00.350Z",
+        "updatedAt": "2022-07-02T09:35:00.350Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "brand"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "companyName": "Normann Copenhagen",
+        "logo": {
+          "metadata": {
+            "tags": []
+          },
+          "sys": {
+            "space": {
+              "sys": {
+                "type": "Link",
+                "linkType": "Space",
+                "id": "4bvjgh4g0mad"
+              }
+            },
+            "id": "3wtvPBbBjiMKqKKga8I2Cu",
+            "type": "Asset",
+            "createdAt": "2022-07-02T09:34:58.328Z",
+            "updatedAt": "2022-07-02T09:34:58.328Z",
+            "environment": {
+              "sys": {
+                "id": "master",
+                "type": "Link",
+                "linkType": "Environment"
+              }
+            },
+            "revision": 1,
+            "locale": "en-US"
+          },
+          "fields": {
+            "title": "Normann Copenhagen",
+            "description": "Brand logo",
+            "file": {
+              "url": "//images.ctfassets.net/4bvjgh4g0mad/3wtvPBbBjiMKqKKga8I2Cu/a5ee51fb503e4ffa263f7c535d67d77a/zJYzDlGk.jpeg",
+              "details": {
+                "size": 12302,
+                "image": {
+                  "width": 353,
+                  "height": 353
+                }
+              },
+              "fileName": "zJYzDlGk.jpeg",
+              "contentType": "image/jpeg"
+            }
+          }
+        },
+        "companyDescription": "Normann Copenhagen is a way of living - a mindset. We love to challenge the conventional design rules. This is why you will find traditional materials put into untraditional use such as a Stone Hook made of Icelandic stones, a vase made out of silicon and last but not least a dog made out of plastic.",
+        "website": "http://www.normann-copenhagen.com/",
+        "twitter": "https://twitter.com/NormannCPH",
+        "email": "normann@normann-copenhagen.com",
+        "phone": ["+45 35 55 44 59"]
+      }
+    },
+    "quantity": 101,
+    "sku": "B00E82D7I8",
+    "website": "http://www.amazon.com/dp/B00E82D7I8/",
+    "nt_experiences": [
+      {
+        "metadata": {
+          "tags": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "4bvjgh4g0mad"
+            }
+          },
+          "id": "13gr03iDPXcOIVJmGVnRy6",
+          "type": "Entry",
+          "createdAt": "2022-07-02T16:33:48.873Z",
+          "updatedAt": "2022-07-04T09:32:03.127Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "revision": 5,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "nt_experience"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "nt_name": "Yellow picture backgrounds",
+          "nt_type": "nt_experiment",
+          "nt_config": {
+            "type": "nt_experiment",
+            "traffic": 0.9,
+            "components": [
+              {
+                "baseline": {
+                  "id": "3DVqIYj4dOwwcKu6sgqOgg"
+                },
+                "variants": [
+                  {
+                    "id": "6lAKSDU7b95q4leALQtxXv",
+                    "hidden": false
+                  }
+                ]
+              }
+            ],
+            "distribution": [0.5, 0.5],
+            "scatteredDistribution": [
+              {
+                "index": 0,
+                "start": 0,
+                "end": 0.26
+              },
+              {
+                "index": 1,
+                "start": 0.26,
+                "end": 0.76
+              },
+              {
+                "index": 0,
+                "start": 0.76,
+                "end": 1
+              }
+            ]
+          },
+          "nt_audience": null,
+          "nt_variants": [
+            {
+              "metadata": {
+                "tags": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "4bvjgh4g0mad"
+                  }
+                },
+                "id": "6lAKSDU7b95q4leALQtxXv",
+                "type": "Entry",
+                "createdAt": "2022-07-02T09:43:07.830Z",
+                "updatedAt": "2022-07-02T09:43:07.830Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "product"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "productName": "Hudson Wall Cup /w yellow background image",
+                "slug": "hudson-wall-cup",
+                "productDescription": "Wall Hanging Glass Flower Vase and Terrarium",
+                "sizetypecolor": "3 x 3 x 5 inches; 5.3 ounces",
+                "image": [
+                  {
+                    "metadata": {
+                      "tags": []
+                    },
+                    "sys": {
+                      "space": {
+                        "sys": {
+                          "type": "Link",
+                          "linkType": "Space",
+                          "id": "4bvjgh4g0mad"
+                        }
+                      },
+                      "id": "Xc0ny7GWsMEMCeASWO2um",
+                      "type": "Asset",
+                      "createdAt": "2022-07-02T09:34:58.517Z",
+                      "updatedAt": "2022-07-02T09:34:58.517Z",
+                      "environment": {
+                        "sys": {
+                          "id": "master",
+                          "type": "Link",
+                          "linkType": "Environment"
+                        }
+                      },
+                      "revision": 1,
+                      "locale": "en-US"
+                    },
+                    "fields": {
+                      "title": "Hudson Wall Cup ",
+                      "description": "Merchandise image",
+                      "file": {
+                        "url": "//images.ctfassets.net/4bvjgh4g0mad/Xc0ny7GWsMEMCeASWO2um/5fa6b7973317033e8a507216d1263c55/jqvtazcyfwseah9fmysz.jpg",
+                        "details": {
+                          "size": 48751,
+                          "image": {
+                            "width": 600,
+                            "height": 600
+                          }
+                        },
+                        "fileName": "jqvtazcyfwseah9fmysz.jpg",
+                        "contentType": "image/jpeg"
+                      }
+                    }
+                  }
+                ],
+                "tags": ["vase", "flowers", "accessories"],
+                "categories": [
+                  {
+                    "metadata": {
+                      "tags": []
+                    },
+                    "sys": {
+                      "space": {
+                        "sys": {
+                          "type": "Link",
+                          "linkType": "Space",
+                          "id": "4bvjgh4g0mad"
+                        }
+                      },
+                      "id": "7LAnCobuuWYSqks6wAwY2a",
+                      "type": "Entry",
+                      "createdAt": "2022-07-02T09:35:01.340Z",
+                      "updatedAt": "2022-07-02T09:35:01.340Z",
+                      "environment": {
+                        "sys": {
+                          "id": "master",
+                          "type": "Link",
+                          "linkType": "Environment"
+                        }
+                      },
+                      "revision": 1,
+                      "contentType": {
+                        "sys": {
+                          "type": "Link",
+                          "linkType": "ContentType",
+                          "id": "category"
+                        }
+                      },
+                      "locale": "en-US"
+                    },
+                    "fields": {
+                      "title": "Home & Kitchen",
+                      "icon": {
+                        "metadata": {
+                          "tags": []
+                        },
+                        "sys": {
+                          "space": {
+                            "sys": {
+                              "type": "Link",
+                              "linkType": "Space",
+                              "id": "4bvjgh4g0mad"
+                            }
+                          },
+                          "id": "6m5AJ9vMPKc8OUoQeoCS4o",
+                          "type": "Asset",
+                          "createdAt": "2022-07-02T09:34:57.298Z",
+                          "updatedAt": "2022-07-02T09:34:57.298Z",
+                          "environment": {
+                            "sys": {
+                              "id": "master",
+                              "type": "Link",
+                              "linkType": "Environment"
+                            }
+                          },
+                          "revision": 1,
+                          "locale": "en-US"
+                        },
+                        "fields": {
+                          "title": "Home and Kitchen",
+                          "description": "category icon",
+                          "file": {
+                            "url": "//images.ctfassets.net/4bvjgh4g0mad/6m5AJ9vMPKc8OUoQeoCS4o/702fbee67c724cd69e8f1d530ac8b991/1418244847_Streamline-18-256.png",
+                            "details": {
+                              "size": 2977,
+                              "image": {
+                                "width": 256,
+                                "height": 256
+                              }
+                            },
+                            "fileName": "1418244847_Streamline-18-256.png",
+                            "contentType": "image/png"
+                          }
+                        }
+                      },
+                      "categoryDescription": "Shop for furniture, bedding, bath, vacuums, kitchen products, and more"
+                    }
+                  }
+                ],
+                "price": 11,
+                "brand": {
+                  "metadata": {
+                    "tags": []
+                  },
+                  "sys": {
+                    "space": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "4bvjgh4g0mad"
+                      }
+                    },
+                    "id": "651CQ8rLoIYCeY6G0QG22q",
+                    "type": "Entry",
+                    "createdAt": "2022-07-02T09:35:00.350Z",
+                    "updatedAt": "2022-07-02T09:35:00.350Z",
+                    "environment": {
+                      "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                      }
+                    },
+                    "revision": 1,
+                    "contentType": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "brand"
+                      }
+                    },
+                    "locale": "en-US"
+                  },
+                  "fields": {
+                    "companyName": "Normann Copenhagen",
+                    "logo": {
+                      "metadata": {
+                        "tags": []
+                      },
+                      "sys": {
+                        "space": {
+                          "sys": {
+                            "type": "Link",
+                            "linkType": "Space",
+                            "id": "4bvjgh4g0mad"
+                          }
+                        },
+                        "id": "3wtvPBbBjiMKqKKga8I2Cu",
+                        "type": "Asset",
+                        "createdAt": "2022-07-02T09:34:58.328Z",
+                        "updatedAt": "2022-07-02T09:34:58.328Z",
+                        "environment": {
+                          "sys": {
+                            "id": "master",
+                            "type": "Link",
+                            "linkType": "Environment"
+                          }
+                        },
+                        "revision": 1,
+                        "locale": "en-US"
+                      },
+                      "fields": {
+                        "title": "Normann Copenhagen",
+                        "description": "Brand logo",
+                        "file": {
+                          "url": "//images.ctfassets.net/4bvjgh4g0mad/3wtvPBbBjiMKqKKga8I2Cu/a5ee51fb503e4ffa263f7c535d67d77a/zJYzDlGk.jpeg",
+                          "details": {
+                            "size": 12302,
+                            "image": {
+                              "width": 353,
+                              "height": 353
+                            }
+                          },
+                          "fileName": "zJYzDlGk.jpeg",
+                          "contentType": "image/jpeg"
+                        }
+                      }
+                    },
+                    "companyDescription": "Normann Copenhagen is a way of living - a mindset. We love to challenge the conventional design rules. This is why you will find traditional materials put into untraditional use such as a Stone Hook made of Icelandic stones, a vase made out of silicon and last but not least a dog made out of plastic.",
+                    "website": "http://www.normann-copenhagen.com/",
+                    "twitter": "https://twitter.com/NormannCPH",
+                    "email": "normann@normann-copenhagen.com",
+                    "phone": ["+45 35 55 44 59"]
+                  }
+                },
+                "quantity": 101,
+                "sku": "B00E82D7I8",
+                "website": "http://www.amazon.com/dp/B00E82D7I8/"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BaselineWithExperiencesEntry should sanitize the entries correctly 1`] = `
+Array [
+  Object {
+    "fields": Object {
+      "ctaLink": Array [
+        Object {
+          "id": "05d26971-eebf-4b89-b459-500e01dc1d0e",
+          "label": "Get on the list",
+          "type": "internal-url",
+          "url": "/products",
+        },
+      ],
+      "description": Object {
+        "content": Array [
+          Object {
+            "content": Array [
+              Object {
+                "data": Object {},
+                "marks": Array [
+                  Object {
+                    "type": "bold",
+                  },
+                ],
+                "nodeType": "text",
+                "value": "Introducing Heinz vintage Drip",
+              },
+            ],
+            "data": Object {},
+            "nodeType": "paragraph",
+          },
+          Object {
+            "content": Array [
+              Object {
+                "data": Object {},
+                "marks": Array [],
+                "nodeType": "text",
+                "value": "It’s NYFW and we’ve teamed up with taste-maker @emmachamberlain to drop a limited run of 157 ketchup-stained, vintage swag pieces. Time to add some flavor to your fashion.",
+              },
+            ],
+            "data": Object {},
+            "nodeType": "paragraph",
+          },
+        ],
+        "data": Object {},
+        "nodeType": "document",
+      },
+      "desktopImage": Array [
+        Object {
+          "bytes": 911720,
+          "context": Object {
+            "custom": Object {
+              "alt": "lady gazing to the right",
+            },
+          },
+          "created_at": "2022-08-16T06:59:26Z",
+          "duration": null,
+          "format": "png",
+          "height": 826,
+          "metadata": Array [],
+          "original_secure_url": "https://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+          "original_url": "http://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+          "public_id": "brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa",
+          "raw_transformation": "f_auto/q_auto",
+          "resource_type": "image",
+          "secure_url": "https://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/f_auto/q_auto/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+          "tags": Array [],
+          "type": "upload",
+          "url": "http://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/f_auto/q_auto/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-desktop_wvdfoa.png",
+          "version": 1660633166,
+          "width": 1920,
+        },
+      ],
+      "entryTitle": "[Ninetailed Variant] Home Page Hero Banner",
+      "headline": "This is Ninetailed.
+<i>wow</i>
+",
+      "headlineStyle": "headline-4",
+      "mobileImage": Array [
+        Object {
+          "bytes": 647055,
+          "context": Object {
+            "custom": Object {
+              "alt": "lady gazing to the right",
+            },
+          },
+          "created_at": "2022-08-16T06:59:26Z",
+          "duration": null,
+          "format": "png",
+          "height": 820,
+          "metadata": Array [],
+          "original_secure_url": "https://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-mobile_they3j.png",
+          "original_url": "http://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-mobile_they3j.png",
+          "public_id": "brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-mobile_they3j",
+          "raw_transformation": "f_auto/q_auto",
+          "resource_type": "image",
+          "secure_url": "https://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/f_auto/q_auto/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-mobile_they3j.png",
+          "tags": Array [],
+          "type": "upload",
+          "url": "http://res.cloudinary.com/kraft-heinz-whats-cooking-ca/image/upload/f_auto/q_auto/v1660633166/brand-experience/test-images/creative-content-panel/creative-content-panel-hero-banner-mobile_they3j.png",
+          "version": 1660633166,
+          "width": 768,
+        },
+      ],
+      "theme": "red",
+      "variant": "content-left",
+    },
+    "metadata": Object {
+      "tags": Array [],
+    },
+    "sys": Object {
+      "contentType": Object {
+        "sys": Object {
+          "id": "or-creative-content-panel",
+          "linkType": "ContentType",
+          "type": "Link",
+        },
+      },
+      "createdAt": "2022-09-30T12:41:10.265Z",
+      "environment": Object {
+        "sys": Object {
+          "id": "dev",
+          "linkType": "Environment",
+          "type": "Link",
+        },
+      },
+      "id": "6Vlth4dgPIflvvWbGo8yd",
+      "locale": "en-US",
+      "revision": 1,
+      "space": Object {
+        "sys": Object {
+          "id": "ly5kzv4xdfjq",
+          "linkType": "Space",
+          "type": "Link",
+        },
+      },
+      "type": "Entry",
+      "updatedAt": "2022-09-30T12:41:10.265Z",
+    },
+  },
+]
+`;

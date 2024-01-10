@@ -1,0 +1,9 @@
+{
+  "name": "@ninetailed/experience.js-next-esr",
+  "version": "7.5.1",
+  "description": "Ninetailed SDK for Next.js ESR",
+  "dependencies": {
+    "next": "12.1.0"
+  },
+  "license": "MIT"
+}

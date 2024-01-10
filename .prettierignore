@@ -1,0 +1,10 @@
+# Add files here to ignore them from prettier formatting
+
+/dist
+/coverage
+
+.next
+
+packages/playgrounds/gatsby/node_modules
+packages/playgrounds/gatsby/public
+packages/playgrounds/gatsby/.cache

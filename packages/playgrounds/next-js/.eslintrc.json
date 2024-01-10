@@ -1,0 +1,48 @@
+{
+  "extends": [
+    "plugin:@nrwl/nx/react-typescript",
+    "../../../.eslintrc.json",
+    "next",
+    "next/core-web-vitals"
+  ],
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@next/next/no-html-link-for-pages": [
+          "error",
+          "packages/playgrounds/next-js/pages"
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    },
+    {
+      "files": [
+        "**/__tests__/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[jt]s?(x)"
+      ],
+      "plugins": ["jest"],
+      "extends": [
+        "plugin:testing-library/react",
+        "plugin:jest-dom/recommended",
+        "plugin:jest/recommended"
+      ],
+      "settings": {
+        "jest": {
+          "version": 27
+        }
+      }
+    }
+  ],
+  "env": {
+    "jest": true
+  }
+}

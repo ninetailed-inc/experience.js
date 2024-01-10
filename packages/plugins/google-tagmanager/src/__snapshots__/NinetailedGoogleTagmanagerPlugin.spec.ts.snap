@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NinetailedGoogleTagmanagerPlugin should add the has_seen_element events to the window.dataLayer 1`] = `
+Object {
+  "event": "nt_experience",
+  "ninetailed_audience": "test",
+  "ninetailed_component": "test",
+  "ninetailed_experience": "test",
+  "ninetailed_experience_name": "test",
+  "ninetailed_variant": "variant 1",
+}
+`;

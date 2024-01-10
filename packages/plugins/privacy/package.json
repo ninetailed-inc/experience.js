@@ -1,0 +1,7 @@
+{
+  "name": "@ninetailed/experience.js-plugin-privacy",
+  "version": "7.5.1",
+  "description": "Ninetailed SDK plugin for privacy",
+  "devDependencies": {},
+  "license": "MIT"
+}

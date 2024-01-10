@@ -1,0 +1,45 @@
+{
+  "name": "sdks-gatsby",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sdks/gatsby",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sdks/gatsby",
+        "tsConfig": "packages/sdks/gatsby/tsconfig.lib.json",
+        "project": "packages/sdks/gatsby/package.json",
+        "entryFile": "packages/sdks/gatsby/index.ts",
+        "external": ["react/jsx-runtime"],
+        "compiler": "babel",
+        "format": ["cjs"],
+        "rollupConfig": "packages/sdks/gatsby/rollup.config.js",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": [
+          {
+            "glob": "packages/sdks/gatsby/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/sdks/gatsby/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/sdks/gatsby"],
+      "options": {
+        "jestConfig": "packages/sdks/gatsby/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

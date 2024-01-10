@@ -1,0 +1,7 @@
+{
+  "name": "@ninetailed/experience.js-shared",
+  "version": "7.5.1",
+  "description": "Shared code for Experience.js",
+  "devDependencies": {},
+  "license": "MIT"
+}
