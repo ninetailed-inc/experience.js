@@ -1,6 +1,6 @@
 import { Ninetailed } from '@ninetailed/experience.js';
 import { fixtures } from '@ninetailed/experience.js-plugin-analytics/test';
-import { sleep } from '@ninetailed/testing-utils/sleep';
+import { setTimeout as sleep } from 'node:timers/promises';
 
 import { NinetailedContentsquarePlugin } from './NinetailedContentsquarePlugin';
 

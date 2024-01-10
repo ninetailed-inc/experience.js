@@ -1,9 +1,7 @@
 {
   "name": "@ninetailed/experience.js-plugin-segment",
   "version": "7.6.0-beta.1",
+  "description": "Ninetailed SDK plugin for Segment",
   "type": "commonjs",
-  "devDependencies": {
-    "@ninetailed/testing-utils": "*"
-  },
-  "license": "BSL-1.1"
+  "license": "MIT"
 }

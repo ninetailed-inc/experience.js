@@ -1,7 +1,7 @@
 import { Profile } from '@ninetailed/experience.js';
-import { generateSelectors, selectValueFromProfile } from './MergeTag';
+import { generateSelectors, selectValueFromProfile } from './helpers';
 
-describe('MergeTag', () => {
+describe('MergeTag helpers', () => {
   describe('generateSelectors', () => {
     it('should create all combinations for deep paths', () => {
       expect(generateSelectors('a_b_c')).toEqual(['a_b_c', 'a.b_c', 'a.b.c']);

@@ -2,8 +2,7 @@
   "name": "@ninetailed/experience.js-plugin-google-tagmanager",
   "version": "7.6.0-beta.1",
   "type": "commonjs",
-  "devDependencies": {
-    "@ninetailed/testing-utils": "*"
-  },
-  "license": "BSL-1.1"
+  "devDependencies": {},
+  "description": "Ninetailed SDK plugin for Google Tag Manager",
+  "license": "MIT"
 }

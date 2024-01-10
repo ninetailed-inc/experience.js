@@ -22,7 +22,6 @@ export type NinetailedProviderInstantiationProps = {
   preview?: boolean;
   url?: string;
   plugins?: (NinetailedPlugin | NinetailedPlugin[])[];
-  profile?: Profile;
   locale?: Locale;
   requestTimeout?: number;
   onLog?: OnLogHandler;
