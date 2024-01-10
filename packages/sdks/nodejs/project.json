@@ -1,12 +1,11 @@
 {
   "name": "sdks-nodejs",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/sdks/nodejs",
   "sourceRoot": "packages/sdks/nodejs/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/sdks/nodejs",
@@ -18,13 +17,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["packages/sdks/nodejs/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/sdks/nodejs"],
       "options": {
         "jestConfig": "packages/sdks/nodejs/jest.config.js",

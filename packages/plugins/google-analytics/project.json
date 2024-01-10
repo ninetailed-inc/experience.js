@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/google-analytics",
@@ -13,7 +13,7 @@
         "project": "packages/plugins/google-analytics/package.json",
         "entryFile": "packages/plugins/google-analytics/src/index.ts",
         "external": [],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "format": ["cjs", "esm"],
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": [
@@ -32,20 +32,19 @@
       },
       "dependsOn": [
         {
-          "target": "build",
-          "projects": "self"
+          "target": "build"
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/plugins/google-analytics/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/plugins/google-analytics"],
       "options": {
         "jestConfig": "packages/plugins/google-analytics/jest.config.js",

@@ -1,12 +1,11 @@
 {
   "name": "plugins-segment",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/plugins/segment",
   "sourceRoot": "packages/plugins/segment/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/segment",
@@ -17,14 +16,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/plugins/segment/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/plugins/segment"],
       "options": {
         "jestConfig": "packages/plugins/segment/jest.config.js",
