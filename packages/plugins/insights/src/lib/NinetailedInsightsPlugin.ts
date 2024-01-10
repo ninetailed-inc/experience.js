@@ -19,8 +19,10 @@ import {
   AnalyticsInstance,
 } from '@ninetailed/experience.js';
 
-import { buildComponentViewEvent } from './event/build-component-view-event';
-import type { ComponentViewEvent } from './types/Event/ComponentViewEvent';
+import {
+  type ComponentViewEvent,
+  buildComponentViewEvent,
+} from '@ninetailed/experience.js-shared';
 import type { ComponentViewEventBatch } from './types/Event/ComponentViewEventBatch';
 import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
 

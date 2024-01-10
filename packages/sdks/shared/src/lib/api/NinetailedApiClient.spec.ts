@@ -1,6 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 import { generateMock } from '@anatine/zod-mock';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { sleep } from '@ninetailed/testing-utils/sleep';
 
 import { logger } from '../logger/Logger';
 import { LogSink } from '../logger/LogSink';

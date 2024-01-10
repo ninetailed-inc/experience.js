@@ -12,6 +12,7 @@ import {
   Feature,
   unionBy,
   NinetailedRequestContext,
+  buildComponentViewEvent,
 } from '@ninetailed/experience.js-shared';
 
 import { buildClientNinetailedRequestContext } from './Events';
@@ -29,6 +30,7 @@ import {
   SET_ENABLED_FEATURES,
 } from './constants';
 import { NinetailedInstance, FlushResult, NinetailedPlugin } from '../types';
+import { HAS_SEEN_STICKY_COMPONENT } from '../constants';
 
 export type OnInitProfileId = (
   profileId?: string
@@ -248,6 +250,20 @@ export const ninetailedCorePlugin = ({
           timestamp: payload.meta.ts,
           traits: payload.traits,
           userId: payload.userId === EMPTY_MERGE_ID ? '' : payload.userId,
+          ctx,
+        })
+      );
+    },
+    [HAS_SEEN_STICKY_COMPONENT]: async ({ payload }: EventFn) => {
+      logger.info('Sending Sticky Components event.');
+      const ctx = buildContext();
+      return enqueueEvent(
+        buildComponentViewEvent({
+          messageId: payload.meta.rid,
+          timestamp: payload.meta.ts,
+          componentId: payload.componentId,
+          experienceId: payload.experienceId,
+          variantIndex: payload.variantIndex,
           ctx,
         })
       );

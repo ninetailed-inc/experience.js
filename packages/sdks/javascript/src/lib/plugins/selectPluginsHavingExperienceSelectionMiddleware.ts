@@ -5,14 +5,16 @@ import { HasExperienceSelectionMiddleware } from '../types/interfaces/HasExperie
 import { NinetailedPlugin } from '../types/NinetailedPlugin';
 
 export const selectPluginsHavingExperienceSelectionMiddleware = <
+  Baseline extends Reference,
   Variant extends Reference
 >(
   plugins: NinetailedPlugin[]
-): HasExperienceSelectionMiddleware<Variant>[] => {
-  const filteredPlugins: HasExperienceSelectionMiddleware<Variant>[] = [];
+): HasExperienceSelectionMiddleware<Baseline, Variant>[] => {
+  const filteredPlugins: HasExperienceSelectionMiddleware<Baseline, Variant>[] =
+    [];
 
   for (const plugin of plugins) {
-    if (hasExperienceSelectionMiddleware<Variant>(plugin)) {
+    if (hasExperienceSelectionMiddleware<Baseline, Variant>(plugin)) {
       filteredPlugins.push(plugin);
     }
   }

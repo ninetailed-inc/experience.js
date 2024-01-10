@@ -2,7 +2,8 @@
   "name": "@ninetailed/experience.js-plugin-analytics",
   "type": "commonjs",
   "description": "Ninetailed SDK plugin for analytics",
-  "license": "MIT",
+  "license": "BSL-1.1",
+  "version": "7.6.0-beta.1",
   "keywords": [
     "analytics",
     "ninetailed",
@@ -19,7 +20,5 @@
     "@anatine/zod-mock": "3.8.1",
     "@ninetailed/experience.js-shared": "*",
     "analytics": "0.8.1"
-  },
-  "peerDependencies": {},
-  "devDependencies": {}
+  }
 }

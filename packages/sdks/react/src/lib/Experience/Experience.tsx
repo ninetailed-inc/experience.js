@@ -119,7 +119,6 @@ export const Experience = <
   ...baseline
 }: ExperienceProps<P, PassThroughProps, Variant>) => {
   const { observeElement, unobserveElement, logger } = useNinetailed();
-
   const {
     status,
     hasVariants,

@@ -7,4 +7,6 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/packages/playgrounds/next-js',
+  setupFilesAfterEnv: ['<rootDir>/../../../jest.setup.ts'],
+  testEnvironment: 'jsdom',
 };

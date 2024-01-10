@@ -1,28 +1,43 @@
 import {
   ExperienceConfiguration,
   Reference,
+  VariantRef,
 } from '@ninetailed/experience.js-shared';
 
-export type ExperienceSelectionMiddlewareReturnArg<Variant extends Reference> =
-  {
-    experience: ExperienceConfiguration<Variant> | null;
-    variant: Variant;
-    variantIndex: number;
-  };
+export type ExperienceSelectionMiddlewareArg<
+  TBaseline extends Reference,
+  TVariant extends Reference
+> = {
+  experience: ExperienceConfiguration<TVariant> | null;
+  variant: TBaseline | TVariant | VariantRef;
+  variantIndex: number;
+};
 
-type ExperienceSelectionMiddlewareReturn<Variant extends Reference> = (
-  arg: ExperienceSelectionMiddlewareReturnArg<Variant>
-) => ExperienceSelectionMiddlewareReturnArg<Variant>;
+export type ExperienceSelectionMiddleware<
+  TBaseline extends Reference,
+  TVariant extends Reference
+> = (
+  arg: ExperienceSelectionMiddlewareArg<TBaseline, TVariant>
+) => ExperienceSelectionMiddlewareArg<TBaseline, TVariant>;
 
-type ExperienceSelectionMiddlewareArg<Variant extends Reference> = {
-  experiences: ExperienceConfiguration<Variant>[];
+type BuildExperienceSelectionMiddlewareArg<TVariant extends Reference> = {
+  experiences: ExperienceConfiguration<TVariant>[];
   baseline: Reference;
 };
 
-export type ExperienceSelectionMiddleware<Variant extends Reference> = (
-  arg: ExperienceSelectionMiddlewareArg<Variant>
-) => ExperienceSelectionMiddlewareReturn<Variant>;
+export type BuildExperienceSelectionMiddleware<
+  TBaseline extends Reference,
+  TVariant extends Reference
+> = (
+  arg: BuildExperienceSelectionMiddlewareArg<TVariant>
+) => ExperienceSelectionMiddleware<TBaseline, TVariant>;
 
-export interface HasExperienceSelectionMiddleware<Variant extends Reference> {
-  getExperienceSelectionMiddleware: ExperienceSelectionMiddleware<Variant>;
+export interface HasExperienceSelectionMiddleware<
+  TBaseline extends Reference,
+  TVariant extends Reference
+> {
+  getExperienceSelectionMiddleware: BuildExperienceSelectionMiddleware<
+    TBaseline,
+    TVariant
+  >;
 }
