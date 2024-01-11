@@ -56,9 +56,6 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
 
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v2
 
@@ -92,14 +89,11 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
 
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-
       - name: Check Format
         run: yarn nx format:check
 
       - name: Lint 🎨
-        run: yarn nx affected --target=lint
+        run: yarn nx run-many --target=lint
 
   tests:
     name: Tests 🧪
@@ -124,15 +118,12 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
 
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v2
 
       - name: Test 🧪
         run: >
-          doppler run --mount .env -- yarn nx affected --target=test
+          doppler run --mount .env -- yarn nx run-many --target=test
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
 
