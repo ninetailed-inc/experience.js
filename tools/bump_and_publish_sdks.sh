@@ -22,7 +22,7 @@
 set -euo pipefail
 
 # Add NPM --dry-run flag if DRY_RUN is set to trie
-if [ "$DRY_RUN" = "true" ]; then
+if [ "${DRY_RUN:-}" = "true" ]; then
   DRY_RUN_FLAG="--dry-run"
 else
   DRY_RUN_FLAG=""
