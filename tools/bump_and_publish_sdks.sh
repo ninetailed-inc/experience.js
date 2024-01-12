@@ -79,6 +79,11 @@ else
 fi
 PROJECT_ROOT=$(pwd)
 
+# debug local configuration
+echo "[i] print debug .npmrc"
+cat $PROJECT_ROOT/.npmrc
+echo ""
+
 if ! command -v jq &> /dev/null
 then
     echo "jq could not be found"

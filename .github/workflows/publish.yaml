@@ -204,7 +204,7 @@ jobs:
         env:
           JOB_CONTEXT: ${{ toJson(github.event.release) }}
 
-      - run: doppler run --mount .env -- yarn publish:packages
+      - run: doppler run --mount .env -- ./tools/bump_and_publish_sdks.sh
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TAG: ${{ github.event.release.tag_name }}
