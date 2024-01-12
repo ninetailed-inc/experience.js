@@ -12,8 +12,7 @@
     "test-all": "nx run-many --target=test --all --skip-nx-cache",
     "generate:doc": "ts-node -P ./tools/scripts/tsconfig.scripts.json ./tools/scripts/documentation/generate-documentation.ts",
     "prepare": "husky install",
-    "license:add": "ts-node -P ./tools/scripts/tsconfig.scripts.json ./tools/scripts/add-license.ts",
-    "publish:packages": "./tools/bump_and_publish_sdks.sh"
+    "license:add": "ts-node -P ./tools/scripts/tsconfig.scripts.json ./tools/scripts/add-license.ts"
   },
   "private": true,
   "dependencies": {
