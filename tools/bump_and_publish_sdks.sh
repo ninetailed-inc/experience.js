@@ -23,6 +23,7 @@ set -euo pipefail
 
 # Add NPM --dry-run flag if DRY_RUN is set to trie
 if [ "${DRY_RUN:-}" = "true" ]; then
+  echo "[i] Running in DRY_RUN mode (NPM publish will be run with --dry-run)"
   DRY_RUN_FLAG="--dry-run"
 else
   DRY_RUN_FLAG=""
@@ -59,8 +60,16 @@ function bump_and_publish () {
   # If runs from GHA pipeline, we add provenance to the package.
   # https://docs.npmjs.com/generating-provenance-statements
   if [ "$CI" = "true" ]; then
-    echo "[🚀] Running in CI mode, adding provenance to the package."
-    npm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG 
+    # the repository field is required to publish with provenance to NPM
+    if jq -e '.repository' package.json >/dev/null; then 
+      echo "[i] repository field exists on package.json"
+      echo "[🚀] Running in CI mode, adding provenance to the package."
+      npm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG 
+    else 
+      echo "[!] repository field is missing on package.json"
+      echo "[🚀] Running in CI mode, skipping provenance to the package (missing fields)"
+      npm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG 
+    fi
   else
     echo "[🚀] Running in CLI mode, no provenance added to the package."
     npm publish $DRY_RUN_FLAG --access public --tag $RELEASE_TAG
