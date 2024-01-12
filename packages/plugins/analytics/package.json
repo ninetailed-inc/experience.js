@@ -4,5 +4,10 @@
   "type": "commonjs",
   "devDependencies": {},
   "description": "Ninetailed SDK plugin for analytics",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+    "directory": "packages/plugins/analytics"
+  }
 }
