@@ -172,6 +172,10 @@ jobs:
     name: Publish to NPM 🚀
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      id-token: write # This is required for NPM provenance on publish
+      contents: read # To checkout the repo
+      actions: read
     needs:
       - build
       - lint
