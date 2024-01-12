@@ -53,11 +53,16 @@ function bump_and_publish () {
   # publish once built
   cd dist/packages/$path_after_packages
 
+  # we need .npmrc at a project level, not at the root
+  cp $PROJECT_ROOT/.npmrc .npmrc
+
   # If runs from GHA pipeline, we add provenance to the package.
   # https://docs.npmjs.com/generating-provenance-statements
   if [ "$CI" = "true" ]; then
+    echo "[🚀] Running in CI mode, adding provenance to the package."
     npm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG 
   else
+    echo "[🚀] Running in CLI mode, no provenance added to the package."
     npm publish $DRY_RUN_FLAG --access public --tag $RELEASE_TAG
   fi
 }
