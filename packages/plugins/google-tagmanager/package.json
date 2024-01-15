@@ -9,5 +9,11 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/google-tagmanager"
-  }
+  },
+  "keywords": [
+    "google-tagmanager",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ]
 }

@@ -7,5 +7,11 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/privacy"
-  }
+  },
+  "keywords": [
+    "privacy",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ]
 }
