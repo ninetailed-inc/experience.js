@@ -1,6 +1,11 @@
 {
   "name": "@ninetailed/experience.js",
-  "version": "7.5.1",
+  "version": "7.5.2-beta.1",
   "description": "Ninetailed SDK for javascript",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+    "directory": "packages/sdks/javascript"
+  }
 }
