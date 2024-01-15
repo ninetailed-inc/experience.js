@@ -14,9 +14,6 @@
   "affected": {
     "defaultBase": "main"
   },
-  "cli": {
-    "defaultCollection": "@nx/next"
-  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nx/workspace/tasks-runners/default",
