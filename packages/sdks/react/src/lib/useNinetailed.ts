@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-
+import { NinetailedInstance } from '@ninetailed/experience.js';
 import { NinetailedContext } from './NinetailedContext';
 
-export const useNinetailed = () => {
+export const useNinetailed = (): NinetailedInstance => {
   const ninetailed = useContext(NinetailedContext);
 
   if (ninetailed === undefined) {
