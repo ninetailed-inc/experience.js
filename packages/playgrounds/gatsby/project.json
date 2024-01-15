@@ -1,12 +1,11 @@
 {
   "name": "playgrounds-gatsby",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/playgrounds/gatsby",
   "sourceRoot": "packages/playgrounds/gatsby/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/gatsby:build",
+      "executor": "@nx/gatsby:build",
       "options": {
         "outputPath": "packages/playgrounds/gatsby/public",
         "uglify": true,
@@ -19,7 +18,7 @@
       "dependsOn": ["^build"]
     },
     "serve": {
-      "executor": "@nrwl/gatsby:server",
+      "executor": "@nx/gatsby:server",
       "options": {
         "buildTarget": "playgrounds-gatsby:build"
       },
@@ -30,14 +29,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/playgrounds/gatsby/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/playgrounds/gatsby"],
       "options": {
         "jestConfig": "packages/playgrounds/gatsby/jest.config.ts",

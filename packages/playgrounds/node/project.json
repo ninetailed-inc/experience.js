@@ -1,18 +1,19 @@
 {
   "name": "playgrounds-node",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/playgrounds/node",
   "sourceRoot": "packages/playgrounds/node/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/playgrounds/node",
         "main": "packages/playgrounds/node/src/main.ts",
         "tsConfig": "packages/playgrounds/node/tsconfig.app.json",
-        "assets": ["packages/playgrounds/node/src/assets"]
+        "assets": ["packages/playgrounds/node/src/assets"],
+        "compiler": "tsc",
+        "target": "node"
       },
       "configurations": {
         "production": {
@@ -29,7 +30,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/js:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "playgrounds-node:build"
       },
@@ -40,14 +41,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/playgrounds/node/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/playgrounds/node"],
       "options": {
         "jestConfig": "packages/playgrounds/node/jest.config.js",

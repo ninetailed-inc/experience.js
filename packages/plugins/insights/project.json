@@ -1,12 +1,11 @@
 {
   "name": "plugins-insights",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/plugins/insights",
   "sourceRoot": "packages/plugins/insights/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "project": "packages/plugins/insights/package.json",
@@ -18,14 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/plugins/insights/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/plugins/insights/jest.config.ts",

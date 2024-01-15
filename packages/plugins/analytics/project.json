@@ -1,12 +1,11 @@
 {
   "name": "plugins-analytics",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/plugins/analytics",
   "sourceRoot": "packages/plugins/analytics/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/analytics",
@@ -19,14 +18,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/plugins/analytics/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/plugins/analytics/jest.config.ts",

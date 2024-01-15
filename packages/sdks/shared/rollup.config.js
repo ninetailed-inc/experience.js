@@ -1,4 +1,4 @@
-const nrwlConfig = require('@nrwl/react/plugins/bundle-rollup');
+const nrwlConfig = require('@nx/react/plugins/bundle-rollup');
 const replace = require('@rollup/plugin-replace');
 require('dotenv').config({ path: '../../../.env.local' });
 

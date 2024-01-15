@@ -1,12 +1,11 @@
 {
   "name": "plugins-contentsquare",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/plugins/contentsquare",
   "sourceRoot": "packages/plugins/contentsquare/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/contentsquare",
@@ -17,14 +16,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/plugins/contentsquare/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/plugins/contentsquare"],
       "options": {
         "jestConfig": "packages/plugins/contentsquare/jest.config.js",

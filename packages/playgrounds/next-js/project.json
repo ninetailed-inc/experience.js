@@ -1,12 +1,11 @@
 {
   "name": "playgrounds-next-js",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/playgrounds/next-js",
   "sourceRoot": "packages/playgrounds/next-js",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/next:build",
+      "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -18,7 +17,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/next:server",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "playgrounds-next-js:build",
         "dev": true,
@@ -32,13 +31,13 @@
       }
     },
     "export": {
-      "executor": "@nrwl/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "playgrounds-next-js:build:production"
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/playgrounds/next-js"],
       "options": {
         "jestConfig": "packages/playgrounds/next-js/jest.config.js",
@@ -46,7 +45,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [

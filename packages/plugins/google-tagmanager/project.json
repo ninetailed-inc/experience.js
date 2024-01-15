@@ -1,12 +1,11 @@
 {
   "name": "plugins-google-tagmanager",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/plugins/google-tagmanager",
   "sourceRoot": "packages/plugins/google-tagmanager/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/google-tagmanager",
@@ -17,14 +16,14 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/plugins/google-tagmanager/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["coverage/packages/plugins/google-tagmanager"],
       "options": {
         "jestConfig": "packages/plugins/google-tagmanager/jest.config.js",
