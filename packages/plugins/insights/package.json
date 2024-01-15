@@ -8,5 +8,11 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/insights"
-  }
+  },
+  "keywords": [
+    "insights",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ]
 }
