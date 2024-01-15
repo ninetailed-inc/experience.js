@@ -11,12 +11,8 @@
     }
   },
   "extends": "@nx/workspace/presets/core.json",
-  "npmScope": "ninetailed",
   "affected": {
     "defaultBase": "main"
-  },
-  "cli": {
-    "defaultCollection": "@nx/next"
   },
   "tasksRunnerOptions": {
     "default": {
@@ -54,6 +50,5 @@
         "linter": "eslint"
       }
     }
-  },
-  "defaultProject": "playgrounds-next-js"
+  }
 }
