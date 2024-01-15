@@ -11,5 +11,11 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/sdks/nextjs"
-  }
+  },
+  "keywords": [
+    "nextjs",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ]
 }
