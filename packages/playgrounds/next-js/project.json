@@ -9,7 +9,6 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "packages/playgrounds/next-js",
         "outputPath": "dist/packages/playgrounds/next-js"
       },
       "configurations": {

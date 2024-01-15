@@ -9,7 +9,6 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "packages/playgrounds/easy-hr",
         "outputPath": "dist/packages/playgrounds/easy-hr"
       },
       "configurations": {
