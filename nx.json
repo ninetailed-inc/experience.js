@@ -50,6 +50,5 @@
         "linter": "eslint"
       }
     }
-  },
-  "defaultProject": "playgrounds-next-js"
+  }
 }
