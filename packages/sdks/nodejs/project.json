@@ -13,7 +13,8 @@
         "packageJson": "packages/sdks/nodejs/package.json",
         "main": "packages/sdks/nodejs/src/index.ts",
         "assets": ["packages/sdks/nodejs/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -24,7 +25,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/nodejs"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/nodejs"],
       "options": {
         "jestConfig": "packages/sdks/nodejs/jest.config.js",
         "passWithNoTests": true

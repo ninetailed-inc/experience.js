@@ -49,7 +49,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/playgrounds/node"],
+      "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/node"],
       "options": {
         "jestConfig": "packages/playgrounds/node/jest.config.js",
         "passWithNoTests": true

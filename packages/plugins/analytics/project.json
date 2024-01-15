@@ -14,7 +14,8 @@
         "tsConfig": "packages/plugins/analytics/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "format": ["esm", "cjs"],
-        "assets": []
+        "assets": [],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

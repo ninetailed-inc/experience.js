@@ -13,7 +13,8 @@
         "main": "packages/plugins/insights/src/index.ts",
         "tsConfig": "packages/plugins/insights/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": []
+        "assets": [],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

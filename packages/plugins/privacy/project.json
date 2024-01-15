@@ -13,7 +13,8 @@
         "packageJson": "packages/plugins/privacy/package.json",
         "main": "packages/plugins/privacy/src/index.ts",
         "assets": ["packages/plugins/privacy/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -24,7 +25,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/plugins/privacy"],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/privacy"],
       "options": {
         "jestConfig": "packages/plugins/privacy/jest.config.js",
         "passWithNoTests": true

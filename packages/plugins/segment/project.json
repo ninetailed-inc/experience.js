@@ -12,7 +12,8 @@
         "main": "packages/plugins/segment/src/index.ts",
         "tsConfig": "packages/plugins/segment/tsconfig.lib.json",
         "assets": ["packages/plugins/segment/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -24,7 +25,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/plugins/segment"],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/segment"],
       "options": {
         "jestConfig": "packages/plugins/segment/jest.config.js",
         "passWithNoTests": true

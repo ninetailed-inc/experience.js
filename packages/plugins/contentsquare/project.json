@@ -12,7 +12,8 @@
         "main": "packages/plugins/contentsquare/src/index.ts",
         "tsConfig": "packages/plugins/contentsquare/tsconfig.lib.json",
         "assets": ["packages/plugins/contentsquare/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -24,7 +25,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/plugins/contentsquare"],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/contentsquare"],
       "options": {
         "jestConfig": "packages/plugins/contentsquare/jest.config.js",
         "passWithNoTests": true

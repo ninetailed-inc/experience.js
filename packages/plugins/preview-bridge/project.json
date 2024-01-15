@@ -23,7 +23,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -37,7 +38,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/plugins/preview-bridge"],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview-bridge"],
       "options": {
         "jestConfig": "packages/plugins/preview-bridge/jest.config.js",
         "passWithNoTests": true

@@ -23,7 +23,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -34,7 +35,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/gatsby"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/gatsby"],
       "options": {
         "jestConfig": "packages/sdks/gatsby/jest.config.js",
         "passWithNoTests": true

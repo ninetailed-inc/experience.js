@@ -22,7 +22,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "bundle": {
@@ -45,7 +46,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/plugins/google-analytics"],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/google-analytics"],
       "options": {
         "jestConfig": "packages/plugins/google-analytics/jest.config.js",
         "passWithNoTests": true

@@ -22,7 +22,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -33,7 +34,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/nextjs-esr"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/nextjs-esr"],
       "options": {
         "jestConfig": "packages/sdks/nextjs-esr/jest.config.js",
         "passWithNoTests": true

@@ -12,7 +12,8 @@
         "main": "packages/plugins/google-tagmanager/src/index.ts",
         "tsConfig": "packages/plugins/google-tagmanager/tsconfig.lib.json",
         "assets": ["packages/plugins/google-tagmanager/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
@@ -24,7 +25,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/plugins/google-tagmanager"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/plugins/google-tagmanager"
+      ],
       "options": {
         "jestConfig": "packages/plugins/google-tagmanager/jest.config.js",
         "passWithNoTests": true

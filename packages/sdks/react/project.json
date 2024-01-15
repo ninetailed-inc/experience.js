@@ -23,7 +23,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "dependsOn": [
         {
@@ -40,7 +41,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/react"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/react"],
       "options": {
         "jestConfig": "packages/sdks/react/jest.config.js",
         "passWithNoTests": true

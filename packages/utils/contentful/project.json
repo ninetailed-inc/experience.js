@@ -22,7 +22,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "dependsOn": [
         {
@@ -40,7 +41,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/utils/contentful"],
+      "outputs": ["{workspaceRoot}/coverage/packages/utils/contentful"],
       "options": {
         "jestConfig": "packages/utils/contentful/jest.config.js",
         "passWithNoTests": true
