@@ -7,7 +7,7 @@ export const hasComponentViewTrackingThreshold = (
   return (
     typeof arg === 'object' &&
     arg !== null &&
-    'componentViewTrackingThreshold' in arg &&
-    typeof arg['componentViewTrackingThreshold'] === 'number'
+    'getComponentViewTrackingThreshold' in arg &&
+    typeof arg['getComponentViewTrackingThreshold'] === 'function'
   );
 };
