@@ -486,7 +486,7 @@ export class Ninetailed implements NinetailedInstance {
       this.observedElements.set(element, remaingPayload);
 
       const delays = this.pluginsWithCustomComponentViewThreshold.map(
-        (plugin) => plugin.componentViewTrackingThreshold
+        (plugin) => plugin.getComponentViewTrackingThreshold()
       );
       const uniqueDelays = Array.from(
         new Set([
@@ -514,7 +514,7 @@ export class Ninetailed implements NinetailedInstance {
     if (typeof payload !== 'undefined') {
       const pluginNamesInterestedInSeenElementMessage = [
         ...this.pluginsWithCustomComponentViewThreshold.filter(
-          (plugin) => plugin.componentViewTrackingThreshold === delay
+          (plugin) => plugin.getComponentViewTrackingThreshold() === delay
         ),
         ...this.plugins.filter(
           (plugin) => !hasComponentViewTrackingThreshold(plugin)

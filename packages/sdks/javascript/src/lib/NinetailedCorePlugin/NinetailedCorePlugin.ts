@@ -90,8 +90,6 @@ export class NinetailedCorePlugin
   private readonly locale?: Locale;
   private readonly ninetailed: NinetailedInstance;
 
-  public readonly componentViewTrackingThreshold = 0;
-
   constructor({
     apiClient,
     locale,
@@ -221,6 +219,10 @@ export class NinetailedCorePlugin
         ctx,
       })
     );
+  }
+
+  public getComponentViewTrackingThreshold() {
+    return 0;
   }
 
   protected async onTrackExperience(
