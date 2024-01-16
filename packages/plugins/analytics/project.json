@@ -12,17 +12,19 @@
         "main": "packages/plugins/analytics/src/index.ts",
         "project": "packages/plugins/analytics/package.json",
         "tsConfig": "packages/plugins/analytics/tsconfig.lib.json",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "format": ["esm", "cjs"],
-        "assets": [],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": []
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/plugins/analytics/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/plugins/analytics/**/*.ts",
+          "packages/plugins/analytics/package.json",
+          "packages/plugins/analytics/project.json"
+        ]
       }
     },
     "test": {
