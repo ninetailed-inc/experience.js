@@ -40,7 +40,8 @@
         "includeTransitiveDependencies": true,
         "lintFilePatterns": [
           "packages/sdks/shared/**/*.ts",
-          "packages/sdks/shared/package.json"
+          "packages/sdks/shared/package.json",
+          "packages/sdks/shared/project.json"
         ]
       }
     },
