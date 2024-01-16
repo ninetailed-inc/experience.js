@@ -22,8 +22,7 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       }
     },
     "get-package-version": {
