@@ -17,6 +17,7 @@ module.exports = (config) => {
           process.env.NX_PACKAGE_VERSION
         ),
         delimiters: ['', ''],
+        preventAssignment: true,
       }),
     ],
   };
