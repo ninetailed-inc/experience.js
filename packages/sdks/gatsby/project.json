@@ -16,21 +16,23 @@
         "compiler": "babel",
         "format": ["cjs"],
         "rollupConfig": "packages/sdks/gatsby/rollup.config.js",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": [
           {
             "glob": "packages/sdks/gatsby/README.md",
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/gatsby/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/gatsby/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/gatsby/package.json",
+          "packages/sdks/gatsby/project.json"
+        ]
       }
     },
     "test": {

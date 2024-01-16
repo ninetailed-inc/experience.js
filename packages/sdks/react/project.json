@@ -15,7 +15,6 @@
         "external": ["react/jsx-runtime", "@ninetailed/experience-api-types"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "format": ["cjs", "esm"],
         "assets": [
           {
@@ -23,8 +22,7 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       },
       "dependsOn": [
         {
@@ -36,7 +34,11 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/react/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/react/package.json",
+          "packages/sdks/react/project.json"
+        ]
       }
     },
     "test": {

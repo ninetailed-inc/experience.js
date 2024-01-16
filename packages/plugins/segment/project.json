@@ -11,16 +11,18 @@
         "outputPath": "dist/packages/plugins/segment",
         "main": "packages/plugins/segment/src/index.ts",
         "tsConfig": "packages/plugins/segment/tsconfig.lib.json",
-        "assets": ["packages/plugins/segment/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": ["packages/plugins/segment/*.md"]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/plugins/segment/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/plugins/segment/**/*.ts",
+          "packages/plugins/segment/package.json",
+          "packages/plugins/segment/project.json"
+        ]
       }
     },
     "test": {

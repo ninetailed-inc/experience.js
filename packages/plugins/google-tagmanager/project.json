@@ -11,16 +11,18 @@
         "outputPath": "dist/packages/plugins/google-tagmanager",
         "main": "packages/plugins/google-tagmanager/src/index.ts",
         "tsConfig": "packages/plugins/google-tagmanager/tsconfig.lib.json",
-        "assets": ["packages/plugins/google-tagmanager/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": ["packages/plugins/google-tagmanager/*.md"]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/plugins/google-tagmanager/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/plugins/google-tagmanager/**/*.ts",
+          "packages/plugins/google-tagmanager/package.json",
+          "packages/plugins/google-tagmanager/project.json"
+        ]
       }
     },
     "test": {

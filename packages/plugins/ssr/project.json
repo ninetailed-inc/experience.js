@@ -14,7 +14,6 @@
         "entryFile": "packages/plugins/ssr/src/index.ts",
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "format": ["cjs", "esm"],
         "assets": [
           {
@@ -22,14 +21,17 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/plugins/ssr/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/plugins/ssr/**/*.{ts,tsx,js,jsx}",
+          "packages/plugins/ssr/package.json",
+          "packages/plugins/ssr/project.json"
+        ]
       }
     },
     "test": {

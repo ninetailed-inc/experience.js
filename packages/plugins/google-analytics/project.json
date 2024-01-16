@@ -15,15 +15,13 @@
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "format": ["cjs", "esm"],
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": [
           {
             "glob": "packages/plugins/google-analytics/README.md",
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       }
     },
     "bundle": {
@@ -41,7 +39,11 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/plugins/google-analytics/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/plugins/google-analytics/**/*.ts",
+          "packages/plugins/google-analytics/package.json",
+          "packages/plugins/google-analytics/project.json"
+        ]
       }
     },
     "test": {

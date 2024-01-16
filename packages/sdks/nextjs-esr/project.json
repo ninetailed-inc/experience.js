@@ -22,14 +22,17 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/nextjs-esr/package.json",
+          "packages/sdks/nextjs-esr/project.json"
+        ]
       }
     },
     "test": {

@@ -14,7 +14,6 @@
         "entryFile": "packages/utils/contentful/src/index.ts",
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "format": ["cjs", "esm"],
         "assets": [
           {
@@ -22,8 +21,7 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       },
       "dependsOn": [
         {
@@ -36,7 +34,11 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/utils/contentful/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/utils/contentful/**/*.ts",
+          "packages/utils/contentful/package.json",
+          "packages/utils/contentful/project.json"
+        ]
       }
     },
     "test": {
