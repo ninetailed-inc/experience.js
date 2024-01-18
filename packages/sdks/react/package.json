@@ -3,7 +3,14 @@
   "version": "7.5.1",
   "description": "Ninetailed SDK for React",
   "peerDependencies": {
-    "react": ">=16.8.0"
+    "react": ">=16.8.0",
+    "@ninetailed/experience.js": "*",
+    "react-is": "18.2.0",
+    "@testing-library/react-hooks": "7.0.2",
+    "@ninetailed/experience.js-shared": "*",
+    "@testing-library/react": "13.4.0",
+    "radash": "10.9.0",
+    "react-intersection-observer": "8.34.0"
   },
   "license": "MIT",
   "repository": {
