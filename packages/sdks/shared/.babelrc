@@ -1,1 +1,1 @@
-{"presets": ["@nrwl/react/babel"]}
+{"presets": ["@nx/react/babel"]}
