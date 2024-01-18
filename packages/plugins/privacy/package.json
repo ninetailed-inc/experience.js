@@ -13,5 +13,12 @@
     "ninetailed",
     "personalization",
     "a/b testing"
-  ]
+  ],
+  "dependencies": {
+    "@ninetailed/experience.js-shared": "*",
+    "@ninetailed/experience.js": "*",
+    "wildcard-match": "5.1.2",
+    "radash": "10.9.0",
+    "tslib": "2.4.1"
+  }
 }

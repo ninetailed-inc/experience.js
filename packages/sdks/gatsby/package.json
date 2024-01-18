@@ -12,7 +12,12 @@
   "homepage": "https://docs.ninetailed.io/frameworks/gatsby",
   "peerDependencies": {
     "react": ">=16.8.0",
-    "gatsby": ">=2.27.4"
+    "gatsby": ">=2.27.4",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-react": "*",
+    "gatsby-plugin-utils": "3.19.0",
+    "lodash": "4.17.21",
+    "@nx/react": "16.6.0"
   },
   "repository": {
     "type": "git",

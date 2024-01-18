@@ -2,7 +2,12 @@
   "name": "@ninetailed/experience.js-plugin-contentsquare",
   "version": "7.5.1",
   "type": "commonjs",
-  "devDependencies": {},
+  "devDependencies": {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "tslib": "2.4.1"
+  },
   "description": "Ninetailed SDK plugin for Contentsquare",
   "license": "MIT",
   "repository": {

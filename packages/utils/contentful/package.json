@@ -4,7 +4,11 @@
   "description": "Contentful utilities for Experience.js",
   "devDependencies": {
     "contentful": "^9.1.32",
-    "@contentful/rich-text-types": "16.2.0"
+    "@contentful/rich-text-types": "16.2.0",
+    "@ninetailed/experience.js-utils": "*",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "zod": "3.21.4"
   },
   "license": "MIT",
   "repository": {

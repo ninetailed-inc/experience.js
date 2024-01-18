@@ -13,5 +13,10 @@
     "ninetailed",
     "personalization",
     "a/b testing"
-  ]
+  ],
+  "dependencies": {
+    "@ninetailed/experience.js-shared": "*",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-preview-bridge": "*"
+  }
 }
