@@ -26,16 +26,6 @@ module.exports = (config) => {
     },
     output: {
       ...nxConfig.output,
-      entryFileNames: (chunkInfo) => {
-        /**
-         * Due to the defined .cjs extension in the package.json, we add the .cjs extension to the main entry file manually for consistency.
-         * All other files are generated with the .js extension, mostly because, we need to preserve the .js extension for the gatsby config files, otherwise gatsby will not find them.
-         */
-        if (chunkInfo.name === 'index') {
-          return '[name].cjs';
-        }
-        return '[name].js';
-      },
       chunkFileNames: '[name].js',
     },
   };
