@@ -8,7 +8,7 @@ module.exports = (config) => {
       /**
        * Keep the main entry point given by the Nx config from the project.json
        */
-      index: nxConfig.input,
+      ...nxConfig.input,
       /**
        * With the leading path ("loaders/") we define and preserve the folder structure in the output bundle
        */
