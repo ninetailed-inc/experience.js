@@ -26,6 +26,19 @@ module.exports = (config) => {
     },
     output: {
       ...nxConfig.output,
+      entryFileNames: (chunkInfo) => {
+        /**
+         * NX generates a main field in the package.json, in the pattern of `index.cjs.ts`
+         * (checkout dist/packages/sdks/gatsby/index.cjs.js & dist/packages/sdks/gatsby/package.json)
+         * For index, we need to preserve the [format] then.
+         * For the other files: "gatsby-[ssr|node|browser].js" we need to discard the [format] part,
+         * otherwise gatsby will not find them.
+         */
+        if (chunkInfo.name === 'index') {
+          return '[name].[format].js';
+        }
+        return '[name].js';
+      },
       chunkFileNames: '[name].js',
     },
   };
