@@ -4,7 +4,9 @@
   "description": "Ninetailed SDK for Next.js",
   "peerDependencies": {
     "next": ">=9.0.0",
-    "react": ">=16.8.0",
+    "react": ">=16.8.0"
+  },
+  "dependencies": {
     "@ninetailed/experience.js-react": "*",
     "@ninetailed/experience.js-plugin-ssr": "*",
     "@ninetailed/experience.js": "*",

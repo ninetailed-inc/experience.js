@@ -1,11 +1,6 @@
 {
   "name": "@ninetailed/experience.js-plugin-google-analytics",
   "version": "7.5.1",
-  "devDependencies": {
-    "@ninetailed/experience.js": "*",
-    "@ninetailed/experience.js-plugin-analytics": "*",
-    "@ninetailed/experience.js-shared": "*"
-  },
   "description": "Ninetailed SDK plugin for Google Analytics",
   "license": "MIT",
   "keywords": [
@@ -18,5 +13,10 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/google-analytics"
+  },
+  "dependencies": {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*"
   }
 }

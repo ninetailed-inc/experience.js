@@ -3,7 +3,9 @@
   "version": "7.5.1",
   "description": "Ninetailed SDK for Next.js ESR",
   "dependencies": {
-    "next": "13.3.0",
+    "next": "13.3.0"
+  },
+  "peerDependencies": {
     "@ninetailed/experience.js-shared": "*",
     "uuid": "9.0.0"
   },
