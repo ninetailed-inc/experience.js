@@ -4,7 +4,9 @@
   "description": "Ninetailed SDK for Node.js",
   "dependencies": {
     "node-fetch": "2",
-    "uuid": "^8.3.2"
+    "uuid": "9.0.0",
+    "@ninetailed/experience.js-shared": "*",
+    "jest-fetch-mock": "3.0.3"
   },
   "license": "MIT",
   "repository": {

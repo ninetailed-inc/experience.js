@@ -14,7 +14,6 @@
         "entryFile": "packages/sdks/nextjs/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["cjs", "esm"],
         "assets": [
@@ -35,12 +34,16 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/nextjs/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/nextjs/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/nextjs/package.json",
+          "packages/sdks/nextjs/project.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/nextjs"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/nextjs"],
       "options": {
         "jestConfig": "packages/sdks/nextjs/jest.config.js",
         "passWithNoTests": true

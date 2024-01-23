@@ -16,7 +16,6 @@
         "compiler": "babel",
         "format": ["cjs"],
         "rollupConfig": "packages/sdks/gatsby/rollup.config.js",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": [
           {
             "glob": "packages/sdks/gatsby/README.md",
@@ -29,12 +28,16 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/gatsby/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/gatsby/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/gatsby/package.json",
+          "packages/sdks/gatsby/project.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/gatsby"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/gatsby"],
       "options": {
         "jestConfig": "packages/sdks/gatsby/jest.config.js",
         "passWithNoTests": true

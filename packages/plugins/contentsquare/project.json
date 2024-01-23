@@ -11,20 +11,23 @@
         "outputPath": "dist/packages/plugins/contentsquare",
         "main": "packages/plugins/contentsquare/src/index.ts",
         "tsConfig": "packages/plugins/contentsquare/tsconfig.lib.json",
-        "assets": ["packages/plugins/contentsquare/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/plugins/contentsquare/*.md"]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/plugins/contentsquare/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/plugins/contentsquare/**/*.ts",
+          "packages/plugins/contentsquare/package.json",
+          "packages/plugins/contentsquare/project.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/plugins/contentsquare"],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/contentsquare"],
       "options": {
         "jestConfig": "packages/plugins/contentsquare/jest.config.js",
         "passWithNoTests": true

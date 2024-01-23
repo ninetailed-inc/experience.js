@@ -13,5 +13,9 @@
     "ninetailed",
     "personalization",
     "a/b testing"
-  ]
+  ],
+  "dependencies": {
+    "zoid": "9.0.86",
+    "@ninetailed/experience.js": "*"
+  }
 }

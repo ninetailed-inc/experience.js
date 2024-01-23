@@ -28,12 +28,16 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/nextjs-esr/package.json",
+          "packages/sdks/nextjs-esr/project.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/nextjs-esr"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/nextjs-esr"],
       "options": {
         "jestConfig": "packages/sdks/nextjs-esr/jest.config.js",
         "passWithNoTests": true

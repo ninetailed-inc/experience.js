@@ -37,7 +37,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/playgrounds/gatsby"],
+      "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/gatsby"],
       "options": {
         "jestConfig": "packages/playgrounds/gatsby/jest.config.ts",
         "passWithNoTests": true

@@ -14,7 +14,6 @@
         "entryFile": "packages/utils/contentful/src/index.ts",
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "format": ["cjs", "esm"],
         "assets": [
           {
@@ -35,12 +34,16 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/utils/contentful/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/utils/contentful/**/*.ts",
+          "packages/utils/contentful/package.json",
+          "packages/utils/contentful/project.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/utils/contentful"],
+      "outputs": ["{workspaceRoot}/coverage/packages/utils/contentful"],
       "options": {
         "jestConfig": "packages/utils/contentful/jest.config.js",
         "passWithNoTests": true

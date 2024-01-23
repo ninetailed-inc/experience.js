@@ -37,7 +37,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/playgrounds/next-js"],
+      "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/next-js"],
       "options": {
         "jestConfig": "packages/playgrounds/next-js/jest.config.js",
         "passWithNoTests": true

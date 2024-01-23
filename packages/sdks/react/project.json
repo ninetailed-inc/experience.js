@@ -15,7 +15,6 @@
         "external": ["react/jsx-runtime", "@ninetailed/experience-api-types"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "format": ["cjs", "esm"],
         "assets": [
           {
@@ -35,12 +34,16 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/react/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/react/package.json",
+          "packages/sdks/react/project.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/react"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/react"],
       "options": {
         "jestConfig": "packages/sdks/react/jest.config.js",
         "passWithNoTests": true

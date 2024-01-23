@@ -14,7 +14,6 @@
         "entryFile": "packages/sdks/shared/src/index.ts",
         "external": [],
         "rollupConfig": "packages/sdks/shared/rollup.config.js",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["cjs", "esm"],
         "assets": [
@@ -37,12 +36,17 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/sdks/shared/**/*.ts"]
+        "includeTransitiveDependencies": true,
+        "lintFilePatterns": [
+          "packages/sdks/shared/**/*.ts",
+          "packages/sdks/shared/package.json",
+          "packages/sdks/shared/project.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["coverage/packages/sdks/shared"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/shared"],
       "options": {
         "jestConfig": "packages/sdks/shared/jest.config.js",
         "passWithNoTests": true
