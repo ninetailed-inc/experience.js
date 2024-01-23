@@ -45,6 +45,25 @@ doppler secrets download --no-file --format=env --project=experience-js-sdks --c
 # https://nx.dev/recipes/tips-n-tricks/define-environment-variables
 ```
 
+## Publishing to a local registry
+
+To test if your changes will actually work once the changes are published, it can be useful to publish to a local registry.
+
+Start the local NPM registry [verdaccio](https://verdaccio.org/) in 1 tab with:
+
+```sh
+nx local-registry
+```
+
+Open a new tab in your terminal, and run the following script to publish to your local registry:
+
+```sh
+./tools/bump_and_publish_sdks.sh
+# then select the version you wish to locally publish
+```
+
+Then use the new version in a fresh repo or on a demo repo. You can update package.json and run `npm i` to install the local package.
+
 ## Submitting a PR
 
 Please follow the following guidelines:
