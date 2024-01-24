@@ -2,6 +2,7 @@ import {
   ExperienceEntryLike,
   ExperienceMapper,
 } from '@ninetailed/experience.js-utils-contentful';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import product from '../fixtures/contentful/product-with-experiences.json';
 
 export const experiences = (

@@ -59,7 +59,7 @@ function bump_and_publish () {
 
   # If runs from GHA pipeline, we add provenance to the package.
   # https://docs.npmjs.com/generating-provenance-statements
-  if [ "$CI" = "true" ]; then
+  if [ "${CI:-}" = "true" ]; then
     # the repository field is required to publish with provenance to NPM
     if jq -e '.repository' package.json >/dev/null; then 
       echo "[i] repository field exists on package.json"

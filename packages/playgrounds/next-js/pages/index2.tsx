@@ -3,6 +3,7 @@ import { Hero, Product, Profile } from '../components';
 import { Experience, Personalize } from '@ninetailed/experience.js-next';
 
 import { experienceMapper } from '../utils/experienceMapper';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import product from '../../fixtures/contentful/product-with-experiences.json';
 import Link from 'next/link';
 import { BaselineWithExperiencesEntry } from '@ninetailed/experience.js-utils-contentful';
