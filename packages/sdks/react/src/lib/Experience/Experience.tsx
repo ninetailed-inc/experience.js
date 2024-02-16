@@ -230,6 +230,7 @@ export const Experience = <
       <ComponentMarker
         key={`marker-hidden-${experience?.id || 'baseline'}-${variant.id}`}
         ref={componentRef}
+        hidden
       />
     );
   }
