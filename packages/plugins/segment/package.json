@@ -8,5 +8,18 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/segment"
+  },
+  "keywords": [
+    "segment",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ],
+  "dependencies": {
+    "@segment/analytics-next": "1.48.0",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "tslib": "2.4.1"
   }
 }

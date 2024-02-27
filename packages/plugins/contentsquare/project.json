@@ -1,31 +1,33 @@
 {
   "name": "plugins-contentsquare",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/plugins/contentsquare",
   "sourceRoot": "packages/plugins/contentsquare/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/contentsquare",
         "main": "packages/plugins/contentsquare/src/index.ts",
         "tsConfig": "packages/plugins/contentsquare/tsconfig.lib.json",
-        "assets": ["packages/plugins/contentsquare/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/plugins/contentsquare/*.md"]
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/plugins/contentsquare/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/plugins/contentsquare/**/*.ts",
+          "packages/plugins/contentsquare/package.json",
+          "packages/plugins/contentsquare/project.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/plugins/contentsquare"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/contentsquare"],
       "options": {
         "jestConfig": "packages/plugins/contentsquare/jest.config.js",
         "passWithNoTests": true

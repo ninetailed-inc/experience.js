@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/sdks/nextjs-esr",
@@ -13,7 +13,7 @@
         "project": "packages/sdks/nextjs-esr/package.json",
         "entryFile": "packages/sdks/nextjs-esr/src/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "format": ["cjs", "esm"],
         "compiler": "babel",
         "assets": [
@@ -26,14 +26,18 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}",
+          "packages/sdks/nextjs-esr/package.json",
+          "packages/sdks/nextjs-esr/project.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/sdks/nextjs-esr"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/nextjs-esr"],
       "options": {
         "jestConfig": "packages/sdks/nextjs-esr/jest.config.js",
         "passWithNoTests": true

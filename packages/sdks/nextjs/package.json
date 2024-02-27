@@ -6,10 +6,22 @@
     "next": ">=9.0.0",
     "react": ">=16.8.0"
   },
+  "dependencies": {
+    "@ninetailed/experience.js-react": "*",
+    "@ninetailed/experience.js-plugin-ssr": "*",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "*"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/sdks/nextjs"
-  }
+  },
+  "keywords": [
+    "nextjs",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ]
 }

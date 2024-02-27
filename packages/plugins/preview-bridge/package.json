@@ -7,5 +7,15 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/preview-bridge"
+  },
+  "keywords": [
+    "preview-bridge",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ],
+  "dependencies": {
+    "zoid": "9.0.86",
+    "@ninetailed/experience.js": "*"
   }
 }

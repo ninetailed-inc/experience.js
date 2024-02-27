@@ -7,5 +7,16 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/preview"
+  },
+  "keywords": [
+    "preview",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ],
+  "dependencies": {
+    "@ninetailed/experience.js-shared": "*",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-preview-bridge": "*"
   }
 }

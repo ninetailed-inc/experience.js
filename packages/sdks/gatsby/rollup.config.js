@@ -1,4 +1,4 @@
-const nrwlConfig = require('@nrwl/react/plugins/bundle-rollup');
+const nrwlConfig = require('@nx/react/plugins/bundle-rollup');
 const path = require('path');
 module.exports = (config) => {
   const nxConfig = nrwlConfig(config);
@@ -8,7 +8,7 @@ module.exports = (config) => {
       /**
        * Keep the main entry point given by the Nx config from the project.json
        */
-      index: nxConfig.input,
+      ...nxConfig.input,
       /**
        * With the leading path ("loaders/") we define and preserve the folder structure in the output bundle
        */
@@ -28,11 +28,14 @@ module.exports = (config) => {
       ...nxConfig.output,
       entryFileNames: (chunkInfo) => {
         /**
-         * Due to the defined .cjs extension in the package.json, we add the .cjs extension to the main entry file manually for consistency.
-         * All other files are generated with the .js extension, mostly because, we need to preserve the .js extension for the gatsby config files, otherwise gatsby will not find them.
+         * NX generates a main field in the package.json, in the pattern of `index.cjs.ts`
+         * (checkout dist/packages/sdks/gatsby/index.cjs.js & dist/packages/sdks/gatsby/package.json)
+         * For index, we need to preserve the [format] then.
+         * For the other files: "gatsby-[ssr|node|browser].js" we need to discard the [format] part,
+         * otherwise gatsby will not find them.
          */
         if (chunkInfo.name === 'index') {
-          return '[name].cjs';
+          return '[name].[format].js';
         }
         return '[name].js';
       },

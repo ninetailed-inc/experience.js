@@ -1,13 +1,25 @@
 {
   "name": "@ninetailed/experience.js-plugin-analytics",
-  "version": "7.5.1",
   "type": "commonjs",
-  "devDependencies": {},
   "description": "Ninetailed SDK plugin for analytics",
   "license": "MIT",
+  "keywords": [
+    "analytics",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/analytics"
-  }
+  },
+  "dependencies": {
+    "@ninetailed/experience.js": "*",
+    "@anatine/zod-mock": "3.8.1",
+    "@ninetailed/experience.js-shared": "*",
+    "analytics": "0.8.1"
+  },
+  "peerDependencies": {},
+  "devDependencies": {}
 }

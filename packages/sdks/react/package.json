@@ -2,6 +2,15 @@
   "name": "@ninetailed/experience.js-react",
   "version": "7.5.1",
   "description": "Ninetailed SDK for React",
+  "dependencies": {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "radash": "10.9.0",
+    "react-intersection-observer": "8.34.0",
+    "react-is": "18.2.0",
+    "@testing-library/react-hooks": "7.0.2",
+    "@testing-library/react": "13.4.0"
+  },
   "peerDependencies": {
     "react": ">=16.8.0"
   },
@@ -10,5 +19,11 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/sdks/react"
-  }
+  },
+  "keywords": [
+    "react",
+    "ninetailed",
+    "personalization",
+    "a/b testing"
+  ]
 }

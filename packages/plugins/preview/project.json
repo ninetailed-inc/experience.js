@@ -5,7 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/preview",
@@ -13,8 +13,7 @@
         "project": "packages/plugins/preview/package.json",
         "entryFile": "packages/plugins/preview/src/index.ts",
         "external": [],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "format": ["cjs", "esm"],
         "assets": [
           {
@@ -26,14 +25,18 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["packages/plugins/preview/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/plugins/preview/**/*.{ts,tsx,js,jsx}",
+          "packages/plugins/preview/package.json",
+          "packages/plugins/preview/project.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/plugins/preview"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview"],
       "options": {
         "jestConfig": "packages/plugins/preview/jest.config.js",
         "passWithNoTests": true

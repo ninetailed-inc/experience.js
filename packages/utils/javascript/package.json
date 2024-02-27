@@ -7,5 +7,10 @@
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/utils/javascript"
+  },
+  "dependencies": {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "zod": "3.21.4"
   }
 }

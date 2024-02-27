@@ -27,7 +27,7 @@ import { NinetailedPreviewPlugin } from '@ninetailed/experience.js-plugin-previe
 import { NinetailedSsrPlugin } from '@ninetailed/experience.js-plugin-ssr';
 
 import { ExperienceMapper } from '@ninetailed/experience.js-utils-contentful';
-
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import productWithExperiment from '../../fixtures/contentful/product-with-experiment.json';
 
 function CustomApp({ Component, pageProps }: AppProps) {

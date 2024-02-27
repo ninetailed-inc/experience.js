@@ -6,7 +6,7 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/preview-bridge",
@@ -14,8 +14,7 @@
         "project": "packages/plugins/preview-bridge/package.json",
         "entryFile": "packages/plugins/preview-bridge/src/index.ts",
         "external": [],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "format": ["cjs", "esm"],
         "assets": [
           {
@@ -27,17 +26,19 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "packages/plugins/preview-bridge/**/*.{ts,tsx,js,jsx}"
+          "packages/plugins/preview-bridge/**/*.{ts,tsx,js,jsx}",
+          "packages/plugins/preview-bridge/package.json",
+          "packages/plugins/preview-bridge/project.json"
         ]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/plugins/preview-bridge"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview-bridge"],
       "options": {
         "jestConfig": "packages/plugins/preview-bridge/jest.config.js",
         "passWithNoTests": true

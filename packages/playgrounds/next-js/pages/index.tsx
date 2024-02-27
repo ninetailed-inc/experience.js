@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { useEffect } from 'react';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
@@ -12,9 +13,7 @@ import {
   BaselineWithExperiencesEntry,
   ExperienceMapper,
 } from '@ninetailed/experience.js-utils-contentful';
-
 import product from '../../fixtures/contentful/product-with-experiences.json';
-
 import productWithExperiment from '../../fixtures/contentful/product-with-experiment.json';
 import productWithPersonalization from '../../fixtures/contentful/product-with-personalization.json';
 import { experienceMapper } from '../utils/experienceMapper';

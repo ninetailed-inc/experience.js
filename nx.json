@@ -1,20 +1,4 @@
 {
-  "extends": "@nrwl/workspace/presets/core.json",
-  "npmScope": "ninetailed",
-  "affected": {
-    "defaultBase": "main"
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/next"
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
-      }
-    }
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^get-package-version", "get-package-version", "^build"]
@@ -26,8 +10,25 @@
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
     }
   },
+  "extends": "@nx/workspace/presets/core.json",
+  "affected": {
+    "defaultBase": "main"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nx/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
   "generators": {
-    "@nrwl/react": {
+    "@nrwl/gatsby": {
+      "application": {
+        "style": "css"
+      }
+    },
+    "@nx/react": {
       "application": {
         "style": "css",
         "unitTestRunner": "jest",
@@ -43,17 +44,11 @@
         "linter": "eslint"
       }
     },
-    "@nrwl/next": {
+    "@nx/next": {
       "application": {
         "style": "css",
         "linter": "eslint"
       }
-    },
-    "@nrwl/gatsby": {
-      "application": {
-        "style": "css"
-      }
     }
-  },
-  "defaultProject": "playgrounds-next-js"
+  }
 }

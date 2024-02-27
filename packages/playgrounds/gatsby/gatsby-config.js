@@ -119,7 +119,7 @@ module.exports = {
     `gatsby-plugin-image`,
     `gatsby-transformer-sharp`,
     {
-      resolve: require.resolve(`@nrwl/gatsby/plugins/nx-gatsby-ext-plugin`),
+      resolve: require.resolve(`@nx/gatsby/plugins/nx-gatsby-ext-plugin`),
       options: {
         path: __dirname,
       },

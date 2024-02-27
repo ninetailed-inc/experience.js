@@ -1,31 +1,33 @@
 {
   "name": "plugins-segment",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/plugins/segment",
   "sourceRoot": "packages/plugins/segment/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/segment",
         "main": "packages/plugins/segment/src/index.ts",
         "tsConfig": "packages/plugins/segment/tsconfig.lib.json",
-        "assets": ["packages/plugins/segment/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/plugins/segment/*.md"]
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/plugins/segment/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/plugins/segment/**/*.ts",
+          "packages/plugins/segment/package.json",
+          "packages/plugins/segment/project.json"
+        ]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/plugins/segment"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/segment"],
       "options": {
         "jestConfig": "packages/plugins/segment/jest.config.js",
         "passWithNoTests": true
