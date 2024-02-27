@@ -138,6 +138,7 @@ export const Experience = <
   const isComponentForwardRef = isForwardRef(<Component />);
 
   const componentRef = useRef<Element | null>(null);
+  const isVariantHidden = 'hidden' in variant && variant.hidden;
 
   useEffect(() => {
     const componentElement = componentRef.current;
@@ -167,7 +168,9 @@ export const Experience = <
         element: componentElement,
         experience,
         audience,
-        variant,
+        variant: isVariantHidden
+          ? { ...variant, id: `${baseline.id}-hidden` }
+          : variant,
         variantIndex,
       });
 
@@ -224,7 +227,6 @@ export const Experience = <
     );
   }
 
-  const isVariantHidden = 'hidden' in variant && variant.hidden;
   if (isVariantHidden) {
     return (
       <ComponentMarker
