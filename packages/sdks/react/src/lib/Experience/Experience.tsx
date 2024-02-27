@@ -192,6 +192,7 @@ export const Experience = <
     variant,
     variantIndex,
     audience,
+    isVariantHidden,
   ]);
 
   if (!hasVariants) {
