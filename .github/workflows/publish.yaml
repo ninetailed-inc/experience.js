@@ -89,8 +89,11 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
 
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+
       - name: Check Format
-        run: yarn nx format:check
+        run: yarn nx format:check --verbose
 
       - name: Lint 🎨
         run: yarn nx run-many --target=lint
