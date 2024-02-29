@@ -299,15 +299,11 @@ export class Ninetailed implements NinetailedInstance {
         }. This call will be ignored.`
       );
     } else {
-      if (!this.observedElements.has(element)) {
+      const existingPayloads = this.observedElements.get(element);
+
+      if (!existingPayloads) {
         this.observedElements.set(element, [remaingPayload]);
       } else {
-        const existingPayloads = this.observedElements.get(element);
-
-        if (!existingPayloads) {
-          return;
-        }
-
         const isPayloadAlreadyObserved = existingPayloads.some((payload) => {
           return JSON.stringify(payload) === JSON.stringify(remaingPayload);
         });
