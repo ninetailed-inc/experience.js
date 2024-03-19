@@ -17,6 +17,7 @@
   "dependencies": {
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js": "*",
-    "@ninetailed/experience.js-preview-bridge": "*"
+    "@ninetailed/experience.js-preview-bridge": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*"
   }
 }

@@ -16,9 +16,9 @@
     "directory": "packages/plugins/analytics"
   },
   "dependencies": {
-    "@ninetailed/experience.js": "*",
     "@anatine/zod-mock": "3.8.1",
     "@ninetailed/experience.js-shared": "*",
-    "analytics": "0.8.1"
+    "analytics": "0.8.1",
+    "zod": "3.21.4"
   }
 }

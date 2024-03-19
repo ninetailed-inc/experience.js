@@ -18,6 +18,7 @@
   "dependencies": {
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-react": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
     "gatsby-plugin-utils": "3.19.0",
     "lodash": "4.17.21"
   },

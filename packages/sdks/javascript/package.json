@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "analytics": "0.8.1",
-    "zod": "3.21.4",
-    "@ninetailed/experience.js-shared": "*"
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "uuid": "9.0.0"
   }
 }

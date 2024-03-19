@@ -5,6 +5,7 @@
   "dependencies": {
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-shared": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
     "radash": "10.9.0",
     "react-intersection-observer": "8.34.0",
     "react-is": "18.2.0",
