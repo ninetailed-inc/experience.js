@@ -2,7 +2,7 @@
   "name": "@ninetailed/experience.js-plugin-analytics",
   "type": "commonjs",
   "description": "Ninetailed SDK plugin for analytics",
-  "license": "BSL-1.1",
+  "license": "MIT",
   "version": "7.6.0-beta.1",
   "keywords": [
     "analytics",

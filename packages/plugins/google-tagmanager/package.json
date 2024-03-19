@@ -9,7 +9,7 @@
     "tslib": "2.4.1"
   },
   "description": "Ninetailed SDK plugin for Google Tag Manager",
-  "license": "BSL-1.1",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",

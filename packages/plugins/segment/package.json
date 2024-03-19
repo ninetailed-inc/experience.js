@@ -3,7 +3,7 @@
   "version": "7.6.0-beta.1",
   "description": "Ninetailed SDK plugin for Segment",
   "type": "commonjs",
-  "license": "BSL-1.1",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
