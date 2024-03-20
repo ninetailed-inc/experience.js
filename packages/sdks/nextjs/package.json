@@ -1,6 +1,7 @@
 {
   "name": "@ninetailed/experience.js-next",
   "version": "7.6.0-beta.1",
+  "type": "module",
   "description": "Ninetailed SDK for Next.js",
   "peerDependencies": {
     "next": ">=9.0.0",

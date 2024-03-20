@@ -9,6 +9,12 @@
         "config": ".verdaccio/config.yml",
         "storage": "tmp/local-registry/storage"
       }
+    },
+    "build-all-no-playgrounds": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "build-all:no-playgrounds"
+      }
     }
   }
 }

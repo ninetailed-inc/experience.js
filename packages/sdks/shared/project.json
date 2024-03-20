@@ -13,7 +13,7 @@
         "project": "packages/sdks/shared/package.json",
         "entryFile": "packages/sdks/shared/src/index.ts",
         "external": [],
-        "rollupConfig": "packages/sdks/shared/rollup.config.js",
+        "rollupConfig": "packages/sdks/shared/rollup.config.cjs",
         "compiler": "babel",
         "format": ["cjs", "esm"],
         "assets": [

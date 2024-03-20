@@ -1,6 +1,7 @@
 {
   "name": "@ninetailed/experience.js-plugin-privacy",
   "version": "7.6.0-beta.1",
+  "type": "commonjs",
   "description": "Ninetailed SDK plugin for privacy",
   "license": "MIT",
   "repository": {
