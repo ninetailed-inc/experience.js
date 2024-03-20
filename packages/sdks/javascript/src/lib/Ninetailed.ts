@@ -765,7 +765,7 @@ export class Ninetailed implements NinetailedInstance {
       }
 
       const { variants } = baselineVariants;
-      const variant = variants[selectedExperience.variantIndex - 1];
+      const variant = [baseline, ...variants][selectedExperience.variantIndex];
 
       if (!variant) {
         setSelectedVariant(
