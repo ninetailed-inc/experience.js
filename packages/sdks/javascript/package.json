@@ -12,5 +12,8 @@
     "analytics": "0.8.1",
     "zod": "3.21.4",
     "@ninetailed/experience.js-shared": "*"
+  },
+  "devDependencies": {
+    "@jest/globals": "29.7.0"
   }
 }

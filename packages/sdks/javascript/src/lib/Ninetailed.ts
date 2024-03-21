@@ -80,6 +80,8 @@ type NinetailedApiClientInstanceOrOptions =
   | NinetailedApiClient
   | NinetailedApiClientOptions;
 
+type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
+
 export class Ninetailed implements NinetailedInstance {
   private readonly instance: AnalyticsInstance;
   private _profileState: ProfileState;
@@ -87,10 +89,7 @@ export class Ninetailed implements NinetailedInstance {
   private readonly apiClient: NinetailedApiClient;
   private readonly ninetailedCorePlugin: NinetailedCorePlugin;
   private readonly elementSeenObserver: ElementSeenObserver;
-  private readonly observedElements: WeakMap<
-    Element,
-    Omit<ElementSeenPayload, 'element'>
-  >;
+  private readonly observedElements: WeakMap<Element, ObservedElementPayload[]>;
 
   private readonly clientId;
   private readonly environment;
@@ -300,7 +299,25 @@ export class Ninetailed implements NinetailedInstance {
         }. This call will be ignored.`
       );
     } else {
-      this.observedElements.set(element, remaingPayload);
+      const existingPayloads = this.observedElements.get(element);
+
+      if (!existingPayloads) {
+        this.observedElements.set(element, [remaingPayload]);
+      } else {
+        const isPayloadAlreadyObserved = existingPayloads.some((payload) => {
+          return JSON.stringify(payload) === JSON.stringify(remaingPayload);
+        });
+
+        if (isPayloadAlreadyObserved) {
+          return;
+        }
+
+        this.observedElements.set(element, [
+          ...existingPayloads,
+          remaingPayload,
+        ]);
+      }
+
       this.elementSeenObserver.observe(element, {
         delay: this.componentViewTrackingThreshold,
         ...options,
@@ -314,10 +331,12 @@ export class Ninetailed implements NinetailedInstance {
   };
 
   private onElementSeen = (element: Element) => {
-    const payload = this.observedElements.get(element);
+    const payloads = this.observedElements.get(element);
 
-    if (typeof payload !== 'undefined') {
-      this.trackComponentView({ element, ...payload });
+    if (typeof payloads !== 'undefined') {
+      for (const payload of payloads) {
+        this.trackComponentView({ element, ...payload });
+      }
     }
   };
 
