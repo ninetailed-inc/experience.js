@@ -1,6 +1,7 @@
 {
   "name": "@ninetailed/experience.js-shared",
   "version": "7.6.0-beta.1",
+  "type": "module",
   "description": "Shared code for Experience.js",
   "license": "MIT",
   "repository": {
@@ -9,9 +10,6 @@
     "directory": "packages/sdks/shared"
   },
   "dependencies": {
-    "@nx/react": "16.6.0",
-    "@rollup/plugin-replace": "5.0.2",
-    "dotenv": "16.3.1",
     "jest-fetch-mock": "3.0.3",
     "@anatine/zod-mock": "3.8.1",
     "diary": "0.4.4",

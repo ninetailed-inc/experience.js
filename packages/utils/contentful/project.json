@@ -45,7 +45,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/utils/contentful"],
       "options": {
-        "jestConfig": "packages/utils/contentful/jest.config.js",
+        "jestConfig": "packages/utils/contentful/jest.config.cjs",
         "passWithNoTests": true
       }
     }
