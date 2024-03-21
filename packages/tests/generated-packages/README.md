@@ -1,7 +1,3 @@
 # tests-generated-packages
 
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test tests-generated-packages` to execute the unit tests via [Jest](https://jestjs.io).
+This package contains tests that will run against generated distribution of SDKs and plugins. The goal is to prevent regressions or unexpected outcomes related, namely, to NX version upgrades and breaking changes.
