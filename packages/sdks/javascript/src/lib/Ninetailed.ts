@@ -105,6 +105,8 @@ type NinetailedApiClientInstanceOrOptions =
   | NinetailedApiClient
   | NinetailedApiClientOptions;
 
+type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
+
 const buildOverrideMiddleware =
   <TBaseline extends Reference, TVariant extends Reference>(
     experienceSelectionMiddleware: ExperienceSelectionMiddleware<
@@ -145,10 +147,7 @@ export class Ninetailed implements NinetailedInstance {
   private readonly apiClient: NinetailedApiClient;
   private readonly ninetailedCorePlugin: NinetailedCorePlugin;
   private readonly elementSeenObserver: ElementSeenObserver;
-  private readonly observedElements: WeakMap<
-    Element,
-    Omit<ElementSeenPayload, 'element'>
-  >;
+  private readonly observedElements: WeakMap<Element, ObservedElementPayload[]>;
 
   private readonly clientId;
   private readonly environment;
@@ -483,7 +482,7 @@ export class Ninetailed implements NinetailedInstance {
         }. This call will be ignored.`
       );
     } else {
-      this.observedElements.set(element, remaingPayload);
+      const existingPayloads = this.observedElements.get(element);
 
       const delays = this.pluginsWithCustomComponentViewThreshold.map(
         (plugin) => plugin.getComponentViewTrackingThreshold()
@@ -494,6 +493,23 @@ export class Ninetailed implements NinetailedInstance {
           options?.delay || this.componentViewTrackingThreshold,
         ])
       );
+
+      if (!existingPayloads) {
+        this.observedElements.set(element, [remaingPayload]);
+      } else {
+        const isPayloadAlreadyObserved = existingPayloads.some((payload) => {
+          return JSON.stringify(payload) === JSON.stringify(remaingPayload);
+        });
+
+        if (isPayloadAlreadyObserved) {
+          return;
+        }
+
+        this.observedElements.set(element, [
+          ...existingPayloads,
+          remaingPayload,
+        ]);
+      }
 
       uniqueDelays.forEach((delay) => {
         this.elementSeenObserver.observe(element, {
@@ -509,37 +525,39 @@ export class Ninetailed implements NinetailedInstance {
   };
 
   private onElementSeen = (element: Element, delay?: number) => {
-    const payload = this.observedElements.get(element);
+    const payloads = this.observedElements.get(element);
 
-    if (typeof payload !== 'undefined') {
-      const pluginNamesInterestedInSeenElementMessage = [
-        ...this.pluginsWithCustomComponentViewThreshold.filter(
-          (plugin) => plugin.getComponentViewTrackingThreshold() === delay
-        ),
-        ...this.plugins.filter(
-          (plugin) => !hasComponentViewTrackingThreshold(plugin)
-        ),
-      ].map((plugin) => plugin.name);
-
-      if (pluginNamesInterestedInSeenElementMessage.length === 0) {
-        return;
-      }
-
-      this.instance.dispatch({
-        ...payload,
-        element,
-        type: HAS_SEEN_ELEMENT,
-        plugins: {
-          all: false,
-          ...pluginNamesInterestedInSeenElementMessage.reduce(
-            (acc, curr) => ({
-              ...acc,
-              [curr]: true,
-            }),
-            {}
+    if (Array.isArray(payloads) && payloads.length > 0) {
+      for (const payload of payloads) {
+        const pluginNamesInterestedInSeenElementMessage = [
+          ...this.pluginsWithCustomComponentViewThreshold.filter(
+            (plugin) => plugin.getComponentViewTrackingThreshold() === delay
           ),
-        },
-      });
+          ...this.plugins.filter(
+            (plugin) => !hasComponentViewTrackingThreshold(plugin)
+          ),
+        ].map((plugin) => plugin.name);
+
+        if (pluginNamesInterestedInSeenElementMessage.length === 0) {
+          return;
+        }
+
+        this.instance.dispatch({
+          ...payload,
+          element,
+          type: HAS_SEEN_ELEMENT,
+          plugins: {
+            all: false,
+            ...pluginNamesInterestedInSeenElementMessage.reduce(
+              (acc, curr) => ({
+                ...acc,
+                [curr]: true,
+              }),
+              {}
+            ),
+          },
+        });
+      }
     }
   };
 

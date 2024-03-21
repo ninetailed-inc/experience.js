@@ -3,6 +3,10 @@ import {
   NinetailedApiClient,
 } from '@ninetailed/experience.js-shared';
 import { Ninetailed } from './Ninetailed';
+import {
+  getObserverOf,
+  intersect,
+} from './test-helpers/intersection-observer-test-helper';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -200,6 +204,168 @@ describe('Ninetailed core class', () => {
         await ninetailed.identify('', { foo: 'bar' });
 
         expect(apiClient.upsertProfile).toBeCalledTimes(3);
+      });
+    });
+  });
+
+  describe('Observing elements and triggering component views', () => {
+    beforeEach(() => {
+      // We use fake timers bcause our ElementSeenObserver relies on setTimeout
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+    });
+
+    it('should track a component view for an intersecting element', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const { ninetailed } = mockProfile();
+
+      // Triggers the mocking of the IntersectionObserver
+      getObserverOf(element);
+
+      const trackComponentViewSpy = jest.spyOn(
+        ninetailed,
+        'trackComponentView'
+      );
+
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+      });
+
+      // Simulate the intersection of the element with the viewport
+      intersect(element, true);
+
+      // Advance the timers to trigger the callback inside ElementSeenObserver
+      jest.runAllTimers();
+
+      expect(trackComponentViewSpy).toBeCalledTimes(1);
+      expect(trackComponentViewSpy).toBeCalledWith({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+      });
+    });
+
+    it('should track a component view for multiple intersecting elements', () => {
+      const element1 = document.body.appendChild(document.createElement('div'));
+      const element2 = document.body.appendChild(document.createElement('div'));
+      const { ninetailed } = mockProfile();
+
+      getObserverOf(element1);
+      getObserverOf(element2);
+
+      const trackComponentViewSpy = jest.spyOn(
+        ninetailed,
+        'trackComponentView'
+      );
+
+      ninetailed.observeElement({
+        element: element1,
+        variant: { id: 'variant-1-id' },
+        variantIndex: 1,
+      });
+
+      ninetailed.observeElement({
+        element: element2,
+        variant: { id: 'variant-2-id' },
+        variantIndex: 2,
+      });
+
+      intersect(element1, true);
+      intersect(element2, true);
+
+      jest.runAllTimers();
+
+      expect(trackComponentViewSpy).toBeCalledTimes(2);
+      expect(trackComponentViewSpy).toBeCalledWith({
+        element: element1,
+        variant: { id: 'variant-1-id' },
+        variantIndex: 1,
+      });
+      expect(trackComponentViewSpy).toBeCalledWith({
+        element: element2,
+        variant: { id: 'variant-2-id' },
+        variantIndex: 2,
+      });
+    });
+
+    it('should track component views for an intersecting element with different payloads', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const { ninetailed } = mockProfile();
+
+      getObserverOf(element);
+
+      const trackComponentViewSpy = jest.spyOn(
+        ninetailed,
+        'trackComponentView'
+      );
+
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-1-id' },
+        variantIndex: 1,
+      });
+
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-2-id' },
+        variantIndex: 2,
+      });
+
+      intersect(element, true);
+
+      jest.runAllTimers();
+
+      expect(trackComponentViewSpy).toBeCalledTimes(2);
+      expect(trackComponentViewSpy).toBeCalledWith({
+        element,
+        variant: { id: 'variant-1-id' },
+        variantIndex: 1,
+      });
+      expect(trackComponentViewSpy).toBeCalledWith({
+        element,
+        variant: { id: 'variant-2-id' },
+        variantIndex: 2,
+      });
+    });
+
+    it('should track a single component view for an intersecting element with multiple but equal payloads', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const { ninetailed } = mockProfile();
+
+      getObserverOf(element);
+
+      const trackComponentViewSpy = jest.spyOn(
+        ninetailed,
+        'trackComponentView'
+      );
+
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-1-id' },
+        variantIndex: 1,
+      });
+
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-1-id' },
+        variantIndex: 1,
+      });
+
+      intersect(element, true);
+
+      jest.runAllTimers();
+
+      expect(trackComponentViewSpy).toBeCalledTimes(1);
+      expect(trackComponentViewSpy).toBeCalledWith({
+        element,
+        variant: { id: 'variant-1-id' },
+        variantIndex: 1,
       });
     });
   });
