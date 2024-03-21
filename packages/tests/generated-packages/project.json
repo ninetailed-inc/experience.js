@@ -25,6 +25,12 @@
           "codeCoverage": true
         }
       }
+    },
+    "build-all-except-playgrounds": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "build-all:except-playgrounds"
+      }
     }
   },
   "tags": []
