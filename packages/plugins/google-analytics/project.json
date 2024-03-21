@@ -50,7 +50,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/google-analytics"],
       "options": {
-        "jestConfig": "packages/plugins/google-analytics/jest.config.js",
+        "jestConfig": "packages/plugins/google-analytics/jest.config.cjs",
         "passWithNoTests": true
       }
     }

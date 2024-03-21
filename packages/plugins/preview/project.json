@@ -38,7 +38,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview"],
       "options": {
-        "jestConfig": "packages/plugins/preview/jest.config.js",
+        "jestConfig": "packages/plugins/preview/jest.config.cjs",
         "passWithNoTests": true
       }
     }

@@ -14,7 +14,7 @@
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "dependsOn": ["build-all-no-playgrounds"],
+      "dependsOn": ["build-all-except-playgrounds"],
       "options": {
         "jestConfig": "packages/tests/generated-packages/jest.config.ts",
         "passWithNoTests": true

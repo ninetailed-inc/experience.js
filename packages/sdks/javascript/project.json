@@ -45,7 +45,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/javascript"],
       "options": {
-        "jestConfig": "packages/sdks/javascript/jest.config.js",
+        "jestConfig": "packages/sdks/javascript/jest.config.cjs",
         "passWithNoTests": true
       }
     }

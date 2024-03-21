@@ -48,7 +48,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/shared"],
       "options": {
-        "jestConfig": "packages/sdks/shared/jest.config.js",
+        "jestConfig": "packages/sdks/shared/jest.config.cjs",
         "passWithNoTests": true
       }
     }
