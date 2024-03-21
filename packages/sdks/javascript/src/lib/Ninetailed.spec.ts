@@ -1,7 +1,11 @@
+import { setTimeout as sleep } from 'node:timers/promises';
 import {
   FEATURES,
   NinetailedApiClient,
 } from '@ninetailed/experience.js-shared';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
+import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
+
 import { Ninetailed } from './Ninetailed';
 import {
   getObserverOf,
@@ -10,7 +14,7 @@ import {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const mockProfile = () => {
+const mockProfile = (plugins: NinetailedPlugin[] = []) => {
   const apiClient = new NinetailedApiClient({ clientId: 'test' });
   apiClient.upsertProfile = jest.fn().mockResolvedValue({
     id: 'test',
@@ -20,7 +24,7 @@ const mockProfile = () => {
     location: {},
     session: {},
   });
-  const ninetailed = new Ninetailed(apiClient);
+  const ninetailed = new Ninetailed(apiClient, { plugins });
 
   return { apiClient, ninetailed };
 };
@@ -219,22 +223,41 @@ describe('Ninetailed core class', () => {
       jest.useRealTimers();
     });
 
-    it('should track a component view for an intersecting element', () => {
+    it('should track a component view for an intersecting element', async () => {
       const element = document.body.appendChild(document.createElement('div'));
-      const { ninetailed } = mockProfile();
+      const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
+      const { ninetailed } = mockProfile([testPlugin]);
 
       // Triggers the mocking of the IntersectionObserver
       getObserverOf(element);
 
-      const trackComponentViewSpy = jest.spyOn(
-        ninetailed,
-        'trackComponentView'
-      );
+      // todo use generate mock and fix circular dependency
+      const experience = {
+        id: 'nulla',
+        name: 'Mr. Kathryn Jakubowski V',
+        description: 'vel',
+        type: 'nt_experiment' as const,
+        config: {
+          distribution: [0.5, 0.5],
+          traffic: 1,
+          components: [
+            { baseline: { id: '' }, variants: [{ id: '', hidden: false }] },
+          ],
+          sticky: false,
+        },
+        audience: {
+          id: 'facilis',
+          name: 'Juan Simonis',
+          description: 'adipisci',
+        },
+        variants: [{ id: 'laudantium' }, { id: 'minus' }, { id: 'dolorum' }],
+      };
 
       ninetailed.observeElement({
         element,
         variant: { id: 'variant-id' },
         variantIndex: 1,
+        experience,
       });
 
       // Simulate the intersection of the element with the viewport
@@ -243,12 +266,13 @@ describe('Ninetailed core class', () => {
       // Advance the timers to trigger the callback inside ElementSeenObserver
       jest.runAllTimers();
 
-      expect(trackComponentViewSpy).toBeCalledTimes(1);
-      expect(trackComponentViewSpy).toBeCalledWith({
-        element,
-        variant: { id: 'variant-id' },
-        variantIndex: 1,
-      });
+      await sleep(5);
+
+      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
+      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        expect.objectContaining({ selectedVariantIndex: 1 }),
+        expect.any(Object)
+      );
     });
 
     it('should track a component view for multiple intersecting elements', () => {
