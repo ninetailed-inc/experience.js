@@ -1,7 +1,6 @@
 {
   "name": "@ninetailed/experience.js-plugin-ssr",
   "version": "7.6.0-beta.1",
-  "type": "module",
   "description": "Ninetailed SDK plugin for SSR",
   "license": "MIT",
   "repository": {

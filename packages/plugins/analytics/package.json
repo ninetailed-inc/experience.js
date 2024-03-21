@@ -1,6 +1,5 @@
 {
   "name": "@ninetailed/experience.js-plugin-analytics",
-  "type": "module",
   "description": "Ninetailed SDK plugin for analytics",
   "license": "MIT",
   "version": "7.6.0-beta.1",

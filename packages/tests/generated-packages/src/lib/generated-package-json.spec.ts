@@ -37,11 +37,15 @@ describe('testsGeneratedPackageJson', () => {
   const packageJsonPaths = findPackageJsonPaths('dist/packages');
 
   it.each(packageJsonPaths)(
-    '%s should have a type field',
+    '%s should have no type field if it has a module and a main field',
     (packageJsonPath) => {
       const json = parsePackageJson(packageJsonPath);
 
-      expect(json).toHaveProperty('type');
+      const hasModuleField = !!json.module;
+      const hasMainField = !!json.main;
+      const hasTypeField = !!json.type;
+
+      expect(hasTypeField && hasModuleField && hasMainField).toBeFalsy();
     }
   );
 
