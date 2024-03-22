@@ -6,6 +6,7 @@ Object {
     "@anatine/zod-mock": "3.8.1",
     "@ninetailed/experience.js-shared": "*",
     "analytics": "0.8.1",
+    "radash": "10.9.0",
     "zod": "3.21.4",
   },
   "description": "Ninetailed SDK plugin for analytics",
