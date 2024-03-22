@@ -443,5 +443,30 @@ describe('Ninetailed core class', () => {
 
       expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
     });
+
+    it('should not track a component view for elements that are not instances of Element', async () => {
+      const element = 'element';
+      const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
+      const { ninetailed } = mockProfile([testPlugin]);
+
+      getObserverOf(element as any);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement({
+        element: element as any,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+      });
+
+      intersect(element as any, true);
+
+      jest.runAllTimers();
+
+      await sleep(5);
+
+      expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
+    });
   });
 });
