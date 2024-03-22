@@ -528,20 +528,20 @@ export class Ninetailed implements NinetailedInstance {
     const payloads = this.observedElements.get(element);
 
     if (Array.isArray(payloads) && payloads.length > 0) {
+      const pluginNamesInterestedInSeenElementMessage = [
+        ...this.pluginsWithCustomComponentViewThreshold.filter(
+          (plugin) => plugin.getComponentViewTrackingThreshold() === delay
+        ),
+        ...this.plugins.filter(
+          (plugin) => !hasComponentViewTrackingThreshold(plugin)
+        ),
+      ].map((plugin) => plugin.name);
+
+      if (pluginNamesInterestedInSeenElementMessage.length === 0) {
+        return;
+      }
+
       for (const payload of payloads) {
-        const pluginNamesInterestedInSeenElementMessage = [
-          ...this.pluginsWithCustomComponentViewThreshold.filter(
-            (plugin) => plugin.getComponentViewTrackingThreshold() === delay
-          ),
-          ...this.plugins.filter(
-            (plugin) => !hasComponentViewTrackingThreshold(plugin)
-          ),
-        ].map((plugin) => plugin.name);
-
-        if (pluginNamesInterestedInSeenElementMessage.length === 0) {
-          return;
-        }
-
         this.instance.dispatch({
           ...payload,
           element,

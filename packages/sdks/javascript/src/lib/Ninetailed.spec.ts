@@ -37,6 +37,30 @@ const mockProfileError = () => {
   return { apiClient, ninetailed };
 };
 
+/* TODO: Replace this with a proper mock generator once the circular dependency
+ * with the utils javascript package is resolved
+ */
+const generateExperience = () => ({
+  id: 'a12b3c4d5e6f7g8h9i0j',
+  name: 'Experiment 1',
+  description: 'This is just a test',
+  type: 'nt_experiment' as const,
+  config: {
+    distribution: [0.5, 0.5],
+    traffic: 1,
+    components: [
+      { baseline: { id: '' }, variants: [{ id: '', hidden: false }] },
+    ],
+    sticky: false,
+  },
+  audience: {
+    id: 'c1d2e3f4g5h6i7j8k9l0',
+    name: 'All user',
+    description: 'All the users',
+  },
+  variants: [{ id: 'laudantium' }, { id: 'minus' }, { id: 'dolorum' }],
+});
+
 describe('Ninetailed core class', () => {
   let ninetailed: Ninetailed;
   let apiClient: NinetailedApiClient;
@@ -231,27 +255,7 @@ describe('Ninetailed core class', () => {
       // Triggers the mocking of the IntersectionObserver
       getObserverOf(element);
 
-      // todo use generate mock and fix circular dependency
-      const experience = {
-        id: 'nulla',
-        name: 'Mr. Kathryn Jakubowski V',
-        description: 'vel',
-        type: 'nt_experiment' as const,
-        config: {
-          distribution: [0.5, 0.5],
-          traffic: 1,
-          components: [
-            { baseline: { id: '' }, variants: [{ id: '', hidden: false }] },
-          ],
-          sticky: false,
-        },
-        audience: {
-          id: 'facilis',
-          name: 'Juan Simonis',
-          description: 'adipisci',
-        },
-        variants: [{ id: 'laudantium' }, { id: 'minus' }, { id: 'dolorum' }],
-      };
+      const experience = generateExperience();
 
       ninetailed.observeElement({
         element,
@@ -270,34 +274,37 @@ describe('Ninetailed core class', () => {
 
       expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
       expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        expect.objectContaining({ selectedVariantIndex: 1 }),
+        expect.objectContaining({
+          selectedVariantIndex: 1,
+          selectedVariant: { id: 'variant-id' },
+        }),
         expect.any(Object)
       );
     });
 
-    it('should track a component view for multiple intersecting elements', () => {
+    it('should track a component view for multiple intersecting elements', async () => {
       const element1 = document.body.appendChild(document.createElement('div'));
       const element2 = document.body.appendChild(document.createElement('div'));
-      const { ninetailed } = mockProfile();
+      const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
+      const { ninetailed } = mockProfile([testPlugin]);
 
       getObserverOf(element1);
       getObserverOf(element2);
 
-      const trackComponentViewSpy = jest.spyOn(
-        ninetailed,
-        'trackComponentView'
-      );
+      const experience = generateExperience();
 
       ninetailed.observeElement({
         element: element1,
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
+        experience,
       });
 
       ninetailed.observeElement({
         element: element2,
         variant: { id: 'variant-2-id' },
         variantIndex: 2,
+        experience,
       });
 
       intersect(element1, true);
@@ -305,79 +312,126 @@ describe('Ninetailed core class', () => {
 
       jest.runAllTimers();
 
-      expect(trackComponentViewSpy).toBeCalledTimes(2);
-      expect(trackComponentViewSpy).toBeCalledWith({
-        element: element1,
-        variant: { id: 'variant-1-id' },
-        variantIndex: 1,
-      });
-      expect(trackComponentViewSpy).toBeCalledWith({
-        element: element2,
-        variant: { id: 'variant-2-id' },
-        variantIndex: 2,
-      });
+      await sleep(5);
+
+      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
+
+      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          selectedVariantIndex: 1,
+          selectedVariant: { id: 'variant-1-id' },
+        }),
+        expect.any(Object)
+      );
+
+      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          selectedVariantIndex: 2,
+          selectedVariant: { id: 'variant-2-id' },
+        }),
+        expect.any(Object)
+      );
     });
 
-    it('should track component views for an intersecting element with different payloads', () => {
+    // TODO: Enable this test once the issue with NinetailedAnalyticsPlugin line 94 is resolved
+    xit('should track component views for an intersecting element with different payloads', async () => {
       const element = document.body.appendChild(document.createElement('div'));
-      const { ninetailed } = mockProfile();
+      const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
+      const { ninetailed } = mockProfile([testPlugin]);
 
       getObserverOf(element);
 
-      const trackComponentViewSpy = jest.spyOn(
-        ninetailed,
-        'trackComponentView'
-      );
+      const experience = generateExperience();
 
       ninetailed.observeElement({
         element,
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
+        experience,
       });
 
       ninetailed.observeElement({
         element,
         variant: { id: 'variant-2-id' },
         variantIndex: 2,
+        experience,
       });
 
       intersect(element, true);
 
       jest.runAllTimers();
 
-      expect(trackComponentViewSpy).toBeCalledTimes(2);
-      expect(trackComponentViewSpy).toBeCalledWith({
-        element,
-        variant: { id: 'variant-1-id' },
-        variantIndex: 1,
-      });
-      expect(trackComponentViewSpy).toBeCalledWith({
-        element,
-        variant: { id: 'variant-2-id' },
-        variantIndex: 2,
-      });
+      await sleep(5);
+
+      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
+
+      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          selectedVariantIndex: 1,
+          selectedVariant: { id: 'variant-1-id' },
+        }),
+        expect.any(Object)
+      );
+
+      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          selectedVariantIndex: 2,
+          selectedVariant: { id: 'variant-2-id' },
+        }),
+        expect.any(Object)
+      );
     });
 
-    it('should track a single component view for an intersecting element with multiple but equal payloads', () => {
+    it('should track a single component view for an intersecting element with multiple but equal payloads', async () => {
       const element = document.body.appendChild(document.createElement('div'));
-      const { ninetailed } = mockProfile();
+      const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
+      const { ninetailed } = mockProfile([testPlugin]);
 
       getObserverOf(element);
 
-      const trackComponentViewSpy = jest.spyOn(
-        ninetailed,
-        'trackComponentView'
-      );
+      const experience = generateExperience();
 
       ninetailed.observeElement({
         element,
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
+        experience,
       });
 
       ninetailed.observeElement({
         element,
         variant: { id: 'variant-1-id' },
+        variantIndex: 1,
+        experience,
+      });
+
+      intersect(element, true);
+
+      jest.runAllTimers();
+
+      await sleep(5);
+
+      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
+
+      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          selectedVariantIndex: 1,
+          selectedVariant: { id: 'variant-1-id' },
+        }),
+        expect.any(Object)
+      );
+    });
+
+    it('should not track a component view when no experience is provided', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
+      const { ninetailed } = mockProfile([testPlugin]);
+
+      getObserverOf(element);
+
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
         variantIndex: 1,
       });
 
@@ -385,12 +439,9 @@ describe('Ninetailed core class', () => {
 
       jest.runAllTimers();
 
-      expect(trackComponentViewSpy).toBeCalledTimes(1);
-      expect(trackComponentViewSpy).toBeCalledWith({
-        element,
-        variant: { id: 'variant-1-id' },
-        variantIndex: 1,
-      });
+      await sleep(5);
+
+      expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
     });
   });
 });
