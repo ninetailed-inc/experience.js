@@ -33,8 +33,17 @@ function parsePackageJson(packageJsonPath: string) {
   return JSON.parse(fileContent);
 }
 
-describe('testsGeneratedPackageJson', () => {
+describe('Generated package.json files', () => {
   const packageJsonPaths = findPackageJsonPaths('dist/packages');
+
+  it.each(packageJsonPaths)(
+    '%s should match the snapshot',
+    (packageJsonPath) => {
+      const json = parsePackageJson(packageJsonPath);
+
+      expect(json).toMatchSnapshot();
+    }
+  );
 
   it.each(packageJsonPaths)(
     '%s should have no type field if it has a module and a main field',

@@ -1,0 +1,545 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Generated package.json files dist/packages/plugins/analytics/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@anatine/zod-mock": "3.8.1",
+    "@ninetailed/experience.js-shared": "*",
+    "analytics": "0.8.1",
+    "zod": "3.21.4",
+  },
+  "description": "Ninetailed SDK plugin for analytics",
+  "keywords": Array [
+    "analytics",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-plugin-analytics",
+  "repository": Object {
+    "directory": "packages/plugins/analytics",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/contentsquare/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "tslib": "2.4.1",
+  },
+  "description": "Ninetailed SDK plugin for Contentsquare",
+  "license": "MIT",
+  "main": "./src/index.js",
+  "name": "@ninetailed/experience.js-plugin-contentsquare",
+  "repository": Object {
+    "directory": "packages/plugins/contentsquare",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "type": "commonjs",
+  "types": "./src/index.d.ts",
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/google-analytics/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+  },
+  "description": "Ninetailed SDK plugin for Google Analytics",
+  "keywords": Array [
+    "google-analytics",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-plugin-google-analytics",
+  "repository": Object {
+    "directory": "packages/plugins/google-analytics",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/google-tagmanager/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "7.5.2-beta.1",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "7.5.2-beta.1",
+    "tslib": "2.4.1",
+  },
+  "description": "Ninetailed SDK plugin for Google Tag Manager",
+  "keywords": Array [
+    "google-tagmanager",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./src/index.js",
+  "name": "@ninetailed/experience.js-plugin-google-tagmanager",
+  "repository": Object {
+    "directory": "packages/plugins/google-tagmanager",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "type": "commonjs",
+  "types": "./src/index.d.ts",
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/insights/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "async-retry": "1.3.3",
+    "uuid": "9.0.0",
+  },
+  "description": "Ninetailed SDK plugin for Adobe Analytics",
+  "keywords": Array [
+    "insights",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "name": "@ninetailed/experience.js-plugin-insights",
+  "repository": Object {
+    "directory": "packages/plugins/insights",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "type": "commonjs",
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/preview/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-preview-bridge": "*",
+    "@ninetailed/experience.js-shared": "*",
+  },
+  "description": "Ninetailed SDK plugin for preview",
+  "keywords": Array [
+    "preview",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-plugin-preview",
+  "repository": Object {
+    "directory": "packages/plugins/preview",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/preview-bridge/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "zoid": "9.0.86",
+  },
+  "description": "Ninetailed SDK plugin for Experience.js preview bridge",
+  "keywords": Array [
+    "preview-bridge",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-preview-bridge",
+  "repository": Object {
+    "directory": "packages/plugins/preview-bridge",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/privacy/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "7.5.2-beta.1",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "7.5.2-beta.1",
+    "radash": "10.9.0",
+    "tslib": "2.4.1",
+    "wildcard-match": "5.1.2",
+  },
+  "description": "Ninetailed SDK plugin for privacy",
+  "keywords": Array [
+    "privacy",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./src/index.js",
+  "name": "@ninetailed/experience.js-plugin-privacy",
+  "repository": Object {
+    "directory": "packages/plugins/privacy",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "type": "commonjs",
+  "types": "./src/index.d.ts",
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/segment/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "@segment/analytics-next": "1.48.0",
+    "tslib": "2.4.1",
+  },
+  "description": "Ninetailed SDK plugin for Segment",
+  "keywords": Array [
+    "segment",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./src/index.js",
+  "name": "@ninetailed/experience.js-plugin-segment",
+  "repository": Object {
+    "directory": "packages/plugins/segment",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "type": "commonjs",
+  "types": "./src/index.d.ts",
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/plugins/ssr/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "js-cookie": "3.0.1",
+    "uuid": "9.0.0",
+  },
+  "description": "Ninetailed SDK plugin for SSR",
+  "keywords": Array [
+    "ssr",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-plugin-ssr",
+  "repository": Object {
+    "directory": "packages/plugins/ssr",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/sdks/gatsby/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-react": "*",
+    "gatsby-plugin-utils": "3.19.0",
+    "lodash": "4.17.21",
+  },
+  "description": "Ninetailed Gatsby Plugin for dynamic content, personalization and a/b testing.",
+  "homepage": "https://docs.ninetailed.io/frameworks/gatsby",
+  "keywords": Array [
+    "gatsby",
+    "gatsby-plugin",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "name": "@ninetailed/experience.js-gatsby",
+  "peerDependencies": Object {
+    "@nx/react": "16.6.0",
+    "gatsby": ">=2.27.4",
+    "react": ">=16.8.0",
+  },
+  "repository": Object {
+    "directory": "packages/plugins/gatsby",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "type": "commonjs",
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/sdks/javascript/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "analytics": "0.8.1",
+    "uuid": "9.0.0",
+  },
+  "description": "Ninetailed SDK for javascript",
+  "devDependencies": Object {
+    "@jest/globals": "29.7.0",
+  },
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js",
+  "repository": Object {
+    "directory": "packages/sdks/javascript",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/sdks/nextjs/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-ssr": "*",
+    "@ninetailed/experience.js-react": "*",
+    "@ninetailed/experience.js-shared": "*",
+  },
+  "description": "Ninetailed SDK for Next.js",
+  "keywords": Array [
+    "nextjs",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-next",
+  "peerDependencies": Object {
+    "next": ">=9.0.0",
+    "react": ">=16.8.0",
+  },
+  "repository": Object {
+    "directory": "packages/sdks/nextjs",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/sdks/nextjs-esr/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "next": "13.3.0",
+  },
+  "description": "Ninetailed SDK for Next.js ESR",
+  "keywords": Array [
+    "nextjs-esr",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-next-esr",
+  "peerDependencies": Object {
+    "@ninetailed/experience.js-shared": "*",
+    "uuid": "9.0.0",
+  },
+  "repository": Object {
+    "directory": "packages/sdks/nextjs-esr",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/sdks/nodejs/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js-shared": "*",
+    "jest-fetch-mock": "3.0.3",
+    "node-fetch": "2",
+    "uuid": "9.0.0",
+  },
+  "description": "Ninetailed SDK for Node.js",
+  "keywords": Array [
+    "nodejs",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./src/index.js",
+  "name": "@ninetailed/experience.js-node",
+  "repository": Object {
+    "directory": "packages/sdks/nodejs",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "type": "commonjs",
+  "types": "./src/index.d.ts",
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/sdks/react/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "@testing-library/react": "13.4.0",
+    "@testing-library/react-hooks": "7.0.2",
+    "radash": "10.9.0",
+    "react-intersection-observer": "8.34.0",
+    "react-is": "18.2.0",
+  },
+  "description": "Ninetailed SDK for React",
+  "keywords": Array [
+    "react",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-react",
+  "peerDependencies": Object {
+    "react": ">=16.8.0",
+  },
+  "repository": Object {
+    "directory": "packages/sdks/react",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/sdks/shared/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@anatine/zod-mock": "3.8.1",
+    "async-retry": "1.3.3",
+    "diary": "0.4.4",
+    "i18n-iso-countries": "7.5.0",
+    "jest-fetch-mock": "3.0.3",
+    "murmurhash-js": "1.0.0",
+    "radash": "10.9.0",
+    "ts-toolbelt": "9.6.0",
+    "zod": "3.21.4",
+  },
+  "description": "Shared code for Experience.js",
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-shared",
+  "repository": Object {
+    "directory": "packages/sdks/shared",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/utils/contentful/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@contentful/rich-text-types": "16.2.0",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "@ninetailed/experience.js-utils": "*",
+    "contentful": "^9.1.32",
+    "zod": "3.21.4",
+  },
+  "description": "Contentful utilities for Experience.js",
+  "keywords": Array [
+    "contentful",
+    "ninetailed",
+    "personalization",
+    "a/b testing",
+  ],
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-utils-contentful",
+  "repository": Object {
+    "directory": "packages/utils/contentful",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
+
+exports[`Generated package.json files dist/packages/utils/javascript/package.json should match the snapshot 1`] = `
+Object {
+  "dependencies": Object {
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "zod": "3.21.4",
+  },
+  "description": "Ninetailed Experience.js Utils",
+  "license": "MIT",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "name": "@ninetailed/experience.js-utils",
+  "repository": Object {
+    "directory": "packages/utils/javascript",
+    "type": "git",
+    "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "version": "7.6.0-beta.1",
+}
+`;
