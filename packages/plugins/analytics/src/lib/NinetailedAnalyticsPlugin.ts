@@ -1,4 +1,5 @@
 import { logger, template } from '@ninetailed/experience.js-shared';
+import { hasComponentViewTrackingThreshold } from './guards/hasComponentViewTrackingThreshold';
 
 import {
   type ElementSeenPayload,
@@ -91,6 +92,13 @@ export abstract class NinetailedAnalyticsPlugin<
   public [HAS_SEEN_ELEMENT]: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
+    if (
+      hasComponentViewTrackingThreshold(this) &&
+      this.getComponentViewTrackingThreshold() !== payload.seenFor
+    ) {
+      return;
+    }
+
     if (this.seenElements.has(payload.element)) {
       return;
     }

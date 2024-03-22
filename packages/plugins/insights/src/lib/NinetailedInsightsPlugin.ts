@@ -26,6 +26,7 @@ import {
   EventHandler,
   HAS_SEEN_ELEMENT,
   NinetailedPlugin,
+  hasComponentViewTrackingThreshold,
 } from '@ninetailed/experience.js-plugin-analytics';
 
 export class NinetailedInsightsPlugin
@@ -66,7 +67,14 @@ export class NinetailedInsightsPlugin
   public [HAS_SEEN_ELEMENT]: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    const { element, experience, variant, variantIndex } = payload;
+    const { element, experience, variant, variantIndex, seenFor } = payload;
+
+    if (
+      hasComponentViewTrackingThreshold(this) &&
+      this.getComponentViewTrackingThreshold() !== seenFor
+    ) {
+      return;
+    }
 
     const componentId = variant.id;
 

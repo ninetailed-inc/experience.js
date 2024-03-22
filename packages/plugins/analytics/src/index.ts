@@ -12,4 +12,9 @@ export type { TrackComponentProperties } from './lib/TrackingProperties';
 
 export { type EventHandler, NinetailedPlugin } from './lib/NinetailedPlugin';
 
+export {
+  hasComponentViewTrackingThreshold,
+  type HasComponentViewTrackingThreshold,
+} from './lib/guards/hasComponentViewTrackingThreshold';
+
 export * from './lib/constants';

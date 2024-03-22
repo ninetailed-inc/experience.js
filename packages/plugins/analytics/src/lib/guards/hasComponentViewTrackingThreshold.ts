@@ -1,5 +1,5 @@
-import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
-import type { HasComponentViewTrackingThreshold } from '../types/interfaces/HasComponentViewTrackingThreshold';
+import { NinetailedPlugin } from '../NinetailedPlugin';
+import { HasComponentViewTrackingThreshold } from '../types/interfaces/HasComponentViewTrackingThreshold';
 
 export const hasComponentViewTrackingThreshold = (
   arg: NinetailedPlugin

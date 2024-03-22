@@ -75,7 +75,10 @@ export type TrackHasSeenComponent = (
 ) => Promise<void>;
 
 export type TrackComponentView = (
-  properties: ElementSeenPayload
+  properties: Omit<
+    ElementSeenPayload,
+    'seenFor' | 'globalComponentViewTrackingThreshold'
+  >
 ) => Promise<void>;
 
 export type Identify = (

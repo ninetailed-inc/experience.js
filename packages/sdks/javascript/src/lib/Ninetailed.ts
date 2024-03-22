@@ -58,11 +58,11 @@ import {
   ElementSeenPayload,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
+  HasComponentViewTrackingThreshold,
   NinetailedPlugin,
+  hasComponentViewTrackingThreshold,
 } from '@ninetailed/experience.js-plugin-analytics';
 import { EventBuilder } from './utils/EventBuilder';
-import { hasComponentViewTrackingThreshold } from './guards/hasComponentViewTrackingThreshold';
-import { HasComponentViewTrackingThreshold } from './types/interfaces/HasComponentViewTrackingThreshold';
 
 declare global {
   interface Window {
@@ -455,6 +455,9 @@ export class Ninetailed implements NinetailedInstance {
     return this.instance.dispatch({
       ...properties,
       type: HAS_SEEN_ELEMENT,
+      // TODO this is a temporary solution - to not make the user specify a delay
+      delay: this.componentViewTrackingThreshold,
+      globalComponentViewTrackingThreshold: this.componentViewTrackingThreshold,
     });
   };
 
@@ -528,34 +531,14 @@ export class Ninetailed implements NinetailedInstance {
     const payloads = this.observedElements.get(element);
 
     if (Array.isArray(payloads) && payloads.length > 0) {
-      const pluginNamesInterestedInSeenElementMessage = [
-        ...this.pluginsWithCustomComponentViewThreshold.filter(
-          (plugin) => plugin.getComponentViewTrackingThreshold() === delay
-        ),
-        ...this.plugins.filter(
-          (plugin) => !hasComponentViewTrackingThreshold(plugin)
-        ),
-      ].map((plugin) => plugin.name);
-
-      if (pluginNamesInterestedInSeenElementMessage.length === 0) {
-        return;
-      }
-
       for (const payload of payloads) {
         this.instance.dispatch({
           ...payload,
           element,
           type: HAS_SEEN_ELEMENT,
-          plugins: {
-            all: false,
-            ...pluginNamesInterestedInSeenElementMessage.reduce(
-              (acc, curr) => ({
-                ...acc,
-                [curr]: true,
-              }),
-              {}
-            ),
-          },
+          seenFor: delay,
+          globalComponentViewTrackingThreshold:
+            this.componentViewTrackingThreshold,
         });
       }
     }

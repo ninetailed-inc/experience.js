@@ -31,6 +31,8 @@ export const ElementSeenPayloadSchema = z.object({
     }),
   variant: z.object({ id: z.string() }).catchall(z.unknown()),
   variantIndex: z.number(),
+  seenFor: z.number().optional().default(0),
+  globalComponentViewTrackingThreshold: z.number(),
 });
 
 export type ElementSeenPayload = Omit<
