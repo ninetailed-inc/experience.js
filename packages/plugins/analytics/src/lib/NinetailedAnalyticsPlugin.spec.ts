@@ -109,6 +109,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...generateMock(ElementSeenPayloadSchema),
         element: document.createElement('div'),
         variantIndex: 1,
+        seenFor: testAnalyticsPlugin.getComponentViewTrackingThreshold(),
       };
 
       await analytics.dispatch({
