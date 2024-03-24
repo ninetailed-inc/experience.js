@@ -37,7 +37,6 @@ import {
 } from './constants';
 import { NinetailedInstance, FlushResult } from '../types';
 import { HAS_SEEN_STICKY_COMPONENT } from '../constants';
-import { HasComponentViewTrackingThreshold } from '../types/interfaces/HasComponentViewTrackingThreshold';
 
 export type OnInitProfileId = (
   profileId?: string
@@ -73,7 +72,7 @@ export interface NinetailedCorePlugin extends NinetailedPlugin {
 
 export class NinetailedCorePlugin
   extends NinetailedAnalyticsPlugin
-  implements NinetailedCorePlugin, HasComponentViewTrackingThreshold
+  implements NinetailedCorePlugin
 {
   public name = PLUGIN_NAME;
 
@@ -221,9 +220,9 @@ export class NinetailedCorePlugin
     );
   }
 
-  public getComponentViewTrackingThreshold() {
+  public override getComponentViewTrackingThreshold = () => {
     return 0;
-  }
+  };
 
   protected async onTrackExperience(
     properties: SanitizedElementSeenPayload

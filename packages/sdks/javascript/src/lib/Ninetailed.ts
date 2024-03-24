@@ -57,7 +57,7 @@ import { RemoveOnChangeListener } from './utils/OnChangeEmitter';
 import {
   ElementSeenPayload,
   HAS_SEEN_COMPONENT,
-  HAS_SEEN_ELEMENT,
+  HAS_SEEN_ELEMENT_START,
   HasComponentViewTrackingThreshold,
   NinetailedPlugin,
   hasComponentViewTrackingThreshold,
@@ -203,6 +203,12 @@ export class Ninetailed implements NinetailedInstance {
           clientId: this.clientId,
           environment: this.environment,
         });
+      }
+
+      if (hasComponentViewTrackingThreshold(plugin)) {
+        plugin.setComponentViewTrackingThreshold(
+          componentViewTrackingThreshold
+        );
       }
     });
 
@@ -454,10 +460,9 @@ export class Ninetailed implements NinetailedInstance {
   public trackComponentView: TrackComponentView = (properties) => {
     return this.instance.dispatch({
       ...properties,
-      type: HAS_SEEN_ELEMENT,
+      type: HAS_SEEN_ELEMENT_START,
       // TODO this is a temporary solution - to not make the user specify a delay
-      delay: this.componentViewTrackingThreshold,
-      globalComponentViewTrackingThreshold: this.componentViewTrackingThreshold,
+      seenFor: this.componentViewTrackingThreshold,
     });
   };
 
@@ -490,12 +495,7 @@ export class Ninetailed implements NinetailedInstance {
       const delays = this.pluginsWithCustomComponentViewThreshold.map(
         (plugin) => plugin.getComponentViewTrackingThreshold()
       );
-      const uniqueDelays = Array.from(
-        new Set([
-          ...delays,
-          options?.delay || this.componentViewTrackingThreshold,
-        ])
-      );
+      const uniqueDelays = Array.from(new Set([...delays, options?.delay]));
 
       if (!existingPayloads) {
         this.observedElements.set(element, [remaingPayload]);
@@ -535,10 +535,8 @@ export class Ninetailed implements NinetailedInstance {
         this.instance.dispatch({
           ...payload,
           element,
-          type: HAS_SEEN_ELEMENT,
+          type: HAS_SEEN_ELEMENT_START,
           seenFor: delay,
-          globalComponentViewTrackingThreshold:
-            this.componentViewTrackingThreshold,
         });
       }
     }

@@ -24,7 +24,10 @@ const mockProfile = (plugins: NinetailedPlugin[] = []) => {
     location: {},
     session: {},
   });
-  const ninetailed = new Ninetailed(apiClient, { plugins });
+  const ninetailed = new Ninetailed(apiClient, {
+    plugins,
+    componentViewTrackingThreshold: 0,
+  });
 
   return { apiClient, ninetailed };
 };
