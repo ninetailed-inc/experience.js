@@ -7,13 +7,5 @@
   },
   "files": [],
   "exclude": ["**/*.spec.ts", "**/*.spec.tsx"],
-  "include": [
-    "**/*.js",
-    "**/*.jsx",
-    "**/*.ts",
-    "**/*.tsx",
-    "jest.config.cjs",
-    "src/lib/types/interfaces/HasComponentViewTrackingThreshold.ts",
-    "../../plugins/analytics/src/lib/guards/hasComponentViewTrackingThreshold.ts"
-  ]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "jest.config.cjs"]
 }
