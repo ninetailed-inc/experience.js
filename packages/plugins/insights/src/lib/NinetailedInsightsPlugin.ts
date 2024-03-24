@@ -67,14 +67,7 @@ export class NinetailedInsightsPlugin
   public [HAS_SEEN_ELEMENT]: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    const { element, experience, variant, variantIndex, seenFor } = payload;
-
-    if (
-      hasComponentViewTrackingThreshold(this) &&
-      this.getComponentViewTrackingThreshold() !== seenFor
-    ) {
-      return;
-    }
+    const { element, experience, variant, variantIndex } = payload;
 
     const componentId = variant.id;
 
