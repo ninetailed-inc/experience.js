@@ -26,7 +26,6 @@ import {
   EventHandler,
   HAS_SEEN_ELEMENT,
   NinetailedPlugin,
-  hasComponentViewTrackingThreshold,
 } from '@ninetailed/experience.js-plugin-analytics';
 
 export class NinetailedInsightsPlugin
