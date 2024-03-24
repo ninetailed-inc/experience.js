@@ -1,5 +1,4 @@
 import { logger, template } from '@ninetailed/experience.js-shared';
-import { hasComponentViewTrackingThreshold } from './guards/hasComponentViewTrackingThreshold';
 
 import {
   type ElementSeenPayload,
