@@ -16,7 +16,6 @@ import {
 } from '@ninetailed/experience.js-shared';
 import {
   NinetailedAnalyticsPlugin,
-  NinetailedPlugin,
   SanitizedElementSeenPayload,
 } from '@ninetailed/experience.js-plugin-analytics';
 // import { NinetailedAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics';
@@ -66,7 +65,7 @@ type InternalAnalyticsInstance = AnalyticsInstance & {
   dispatch: (action: any) => void;
 };
 
-export interface NinetailedCorePlugin extends NinetailedPlugin {
+export interface NinetailedCorePlugin extends NinetailedAnalyticsPlugin {
   flush: (args: void) => Promise<FlushResult>;
 }
 

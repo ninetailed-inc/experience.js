@@ -57,7 +57,7 @@ import { RemoveOnChangeListener } from './utils/OnChangeEmitter';
 import {
   ElementSeenPayload,
   HAS_SEEN_COMPONENT,
-  HAS_SEEN_ELEMENT_START,
+  HAS_SEEN_ELEMENT,
   HasComponentViewTrackingThreshold,
   NinetailedPlugin,
   hasComponentViewTrackingThreshold,
@@ -460,7 +460,7 @@ export class Ninetailed implements NinetailedInstance {
   public trackComponentView: TrackComponentView = (properties) => {
     return this.instance.dispatch({
       ...properties,
-      type: HAS_SEEN_ELEMENT_START,
+      type: HAS_SEEN_ELEMENT,
       // TODO this is a temporary solution - to not make the user specify a delay
       seenFor: this.componentViewTrackingThreshold,
     });
@@ -535,7 +535,7 @@ export class Ninetailed implements NinetailedInstance {
         this.instance.dispatch({
           ...payload,
           element,
-          type: HAS_SEEN_ELEMENT_START,
+          type: HAS_SEEN_ELEMENT,
           seenFor: delay,
         });
       }
