@@ -29,6 +29,8 @@ import {
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
 
+type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
+
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin
   implements
@@ -39,7 +41,7 @@ export class NinetailedInsightsPlugin
 {
   public override name = 'ninetailed:insights';
 
-  private seenElements = new WeakMap<Element, ElementSeenPayload[]>();
+  private seenElements = new WeakMap<Element, ObservedElementPayload[]>();
 
   private profile?: Profile;
 
@@ -69,6 +71,8 @@ export class NinetailedInsightsPlugin
   }) => {
     const { element, experience, variant, variantIndex } = payload;
 
+    const { element: _, ...elementPayloadWithoutElement } = payload;
+
     const componentId = variant.id;
 
     if (typeof componentId === 'undefined') {
@@ -79,7 +83,7 @@ export class NinetailedInsightsPlugin
 
     const isElementAlreadySeenWithPayload = elementPayloads.some(
       (elementPayload) => {
-        return isEqual(elementPayload, payload);
+        return isEqual(elementPayload, elementPayloadWithoutElement);
       }
     );
 
@@ -87,7 +91,10 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    this.seenElements.set(element, [...elementPayloads, payload]);
+    this.seenElements.set(element, [
+      ...elementPayloads,
+      elementPayloadWithoutElement,
+    ]);
 
     /**
      * Intentionally sending a COMPONENT_START event instead of COMPONENT.
