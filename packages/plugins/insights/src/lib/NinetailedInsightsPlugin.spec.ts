@@ -74,7 +74,7 @@ describe('NinetailedInsightsPlugin', () => {
 
     await sleep(5);
 
-    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(2);
     expect(
       insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.length
     ).toBe(25);
@@ -159,6 +159,41 @@ describe('NinetailedInsightsPlugin', () => {
 
     await sleep(5);
 
-    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(1);
+    // Will be called twice because of the two unique delays on the Ninetailed class
+    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(2);
+  });
+
+  it('should not track the same element with the same payload', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const { ninetailed } = mockProfile([insightsPlugin]);
+
+    insightsPlugin.setCredentials({
+      clientId: 'test',
+      environment: 'development',
+    });
+
+    await ninetailed.identify('test');
+
+    jest.useFakeTimers();
+
+    const element = document.body.appendChild(document.createElement('div'));
+    getObserverOf(element);
+
+    for (let i = 0; i < 25; i++) {
+      ninetailed.observeElement({
+        element,
+        variant: { id: `variant-id-1` },
+        variantIndex: 0,
+      });
+    }
+
+    intersect(element, true);
+
+    jest.runAllTimers();
+    jest.useRealTimers();
+
+    await sleep(5);
+
+    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
   });
 });
