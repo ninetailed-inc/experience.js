@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { isEqual } from 'radash';
 import {
   COMPONENT,
   COMPONENT_START,
@@ -38,7 +39,7 @@ export class NinetailedInsightsPlugin
 {
   public override name = 'ninetailed:insights';
 
-  private seenElements = new WeakSet<Element>();
+  private seenElements = new WeakMap<Element, ElementSeenPayload[]>();
 
   private profile?: Profile;
 
@@ -74,25 +75,35 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    if (!this.seenElements.has(element)) {
-      this.seenElements.add(element);
+    const elementPayloads = this.seenElements.get(payload.element) || [];
 
-      /**
-       * Intentionally sending a COMPONENT_START event instead of COMPONENT.
-       * The NinetailedPrivacyPlugin, when used, will listen to COMPONENT_START and abort it if no consent is given.
-       * If COMPONENT_START is aborted, the COMPONENT event will not be sent.
-       * If NinetailedPrivacyPlugin is not used, the COMPONENT_START event will trigger the COMPONENT event.
-       *
-       * This behavior of the analytics library can be seen in the source code here:
-       * https://github.com/DavidWells/analytics/blob/ba02d13d8b9d092cf24835b65f4f90af18f2740b/packages/analytics-core/src/index.js#L577
-       */
-      this.instance?.dispatch({
-        type: COMPONENT_START,
-        componentId,
-        variantIndex,
-        experienceId: experience?.id,
-      });
+    const isElementAlreadySeenWithPayload = elementPayloads.some(
+      (elementPayload) => {
+        return isEqual(elementPayload, payload);
+      }
+    );
+
+    if (isElementAlreadySeenWithPayload) {
+      return;
     }
+
+    this.seenElements.set(element, [...elementPayloads, payload]);
+
+    /**
+     * Intentionally sending a COMPONENT_START event instead of COMPONENT.
+     * The NinetailedPrivacyPlugin, when used, will listen to COMPONENT_START and abort it if no consent is given.
+     * If COMPONENT_START is aborted, the COMPONENT event will not be sent.
+     * If NinetailedPrivacyPlugin is not used, the COMPONENT_START event will trigger the COMPONENT event.
+     *
+     * This behavior of the analytics library can be seen in the source code here:
+     * https://github.com/DavidWells/analytics/blob/ba02d13d8b9d092cf24835b65f4f90af18f2740b/packages/analytics-core/src/index.js#L577
+     */
+    this.instance?.dispatch({
+      type: COMPONENT_START,
+      componentId,
+      variantIndex,
+      experienceId: experience?.id,
+    });
   };
 
   public [COMPONENT]: EventHandler<ComponentViewEvent> = ({ payload }) => {
@@ -130,7 +141,7 @@ export class NinetailedInsightsPlugin
 
     this.profile = profile;
 
-    this.seenElements = new WeakSet<Element>();
+    this.seenElements = new WeakMap<Element, ElementSeenPayload[]>();
   };
 
   public [PAGE_HIDDEN] = () => {
