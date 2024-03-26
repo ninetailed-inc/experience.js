@@ -1,3 +1,4 @@
+import { isEqual } from 'radash';
 import { logger, template } from '@ninetailed/experience.js-shared';
 
 import {
@@ -28,7 +29,7 @@ export type SanitizedElementSeenPayload = {
 export abstract class NinetailedAnalyticsPlugin<
   THasSeenExperienceEventTemplate extends Template = Template
 > extends NinetailedPlugin {
-  private seenElements = new WeakSet<Element>();
+  private seenElements = new WeakMap<Element, SanitizedElementSeenPayload[]>();
 
   constructor(
     private readonly hasSeenExperienceEventTemplate: THasSeenExperienceEventTemplate = {} as THasSeenExperienceEventTemplate
@@ -91,10 +92,6 @@ export abstract class NinetailedAnalyticsPlugin<
   public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    if (this.seenElements.has(payload.element)) {
-      return;
-    }
-
     const sanitizedPayload = ElementSeenPayloadSchema.safeParse(payload);
 
     if (!sanitizedPayload.success) {
@@ -109,7 +106,7 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
-    this.seenElements.add(sanitizedPayload.data.element);
+    const elementPayloads = this.seenElements.get(payload.element) || [];
 
     const selectedVariantSelector =
       sanitizedPayload.data.variantIndex === 0
@@ -122,6 +119,21 @@ export abstract class NinetailedAnalyticsPlugin<
       selectedVariantIndex: sanitizedPayload.data.variantIndex,
       selectedVariantSelector,
     };
+
+    const isElementAlreadySeenWithPayload = elementPayloads.some(
+      (elementPayload) => {
+        return isEqual(elementPayload, sanitizedTrackExperienceProperties);
+      }
+    );
+
+    if (isElementAlreadySeenWithPayload) {
+      return;
+    }
+
+    this.seenElements.set(payload.element, [
+      ...elementPayloads,
+      sanitizedTrackExperienceProperties,
+    ]);
 
     this.onTrackExperience(
       sanitizedTrackExperienceProperties,

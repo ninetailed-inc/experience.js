@@ -335,8 +335,7 @@ describe('Ninetailed core class', () => {
       );
     });
 
-    // TODO: Enable this test once the issue with NinetailedAnalyticsPlugin line 94 is resolved
-    xit('should track component views for an intersecting element with different payloads', async () => {
+    it('should track component views for an intersecting element with different payloads', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
       const { ninetailed } = mockProfile([testPlugin]);
