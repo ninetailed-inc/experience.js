@@ -89,7 +89,7 @@ export abstract class NinetailedAnalyticsPlugin<
     return event;
   };
 
-  public [HAS_SEEN_ELEMENT]: EventHandler<ElementSeenPayload> = ({
+  public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
     const sanitizedPayload = ElementSeenPayloadSchema.safeParse(payload);

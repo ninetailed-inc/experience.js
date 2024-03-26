@@ -74,7 +74,7 @@ describe('NinetailedInsightsPlugin', () => {
 
     await sleep(5);
 
-    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(2);
+    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
     expect(
       insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.length
     ).toBe(25);
@@ -159,8 +159,7 @@ describe('NinetailedInsightsPlugin', () => {
 
     await sleep(5);
 
-    // Will be called twice because of the two unique delays on the Ninetailed class
-    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(2);
+    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(1);
   });
 
   it('should not track the same element with the same payload', async () => {

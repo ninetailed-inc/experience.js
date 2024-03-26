@@ -58,11 +58,11 @@ import {
   ElementSeenPayload,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
+  HasComponentViewTrackingThreshold,
   NinetailedPlugin,
+  hasComponentViewTrackingThreshold,
 } from '@ninetailed/experience.js-plugin-analytics';
 import { EventBuilder } from './utils/EventBuilder';
-import { hasComponentViewTrackingThreshold } from './guards/hasComponentViewTrackingThreshold';
-import { HasComponentViewTrackingThreshold } from './types/interfaces/HasComponentViewTrackingThreshold';
 
 declare global {
   interface Window {
@@ -203,6 +203,12 @@ export class Ninetailed implements NinetailedInstance {
           clientId: this.clientId,
           environment: this.environment,
         });
+      }
+
+      if (hasComponentViewTrackingThreshold(plugin)) {
+        plugin.setComponentViewTrackingThreshold(
+          componentViewTrackingThreshold
+        );
       }
     });
 
@@ -455,6 +461,8 @@ export class Ninetailed implements NinetailedInstance {
     return this.instance.dispatch({
       ...properties,
       type: HAS_SEEN_ELEMENT,
+      // TODO this is a temporary solution - to not make the user specify a delay
+      seenFor: this.componentViewTrackingThreshold,
     });
   };
 
@@ -487,12 +495,7 @@ export class Ninetailed implements NinetailedInstance {
       const delays = this.pluginsWithCustomComponentViewThreshold.map(
         (plugin) => plugin.getComponentViewTrackingThreshold()
       );
-      const uniqueDelays = Array.from(
-        new Set([
-          ...delays,
-          options?.delay || this.componentViewTrackingThreshold,
-        ])
-      );
+      const uniqueDelays = Array.from(new Set([...delays, options?.delay]));
 
       if (!existingPayloads) {
         this.observedElements.set(element, [remaingPayload]);
@@ -528,34 +531,12 @@ export class Ninetailed implements NinetailedInstance {
     const payloads = this.observedElements.get(element);
 
     if (Array.isArray(payloads) && payloads.length > 0) {
-      const pluginNamesInterestedInSeenElementMessage = [
-        ...this.pluginsWithCustomComponentViewThreshold.filter(
-          (plugin) => plugin.getComponentViewTrackingThreshold() === delay
-        ),
-        ...this.plugins.filter(
-          (plugin) => !hasComponentViewTrackingThreshold(plugin)
-        ),
-      ].map((plugin) => plugin.name);
-
-      if (pluginNamesInterestedInSeenElementMessage.length === 0) {
-        return;
-      }
-
       for (const payload of payloads) {
         this.instance.dispatch({
           ...payload,
           element,
           type: HAS_SEEN_ELEMENT,
-          plugins: {
-            all: false,
-            ...pluginNamesInterestedInSeenElementMessage.reduce(
-              (acc, curr) => ({
-                ...acc,
-                [curr]: true,
-              }),
-              {}
-            ),
-          },
+          seenFor: delay,
         });
       }
     }

@@ -16,7 +16,6 @@ import {
 } from '@ninetailed/experience.js-shared';
 import {
   NinetailedAnalyticsPlugin,
-  NinetailedPlugin,
   SanitizedElementSeenPayload,
 } from '@ninetailed/experience.js-plugin-analytics';
 // import { NinetailedAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics';
@@ -37,7 +36,6 @@ import {
 } from './constants';
 import { NinetailedInstance, FlushResult } from '../types';
 import { HAS_SEEN_STICKY_COMPONENT } from '../constants';
-import { HasComponentViewTrackingThreshold } from '../types/interfaces/HasComponentViewTrackingThreshold';
 
 export type OnInitProfileId = (
   profileId?: string
@@ -67,13 +65,13 @@ type InternalAnalyticsInstance = AnalyticsInstance & {
   dispatch: (action: any) => void;
 };
 
-export interface NinetailedCorePlugin extends NinetailedPlugin {
+export interface NinetailedCorePlugin extends NinetailedAnalyticsPlugin {
   flush: (args: void) => Promise<FlushResult>;
 }
 
 export class NinetailedCorePlugin
   extends NinetailedAnalyticsPlugin
-  implements NinetailedCorePlugin, HasComponentViewTrackingThreshold
+  implements NinetailedCorePlugin
 {
   public name = PLUGIN_NAME;
 
@@ -221,9 +219,9 @@ export class NinetailedCorePlugin
     );
   }
 
-  public getComponentViewTrackingThreshold() {
+  public override getComponentViewTrackingThreshold = () => {
     return 0;
-  }
+  };
 
   protected async onTrackExperience(
     properties: SanitizedElementSeenPayload

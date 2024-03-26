@@ -25,7 +25,6 @@ import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
 import {
   ElementSeenPayload,
   EventHandler,
-  HAS_SEEN_ELEMENT,
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
 
@@ -66,7 +65,7 @@ export class NinetailedInsightsPlugin
     this.instance = instance;
   };
 
-  public [HAS_SEEN_ELEMENT]: EventHandler<ElementSeenPayload> = ({
+  public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
     const { element, experience, variant, variantIndex } = payload;
