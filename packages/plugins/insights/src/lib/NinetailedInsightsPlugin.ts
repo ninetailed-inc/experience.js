@@ -25,7 +25,6 @@ import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
 import {
   ElementSeenPayload,
   EventHandler,
-  HAS_SEEN_ELEMENT,
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
 
