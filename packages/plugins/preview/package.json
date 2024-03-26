@@ -1,6 +1,6 @@
 {
   "name": "@ninetailed/experience.js-plugin-preview",
-  "version": "7.5.1",
+  "version": "7.6.0-beta.1",
   "description": "Ninetailed SDK plugin for preview",
   "license": "MIT",
   "repository": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js": "*",
-    "@ninetailed/experience.js-preview-bridge": "*"
+    "@ninetailed/experience.js-preview-bridge": "*",
+    "@ninetailed/experience.js-plugin-analytics": "*"
   }
 }

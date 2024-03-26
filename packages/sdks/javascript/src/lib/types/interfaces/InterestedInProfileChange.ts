@@ -1,6 +1,6 @@
-import { PROFILE_CHANGE, Profile } from '@ninetailed/experience.js-shared';
+import { PROFILE_CHANGE } from '@ninetailed/experience.js-shared';
+import { EventHandler } from '@ninetailed/experience.js-plugin-analytics';
 
-import { EventHandler } from '../EventHandler';
 import { ProfileChangedPayload } from '../ProfileChangedPayload';
 
 export interface InterestedInProfileChange {

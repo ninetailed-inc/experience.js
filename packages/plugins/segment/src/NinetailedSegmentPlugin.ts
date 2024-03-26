@@ -2,8 +2,8 @@ import {
   NinetailedAnalyticsPlugin,
   SanitizedElementSeenPayload,
   Template,
+  TrackComponentProperties,
 } from '@ninetailed/experience.js-plugin-analytics';
-import { TrackComponentProperties } from '@ninetailed/experience.js';
 import { template } from '@ninetailed/experience.js-shared';
 
 type NinetailedSegmentPluginOptions = {

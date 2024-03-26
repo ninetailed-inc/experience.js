@@ -4,7 +4,7 @@ import type { TrackEvent } from '../types/Event/TrackEvent';
 import type { Properties } from '../types/Event/Properties';
 import { buildEvent, BuildEventArgs } from './build-event';
 
-type BuildTrackEventArgs = Object.Omit<
+export type BuildTrackEventArgs = Object.Omit<
   Object.Merge<
     BuildEventArgs,
     {

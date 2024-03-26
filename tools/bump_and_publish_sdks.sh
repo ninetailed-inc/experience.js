@@ -51,6 +51,10 @@ function bump_and_publish () {
   # build from root of repo
   cd $PROJECT_ROOT
   yarn nx build $nx_project_name
+
+  # update the ninetailed interdependencies in the build package.json files
+  yarn ts-node ./tools/scripts/update-package-json.ts $NEW_VERSION dist/packages/$path_after_packages
+
   # publish once built
   cd dist/packages/$path_after_packages
 

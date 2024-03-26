@@ -13,7 +13,7 @@
         "project": "packages/sdks/shared/package.json",
         "entryFile": "packages/sdks/shared/src/index.ts",
         "external": [],
-        "rollupConfig": "packages/sdks/shared/rollup.config.js",
+        "rollupConfig": "packages/sdks/shared/rollup.config.cjs",
         "compiler": "babel",
         "format": ["cjs", "esm"],
         "assets": [
@@ -48,7 +48,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/shared"],
       "options": {
-        "jestConfig": "packages/sdks/shared/jest.config.js",
+        "jestConfig": "packages/sdks/shared/jest.config.cjs",
         "passWithNoTests": true
       }
     }

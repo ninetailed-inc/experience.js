@@ -1,12 +1,9 @@
 import { Object } from 'ts-toolbelt';
-import {
-  type BuildEventArgs,
-  buildEvent,
-} from '@ninetailed/experience.js-shared';
 
 import { type ComponentViewEvent } from '../types/Event/ComponentViewEvent';
+import { type BuildEventArgs, buildEvent } from './build-event';
 
-type BuildComponentViewEventData = Object.Omit<
+export type BuildComponentViewEventData = Object.Omit<
   Object.Merge<
     BuildEventArgs,
     {

@@ -16,6 +16,7 @@ export type ExperienceConfiguration<Variant extends Reference = Reference> = {
   };
   trafficAllocation: number;
   distribution: Distribution[];
+  sticky?: boolean;
 
   components: BaselineWithVariants<Variant>[];
 };

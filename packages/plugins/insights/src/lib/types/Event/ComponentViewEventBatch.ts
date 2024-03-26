@@ -1,6 +1,7 @@
-import { type Profile } from '@ninetailed/experience.js-shared';
-
-import { type ComponentViewEvent } from './ComponentViewEvent';
+import type {
+  ComponentViewEvent,
+  Profile,
+} from '@ninetailed/experience.js-shared';
 
 export type ComponentViewEventBatch = {
   profile: Profile;

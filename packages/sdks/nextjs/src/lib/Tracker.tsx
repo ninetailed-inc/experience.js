@@ -2,19 +2,23 @@ import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { logger } from '@ninetailed/experience.js-shared';
 import { useNinetailed } from '@ninetailed/experience.js-react';
+import { NinetailedInstance } from '@ninetailed/experience.js';
+
+export type OnRouteChange = (
+  routeInfo: { isInitialRoute: boolean },
+  ninetailed: NinetailedInstance
+) => void;
 
 type TrackerProps = {
-  isFirstPageviewAlreadyTracked: boolean;
+  onRouteChange?: OnRouteChange;
 };
 
 export const Tracker: React.FC<React.PropsWithChildren<TrackerProps>> = ({
-  isFirstPageviewAlreadyTracked,
+  onRouteChange,
 }) => {
   const router = useRouter();
-  const { page } = useNinetailed();
-  const lastFiredPageRef = useRef(
-    isFirstPageviewAlreadyTracked ? 'tracked' : 'none'
-  );
+  const ninetailed = useNinetailed();
+  const lastFiredPageRef = useRef('none');
 
   useEffect(() => {
     logger.debug(
@@ -42,7 +46,16 @@ export const Tracker: React.FC<React.PropsWithChildren<TrackerProps>> = ({
           'Ninetailed Next.js Tracker',
           'Page is not tracked yet, calling the ninetailed.page function.'
         );
-        page();
+
+        if (typeof onRouteChange === 'function') {
+          onRouteChange(
+            { isInitialRoute: lastFiredPageRef.current === 'none' },
+            ninetailed
+          );
+        } else {
+          ninetailed.page();
+        }
+
         logger.debug(
           'Ninetailed Next.js Tracker',
           'Page got tracked, setting the last fired page to the current url.',

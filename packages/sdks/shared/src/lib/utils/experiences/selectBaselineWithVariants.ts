@@ -5,10 +5,10 @@ import {
   Reference,
 } from '../../types/ExperienceDefinition';
 
-export const selectBaselineWithVariants = <Variant extends Reference>(
-  experience: ExperienceConfiguration<Variant>,
+export const selectBaselineWithVariants = <TVariant extends Reference>(
+  experience: ExperienceConfiguration<TVariant>,
   baseline: Baseline
-): BaselineWithVariants<Variant> | null => {
+): BaselineWithVariants<TVariant> | null => {
   return (
     experience.components.find(
       (baselineWithVariants) => baselineWithVariants.baseline.id === baseline.id

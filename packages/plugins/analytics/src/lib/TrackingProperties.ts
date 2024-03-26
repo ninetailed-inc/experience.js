@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const TrackComponentProperties = z.object({
+export const TrackComponentPropertiesSchema = z.object({
   variant: z.object({ id: z.string() }),
   audience: z.object({
     id: z.string(),
@@ -8,4 +8,6 @@ export const TrackComponentProperties = z.object({
   isPersonalized: z.boolean(),
 });
 
-export type TrackComponentProperties = z.infer<typeof TrackComponentProperties>;
+export type TrackComponentProperties = z.infer<
+  typeof TrackComponentPropertiesSchema
+>;

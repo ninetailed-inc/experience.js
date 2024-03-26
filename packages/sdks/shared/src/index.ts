@@ -11,6 +11,7 @@ export * from './lib/types/Event/IdentifyEvent';
 export * from './lib/types/Event/ScreenEvent';
 export * from './lib/types/Event/GroupEvent';
 export * from './lib/types/Event/AliasEvent';
+export * from './lib/types/Event/ComponentViewEvent';
 
 export * from './lib/types/Event/Campaign';
 export * from './lib/types/Event/Page';
@@ -73,6 +74,7 @@ export * from './lib/event/build-page';
 export * from './lib/event/build-page-event';
 export * from './lib/event/build-track-event';
 export * from './lib/event/build-identify-event';
+export * from './lib/event/build-component-view-event';
 
 // utils
 export * from './lib/utils/isBrowser';
@@ -80,6 +82,7 @@ export * from './lib/utils/pipe';
 export * from './lib/utils/unionBy';
 export * from './lib/utils/pickBy';
 export * from './lib/utils/template';
+export * from './lib/utils/events';
 
 // experience selection helpers
 export * from './lib/utils/experiences/constants';

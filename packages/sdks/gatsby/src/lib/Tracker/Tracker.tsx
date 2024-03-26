@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { Location, LocationContext } from '@reach/router';
 
 import { useNinetailed } from '@ninetailed/experience.js-react';
+import { NinetailedInstance } from '@ninetailed/experience.js';
 
 const usePrevious = (value: any) => {
   const ref = useRef();
@@ -12,22 +13,46 @@ const usePrevious = (value: any) => {
   return ref.current;
 };
 
-const Executor: React.FC<React.PropsWithChildren<LocationContext>> = ({
+type OnRouteChange = (
+  routeInfo: { isInitialRoute: boolean; url: string },
+  ninetailed: NinetailedInstance
+) => void;
+
+type ExecutorProps = LocationContext & {
+  onRouteChange?: OnRouteChange;
+};
+
+const Executor: React.FC<React.PropsWithChildren<ExecutorProps>> = ({
   location,
+  onRouteChange,
 }) => {
-  const { page } = useNinetailed();
-  const previousPathname = usePrevious(location);
-  const pathname = location.pathname;
+  const ninetailed = useNinetailed();
+  const previousHref = usePrevious(location.href);
 
   useEffect(() => {
-    if (pathname !== previousPathname) {
-      page();
+    if (location.href !== previousHref) {
+      if (typeof onRouteChange === 'function') {
+        onRouteChange(
+          { isInitialRoute: !previousHref, url: location.href },
+          ninetailed
+        );
+      } else {
+        ninetailed.page();
+      }
     }
-  }, [pathname, previousPathname, page]);
+  }, [location.href, previousHref, ninetailed, onRouteChange]);
 
   return null;
 };
 
-export const Tracker = () => {
-  return <Location>{(location) => <Executor {...location} />}</Location>;
+type TrackerProps = {
+  onRouteChange?: OnRouteChange;
+};
+
+export const Tracker: React.FC<TrackerProps> = ({ onRouteChange }) => {
+  return (
+    <Location>
+      {(location) => <Executor {...location} onRouteChange={onRouteChange} />}
+    </Location>
+  );
 };

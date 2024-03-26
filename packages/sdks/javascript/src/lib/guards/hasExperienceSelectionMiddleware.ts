@@ -2,9 +2,12 @@ import { Reference } from '@ninetailed/experience.js-shared';
 
 import { HasExperienceSelectionMiddleware } from '../types/interfaces/HasExperienceSelectionMiddleware';
 
-export const hasExperienceSelectionMiddleware = <Variant extends Reference>(
+export const hasExperienceSelectionMiddleware = <
+  TBaseline extends Reference,
+  TVariant extends Reference
+>(
   arg: unknown
-): arg is HasExperienceSelectionMiddleware<Variant> => {
+): arg is HasExperienceSelectionMiddleware<TBaseline, TVariant> => {
   return (
     typeof arg === 'object' &&
     arg !== null &&

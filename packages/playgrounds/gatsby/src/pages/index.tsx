@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "gatsby"
 import * as styles from "./index.module.css"
 import { Hero } from "../components/Hero"
 import { Personalize } from "@ninetailed/experience.js-gatsby"
@@ -56,6 +57,7 @@ export function Index() {
               <span> Hello there, </span>
               Welcome test-gastby 👋
             </h1>
+            <Link to="/index2">To index2</Link>
           </div>
 
           <div id="hero" className="rounded">

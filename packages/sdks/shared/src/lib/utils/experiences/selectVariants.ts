@@ -6,10 +6,10 @@ import {
   VariantRef,
 } from '../../types/ExperienceDefinition';
 
-export const selectVariants = <Variant extends Reference>(
-  experience: ExperienceConfiguration<Variant>,
+export const selectVariants = <TVariant extends Reference>(
+  experience: ExperienceConfiguration<TVariant>,
   baseline: Baseline
-): (Variant | VariantRef)[] => {
+): (TVariant | VariantRef)[] => {
   const baselineWithVariants = selectBaselineWithVariants(experience, baseline);
 
   if (!baselineWithVariants) {

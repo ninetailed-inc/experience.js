@@ -34,6 +34,7 @@ export const ExperienceEntryFields = z.object({
           traffic: 0,
           distribution: [0.5, 0.5],
           components: [],
+          sticky: false,
         }
       );
     }),

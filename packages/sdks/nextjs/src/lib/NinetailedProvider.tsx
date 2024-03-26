@@ -4,14 +4,18 @@ import {
   NinetailedProviderProps,
 } from '@ninetailed/experience.js-react';
 
-import { Tracker } from './Tracker';
+import { OnRouteChange, Tracker } from './Tracker';
 
 export const NinetailedProvider: React.FC<
-  React.PropsWithChildren<NinetailedProviderProps>
+  React.PropsWithChildren<
+    NinetailedProviderProps & { onRouteChange?: OnRouteChange }
+  >
 > = ({ children, ...props }) => {
+  const { onRouteChange, ...providerProps } = props;
+
   return (
-    <ReactNinetailedProvider {...props}>
-      <Tracker isFirstPageviewAlreadyTracked={false} />
+    <ReactNinetailedProvider {...providerProps}>
+      <Tracker onRouteChange={onRouteChange} />
       {children}
     </ReactNinetailedProvider>
   );

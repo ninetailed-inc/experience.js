@@ -21,6 +21,7 @@ export const Config = z.object({
     )
     .optional()
     .default([{ baseline: { id: '' }, variants: [{ id: '', hidden: false }] }]),
+  sticky: z.boolean().optional().default(false),
 });
 
 export type ConfigLike = z.input<typeof Config>;

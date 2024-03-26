@@ -1,4 +1,4 @@
-import { HAS_SEEN_ELEMENT } from '../constants';
+import { HAS_SEEN_ELEMENT } from '@ninetailed/experience.js-plugin-analytics';
 import { isInterestedInSeenElements } from './isInterestedInSeenElements';
 
 describe('isInterestedInSeenElements', () => {

@@ -1,4 +1,4 @@
-import { TrackComponentProperties } from '@ninetailed/experience.js';
+import { type TrackComponentProperties } from '../src/lib/TrackingProperties';
 import {
   NinetailedAnalyticsPlugin,
   SanitizedElementSeenPayload,

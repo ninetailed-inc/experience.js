@@ -1,6 +1,6 @@
 {
   "name": "@ninetailed/experience.js",
-  "version": "7.5.2-beta.1",
+  "version": "7.6.0-beta.1",
   "description": "Ninetailed SDK for javascript",
   "license": "MIT",
   "repository": {
@@ -9,9 +9,10 @@
     "directory": "packages/sdks/javascript"
   },
   "dependencies": {
+    "@ninetailed/experience.js-plugin-analytics": "*",
+    "@ninetailed/experience.js-shared": "*",
     "analytics": "0.8.1",
-    "zod": "3.21.4",
-    "@ninetailed/experience.js-shared": "*"
+    "uuid": "9.0.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0"

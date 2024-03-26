@@ -11,6 +11,7 @@ export const ElementSeenPayloadSchema = z.object({
       ]),
       name: z.string().optional(),
       description: z.string().optional(),
+      sticky: z.boolean().optional().default(false),
     })
     .optional()
     .nullable(),
@@ -30,6 +31,7 @@ export const ElementSeenPayloadSchema = z.object({
     }),
   variant: z.object({ id: z.string() }).catchall(z.unknown()),
   variantIndex: z.number(),
+  seenFor: z.number().optional().default(0),
 });
 
 export type ElementSeenPayload = Omit<

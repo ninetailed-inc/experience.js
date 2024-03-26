@@ -2,41 +2,54 @@ import {
   ExperienceConfiguration,
   Profile,
   Reference,
-  VariantRef,
   pipe,
 } from '@ninetailed/experience.js-shared';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
-import { NinetailedPlugin } from '../types/NinetailedPlugin';
 import { RemoveOnChangeListener } from '../utils/OnChangeEmitter';
 import { selectPluginsHavingOnChangeEmitter } from '../plugins/selectPluginsHavingOnChangeEmitter';
 import { selectPluginsHavingExperienceSelectionMiddleware } from '../plugins/selectPluginsHavingExperienceSelectionMiddleware';
-import { ExperienceSelectionMiddlewareReturnArg } from '../types/interfaces/HasExperienceSelectionMiddleware';
+import {
+  ExperienceSelectionMiddleware,
+  ExperienceSelectionMiddlewareArg,
+} from '../types/interfaces/HasExperienceSelectionMiddleware';
 
-type MakeExperienceSelectMiddlewareArg<Variant extends Reference> = {
+type MakeExperienceSelectMiddlewareArg<
+  Baseline extends Reference,
+  Variant extends Reference
+> = {
   plugins: NinetailedPlugin[];
   experiences: ExperienceConfiguration<Variant>[];
   baseline: Reference;
   profile: Profile | null;
-  onChange: () => void;
+  onChange: (
+    middleware: ExperienceSelectionMiddleware<Baseline, Variant>
+  ) => void;
 };
 
-const createPassThroughMiddleware = <Variant extends Reference>() => {
+const createPassThroughMiddleware = <
+  Baseline extends Reference,
+  Variant extends Reference
+>() => {
   return ({
     experience,
     variant,
     variantIndex,
-  }: ExperienceSelectionMiddlewareReturnArg<Variant>) => {
+  }: ExperienceSelectionMiddlewareArg<Baseline, Variant>) => {
     return { experience, variant, variantIndex };
   };
 };
 
-export const makeExperienceSelectMiddleware = <Variant extends Reference>({
+export const makeExperienceSelectMiddleware = <
+  TBaseline extends Reference,
+  TVariant extends Reference
+>({
   plugins,
   onChange,
   experiences,
   baseline,
   profile,
-}: MakeExperienceSelectMiddlewareArg<Variant>) => {
+}: MakeExperienceSelectMiddlewareArg<TBaseline, TVariant>) => {
   let removeChangeListeners: RemoveOnChangeListener[] = [];
 
   const pluginsHavingChangeEmitters =
@@ -44,11 +57,11 @@ export const makeExperienceSelectMiddleware = <Variant extends Reference>({
 
   const prepareMiddleware = () => {
     if (profile === null) {
-      return createPassThroughMiddleware<Variant | VariantRef>();
+      return createPassThroughMiddleware<TBaseline, TVariant>();
     }
 
     const pluginsWithMiddleware =
-      selectPluginsHavingExperienceSelectionMiddleware<Variant | VariantRef>(
+      selectPluginsHavingExperienceSelectionMiddleware<TBaseline, TVariant>(
         plugins
       );
 
@@ -59,10 +72,12 @@ export const makeExperienceSelectMiddleware = <Variant extends Reference>({
     return pipe(...middlewareFunctions);
   };
 
+  const middleware = prepareMiddleware();
+
   const addListeners = () => {
     removeChangeListeners = pluginsHavingChangeEmitters.map((plugin) => {
       const listener = () => {
-        onChange();
+        onChange(middleware);
       };
 
       return plugin.onChangeEmitter.addListener(listener);
@@ -72,8 +87,6 @@ export const makeExperienceSelectMiddleware = <Variant extends Reference>({
   const removeListeners = () => {
     removeChangeListeners.forEach((listener) => listener());
   };
-
-  const middleware = prepareMiddleware();
 
   return {
     addListeners,

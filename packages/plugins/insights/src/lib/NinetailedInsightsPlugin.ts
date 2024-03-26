@@ -1,14 +1,11 @@
 import { v4 as uuid } from 'uuid';
+import { isEqual } from 'radash';
 import {
-  NinetailedPlugin,
-  HAS_SEEN_ELEMENT,
   COMPONENT,
   COMPONENT_START,
   PROFILE_CHANGE,
   PAGE_HIDDEN,
   buildClientNinetailedRequestContext,
-  type ElementSeenPayload,
-  type EventHandler,
   type ProfileChangedPayload,
   type Profile,
   type InterestedInSeenElements,
@@ -19,10 +16,19 @@ import {
   AnalyticsInstance,
 } from '@ninetailed/experience.js';
 
-import { buildComponentViewEvent } from './event/build-component-view-event';
-import type { ComponentViewEvent } from './types/Event/ComponentViewEvent';
+import {
+  type ComponentViewEvent,
+  buildComponentViewEvent,
+} from '@ninetailed/experience.js-shared';
 import type { ComponentViewEventBatch } from './types/Event/ComponentViewEventBatch';
 import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
+import {
+  ElementSeenPayload,
+  EventHandler,
+  NinetailedPlugin,
+} from '@ninetailed/experience.js-plugin-analytics';
+
+type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
 
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin
@@ -34,7 +40,7 @@ export class NinetailedInsightsPlugin
 {
   public override name = 'ninetailed:insights';
 
-  private seenElements = new WeakSet<Element>();
+  private seenElements = new WeakMap<Element, ObservedElementPayload[]>();
 
   private profile?: Profile;
 
@@ -59,10 +65,12 @@ export class NinetailedInsightsPlugin
     this.instance = instance;
   };
 
-  public [HAS_SEEN_ELEMENT]: EventHandler<ElementSeenPayload> = ({
+  public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
     const { element, experience, variant, variantIndex } = payload;
+
+    const { element: _, ...elementPayloadWithoutElement } = payload;
 
     const componentId = variant.id;
 
@@ -70,25 +78,38 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    if (!this.seenElements.has(element)) {
-      this.seenElements.add(element);
+    const elementPayloads = this.seenElements.get(payload.element) || [];
 
-      /**
-       * Intentionally sending a COMPONENT_START event instead of COMPONENT.
-       * The NinetailedPrivacyPlugin, when used, will listen to COMPONENT_START and abort it if no consent is given.
-       * If COMPONENT_START is aborted, the COMPONENT event will not be sent.
-       * If NinetailedPrivacyPlugin is not used, the COMPONENT_START event will trigger the COMPONENT event.
-       *
-       * This behavior of the analytics library can be seen in the source code here:
-       * https://github.com/DavidWells/analytics/blob/ba02d13d8b9d092cf24835b65f4f90af18f2740b/packages/analytics-core/src/index.js#L577
-       */
-      this.instance?.dispatch({
-        type: COMPONENT_START,
-        componentId,
-        variantIndex,
-        experienceId: experience?.id,
-      });
+    const isElementAlreadySeenWithPayload = elementPayloads.some(
+      (elementPayload) => {
+        return isEqual(elementPayload, elementPayloadWithoutElement);
+      }
+    );
+
+    if (isElementAlreadySeenWithPayload) {
+      return;
     }
+
+    this.seenElements.set(element, [
+      ...elementPayloads,
+      elementPayloadWithoutElement,
+    ]);
+
+    /**
+     * Intentionally sending a COMPONENT_START event instead of COMPONENT.
+     * The NinetailedPrivacyPlugin, when used, will listen to COMPONENT_START and abort it if no consent is given.
+     * If COMPONENT_START is aborted, the COMPONENT event will not be sent.
+     * If NinetailedPrivacyPlugin is not used, the COMPONENT_START event will trigger the COMPONENT event.
+     *
+     * This behavior of the analytics library can be seen in the source code here:
+     * https://github.com/DavidWells/analytics/blob/ba02d13d8b9d092cf24835b65f4f90af18f2740b/packages/analytics-core/src/index.js#L577
+     */
+    this.instance?.dispatch({
+      type: COMPONENT_START,
+      componentId,
+      variantIndex,
+      experienceId: experience?.id,
+    });
   };
 
   public [COMPONENT]: EventHandler<ComponentViewEvent> = ({ payload }) => {
@@ -126,7 +147,7 @@ export class NinetailedInsightsPlugin
 
     this.profile = profile;
 
-    this.seenElements = new WeakSet<Element>();
+    this.seenElements = new WeakMap<Element, ElementSeenPayload[]>();
   };
 
   public [PAGE_HIDDEN] = () => {

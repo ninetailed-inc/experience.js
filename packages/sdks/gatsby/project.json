@@ -39,7 +39,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/gatsby"],
       "options": {
-        "jestConfig": "packages/sdks/gatsby/jest.config.js",
+        "jestConfig": "packages/sdks/gatsby/jest.config.cjs",
         "passWithNoTests": true
       }
     }

@@ -40,7 +40,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview-bridge"],
       "options": {
-        "jestConfig": "packages/plugins/preview-bridge/jest.config.js",
+        "jestConfig": "packages/plugins/preview-bridge/jest.config.cjs",
         "passWithNoTests": true
       }
     }
