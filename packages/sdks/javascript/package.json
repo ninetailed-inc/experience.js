@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "analytics": "0.8.1",
-    "zod": "3.21.4",
+    "zod": "3.22.3",
     "@ninetailed/experience.js-shared": "*"
   },
   "devDependencies": {
