@@ -74,7 +74,7 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
       url,
       locale,
       requestTimeout,
-      useClientSideEvaluation,
+      useSDKEvaluation,
     } = options;
 
     ninetailed = new Ninetailed(
@@ -84,7 +84,7 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
         plugins: resolvedPlugins,
         locale,
         requestTimeout,
-        useClientSideEvaluation,
+        useSDKEvaluation,
         ...functions,
       }
     );
