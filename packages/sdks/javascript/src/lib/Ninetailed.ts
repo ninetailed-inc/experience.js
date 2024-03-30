@@ -98,7 +98,7 @@ type Options = {
   onInitProfileId?: OnInitProfileId;
   buildClientContext?: () => NinetailedRequestContext;
   storageImpl?: Storage;
-  useClientSideEvaluation?: boolean;
+  useSDKEvaluation?: boolean;
 };
 
 type NinetailedApiClientInstanceOrOptions =
@@ -157,7 +157,7 @@ export class Ninetailed implements NinetailedInstance {
 
   private readonly componentViewTrackingThreshold: number;
 
-  private readonly useClientSideEvaluation: boolean;
+  private readonly useSDKEvaluation: boolean;
 
   public readonly eventBuilder: EventBuilder;
 
@@ -174,10 +174,10 @@ export class Ninetailed implements NinetailedInstance {
       onInitProfileId,
       componentViewTrackingThreshold = 2000,
       storageImpl,
-      useClientSideEvaluation = false,
+      useSDKEvaluation = false,
     }: Options = {}
   ) {
-    this.useClientSideEvaluation = useClientSideEvaluation;
+    this.useSDKEvaluation = useSDKEvaluation;
 
     if (ninetailedApiClientInstanceOrOptions instanceof NinetailedApiClient) {
       this.apiClient = ninetailedApiClientInstanceOrOptions;
@@ -687,7 +687,7 @@ export class Ninetailed implements NinetailedInstance {
         return;
       }
 
-      if (this.useClientSideEvaluation) {
+      if (this.useSDKEvaluation) {
         const experience = selectExperience({
           experiences,
           profile,
