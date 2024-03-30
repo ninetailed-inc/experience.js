@@ -31,7 +31,7 @@ export type NinetailedProviderInstantiationProps = {
   onInitProfileId?: OnInitProfileId;
   storageImpl?: Storage;
 
-  useClientSideEvaluation?: boolean;
+  useSDKEvaluation?: boolean;
 };
 
 export type NinetailedProviderProps =
@@ -60,7 +60,7 @@ export const NinetailedProvider = (
       onInitProfileId,
       componentViewTrackingThreshold,
       storageImpl,
-      useClientSideEvaluation,
+      useSDKEvaluation,
     } = props;
 
     return new Ninetailed(
@@ -76,7 +76,7 @@ export const NinetailedProvider = (
         onInitProfileId,
         componentViewTrackingThreshold,
         storageImpl,
-        useClientSideEvaluation,
+        useSDKEvaluation,
       }
     );
   }, []);
