@@ -7,11 +7,11 @@ import {
   PROFILE_RESET,
 } from '@ninetailed/experience.js-shared';
 
+import { AnalyticsInstance } from '@ninetailed/experience.js';
 import {
   EventHandler,
-  AnalyticsInstance,
   NinetailedPlugin,
-} from '@ninetailed/experience.js';
+} from '@ninetailed/experience.js-plugin-analytics';
 
 type NinetailedSsrPluginOptions = {
   cookie?: {

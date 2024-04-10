@@ -62,6 +62,7 @@ Array [
     ],
     "id": "1zPgxFzQNPjhvjRKBPr203",
     "name": "are-you-cool",
+    "sticky": false,
     "trafficAllocation": 1,
     "type": "nt_personalization",
   },

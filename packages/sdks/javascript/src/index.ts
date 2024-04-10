@@ -1,5 +1,5 @@
 export * from './lib/constants';
-export * from './lib/ninetailedCorePlugin';
+export * from './lib/NinetailedCorePlugin';
 export * from './lib/Ninetailed';
 export * from './lib/selectVariant';
 export * from './lib/types';

@@ -1,6 +1,6 @@
 {
   "name": "@ninetailed/experience.js-utils-contentful",
-  "version": "7.5.1",
+  "version": "7.6.0-beta.1",
   "description": "Contentful utilities for Experience.js",
   "dependencies": {
     "contentful": "^9.1.32",

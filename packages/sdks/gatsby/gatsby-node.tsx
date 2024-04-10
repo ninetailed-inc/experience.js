@@ -27,6 +27,9 @@ export const pluginOptionsSchema = ({
       }),
     environment: Joi.string(),
     ninetailedPlugins: Joi.array(),
+    useSDKEvaluation: Joi.boolean().optional().default(false),
+    onInitProfileId: Joi.function().optional(),
+    onRouteChange: Joi.function().optional(),
   });
 };
 

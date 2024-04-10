@@ -1,8 +1,8 @@
 {
   "name": "@ninetailed/experience.js-plugin-analytics",
-  "type": "commonjs",
   "description": "Ninetailed SDK plugin for analytics",
   "license": "MIT",
+  "version": "7.6.0-beta.1",
   "keywords": [
     "analytics",
     "ninetailed",
@@ -15,11 +15,10 @@
     "directory": "packages/plugins/analytics"
   },
   "dependencies": {
-    "@ninetailed/experience.js": "*",
     "@anatine/zod-mock": "3.8.1",
     "@ninetailed/experience.js-shared": "*",
-    "analytics": "0.8.1"
-  },
-  "peerDependencies": {},
-  "devDependencies": {}
+    "analytics": "0.8.1",
+    "radash": "10.9.0",
+    "zod": "3.21.4"
+  }
 }

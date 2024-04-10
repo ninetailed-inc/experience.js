@@ -1,16 +1,12 @@
 import { Analytics } from 'analytics';
 import { generateMock } from '@anatine/zod-mock';
-import {
-  AnalyticsInstance,
-  ElementSeenPayloadSchema,
-  HAS_SEEN_COMPONENT,
-  HAS_SEEN_ELEMENT,
-  TrackComponentProperties,
-} from '@ninetailed/experience.js';
 import { setTimeout as sleep } from 'node:timers/promises';
-
+import { ElementSeenPayloadSchema } from './ElementSeenPayload';
 import { Template } from './NinetailedAnalyticsPlugin';
 import { TestAnalyticsPlugin } from '../../test';
+import { AnalyticsInstance } from './AnalyticsInstance';
+import { HAS_SEEN_COMPONENT, HAS_SEEN_ELEMENT } from './constants';
+import { TrackComponentPropertiesSchema } from './TrackingProperties';
 
 const setup = (template: Template = {}) => {
   const testAnalyticsPlugin = new TestAnalyticsPlugin(
@@ -33,10 +29,20 @@ describe('NinetailedAnalyticsPlugin', () => {
     ({ analytics, testAnalyticsPlugin } = setup());
   });
 
+  const generateHasSeenElementMock = () => {
+    const mock = generateMock(ElementSeenPayloadSchema);
+    return {
+      ...mock,
+      element: document.createElement('div'),
+      seenFor: testAnalyticsPlugin.getComponentViewTrackingThreshold(),
+      experience: { ...mock.experience, id: 'experience-1' },
+    };
+  };
+
   describe('trackExperience', () => {
     it(`should receive the has_seen_element event`, async () => {
       const data = {
-        ...generateMock(ElementSeenPayloadSchema),
+        ...generateHasSeenElementMock(),
         element: document.createElement('div'),
         variantIndex: 1,
       };
@@ -77,7 +83,7 @@ describe('NinetailedAnalyticsPlugin', () => {
 
   describe('trackComponent', () => {
     it(`should receive the has_seen_component event`, async () => {
-      const data = generateMock(TrackComponentProperties);
+      const data = generateMock(TrackComponentPropertiesSchema);
 
       await analytics.dispatch({
         type: HAS_SEEN_COMPONENT,
@@ -110,7 +116,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         ninetailed_experience_name: 'nt_experience',
       }));
       const data = {
-        ...generateMock(ElementSeenPayloadSchema),
+        ...generateHasSeenElementMock(),
         element: document.createElement('div'),
         variantIndex: 1,
       };
@@ -143,8 +149,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         ninetailed_experience_name: '{{experience.a.b}}',
       }));
       const data = {
-        ...generateMock(ElementSeenPayloadSchema),
-        element: document.createElement('div'),
+        ...generateHasSeenElementMock(),
         variantIndex: 1,
       };
 
@@ -175,11 +180,8 @@ describe('NinetailedAnalyticsPlugin', () => {
       ({ analytics, testAnalyticsPlugin } = setup({
         '{{experience.id}}': 'bar',
       }));
-      const mock = generateMock(ElementSeenPayloadSchema);
       const data = {
-        ...mock,
-        element: document.createElement('div'),
-        experience: { ...mock.experience, id: 'foo' },
+        ...generateHasSeenElementMock(),
         variantIndex: 1,
       };
 
@@ -187,8 +189,8 @@ describe('NinetailedAnalyticsPlugin', () => {
         type: HAS_SEEN_ELEMENT,
         ...data,
       });
-
       await sleep(5);
+
       expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
         1
       );
@@ -201,7 +203,7 @@ describe('NinetailedAnalyticsPlugin', () => {
           selectedVariantSelector: 'variant 1',
         },
         {
-          foo: 'bar',
+          'experience-1': 'bar',
         }
       );
     });
@@ -210,11 +212,8 @@ describe('NinetailedAnalyticsPlugin', () => {
       ({ analytics, testAnalyticsPlugin } = setup({
         foo: '{{experience.id}}',
       }));
-      const mock = generateMock(ElementSeenPayloadSchema);
       const data = {
-        ...mock,
-        element: document.createElement('div'),
-        experience: { ...mock.experience, id: 'bar' },
+        ...generateHasSeenElementMock(),
         variantIndex: 1,
       };
 
@@ -236,7 +235,7 @@ describe('NinetailedAnalyticsPlugin', () => {
           selectedVariantSelector: 'variant 1',
         },
         {
-          foo: 'bar',
+          foo: 'experience-1',
         }
       );
     });

@@ -1,13 +1,16 @@
+import { isEqual } from 'radash';
 import { logger, template } from '@ninetailed/experience.js-shared';
+
 import {
   type ElementSeenPayload,
   ElementSeenPayloadSchema,
-  EventHandler,
-  HAS_SEEN_COMPONENT,
-  HAS_SEEN_ELEMENT,
-  NinetailedPlugin,
-  TrackComponentProperties,
-} from '@ninetailed/experience.js';
+} from './ElementSeenPayload';
+import {
+  type TrackComponentProperties,
+  TrackComponentPropertiesSchema,
+} from './TrackingProperties';
+import { EventHandler, NinetailedPlugin } from './NinetailedPlugin';
+import { HAS_SEEN_COMPONENT, HAS_SEEN_ELEMENT } from './constants';
 
 export type Template = Record<string, string>;
 
@@ -26,7 +29,7 @@ export type SanitizedElementSeenPayload = {
 export abstract class NinetailedAnalyticsPlugin<
   THasSeenExperienceEventTemplate extends Template = Template
 > extends NinetailedPlugin {
-  private seenElements = new WeakSet<Element>();
+  private seenElements = new WeakMap<Element, SanitizedElementSeenPayload[]>();
 
   constructor(
     private readonly hasSeenExperienceEventTemplate: THasSeenExperienceEventTemplate = {} as THasSeenExperienceEventTemplate
@@ -86,13 +89,9 @@ export abstract class NinetailedAnalyticsPlugin<
     return event;
   };
 
-  public [HAS_SEEN_ELEMENT]: EventHandler<ElementSeenPayload> = ({
+  public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    if (this.seenElements.has(payload.element)) {
-      return;
-    }
-
     const sanitizedPayload = ElementSeenPayloadSchema.safeParse(payload);
 
     if (!sanitizedPayload.success) {
@@ -107,7 +106,7 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
-    this.seenElements.add(sanitizedPayload.data.element);
+    const elementPayloads = this.seenElements.get(payload.element) || [];
 
     const selectedVariantSelector =
       sanitizedPayload.data.variantIndex === 0
@@ -121,6 +120,21 @@ export abstract class NinetailedAnalyticsPlugin<
       selectedVariantSelector,
     };
 
+    const isElementAlreadySeenWithPayload = elementPayloads.some(
+      (elementPayload) => {
+        return isEqual(elementPayload, sanitizedTrackExperienceProperties);
+      }
+    );
+
+    if (isElementAlreadySeenWithPayload) {
+      return;
+    }
+
+    this.seenElements.set(payload.element, [
+      ...elementPayloads,
+      sanitizedTrackExperienceProperties,
+    ]);
+
     this.onTrackExperience(
       sanitizedTrackExperienceProperties,
       this.getHasSeenExperienceEventPayload(sanitizedTrackExperienceProperties)
@@ -131,7 +145,7 @@ export abstract class NinetailedAnalyticsPlugin<
    * @deprecated
    */
   public [HAS_SEEN_COMPONENT]: EventHandler = ({ payload }) => {
-    const sanitizedPayload = TrackComponentProperties.safeParse(payload);
+    const sanitizedPayload = TrackComponentPropertiesSchema.safeParse(payload);
 
     if (!sanitizedPayload.success) {
       logger.error(

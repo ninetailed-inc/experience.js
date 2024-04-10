@@ -10,11 +10,11 @@ import {
   CONSENT,
   COMPONENT,
   COMPONENT_START,
-  NinetailedPlugin,
   SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js';
 import wildCardMatch from 'wildcard-match';
 import { isEqual } from 'radash';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 declare global {
   interface Window {

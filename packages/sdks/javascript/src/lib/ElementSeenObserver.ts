@@ -1,5 +1,5 @@
 export type ElementSeenObserverOptions = {
-  onElementSeen: (element: Element) => void;
+  onElementSeen: (element: Element, delay?: number) => void;
 };
 
 export type ObserveOptions = {
@@ -8,12 +8,12 @@ export type ObserveOptions = {
 
 export class ElementSeenObserver {
   private _intersectionObserver?: IntersectionObserver;
-  private _elementDelays: WeakMap<Element, number>;
-  private _intersectionTimers: WeakMap<Element, number>;
+  private _elementDelays: WeakMap<Element, number[]>;
+  private _intersectionTimers: WeakMap<Element, number[]>;
 
   constructor(private _options: ElementSeenObserverOptions) {
-    this._elementDelays = new WeakMap<Element, number>();
-    this._intersectionTimers = new WeakMap<Element, number>();
+    this._elementDelays = new WeakMap<Element, number[]>();
+    this._intersectionTimers = new WeakMap<Element, number[]>();
 
     if (typeof IntersectionObserver !== 'undefined') {
       this._intersectionObserver = new IntersectionObserver(
@@ -27,25 +27,33 @@ export class ElementSeenObserver {
       const { isIntersecting, target } = entry;
 
       if (isIntersecting) {
-        const delay = this._elementDelays.get(target);
+        const delays = this._elementDelays.get(target);
 
-        const timeOut = window.setTimeout(() => {
-          this._options.onElementSeen(target);
-        }, delay);
-
-        this._intersectionTimers.set(target, timeOut);
+        delays?.forEach((delay) => {
+          const timeOut = window.setTimeout(() => {
+            this._options.onElementSeen(target, delay);
+          }, delay);
+          const currentTimers = this._intersectionTimers.get(target) || [];
+          this._intersectionTimers.set(target, [...currentTimers, timeOut]);
+        });
       } else {
-        const timeOut = this._intersectionTimers.get(target);
-
-        if (typeof timeOut !== 'undefined') {
-          window.clearTimeout(timeOut);
-        }
+        const timeOuts = this._intersectionTimers.get(target);
+        timeOuts?.forEach((timeOut) => {
+          if (typeof timeOut !== 'undefined') {
+            window.clearTimeout(timeOut);
+          }
+        });
       }
     });
   }
 
   public observe(element: Element, options?: ObserveOptions) {
-    this._elementDelays.set(element, options?.delay ?? 2000);
+    const delays = this._elementDelays.get(element) || [];
+
+    this._elementDelays.set(
+      element,
+      Array.from(new Set([...delays, options?.delay || 0]))
+    );
     this._intersectionObserver?.observe(element);
   }
 

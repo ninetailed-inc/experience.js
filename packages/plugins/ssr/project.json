@@ -38,7 +38,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/ssr"],
       "options": {
-        "jestConfig": "packages/plugins/ssr/jest.config.js",
+        "jestConfig": "packages/plugins/ssr/jest.config.cjs",
         "passWithNoTests": true
       }
     }

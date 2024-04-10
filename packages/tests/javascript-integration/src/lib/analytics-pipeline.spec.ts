@@ -1,11 +1,11 @@
 import { generateMock } from '@anatine/zod-mock';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
+import { Ninetailed } from '@ninetailed/experience.js';
 import { setTimeout as sleep } from 'node:timers/promises';
 import {
   ElementSeenPayloadSchema,
-  Ninetailed,
-  TrackComponentProperties,
-} from '@ninetailed/experience.js';
+  TrackComponentPropertiesSchema,
+} from '@ninetailed/experience.js-plugin-analytics';
 
 const setup = () => {
   const testAnalyticsPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
@@ -48,7 +48,7 @@ describe('Analytics pipeline', () => {
   });
 
   it('Should be able to send track component events which will be received from the TestAnalyticsPlugin', async () => {
-    const data = generateMock(TrackComponentProperties);
+    const data = generateMock(TrackComponentPropertiesSchema);
 
     await ninetailed.trackHasSeenComponent(data);
 

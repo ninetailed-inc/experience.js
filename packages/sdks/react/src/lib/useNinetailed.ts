@@ -1,8 +1,12 @@
 import { useContext } from 'react';
 import { NinetailedInstance } from '@ninetailed/experience.js';
 import { NinetailedContext } from './NinetailedContext';
+import { Reference } from '@ninetailed/experience.js-shared';
 
-export const useNinetailed = (): NinetailedInstance => {
+export const useNinetailed = <
+  TBaseline extends Reference = Reference,
+  TVariant extends Reference = Reference
+>(): NinetailedInstance<TBaseline, TVariant> => {
   const ninetailed = useContext(NinetailedContext);
 
   if (ninetailed === undefined) {
@@ -11,5 +15,5 @@ export const useNinetailed = (): NinetailedInstance => {
     );
   }
 
-  return ninetailed;
+  return ninetailed as unknown as NinetailedInstance<TBaseline, TVariant>;
 };

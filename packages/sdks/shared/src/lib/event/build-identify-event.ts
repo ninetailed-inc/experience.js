@@ -4,7 +4,7 @@ import type { IdentifyEvent } from '../types/Event/IdentifyEvent';
 import type { Traits } from '../types/Profile/Traits';
 import { buildEvent, BuildEventArgs } from './build-event';
 
-type IdentifyEventArgs = Object.Omit<
+export type IdentifyEventArgs = Object.Omit<
   Object.Merge<
     BuildEventArgs,
     {

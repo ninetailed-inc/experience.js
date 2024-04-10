@@ -1,7 +1,8 @@
 import React from 'react';
 import { WrapRootElementBrowserArgs } from 'gatsby';
-import { Ninetailed, type NinetailedPlugin } from '@ninetailed/experience.js';
+import { Ninetailed } from '@ninetailed/experience.js';
 import { NinetailedProvider } from '@ninetailed/experience.js-react';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { Tracker } from './src/lib/Tracker';
 import {
@@ -41,6 +42,9 @@ const isSerializedPreviewPlugin = (
 const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
   children,
 }) => {
+  const { onRouteChange, ...functions } =
+    deserializePluginOptionFunctions(options);
+
   if (!ninetailed) {
     const resolvedPlugins = ninetailedPlugins.map(
       ({ PluginCtor, options }: ResolvedPlugin) => {
@@ -63,9 +67,15 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
       }
     ) as NinetailedPlugin[];
 
-    const { clientId, environment, preview, url, locale, requestTimeout } =
-      options;
-    const functions = deserializePluginOptionFunctions(options);
+    const {
+      clientId,
+      environment,
+      preview,
+      url,
+      locale,
+      requestTimeout,
+      useSDKEvaluation,
+    } = options;
 
     ninetailed = new Ninetailed(
       { clientId, environment, preview },
@@ -74,6 +84,7 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
         plugins: resolvedPlugins,
         locale,
         requestTimeout,
+        useSDKEvaluation,
         ...functions,
       }
     );
@@ -81,7 +92,7 @@ const WrapRootElement: React.FC<React.PropsWithChildren<PluginOptions>> = ({
 
   return (
     <NinetailedProvider ninetailed={ninetailed}>
-      <Tracker />
+      <Tracker onRouteChange={onRouteChange} />
       {children}
     </NinetailedProvider>
   );

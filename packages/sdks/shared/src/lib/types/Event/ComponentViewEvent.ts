@@ -1,5 +1,5 @@
 import { Object } from 'ts-toolbelt';
-import { type SharedEventProperties } from '@ninetailed/experience.js-shared';
+import { type SharedEventProperties } from './SharedEventProperties';
 
 export type ComponentViewEvent = Object.Merge<
   SharedEventProperties,

@@ -11,13 +11,13 @@ import {
   selectDistribution,
   HasExperienceSelectionMiddleware,
   OnChangeEmitter,
-  ExperienceSelectionMiddleware,
-  NinetailedPlugin,
+  BuildExperienceSelectionMiddleware,
 } from '@ninetailed/experience.js';
 import type {
   PreviewPluginApi,
   ExposedAudienceDefinition,
 } from '@ninetailed/experience.js-preview-bridge';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { WidgetContainer } from './WidgetContainer';
 
@@ -43,7 +43,7 @@ type NinetailedPreviewPluginOptions = {
 
 export class NinetailedPreviewPlugin
   extends NinetailedPlugin
-  implements HasExperienceSelectionMiddleware<Reference>
+  implements HasExperienceSelectionMiddleware<Reference, Reference>
 {
   public name = 'ninetailed:preview' + Math.random();
 
@@ -130,7 +130,7 @@ export class NinetailedPreviewPlugin
 
   public activateAudience(id: string) {
     if (!this.isKnownAudience(id)) {
-      console.log(`You cannot activate an unknown audience (id: ${id}).`);
+      logger.warn(`You cannot activate an unknown audience (id: ${id}).`);
       return;
     }
 
@@ -157,7 +157,7 @@ export class NinetailedPreviewPlugin
 
   public deactivateAudience(id: string) {
     if (!this.isKnownAudience(id)) {
-      console.log(
+      logger.warn(
         `You cannot deactivate an unkown audience (id: ${id}). How did you get it in the first place?`
       );
       return;
@@ -205,7 +205,7 @@ export class NinetailedPreviewPlugin
 
   public resetAudience(id: string) {
     if (!this.isKnownAudience(id)) {
-      console.log(
+      logger.warn(
         `You cannot reset an unknown audience (id: ${id}). How did you get it in the first place?`
       );
       return;
@@ -228,7 +228,7 @@ export class NinetailedPreviewPlugin
       (experience) => experience.id === experienceId
     );
     if (!experience) {
-      console.log(
+      logger.warn(
         `You cannot active a variant for an unknown experience (id: ${experienceId})`
       );
       return;
@@ -238,7 +238,7 @@ export class NinetailedPreviewPlugin
       experience.audience &&
       !this.activeAudiences.some((id) => id === experience.audience?.id)
     ) {
-      console.log(
+      logger.warn(
         `You cannot active a variant for an experience (id: ${experienceId}), which is not in the active audiences.`
       );
       return;
@@ -248,7 +248,7 @@ export class NinetailedPreviewPlugin
       .map((component) => component.variants.length + 1)
       .every((length) => length > variantIndex);
     if (!isValidIndex) {
-      console.warn(
+      logger.warn(
         `You activated a variant at index ${variantIndex} for the experience (id: ${experienceId}). Not all components have that many variants, you may see the baseline for some.`
       );
     }
@@ -278,68 +278,66 @@ export class NinetailedPreviewPlugin
     }
   }
 
-  public getExperienceSelectionMiddleware: ExperienceSelectionMiddleware<Reference> =
-    ({ baseline, experiences }) => {
-      return () => {
-        const experienceIds = Object.keys(
-          this.pluginApi.experienceVariantIndexes
-        );
-        const experience = experiences.find((experience) => {
-          const hasActiveAudience = this.pluginApi.activeAudiences.some(
-            (activeAudienceId) => experience.audience?.id === activeAudienceId
-          );
+  public getExperienceSelectionMiddleware: BuildExperienceSelectionMiddleware<
+    Reference,
+    Reference
+  > = ({ baseline, experiences }) => {
+    return () => {
+      const experienceIds = Object.keys(
+        this.pluginApi.experienceVariantIndexes
+      );
+      const experience = experiences.find((experience) => {
+        return experienceIds.includes(experience.id);
+      });
 
-          return hasActiveAudience && experienceIds.includes(experience.id);
-        });
+      if (!experience) {
+        return {
+          experience: null,
+          variant: baseline,
+          variantIndex: 0,
+        };
+      }
 
-        if (!experience) {
-          return {
-            experience: null,
-            variant: baseline,
-            variantIndex: 0,
-          };
-        }
-
-        const baselineComponent = experience.components.find(
-          (component) => component.baseline.id === baseline.id
-        );
-        if (!baselineComponent) {
-          return {
-            experience,
-            variant: baseline,
-            variantIndex: 0,
-          };
-        }
-
-        const allVariants = [baseline, ...baselineComponent.variants];
-        const variantIndex =
-          this.pluginApi.experienceVariantIndexes[experience.id];
-
-        if (allVariants.length <= variantIndex) {
-          return {
-            experience,
-            variant: baseline,
-            variantIndex: 0,
-          };
-        }
-
-        const variant = allVariants[variantIndex];
-
-        if (!variant) {
-          return {
-            experience,
-            variant: baseline,
-            variantIndex: 0,
-          };
-        }
-
+      const baselineComponent = experience.components.find(
+        (component) => component.baseline.id === baseline.id
+      );
+      if (!baselineComponent) {
         return {
           experience,
-          variant,
-          variantIndex,
+          variant: baseline,
+          variantIndex: 0,
         };
+      }
+
+      const allVariants = [baseline, ...baselineComponent.variants];
+      const variantIndex =
+        this.pluginApi.experienceVariantIndexes[experience.id];
+
+      if (allVariants.length <= variantIndex) {
+        return {
+          experience,
+          variant: baseline,
+          variantIndex: 0,
+        };
+      }
+
+      const variant = allVariants[variantIndex];
+
+      if (!variant) {
+        return {
+          experience,
+          variant: baseline,
+          variantIndex: 0,
+        };
+      }
+
+      return {
+        experience,
+        variant,
+        variantIndex,
       };
     };
+  };
 
   public openExperienceEditor(experience: ExperienceConfiguration) {
     if (
@@ -366,7 +364,7 @@ export class NinetailedPreviewPlugin
 
   private get pluginApi(): PreviewPluginApi {
     return {
-      version: '2.0.0',
+      version: process.env['NX_PACKAGE_VERSION'] || '0.0.0',
 
       open: this.open.bind(this),
       close: this.close.bind(this),

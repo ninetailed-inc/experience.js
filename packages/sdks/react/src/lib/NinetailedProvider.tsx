@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import {
   Ninetailed,
-  NinetailedPlugin,
   OnInitProfileId,
   Storage,
 } from '@ninetailed/experience.js';
@@ -12,6 +11,7 @@ import {
   OnLogHandler,
   NinetailedRequestContext,
 } from '@ninetailed/experience.js-shared';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { NinetailedContext } from './NinetailedContext';
 
@@ -30,6 +30,8 @@ export type NinetailedProviderInstantiationProps = {
   buildClientContext?: () => NinetailedRequestContext;
   onInitProfileId?: OnInitProfileId;
   storageImpl?: Storage;
+
+  useSDKEvaluation?: boolean;
 };
 
 export type NinetailedProviderProps =
@@ -58,6 +60,7 @@ export const NinetailedProvider = (
       onInitProfileId,
       componentViewTrackingThreshold,
       storageImpl,
+      useSDKEvaluation,
     } = props;
 
     return new Ninetailed(
@@ -73,6 +76,7 @@ export const NinetailedProvider = (
         onInitProfileId,
         componentViewTrackingThreshold,
         storageImpl,
+        useSDKEvaluation,
       }
     );
   }, []);
