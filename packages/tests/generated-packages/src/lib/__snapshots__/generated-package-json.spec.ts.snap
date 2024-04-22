@@ -7,7 +7,7 @@ Object {
     "@ninetailed/experience.js-shared": "*",
     "analytics": "0.8.1",
     "radash": "10.9.0",
-    "zod": "3.21.4",
+    "zod": "3.23.0",
   },
   "description": "Ninetailed SDK plugin for analytics",
   "keywords": Array [
@@ -482,7 +482,7 @@ Object {
     "murmurhash-js": "1.0.0",
     "radash": "10.9.0",
     "ts-toolbelt": "9.6.0",
-    "zod": "3.21.4",
+    "zod": "3.23.0",
   },
   "description": "Shared code for Experience.js",
   "license": "MIT",
@@ -506,7 +506,7 @@ Object {
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js-utils": "*",
     "contentful": "^9.1.32",
-    "zod": "3.21.4",
+    "zod": "3.23.0",
   },
   "description": "Contentful utilities for Experience.js",
   "keywords": Array [
@@ -533,7 +533,7 @@ Object {
   "dependencies": Object {
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-shared": "*",
-    "zod": "3.21.4",
+    "zod": "3.23.0",
   },
   "description": "Ninetailed Experience.js Utils",
   "license": "MIT",
