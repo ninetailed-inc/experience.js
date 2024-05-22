@@ -29,7 +29,7 @@ declare global {
 
 export const PLUGIN_NAME = 'ninetailed:privacy';
 
-type PrivacyConfig = {
+export type PrivacyConfig = {
   /**
    * Which events you want to allow?
    *
@@ -75,7 +75,7 @@ type PrivacyConfig = {
   enabledFeatures: Feature[];
 };
 
-const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
+export const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
   allowedEvents: ['page', 'track'],
   allowedPageEventProperties: ['*'],
   allowedTrackEventProperties: [],
@@ -85,7 +85,7 @@ const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
   enabledFeatures: [],
 };
 
-const DEFAULT_AFTER_CONSENT_CONFIG: PrivacyConfig = {
+export const DEFAULT_AFTER_CONSENT_CONFIG: PrivacyConfig = {
   allowedEvents: ['page', 'track', 'identify', 'component'],
   allowedPageEventProperties: ['*'],
   allowedTrackEventProperties: ['*'],
@@ -98,6 +98,7 @@ const DEFAULT_AFTER_CONSENT_CONFIG: PrivacyConfig = {
 export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
   private _instance: AnalyticsInstance | null = null;
+  private _ready = false;
 
   private readonly config: PrivacyConfig;
   // TODO not sure about the name of this variable
@@ -127,13 +128,13 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     return this._instance;
   }
 
-  private consent(accepted: boolean) {
+  private async consent(accepted: boolean) {
     if (accepted) {
       this.instance.storage.setItem(CONSENT, 'accepted');
     } else {
       this.instance.storage.removeItem(CONSENT);
     }
-    this.enableFeatures(this.getConfig().enabledFeatures);
+    await this.enableFeatures(this.getConfig().enabledFeatures);
   }
 
   private isConsentGiven() {
@@ -190,17 +191,21 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
   public initialize = async ({ instance }: { instance: AnalyticsInstance }) => {
     this._instance = instance;
-  };
 
-  public ready = async () => {
     await this.enableFeatures(this.getConfig().enabledFeatures);
 
     this.registerWindowHandlers();
 
-    logger.debug('Ninetailed Privacy Plugin ready.');
+    this._ready = true;
   };
 
-  public loaded = () => true;
+  public ready = async () => {
+    return this._ready;
+  };
+
+  public loaded = () => {
+    return this._ready;
+  };
 
   private handleEventStart =
     (

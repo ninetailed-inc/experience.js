@@ -22,5 +22,8 @@
     "@ninetailed/experience.js-shared": "7.5.2-beta.1",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "tslib": "2.4.1"
+  },
+  "devDependencies": {
+    "analytics": "0.8.1"
   }
 }
