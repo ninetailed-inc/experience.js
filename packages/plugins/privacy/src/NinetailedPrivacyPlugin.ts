@@ -13,7 +13,7 @@ import {
   SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js';
 import wildCardMatch from 'wildcard-match';
-import { isEqual } from 'radash';
+import { isEqual, sleep } from 'radash';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 declare global {
@@ -134,6 +134,8 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     } else {
       this.instance.storage.removeItem(CONSENT);
     }
+    // There seems to be a race condition on the storage, so we need to wait a bit
+    await sleep(1);
     await this.enableFeatures(this.getConfig().enabledFeatures);
   }
 

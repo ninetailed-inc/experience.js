@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Analytics, AnalyticsInstance } from 'analytics';
-import { FEATURES } from '@ninetailed/experience.js-shared';
+import {
+  FEATURES,
+  SET_ENABLED_FEATURES,
+} from '@ninetailed/experience.js-shared';
 import {
   DEFAULT_AFTER_CONSENT_CONFIG,
   DEFAULT_PRIVACY_CONFIG,
@@ -14,6 +17,8 @@ class TestPlugin extends NinetailedPlugin {
   public name = 'ninetailed';
 
   public page = jest.fn();
+
+  public [SET_ENABLED_FEATURES] = jest.fn();
 }
 
 const setup = (
@@ -43,7 +48,7 @@ describe('NinetailedPrivacyPlugin', () => {
     await sleep(1);
 
     // @ts-expect-error
-    privacyPlugin.consent(false);
+    await privacyPlugin.consent(false);
     // I'm not sure why we need the sleep here. The localstorage write should be synchronous.
     await sleep(1);
   });
@@ -84,7 +89,7 @@ describe('NinetailedPrivacyPlugin', () => {
 
   it('Should correctly accept consent', async () => {
     // @ts-expect-error
-    privacyPlugin.consent(true);
+    await privacyPlugin.consent(true);
     // I'm not sure why we need the sleep here. The localstorage write should be synchronous.
     await sleep(1);
 
@@ -116,7 +121,7 @@ describe('NinetailedPrivacyPlugin', () => {
     expect(testPlugin.page).toHaveBeenCalled();
 
     // @ts-expect-error
-    privacyPlugin.consent(true);
+    await privacyPlugin.consent(true);
     // I'm not sure why we need the sleep here. The localstorage write should be synchronous.
     await sleep(1);
 
@@ -124,5 +129,39 @@ describe('NinetailedPrivacyPlugin', () => {
 
     await analytics.page();
     expect(testPlugin.page).not.toHaveBeenCalled();
+  });
+
+  it('Should set the features which are used correctly. E.g. not using the location of the user, even if the consent is given', async () => {
+    const { testPlugin, privacyPlugin } = setup(
+      { enabledFeatures: [] },
+      { enabledFeatures: [FEATURES.IP_ENRICHMENT] }
+    );
+
+    await sleep(1);
+
+    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledTimes(1);
+    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          features: [],
+        }),
+      })
+    );
+
+    // @ts-expect-error
+    await privacyPlugin.consent(true);
+
+    // It's not clear why we need the sleep here. Awaiting the dispatch in the consent method should be enough.
+    await sleep(1);
+
+    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledTimes(2);
+    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          features: [FEATURES.IP_ENRICHMENT],
+        }),
+      })
+    );
   });
 });
