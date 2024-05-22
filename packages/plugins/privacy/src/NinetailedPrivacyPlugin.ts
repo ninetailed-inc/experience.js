@@ -85,17 +85,36 @@ const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
   enabledFeatures: [],
 };
 
+const DEFAULT_AFTER_CONSENT_CONFIG: PrivacyConfig = {
+  allowedEvents: ['page', 'track', 'identify', 'component'],
+  allowedPageEventProperties: ['*'],
+  allowedTrackEventProperties: ['*'],
+  allowedTrackEvents: ['*'],
+  allowedTraits: ['*'],
+  blockProfileMerging: false,
+  enabledFeatures: Object.values(FEATURES),
+};
+
 export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
   private _instance: AnalyticsInstance | null = null;
 
   private readonly config: PrivacyConfig;
+  // TODO not sure about the name of this variable
+  private readonly afterConsentConfig: PrivacyConfig;
   private readonly queue: any[] = [];
 
-  constructor(config?: Partial<PrivacyConfig>) {
+  constructor(
+    config?: Partial<PrivacyConfig>,
+    afterConsentConfig?: Partial<PrivacyConfig>
+  ) {
     super();
 
     this.config = { ...DEFAULT_PRIVACY_CONFIG, ...config };
+    this.afterConsentConfig = {
+      ...DEFAULT_AFTER_CONSENT_CONFIG,
+      ...afterConsentConfig,
+    };
   }
 
   private get instance(): AnalyticsInstance {
@@ -111,11 +130,10 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   private consent(accepted: boolean) {
     if (accepted) {
       this.instance.storage.setItem(CONSENT, 'accepted');
-      this.enableFeatures(Object.values(FEATURES));
     } else {
       this.instance.storage.removeItem(CONSENT);
-      this.enableFeatures(this.config.enabledFeatures);
     }
+    this.enableFeatures(this.getConfig().enabledFeatures);
   }
 
   private isConsentGiven() {
@@ -143,6 +161,14 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     }
   }
 
+  private getConfig() {
+    if (!this.isConsentGiven()) {
+      return this.config;
+    }
+
+    return this.afterConsentConfig;
+  }
+
   private pickAllowedKeys(object: object, allowedKeys: string[]) {
     if (allowedKeys.includes('*')) {
       return object;
@@ -167,11 +193,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   };
 
   public ready = async () => {
-    if (!this.isConsentGiven()) {
-      await this.enableFeatures(this.config.enabledFeatures);
-    } else {
-      await this.enableFeatures(Object.values(FEATURES));
-    }
+    await this.enableFeatures(this.getConfig().enabledFeatures);
 
     this.registerWindowHandlers();
 
@@ -186,16 +208,14 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       modifyPayloadFn?: (payload: any, abort: () => void) => any
     ) =>
     ({ payload, abort }: { payload: any; abort: any }) => {
-      if (!this.isConsentGiven()) {
-        if (!this.config.allowedEvents.includes(eventType)) {
-          this.queue.push(payload);
+      if (!this.getConfig().allowedEvents.includes(eventType)) {
+        this.queue.push(payload);
 
-          return abort();
-        }
+        return abort();
+      }
 
-        if (typeof modifyPayloadFn === 'function') {
-          return modifyPayloadFn(payload, abort);
-        }
+      if (typeof modifyPayloadFn === 'function') {
+        return modifyPayloadFn(payload, abort);
       }
 
       return payload;
@@ -205,7 +225,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public ['page:ninetailed'] = this.handleEventStart('page', (payload) => {
     const properties = this.pickAllowedKeys(
       payload.properties,
-      this.config.allowedPageEventProperties
+      this.getConfig().allowedPageEventProperties
     );
 
     if (!isEqual(payload.properties, properties)) {
@@ -222,7 +242,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public ['track:ninetailed'] = this.handleEventStart(
     'track',
     (payload, abort) => {
-      if (!this.config.allowedTrackEvents.includes(payload.event)) {
+      if (!this.getConfig().allowedTrackEvents.includes(payload.event)) {
         logger.info(
           '[Ninetailed Privacy Plugin] The track event was blocked, as it is not allowed to send by your configuration.'
         );
@@ -234,7 +254,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
       const properties = this.pickAllowedKeys(
         payload.properties,
-        this.config.allowedTrackEventProperties
+        this.getConfig().allowedTrackEventProperties
       );
 
       if (!isEqual(payload.properties, properties)) {
@@ -254,7 +274,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     (payload) => {
       const traits = this.pickAllowedKeys(
         payload.traits,
-        this.config.allowedTraits
+        this.getConfig().allowedTraits
       );
       if (!isEqual(payload.traits, traits)) {
         logger.info(
@@ -263,13 +283,13 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
         );
       }
 
-      if (this.config.blockProfileMerging && payload.userId) {
+      if (this.getConfig().blockProfileMerging && payload.userId) {
         logger.info(
           '[Ninetailed Privacy Plugin] Profile merging is blocked. The userId will be ignored.'
         );
       }
 
-      const userId = this.config.blockProfileMerging ? '' : payload.userId;
+      const userId = this.getConfig().blockProfileMerging ? '' : payload.userId;
 
       return { ...payload, traits, userId };
     }
