@@ -5,7 +5,7 @@ import {
   SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js-shared';
 import {
-  DEFAULT_AFTER_CONSENT_CONFIG,
+  DEFAULT_ACCEPTED_CONSENT_CONFIG,
   DEFAULT_PRIVACY_CONFIG,
   NinetailedPrivacyPlugin,
   PrivacyConfig,
@@ -61,7 +61,9 @@ describe('NinetailedPrivacyPlugin', () => {
     // @ts-expect-error
     expect(plugin.config).toEqual(DEFAULT_PRIVACY_CONFIG);
     // @ts-expect-error
-    expect(plugin.afterConsentConfig).toEqual(DEFAULT_AFTER_CONSENT_CONFIG);
+    expect(plugin.acceptedConsentConfig).toEqual(
+      DEFAULT_ACCEPTED_CONSENT_CONFIG
+    );
   });
 
   it('Should be able to instantiate with custom configs', () => {
@@ -84,7 +86,9 @@ describe('NinetailedPrivacyPlugin', () => {
       ...customConfig,
     });
     // @ts-expect-error
-    expect(plugin.afterConsentConfig).toEqual(DEFAULT_AFTER_CONSENT_CONFIG);
+    expect(plugin.acceptedConsentConfig).toEqual(
+      DEFAULT_ACCEPTED_CONSENT_CONFIG
+    );
   });
 
   it('Should correctly accept consent', async () => {
@@ -116,6 +120,8 @@ describe('NinetailedPrivacyPlugin', () => {
       {},
       { allowedEvents: [] }
     );
+
+    // await sleep(1);
 
     await analytics.page();
     expect(testPlugin.page).toHaveBeenCalled();

@@ -13,7 +13,7 @@ import {
   SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js';
 import wildCardMatch from 'wildcard-match';
-import { isEqual, sleep } from 'radash';
+import { isEqual } from 'radash';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 declare global {
@@ -85,7 +85,7 @@ export const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
   enabledFeatures: [],
 };
 
-export const DEFAULT_AFTER_CONSENT_CONFIG: PrivacyConfig = {
+export const DEFAULT_ACCEPTED_CONSENT_CONFIG: PrivacyConfig = {
   allowedEvents: ['page', 'track', 'identify', 'component'],
   allowedPageEventProperties: ['*'],
   allowedTrackEventProperties: ['*'],
@@ -102,19 +102,19 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
   private readonly config: PrivacyConfig;
   // TODO not sure about the name of this variable
-  private readonly afterConsentConfig: PrivacyConfig;
+  private readonly acceptedConsentConfig: PrivacyConfig;
   private readonly queue: any[] = [];
 
   constructor(
     config?: Partial<PrivacyConfig>,
-    afterConsentConfig?: Partial<PrivacyConfig>
+    acceptedConsentConfig?: Partial<PrivacyConfig>
   ) {
     super();
 
     this.config = { ...DEFAULT_PRIVACY_CONFIG, ...config };
-    this.afterConsentConfig = {
-      ...DEFAULT_AFTER_CONSENT_CONFIG,
-      ...afterConsentConfig,
+    this.acceptedConsentConfig = {
+      ...DEFAULT_ACCEPTED_CONSENT_CONFIG,
+      ...acceptedConsentConfig,
     };
   }
 
@@ -134,9 +134,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     } else {
       this.instance.storage.removeItem(CONSENT);
     }
-    // There seems to be a race condition on the storage, so we need to wait a bit
-    await sleep(1);
-    await this.enableFeatures(this.getConfig().enabledFeatures);
   }
 
   private isConsentGiven() {
@@ -169,7 +166,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       return this.config;
     }
 
-    return this.afterConsentConfig;
+    return this.acceptedConsentConfig;
   }
 
   private pickAllowedKeys(object: object, allowedKeys: string[]) {
@@ -194,6 +191,11 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public initialize = async ({ instance }: { instance: AnalyticsInstance }) => {
     this._instance = instance;
 
+    instance.on('setItemEnd', async ({ payload: { key } }) => {
+      if (key === CONSENT) {
+        await this.enableFeatures(this.getConfig().enabledFeatures);
+      }
+    });
     await this.enableFeatures(this.getConfig().enabledFeatures);
 
     this.registerWindowHandlers();
