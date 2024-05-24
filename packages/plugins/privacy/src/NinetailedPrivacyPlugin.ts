@@ -127,7 +127,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     return this._instance;
   }
 
-  private async consent(accepted: boolean) {
+  private consent(accepted: boolean) {
     if (accepted) {
       this.instance.storage.setItem(CONSENT, 'accepted');
     } else {
