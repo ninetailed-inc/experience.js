@@ -86,7 +86,7 @@ describe('Contentful Experience Mapper', () => {
             return {
               id: variant.sys.id,
               headline: variant.fields.entryTitle,
-              x: variant.fields.desktopImage,
+              image: variant.fields.desktopImage,
             };
           }
         )
@@ -98,6 +98,16 @@ describe('Contentful Experience Mapper', () => {
       expect(mappedExperience.name).not.toBeUndefined();
       expect(mappedExperience.audience?.description).not.toBeUndefined();
       expect(mappedExperience.audience?.name).not.toBeUndefined();
+      mappedExperience.components.forEach((component) => {
+        component.variants.forEach((variant) => {
+          expect(variant.id).not.toBeUndefined();
+
+          if ('headline' in variant) {
+            expect(variant.headline).not.toBeUndefined();
+            expect(variant.image).not.toBeUndefined();
+          }
+        });
+      });
     });
   });
 });
