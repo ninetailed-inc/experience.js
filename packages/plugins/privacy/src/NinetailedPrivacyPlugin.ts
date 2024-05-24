@@ -101,7 +101,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   private _ready = false;
 
   private readonly config: PrivacyConfig;
-  // TODO not sure about the name of this variable
   private readonly acceptedConsentConfig: PrivacyConfig;
   private readonly queue: any[] = [];
 
