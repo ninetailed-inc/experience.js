@@ -222,8 +222,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       modifyPayloadFn?: (payload: any, abort: () => void) => any
     ) =>
     ({ payload, abort }: { payload: any; abort: any }) => {
-      console.log('handleEventStart', this.getConfig());
-
       if (!this.getConfig().allowedEvents.includes(eventType)) {
         this.queue.push(payload);
 
