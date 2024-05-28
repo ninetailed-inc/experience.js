@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Analytics, AnalyticsInstance } from 'analytics';
+import { PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME } from '@ninetailed/experience.js';
 import {
   FEATURES,
   SET_ENABLED_FEATURES,
@@ -14,7 +15,7 @@ import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 import { sleep } from 'radash';
 
 class TestPlugin extends NinetailedPlugin {
-  public name = 'ninetailed';
+  public name = NINETAILED_CORE_PLUGIN_NAME;
 
   public page = jest.fn();
 
