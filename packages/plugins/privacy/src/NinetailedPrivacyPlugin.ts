@@ -11,6 +11,7 @@ import {
   COMPONENT,
   COMPONENT_START,
   SET_ENABLED_FEATURES,
+  PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME,
 } from '@ninetailed/experience.js';
 import wildCardMatch from 'wildcard-match';
 import { isEqual } from 'radash';
@@ -94,6 +95,10 @@ export const DEFAULT_ACCEPTED_CONSENT_CONFIG: PrivacyConfig = {
   blockProfileMerging: false,
   enabledFeatures: Object.values(FEATURES),
 };
+
+const PAGE_EVENT_HANDLER = `page:${NINETAILED_CORE_PLUGIN_NAME}`;
+const TRACK_EVENT_HANDLER = `track:${NINETAILED_CORE_PLUGIN_NAME}`;
+const IDENTIFY_EVENT_HANDLER = `identify:${NINETAILED_CORE_PLUGIN_NAME}`;
 
 export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
@@ -216,6 +221,8 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       modifyPayloadFn?: (payload: any, abort: () => void) => any
     ) =>
     ({ payload, abort }: { payload: any; abort: any }) => {
+      console.log('handleEventStart', this.getConfig());
+
       if (!this.getConfig().allowedEvents.includes(eventType)) {
         this.queue.push(payload);
 
@@ -230,7 +237,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     };
 
   public pageStart = this.handleEventStart('page');
-  public ['page:ninetailed'] = this.handleEventStart('page', (payload) => {
+  public [PAGE_EVENT_HANDLER] = this.handleEventStart('page', (payload) => {
     const properties = this.pickAllowedKeys(
       payload.properties,
       this.getConfig().allowedPageEventProperties
@@ -247,7 +254,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   });
 
   public trackStart = this.handleEventStart('track');
-  public ['track:ninetailed'] = this.handleEventStart(
+  public [TRACK_EVENT_HANDLER] = this.handleEventStart(
     'track',
     (payload, abort) => {
       if (!this.getConfig().allowedTrackEvents.includes(payload.event)) {
@@ -277,7 +284,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   );
 
   public identifyStart = this.handleEventStart('identify');
-  public ['identify:ninetailed'] = this.handleEventStart(
+  public [IDENTIFY_EVENT_HANDLER] = this.handleEventStart(
     'identify',
     (payload) => {
       const traits = this.pickAllowedKeys(
