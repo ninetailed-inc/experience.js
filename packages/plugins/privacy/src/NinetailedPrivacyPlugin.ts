@@ -96,9 +96,10 @@ export const DEFAULT_ACCEPTED_CONSENT_CONFIG: PrivacyConfig = {
   enabledFeatures: Object.values(FEATURES),
 };
 
-const PAGE_EVENT_HANDLER = `page:${NINETAILED_CORE_PLUGIN_NAME}`;
-const TRACK_EVENT_HANDLER = `track:${NINETAILED_CORE_PLUGIN_NAME}`;
-const IDENTIFY_EVENT_HANDLER = `identify:${NINETAILED_CORE_PLUGIN_NAME}`;
+const PAGE_EVENT_HANDLER = `page:${NINETAILED_CORE_PLUGIN_NAME}` as const;
+const TRACK_EVENT_HANDLER = `track:${NINETAILED_CORE_PLUGIN_NAME}` as const;
+const IDENTIFY_EVENT_HANDLER =
+  `identify:${NINETAILED_CORE_PLUGIN_NAME}` as const;
 
 export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
