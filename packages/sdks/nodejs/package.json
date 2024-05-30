@@ -4,7 +4,7 @@
   "type": "commonjs",
   "description": "Ninetailed SDK for Node.js",
   "dependencies": {
-    "node-fetch": "2",
+    "node-fetch": "3",
     "uuid": "9.0.0",
     "@ninetailed/experience.js-shared": "*",
     "jest-fetch-mock": "3.0.3"
