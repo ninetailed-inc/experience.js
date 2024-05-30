@@ -65,6 +65,11 @@ export type MapVariantFunction<
   Out extends Reference
 > = (input: EntryLike<In>) => Out;
 
+export type MapVariantFunctionAsync<
+  In extends EntryFields,
+  Out extends Reference
+> = (input: EntryLike<In>) => Promise<Out>;
+
 export class ExperienceMapper {
   static isExperienceEntry<VariantFields extends EntryFields>(
     entry: ExperienceEntryLike<VariantFields>
@@ -93,6 +98,19 @@ export class ExperienceMapper {
   ) {
     const { sys, fields } = validateExperienceEntry(ctfEntry);
     const variants = fields.nt_variants.map(mapFn);
+    const experience = createExperience(sys.id, fields, variants);
+    return DefaultExperienceMapper.mapExperience(experience);
+  }
+
+  static async mapCustomExperienceAsync<
+    Variant extends Reference,
+    VariantFields extends EntryFields
+  >(
+    ctfEntry: ExperienceEntryLike<VariantFields>,
+    mapFn: MapVariantFunctionAsync<VariantFields, Variant>
+  ) {
+    const { sys, fields } = validateExperienceEntry(ctfEntry);
+    const variants = await Promise.all(fields.nt_variants.map(mapFn));
     const experience = createExperience(sys.id, fields, variants);
     return DefaultExperienceMapper.mapExperience(experience);
   }

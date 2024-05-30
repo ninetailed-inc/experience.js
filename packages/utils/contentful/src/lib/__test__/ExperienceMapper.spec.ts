@@ -75,4 +75,39 @@ describe('Contentful Experience Mapper', () => {
       .filter(ExperienceMapper.isExperiment)
       .map((experience) => ExperienceMapper.mapExperience(experience));
   });
+
+  it('Should map experiences with custom mapping function for variants including an async step', async () => {
+    const mapped = await Promise.all(
+      EXPERIENCES.map((experience) =>
+        ExperienceMapper.mapCustomExperienceAsync(
+          experience,
+          async (variant) => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return {
+              id: variant.sys.id,
+              headline: variant.fields.entryTitle,
+              image: variant.fields.desktopImage,
+            };
+          }
+        )
+      )
+    );
+
+    mapped.forEach((mappedExperience) => {
+      expect(mappedExperience.description).not.toBeUndefined();
+      expect(mappedExperience.name).not.toBeUndefined();
+      expect(mappedExperience.audience?.description).not.toBeUndefined();
+      expect(mappedExperience.audience?.name).not.toBeUndefined();
+      mappedExperience.components.forEach((component) => {
+        component.variants.forEach((variant) => {
+          expect(variant.id).not.toBeUndefined();
+
+          if ('headline' in variant) {
+            expect(variant.headline).not.toBeUndefined();
+            expect(variant.image).not.toBeUndefined();
+          }
+        });
+      });
+    });
+  });
 });
