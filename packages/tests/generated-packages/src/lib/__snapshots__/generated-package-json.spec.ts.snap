@@ -82,9 +82,9 @@ Object {
 exports[`Generated package.json files dist/packages/plugins/google-tagmanager/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
-    "@ninetailed/experience.js": "7.5.2-beta.1",
+    "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
-    "@ninetailed/experience.js-shared": "7.5.2-beta.1",
+    "@ninetailed/experience.js-shared": "*",
     "tslib": "2.4.1",
   },
   "description": "Ninetailed SDK plugin for Google Tag Manager",
@@ -198,14 +198,17 @@ Object {
 exports[`Generated package.json files dist/packages/plugins/privacy/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
-    "@ninetailed/experience.js": "7.5.2-beta.1",
+    "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
-    "@ninetailed/experience.js-shared": "7.5.2-beta.1",
+    "@ninetailed/experience.js-shared": "*",
     "radash": "10.9.0",
     "tslib": "2.4.1",
     "wildcard-match": "5.1.2",
   },
   "description": "Ninetailed SDK plugin for privacy",
+  "devDependencies": Object {
+    "analytics": "0.8.1",
+  },
   "keywords": Array [
     "privacy",
     "ninetailed",

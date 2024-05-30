@@ -11,6 +11,7 @@ import {
   COMPONENT,
   COMPONENT_START,
   SET_ENABLED_FEATURES,
+  PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME,
 } from '@ninetailed/experience.js';
 import wildCardMatch from 'wildcard-match';
 import { isEqual } from 'radash';
@@ -29,7 +30,7 @@ declare global {
 
 export const PLUGIN_NAME = 'ninetailed:privacy';
 
-type PrivacyConfig = {
+export type PrivacyConfig = {
   /**
    * Which events you want to allow?
    *
@@ -75,7 +76,7 @@ type PrivacyConfig = {
   enabledFeatures: Feature[];
 };
 
-const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
+export const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
   allowedEvents: ['page', 'track'],
   allowedPageEventProperties: ['*'],
   allowedTrackEventProperties: [],
@@ -85,17 +86,41 @@ const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
   enabledFeatures: [],
 };
 
+export const DEFAULT_ACCEPTED_CONSENT_CONFIG: PrivacyConfig = {
+  allowedEvents: ['page', 'track', 'identify', 'component'],
+  allowedPageEventProperties: ['*'],
+  allowedTrackEventProperties: ['*'],
+  allowedTrackEvents: ['*'],
+  allowedTraits: ['*'],
+  blockProfileMerging: false,
+  enabledFeatures: Object.values(FEATURES),
+};
+
+const PAGE_EVENT_HANDLER = `page:${NINETAILED_CORE_PLUGIN_NAME}` as const;
+const TRACK_EVENT_HANDLER = `track:${NINETAILED_CORE_PLUGIN_NAME}` as const;
+const IDENTIFY_EVENT_HANDLER =
+  `identify:${NINETAILED_CORE_PLUGIN_NAME}` as const;
+
 export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
   private _instance: AnalyticsInstance | null = null;
+  private _ready = false;
 
   private readonly config: PrivacyConfig;
+  private readonly acceptedConsentConfig: PrivacyConfig;
   private readonly queue: any[] = [];
 
-  constructor(config?: Partial<PrivacyConfig>) {
+  constructor(
+    config?: Partial<PrivacyConfig>,
+    acceptedConsentConfig?: Partial<PrivacyConfig>
+  ) {
     super();
 
     this.config = { ...DEFAULT_PRIVACY_CONFIG, ...config };
+    this.acceptedConsentConfig = {
+      ...DEFAULT_ACCEPTED_CONSENT_CONFIG,
+      ...acceptedConsentConfig,
+    };
   }
 
   private get instance(): AnalyticsInstance {
@@ -111,10 +136,8 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   private consent(accepted: boolean) {
     if (accepted) {
       this.instance.storage.setItem(CONSENT, 'accepted');
-      this.enableFeatures(Object.values(FEATURES));
     } else {
       this.instance.storage.removeItem(CONSENT);
-      this.enableFeatures(this.config.enabledFeatures);
     }
   }
 
@@ -143,6 +166,14 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     }
   }
 
+  private getConfig() {
+    if (!this.isConsentGiven()) {
+      return this.config;
+    }
+
+    return this.acceptedConsentConfig;
+  }
+
   private pickAllowedKeys(object: object, allowedKeys: string[]) {
     if (allowedKeys.includes('*')) {
       return object;
@@ -164,21 +195,26 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
   public initialize = async ({ instance }: { instance: AnalyticsInstance }) => {
     this._instance = instance;
-  };
 
-  public ready = async () => {
-    if (!this.isConsentGiven()) {
-      await this.enableFeatures(this.config.enabledFeatures);
-    } else {
-      await this.enableFeatures(Object.values(FEATURES));
-    }
+    instance.on('setItemEnd', async ({ payload: { key } }) => {
+      if (key === CONSENT) {
+        await this.enableFeatures(this.getConfig().enabledFeatures);
+      }
+    });
+    await this.enableFeatures(this.getConfig().enabledFeatures);
 
     this.registerWindowHandlers();
 
-    logger.debug('Ninetailed Privacy Plugin ready.');
+    this._ready = true;
   };
 
-  public loaded = () => true;
+  public ready = async () => {
+    return this._ready;
+  };
+
+  public loaded = () => {
+    return this._ready;
+  };
 
   private handleEventStart =
     (
@@ -186,26 +222,24 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       modifyPayloadFn?: (payload: any, abort: () => void) => any
     ) =>
     ({ payload, abort }: { payload: any; abort: any }) => {
-      if (!this.isConsentGiven()) {
-        if (!this.config.allowedEvents.includes(eventType)) {
-          this.queue.push(payload);
+      if (!this.getConfig().allowedEvents.includes(eventType)) {
+        this.queue.push(payload);
 
-          return abort();
-        }
+        return abort();
+      }
 
-        if (typeof modifyPayloadFn === 'function') {
-          return modifyPayloadFn(payload, abort);
-        }
+      if (typeof modifyPayloadFn === 'function') {
+        return modifyPayloadFn(payload, abort);
       }
 
       return payload;
     };
 
   public pageStart = this.handleEventStart('page');
-  public ['page:ninetailed'] = this.handleEventStart('page', (payload) => {
+  public [PAGE_EVENT_HANDLER] = this.handleEventStart('page', (payload) => {
     const properties = this.pickAllowedKeys(
       payload.properties,
-      this.config.allowedPageEventProperties
+      this.getConfig().allowedPageEventProperties
     );
 
     if (!isEqual(payload.properties, properties)) {
@@ -219,10 +253,10 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   });
 
   public trackStart = this.handleEventStart('track');
-  public ['track:ninetailed'] = this.handleEventStart(
+  public [TRACK_EVENT_HANDLER] = this.handleEventStart(
     'track',
     (payload, abort) => {
-      if (!this.config.allowedTrackEvents.includes(payload.event)) {
+      if (!this.getConfig().allowedTrackEvents.includes(payload.event)) {
         logger.info(
           '[Ninetailed Privacy Plugin] The track event was blocked, as it is not allowed to send by your configuration.'
         );
@@ -234,7 +268,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
       const properties = this.pickAllowedKeys(
         payload.properties,
-        this.config.allowedTrackEventProperties
+        this.getConfig().allowedTrackEventProperties
       );
 
       if (!isEqual(payload.properties, properties)) {
@@ -249,12 +283,12 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   );
 
   public identifyStart = this.handleEventStart('identify');
-  public ['identify:ninetailed'] = this.handleEventStart(
+  public [IDENTIFY_EVENT_HANDLER] = this.handleEventStart(
     'identify',
     (payload) => {
       const traits = this.pickAllowedKeys(
         payload.traits,
-        this.config.allowedTraits
+        this.getConfig().allowedTraits
       );
       if (!isEqual(payload.traits, traits)) {
         logger.info(
@@ -263,13 +297,13 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
         );
       }
 
-      if (this.config.blockProfileMerging && payload.userId) {
+      if (this.getConfig().blockProfileMerging && payload.userId) {
         logger.info(
           '[Ninetailed Privacy Plugin] Profile merging is blocked. The userId will be ignored.'
         );
       }
 
-      const userId = this.config.blockProfileMerging ? '' : payload.userId;
+      const userId = this.getConfig().blockProfileMerging ? '' : payload.userId;
 
       return { ...payload, traits, userId };
     }

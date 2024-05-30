@@ -2,7 +2,7 @@ module.exports = {
   displayName: 'plugins-privacy',
   preset: '../../../jest.preset.js',
   globals: {},
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   transform: {
     '^.+\\.[tj]sx?$': [
       'ts-jest',

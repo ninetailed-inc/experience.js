@@ -3,9 +3,9 @@
   "version": "7.6.0-beta.1",
   "type": "commonjs",
   "dependencies": {
-    "@ninetailed/experience.js": "7.5.2-beta.1",
+    "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
-    "@ninetailed/experience.js-shared": "7.5.2-beta.1",
+    "@ninetailed/experience.js-shared": "*",
     "tslib": "2.4.1"
   },
   "description": "Ninetailed SDK plugin for Google Tag Manager",
