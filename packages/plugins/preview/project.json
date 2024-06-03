@@ -13,7 +13,7 @@
         "project": "packages/plugins/preview/package.json",
         "entryFile": "packages/plugins/preview/src/index.ts",
         "external": [],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "rollupConfig": "packages/plugins/preview/rollup.config.cjs",
         "format": ["cjs", "esm"],
         "assets": [
           {
