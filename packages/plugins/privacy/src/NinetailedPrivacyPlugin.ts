@@ -4,13 +4,13 @@ import {
   FEATURES,
   logger,
   pickBy,
+  SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js-shared';
 import {
   AnalyticsInstance,
   CONSENT,
   COMPONENT,
   COMPONENT_START,
-  SET_ENABLED_FEATURES,
   PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME,
 } from '@ninetailed/experience.js';
 import wildCardMatch from 'wildcard-match';
