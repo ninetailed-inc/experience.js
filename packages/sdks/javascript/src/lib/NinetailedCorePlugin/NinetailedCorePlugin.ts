@@ -13,7 +13,6 @@ import {
   unionBy,
   NinetailedRequestContext,
   buildComponentViewEvent,
-  SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js-shared';
 import {
   NinetailedAnalyticsPlugin,
@@ -33,6 +32,7 @@ import {
   PROFILE_CHANGE,
   PROFILE_FALLBACK_CACHE,
   PROFILE_RESET,
+  SET_ENABLED_FEATURES,
 } from './constants';
 import { NinetailedInstance, FlushResult } from '../types';
 import { HAS_SEEN_STICKY_COMPONENT } from '../constants';
