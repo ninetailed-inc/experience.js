@@ -177,6 +177,16 @@ export class Ninetailed implements NinetailedInstance {
       useSDKEvaluation = false,
     }: Options = {}
   ) {
+    if (typeof onLog === 'function') {
+      logger.addSink(new OnLogLogSink(onLog));
+    }
+
+    if (typeof onError === 'function') {
+      logger.addSink(new OnErrorLogSink(onError));
+    }
+
+    this.logger = logger;
+
     this.useSDKEvaluation = useSDKEvaluation;
 
     if (ninetailedApiClientInstanceOrOptions instanceof NinetailedApiClient) {
@@ -220,17 +230,8 @@ export class Ninetailed implements NinetailedInstance {
       from: 'api',
     };
 
-    if (typeof onLog === 'function') {
-      logger.addSink(new OnLogLogSink(onLog));
-    }
-
-    if (typeof onError === 'function') {
-      logger.addSink(new OnErrorLogSink(onError));
-    }
-
     this.eventBuilder = new EventBuilder(buildClientContext);
 
-    this.logger = logger;
     this.ninetailedCorePlugin = new NinetailedCorePlugin({
       apiClient: this.apiClient,
       locale,
