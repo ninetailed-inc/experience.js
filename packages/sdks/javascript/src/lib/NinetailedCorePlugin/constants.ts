@@ -10,6 +10,7 @@ export const PROFILE_CHANGE = 'profile-change';
 export const PROFILE_RESET = 'profile-reset';
 
 export const CONSENT = '__nt-consent__';
-export const SET_ENABLED_FEATURES = 'set-enabled-features';
+
+export const SET_ENABLED_FEATURES = 'setEnabledFeatures';
 
 export const EMPTY_MERGE_ID = 'nt:empty-merge-id';

@@ -143,15 +143,12 @@ export class NinetailedCorePlugin
       }
     }
 
-    instance.on(
-      SET_ENABLED_FEATURES,
-      ({ payload }: { payload: { features: Feature[] } }) => {
-        this.enabledFeatures = payload.features || [];
-      }
-    );
-
     logger.debug('Ninetailed Core plugin initialized.');
   }
+
+  public [SET_ENABLED_FEATURES] = async ({ payload }: EventFn) => {
+    this.enabledFeatures = payload.features || [];
+  };
 
   public pageStart(params: AbortableFnParams) {
     return this.abortNonClientEvents(params);

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Analytics, AnalyticsInstance } from 'analytics';
-import { PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME } from '@ninetailed/experience.js';
 import {
-  FEATURES,
+  PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME,
   SET_ENABLED_FEATURES,
-} from '@ninetailed/experience.js-shared';
+} from '@ninetailed/experience.js';
+import { FEATURES } from '@ninetailed/experience.js-shared';
 import {
   DEFAULT_ACCEPTED_CONSENT_CONFIG,
   DEFAULT_PRIVACY_CONFIG,
