@@ -64,7 +64,7 @@ const parse = <T extends Reference>(
 
   return {
     ...output,
-    variants: input.variants,
+    variants: output.variants as T[],
   };
 };
 
@@ -79,7 +79,7 @@ const safeParse = <T extends Reference>(input: ExperienceLike<T>) => {
     ...output,
     data: {
       ...output.data,
-      variants: input.variants,
+      variants: output.data.variants as T[],
     },
   };
 };

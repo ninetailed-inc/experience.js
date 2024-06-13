@@ -83,4 +83,21 @@ describe('Experience Mapper', () => {
       { id: 'variant', hidden: true },
     ]);
   });
+
+  it('should preserve the type of the variants', () => {
+    const mapped = ExperienceMapper.mapExperience({
+      ...defaultExperience,
+      variants: [{ id: 'variant', foo: 'bar' }],
+    });
+
+    const variant = mapped.components[0].variants[0];
+    if (!('hidden' in variant)) {
+      // Yeay! It correctly inferred the type of the property "foo" on the variant
+      expect(variant.foo).toBe('bar');
+    }
+
+    expect(mapped.components[0].variants).toStrictEqual([
+      { id: 'variant', foo: 'bar' },
+    ]);
+  });
 });
