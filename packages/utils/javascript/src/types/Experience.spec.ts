@@ -1,3 +1,4 @@
+import { Reference } from '@ninetailed/experience.js-shared';
 import { Experience } from './Experience';
 
 describe('Experience Schema Validation', () => {
@@ -24,5 +25,19 @@ describe('Experience Schema Validation', () => {
     });
 
     expect(experience.variants).toEqual([]);
+  });
+
+  it('Should validate the variants array to contain only element with an id', () => {
+    const experience = Experience.parse({
+      id: 'experience-with-invalid-variants',
+      name: 'Experience with invalid variants',
+      type: 'nt_experiment',
+      variants: [
+        { id: 'valid-variant', foo: 'bar' },
+        { key: 'invalid-variant' } as unknown as Reference,
+      ],
+    });
+
+    expect(experience.variants).toEqual([{ id: 'valid-variant', foo: 'bar' }]);
   });
 });
