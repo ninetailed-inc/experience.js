@@ -63,6 +63,7 @@ import {
   hasComponentViewTrackingThreshold,
 } from '@ninetailed/experience.js-plugin-analytics';
 import { EventBuilder } from './utils/EventBuilder';
+import { requiresEventBuilder } from './guards/requiresEventBuilder';
 
 declare global {
   interface Window {
@@ -207,6 +208,8 @@ export class Ninetailed implements NinetailedInstance {
 
     this.plugins = (plugins ?? []).flat();
 
+    this.eventBuilder = new EventBuilder(buildClientContext);
+
     this.plugins.forEach((plugin) => {
       if (acceptsCredentials(plugin) && this.clientId && this.environment) {
         plugin.setCredentials({
@@ -220,6 +223,10 @@ export class Ninetailed implements NinetailedInstance {
           componentViewTrackingThreshold
         );
       }
+
+      if (requiresEventBuilder(plugin)) {
+        plugin.setEventBuilder(this.eventBuilder);
+      }
     });
 
     this._profileState = {
@@ -229,8 +236,6 @@ export class Ninetailed implements NinetailedInstance {
       error: null,
       from: 'api',
     };
-
-    this.eventBuilder = new EventBuilder(buildClientContext);
 
     this.ninetailedCorePlugin = new NinetailedCorePlugin({
       apiClient: this.apiClient,
