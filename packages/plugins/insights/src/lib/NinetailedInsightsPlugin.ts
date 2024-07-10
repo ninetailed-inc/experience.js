@@ -18,7 +18,10 @@ import {
   logger,
   type ComponentViewEvent,
 } from '@ninetailed/experience.js-shared';
-import type { EventBuilder } from '@ninetailed/experience.js';
+import type {
+  EventBuilder,
+  RequiresEventBuilder,
+} from '@ninetailed/experience.js';
 
 import type { ComponentViewEventBatch } from './types/Event/ComponentViewEventBatch';
 import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
@@ -36,7 +39,8 @@ export class NinetailedInsightsPlugin
     InterestedInSeenElements,
     InterestedInProfileChange,
     InterestedInHiddenPage,
-    AcceptsCredentials
+    AcceptsCredentials,
+    RequiresEventBuilder
 {
   public override name = 'ninetailed:insights';
 
@@ -200,7 +204,7 @@ export class NinetailedInsightsPlugin
     this.eventsQueue = [];
   }
 
-  setCredentials(credentials: Credentials) {
+  public setCredentials(credentials: Credentials) {
     this.insightsApiClient = new NinetailedInsightsApiClient({
       url: this.insightsApiClientUrl,
       clientId: credentials.clientId,
@@ -208,7 +212,7 @@ export class NinetailedInsightsPlugin
     });
   }
 
-  public injectEventBuilder(eventBuilder: EventBuilder) {
+  public setEventBuilder(eventBuilder: EventBuilder) {
     this.eventBuilder = eventBuilder;
   }
 }
