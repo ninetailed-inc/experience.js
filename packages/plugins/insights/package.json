@@ -19,7 +19,6 @@
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
-    "uuid": "9.0.0",
     "async-retry": "1.3.3",
     "radash": "10.9.0"
   },
