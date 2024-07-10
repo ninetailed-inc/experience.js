@@ -13,5 +13,6 @@ export * from './lib/types/interfaces/InterestedInProfileChange';
 export * from './lib/types/interfaces/InterestedInHiddenPage';
 export * from './lib/types/interfaces/AcceptsCredentials';
 export * from './lib/utils/OnChangeEmitter';
+export * from './lib/utils/EventBuilder';
 
 export type { Profile } from '@ninetailed/experience.js-shared';
