@@ -343,6 +343,19 @@ export class Ninetailed implements NinetailedInstance {
     }
   };
 
+  /**
+   * Used as a replacement for the track method when registering window handlers.
+   * GTM templates do not support executing async functions in `callInWindow`.
+   * Therefore, we provide a version of the track method without the async keyword.
+   */
+  private trackAsWindowHandler: typeof Ninetailed.prototype.track = (
+    event: string,
+    properties?: Properties,
+    options?: EventFunctionOptions
+  ) => {
+    return this.track(event, properties, options);
+  };
+
   public identify = async (
     uid: string,
     traits?: Traits,
@@ -852,7 +865,7 @@ export class Ninetailed implements NinetailedInstance {
     if (typeof window !== 'undefined') {
       window.ninetailed = Object.assign({}, window.ninetailed, {
         page: this.page.bind(this),
-        track: this.track.bind(this),
+        track: this.trackAsWindowHandler.bind(this),
         identify: this.identify.bind(this),
         reset: this.reset.bind(this),
         debug: this.debug.bind(this),
