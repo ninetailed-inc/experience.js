@@ -60,6 +60,11 @@ export class NinetailedPreviewPlugin
   private container: WidgetContainer | null = null;
   private bridge: any = null;
 
+  /**
+   * Since several instances of the plugin can be created, we need to make sure only one is marked as active.
+   */
+  private isActiveInstance = false;
+
   private onChangeEmitter = new OnChangeEmitter();
 
   private readonly onOpenExperienceEditor;
@@ -78,9 +83,17 @@ export class NinetailedPreviewPlugin
 
   public initialize = async () => {
     if (typeof window !== 'undefined') {
+      if (WidgetContainer.isContainerAttached()) {
+        logger.warn('Preview plugin is already attached.');
+        this.isActiveInstance = false;
+        return;
+      }
+
       const { PreviewBridge } = await import(
         '@ninetailed/experience.js-preview-bridge'
       );
+
+      this.isActiveInstance = true;
 
       this.container = new WidgetContainer({ ui: this.options.ui });
 
@@ -101,18 +114,30 @@ export class NinetailedPreviewPlugin
   public loaded = () => true;
 
   public [PROFILE_CHANGE] = ({ payload }: { payload: any }) => {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     if (payload?.profile) {
       this.onProfileChange(payload.profile);
     }
   };
 
   public open() {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     this.container?.open();
     this.isOpen = true;
     this.onChange();
   }
 
   public close() {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     this.container?.close();
     setTimeout(() => {
       this.isOpen = false;
@@ -121,6 +146,10 @@ export class NinetailedPreviewPlugin
   }
 
   public toggle() {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     if (this.isOpen) {
       this.close();
     } else {
@@ -129,6 +158,10 @@ export class NinetailedPreviewPlugin
   }
 
   public activateAudience(id: string) {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     if (!this.isKnownAudience(id)) {
       logger.warn(`You cannot activate an unknown audience (id: ${id}).`);
       return;
@@ -156,6 +189,10 @@ export class NinetailedPreviewPlugin
   }
 
   public deactivateAudience(id: string) {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     if (!this.isKnownAudience(id)) {
       logger.warn(
         `You cannot deactivate an unkown audience (id: ${id}). How did you get it in the first place?`
@@ -204,6 +241,10 @@ export class NinetailedPreviewPlugin
   }
 
   public resetAudience(id: string) {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     if (!this.isKnownAudience(id)) {
       logger.warn(
         `You cannot reset an unknown audience (id: ${id}). How did you get it in the first place?`
@@ -224,6 +265,10 @@ export class NinetailedPreviewPlugin
     experienceId: string;
     variantIndex: number;
   }) {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     const experience = this.experiences.find(
       (experience) => experience.id === experienceId
     );
@@ -261,6 +306,10 @@ export class NinetailedPreviewPlugin
   }
 
   public resetExperience(experienceId: string) {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     const { [experienceId]: _, ...experienceVariantIndexOverwrites } =
       this.experienceVariantIndexOverwrites;
     this.experienceVariantIndexOverwrites = experienceVariantIndexOverwrites;
@@ -269,6 +318,10 @@ export class NinetailedPreviewPlugin
   }
 
   public reset() {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     if (
       typeof window !== 'undefined' &&
       window.ninetailed &&
@@ -282,6 +335,10 @@ export class NinetailedPreviewPlugin
     Reference,
     Reference
   > = ({ baseline, experiences }) => {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
     return () => {
       const experienceIds = Object.keys(
         this.pluginApi.experienceVariantIndexes

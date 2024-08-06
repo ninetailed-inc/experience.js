@@ -65,9 +65,16 @@ export const makeExperienceSelectMiddleware = <
         plugins
       );
 
-    const middlewareFunctions = pluginsWithMiddleware.map((plugin) =>
-      plugin.getExperienceSelectionMiddleware({ experiences, baseline })
-    );
+    const middlewareFunctions = pluginsWithMiddleware
+      .map((plugin) =>
+        plugin.getExperienceSelectionMiddleware({ experiences, baseline })
+      )
+      .filter(
+        (
+          result
+        ): result is ExperienceSelectionMiddleware<TBaseline, TVariant> =>
+          typeof result !== 'undefined'
+      );
 
     return pipe(...middlewareFunctions);
   };
