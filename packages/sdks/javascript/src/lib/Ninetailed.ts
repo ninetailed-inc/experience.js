@@ -868,10 +868,17 @@ export class Ninetailed implements NinetailedInstance {
     return this.identify(uid, traits, options);
   };
 
+  private pageAsWindowHandler: typeof Ninetailed.prototype.page = (
+    data?: Partial<PageviewProperties>,
+    options?: EventFunctionOptions
+  ) => {
+    return this.page(data, options);
+  };
+
   private registerWindowHandlers() {
     if (typeof window !== 'undefined') {
       window.ninetailed = Object.assign({}, window.ninetailed, {
-        page: this.page.bind(this),
+        page: this.pageAsWindowHandler.bind(this),
         track: this.trackAsWindowHandler.bind(this),
         identify: this.identifyAsWindowHandler.bind(this),
         reset: this.reset.bind(this),
