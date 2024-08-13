@@ -751,7 +751,15 @@ export class Ninetailed implements NinetailedInstance {
         return;
       }
 
-      const baselineVariants = selectBaselineWithVariants(experience, baseline);
+      const experienceWithStickyFromExperienceApi = {
+        ...experience,
+        sticky: selectedExperience.sticky,
+      };
+
+      const baselineVariants = selectBaselineWithVariants(
+        experienceWithStickyFromExperienceApi,
+        baseline
+      );
       if (!baselineVariants) {
         setSelectedVariant(
           overrideResult({
@@ -785,7 +793,7 @@ export class Ninetailed implements NinetailedInstance {
           status: 'success',
           loading: false,
           error: null,
-          experience,
+          experience: experienceWithStickyFromExperienceApi,
           variant,
           variantIndex: selectedExperience.variantIndex,
           audience: experience.audience ? experience.audience : null,
