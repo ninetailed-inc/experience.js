@@ -1,9 +1,12 @@
 import {
   EventType,
+  EXPERIENCES_FALLBACK_CACHE,
   Feature,
   FEATURES,
   logger,
   pickBy,
+  PROFILE_CHANGE,
+  PROFILE_FALLBACK_CACHE,
 } from '@ninetailed/experience.js-shared';
 import {
   AnalyticsInstance,
@@ -224,6 +227,34 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     ({ payload, abort }: { payload: any; abort: any }) => {
       if (!this.getConfig().allowedEvents.includes(eventType)) {
         this.queue.push(payload);
+
+        // TODO: This should get validated and put into a utility function
+        const fallbackProfile = this.instance.storage.getItem(
+          PROFILE_FALLBACK_CACHE
+        );
+        const fallbackExperiences =
+          this.instance.storage.getItem(EXPERIENCES_FALLBACK_CACHE) || [];
+
+        if (fallbackProfile) {
+          this.instance.dispatch({
+            type: PROFILE_CHANGE,
+            profile: fallbackProfile,
+            experiences: fallbackExperiences,
+          });
+        } else {
+          this.instance.dispatch({
+            type: PROFILE_CHANGE,
+            profile: null,
+            experiences: [],
+            /**
+             * Alex Braunreuther: I'm not sure if this is the right way to handle this. Maybe we should introduce a REJECTED state to the profile state?
+             * This would introduce a lot more complexity and needs changes throughout the SDK, but it would be more clear what is happening.
+             */
+            error: new Error(
+              'The request to Experience API was blocked by the privacy plugin. No profile was found in the cache.'
+            ),
+          });
+        }
 
         return abort();
       }
