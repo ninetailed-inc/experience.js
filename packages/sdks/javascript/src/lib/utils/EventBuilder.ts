@@ -26,8 +26,8 @@ export class EventBuilder {
   ) {
     return buildPageEvent({
       messageId: data?.messageId || uuid(),
-      ...data,
       timestamp: Date.now(),
+      ...data,
       properties: properties || {},
       ctx: this.buildRequestContext(),
     });
