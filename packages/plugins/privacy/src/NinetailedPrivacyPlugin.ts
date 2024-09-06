@@ -111,7 +111,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
   private readonly config: PrivacyConfig;
   private readonly acceptedConsentConfig: PrivacyConfig;
-  private readonly queue: any[] = [];
 
   constructor(
     config?: Partial<PrivacyConfig>,
@@ -256,8 +255,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     ) =>
     ({ payload, abort }: { payload: any; abort: any }) => {
       if (!this.getConfig().allowedEvents.includes(eventType)) {
-        this.queue.push(payload);
-
         this.notifyOnRejectedEvent();
 
         return abort();
@@ -295,8 +292,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
         logger.info(
           '[Ninetailed Privacy Plugin] The track event was blocked, as it is not allowed to send by your configuration.'
         );
-
-        this.queue.push(payload);
 
         this.notifyOnRejectedEvent();
 
