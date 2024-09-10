@@ -126,3 +126,5 @@ export type { AnalyticsInstance } from './AnalyticsInstance';
 export type { ProfileChangedPayload } from './ProfileChangedPayload';
 
 export type { Credentials } from './Credentials';
+
+export type { Storage } from './Storage';
