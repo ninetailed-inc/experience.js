@@ -41,6 +41,7 @@ import {
   TrackHasSeenComponent,
   AnalyticsInstance,
   TrackComponentView,
+  Storage,
 } from './types';
 import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
@@ -75,18 +76,6 @@ declare global {
     } & unknown;
   }
 }
-
-type GetItem<T = any> = (key: string) => T;
-
-type SetItem<T = any> = (key: string, value: T) => void;
-
-type RemoveItem = (key: string) => void;
-
-export type Storage = {
-  getItem: GetItem;
-  setItem: SetItem;
-  removeItem: RemoveItem;
-};
 
 type Options = {
   url?: string;
