@@ -18,7 +18,6 @@ import {
   NinetailedAnalyticsPlugin,
   SanitizedElementSeenPayload,
 } from '@ninetailed/experience.js-plugin-analytics';
-// import { NinetailedAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 import { buildClientNinetailedRequestContext } from './Events';
 import { asyncThrottle } from '../utils/asyncThrottle';
@@ -151,7 +150,7 @@ export class NinetailedCorePlugin
   };
 
   public pageStart(params: AbortableFnParams) {
-    return this.abortNonClientEvents(params);
+    return NinetailedCorePlugin.abortNonClientEvents(params);
   }
 
   public async page({ payload }: EventFn) {
@@ -168,7 +167,7 @@ export class NinetailedCorePlugin
   }
 
   public trackStart(params: AbortableFnParams) {
-    return this.abortNonClientEvents(params);
+    return NinetailedCorePlugin.abortNonClientEvents(params);
   }
 
   public async track({ payload }: EventFn) {
@@ -186,7 +185,7 @@ export class NinetailedCorePlugin
   }
 
   public identifyStart(params: AbortableFnParams) {
-    return this.abortNonClientEvents(params);
+    return NinetailedCorePlugin.abortNonClientEvents(params);
   }
 
   public async identify({ payload }: EventFn) {
@@ -313,7 +312,7 @@ export class NinetailedCorePlugin
     this.queue = unionBy([event], this.queue, 'messageId');
   }
 
-  private abortNonClientEvents({ abort, payload }: AbortableFnParams) {
+  private static abortNonClientEvents({ abort, payload }: AbortableFnParams) {
     if (typeof window !== 'object') {
       return abort();
     }
