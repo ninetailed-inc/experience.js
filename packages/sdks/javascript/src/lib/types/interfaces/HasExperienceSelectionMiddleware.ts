@@ -30,7 +30,7 @@ export type BuildExperienceSelectionMiddleware<
   TVariant extends Reference
 > = (
   arg: BuildExperienceSelectionMiddlewareArg<TVariant>
-) => ExperienceSelectionMiddleware<TBaseline, TVariant>;
+) => ExperienceSelectionMiddleware<TBaseline, TVariant> | undefined;
 
 export interface HasExperienceSelectionMiddleware<
   TBaseline extends Reference,
