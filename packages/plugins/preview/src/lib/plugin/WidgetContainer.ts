@@ -16,10 +16,12 @@ type WidgetContainerOptions = {
 };
 
 export class WidgetContainer {
+  private static CONTAINER_CLASS = 'nt-preview-widget-container';
   private container: HTMLDivElement;
 
   constructor(private readonly options: WidgetContainerOptions) {
     this.container = document.createElement('div');
+    this.container.classList.add(WidgetContainer.CONTAINER_CLASS);
     this.container.style.position = 'fixed';
     this.container.style.zIndex = '999999';
     this.container.style.right = '0px';
@@ -58,5 +60,11 @@ export class WidgetContainer {
 
   public get element() {
     return this.container;
+  }
+
+  public static isContainerAttached() {
+    return (
+      document.querySelector(`.${WidgetContainer.CONTAINER_CLASS}`) !== null
+    );
   }
 }
