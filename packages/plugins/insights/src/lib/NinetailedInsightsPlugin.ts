@@ -1,11 +1,9 @@
-import { v4 as uuid } from 'uuid';
 import { isEqual } from 'radash';
 import {
   COMPONENT,
   COMPONENT_START,
   PROFILE_CHANGE,
   PAGE_HIDDEN,
-  buildClientNinetailedRequestContext,
   type ProfileChangedPayload,
   type Profile,
   type InterestedInSeenElements,
@@ -17,9 +15,14 @@ import {
 } from '@ninetailed/experience.js';
 
 import {
+  logger,
   type ComponentViewEvent,
-  buildComponentViewEvent,
 } from '@ninetailed/experience.js-shared';
+import type {
+  EventBuilder,
+  RequiresEventBuilder,
+} from '@ninetailed/experience.js';
+
 import type { ComponentViewEventBatch } from './types/Event/ComponentViewEventBatch';
 import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
 import {
@@ -36,7 +39,8 @@ export class NinetailedInsightsPlugin
     InterestedInSeenElements,
     InterestedInProfileChange,
     InterestedInHiddenPage,
-    AcceptsCredentials
+    AcceptsCredentials,
+    RequiresEventBuilder
 {
   public override name = 'ninetailed:insights';
 
@@ -54,6 +58,8 @@ export class NinetailedInsightsPlugin
 
   private readonly insightsApiClientUrl?: string;
   private instance?: AnalyticsInstance;
+
+  private eventBuilder?: EventBuilder;
 
   constructor({ url }: { url?: string } = {}) {
     super();
@@ -113,17 +119,20 @@ export class NinetailedInsightsPlugin
   };
 
   public [COMPONENT]: EventHandler<ComponentViewEvent> = ({ payload }) => {
+    if (!this.eventBuilder) {
+      logger.error(
+        'EventBuilder is not injected. Cannot build event. Skipping.'
+      );
+      return;
+    }
+
     const { componentId, experienceId, variantIndex } = payload;
 
-    const ctx = buildClientNinetailedRequestContext();
-    const event = buildComponentViewEvent({
-      ctx,
+    const event = this.eventBuilder.component(
       componentId,
       experienceId,
-      variantIndex,
-      messageId: uuid(),
-      timestamp: Date.now(),
-    });
+      variantIndex
+    );
 
     this.events.push(event);
 
@@ -195,11 +204,15 @@ export class NinetailedInsightsPlugin
     this.eventsQueue = [];
   }
 
-  setCredentials(credentials: Credentials) {
+  public setCredentials(credentials: Credentials) {
     this.insightsApiClient = new NinetailedInsightsApiClient({
       url: this.insightsApiClientUrl,
       clientId: credentials.clientId,
       environment: credentials.environment,
     });
+  }
+
+  public setEventBuilder(eventBuilder: EventBuilder) {
+    this.eventBuilder = eventBuilder;
   }
 }
