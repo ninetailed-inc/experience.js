@@ -1,4 +1,8 @@
-import { PROFILE_CHANGE } from '@ninetailed/experience.js-shared';
+import {
+  EXPERIENCES_FALLBACK_CACHE,
+  PROFILE_CHANGE,
+  PROFILE_FALLBACK_CACHE,
+} from '@ninetailed/experience.js-shared';
 import {
   Storage,
   ProfileState,
@@ -40,22 +44,33 @@ export class ProfileStateManager {
   private profilfeListeners: ((profile: ProfileState) => void)[] = [];
 
   private setProfileState(payload: ProfileChangedPayload) {
-    if (payload.error) {
-      this.state = {
-        ...this.state,
-        status: 'error',
-        profile: null,
-        experiences: null,
-        error: payload.error,
-      };
-    } else if (!payload.profile || !payload.experiences) {
-      this.state = {
-        ...this.state,
-        status: 'error',
-        profile: null,
-        experiences: null,
-        error: new Error('Profile or experiences are missing'),
-      };
+    console.log('payload', payload);
+
+    if (payload.error || !payload.profile || !payload.experiences) {
+      // TODO we could check if the in memory state is already there and if the fallback cache needs to get read from localstorage
+
+      const fallbackProfile = this.cache.getItem(PROFILE_FALLBACK_CACHE);
+      const fallbackExperiences =
+        this.cache.getItem(EXPERIENCES_FALLBACK_CACHE) || [];
+
+      if (fallbackProfile) {
+        this.state = {
+          ...this.state,
+          status: 'success',
+          profile: fallbackProfile,
+          experiences: fallbackExperiences,
+          error: null,
+        };
+      } else {
+        this.state = {
+          ...this.state,
+          status: 'error',
+          profile: null,
+          experiences: null,
+          error:
+            payload.error || new Error('Profile or experiences are missing'),
+        };
+      }
     } else {
       this.state = {
         ...this.state,
@@ -64,7 +79,13 @@ export class ProfileStateManager {
         experiences: payload.experiences,
         error: null,
       };
+
+      this.cache.setItem(PROFILE_FALLBACK_CACHE, this.state.profile);
+      this.cache.setItem(EXPERIENCES_FALLBACK_CACHE, this.state.experiences);
     }
+
+    console.log('Profile state updated', this.state);
+    console.log('Listeners', this.profilfeListeners);
 
     this.profilfeListeners.forEach((cb) => cb(this.state));
   }

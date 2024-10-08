@@ -764,6 +764,19 @@ export class Ninetailed implements NinetailedInstance {
         return;
       }
 
+      console.log('variant', {
+        ...baseReturn,
+        status: 'success',
+        loading: false,
+        error: null,
+        experience: experienceWithStickyFromExperienceApi,
+        variant,
+        variantIndex: selectedExperience.variantIndex,
+        audience: experience.audience ? experience.audience : null,
+        profile,
+        isPersonalized: true,
+      });
+
       setSelectedVariant(
         overrideResult({
           ...baseReturn,
