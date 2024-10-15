@@ -186,7 +186,11 @@ export class NinetailedInsightsApiClient {
       logger.debug(`${requestName} request succesfully completed.`);
     } catch (error) {
       this.logRequestError(error, { requestName });
-      throw error;
+
+      // Abort errors caused by timeouts should not bubble up and be reported by third-party tools (e.g. Sentry)
+      if (!(error instanceof Error) || error.name !== 'AbortError') {
+        throw error;
+      }
     }
   }
 
