@@ -348,8 +348,6 @@ export class NinetailedCorePlugin
         { locale: this.locale, enabledFeatures: this.enabledFeatures }
       );
       this.instance.storage.setItem(ANONYMOUS_ID, profile.id);
-      this.instance.storage.setItem(PROFILE_FALLBACK_CACHE, profile);
-      this.instance.storage.setItem(EXPERIENCES_FALLBACK_CACHE, experiences);
       logger.debug('Profile from api: ', profile);
       logger.debug('Experiences from api: ', experiences);
       this.instance.dispatch({
@@ -361,28 +359,10 @@ export class NinetailedCorePlugin
       return { success: true };
     } catch (error) {
       logger.debug('An error occurred during flushing the events: ', error);
-      const fallbackProfile = this.instance.storage.getItem(
-        PROFILE_FALLBACK_CACHE
-      );
-      const fallbackExperiences =
-        this.instance.storage.getItem(EXPERIENCES_FALLBACK_CACHE) || [];
-
-      if (fallbackProfile) {
-        logger.debug('Found a fallback profile - will use this.');
-        this.instance.dispatch({
-          type: PROFILE_CHANGE,
-          profile: fallbackProfile,
-          experiences: fallbackExperiences,
-        });
-      } else {
-        logger.debug('No fallback profile found - setting profile to null.');
-        this.instance.dispatch({
-          type: PROFILE_CHANGE,
-          profile: null,
-          experiences: fallbackExperiences,
-          error,
-        });
-      }
+      this.instance.dispatch({
+        type: PROFILE_CHANGE,
+        error,
+      });
 
       return { success: false };
     }

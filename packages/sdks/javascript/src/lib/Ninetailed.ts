@@ -41,6 +41,7 @@ import {
   TrackHasSeenComponent,
   AnalyticsInstance,
   TrackComponentView,
+  Storage,
 } from './types';
 import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
@@ -64,6 +65,7 @@ import {
 } from '@ninetailed/experience.js-plugin-analytics';
 import { EventBuilder } from './utils/EventBuilder';
 import { requiresEventBuilder } from './guards/requiresEventBuilder';
+import { ProfileStateManager } from './ProfileStateManager';
 
 declare global {
   interface Window {
@@ -75,18 +77,6 @@ declare global {
     } & unknown;
   }
 }
-
-type GetItem<T = any> = (key: string) => T;
-
-type SetItem<T = any> = (key: string, value: T) => void;
-
-type RemoveItem = (key: string) => void;
-
-export type Storage = {
-  getItem: GetItem;
-  setItem: SetItem;
-  removeItem: RemoveItem;
-};
 
 type Options = {
   url?: string;
@@ -149,6 +139,7 @@ export class Ninetailed implements NinetailedInstance {
   private readonly ninetailedCorePlugin: NinetailedCorePlugin;
   private readonly elementSeenObserver: ElementSeenObserver;
   private readonly observedElements: WeakMap<Element, ObservedElementPayload[]>;
+  private readonly profileStateManager: ProfileStateManager;
 
   private readonly clientId;
   private readonly environment;
@@ -254,20 +245,19 @@ export class Ninetailed implements NinetailedInstance {
       ...(storageImpl ? { storage: storageImpl } : {}),
     }) as AnalyticsInstance;
 
+    this.profileStateManager = new ProfileStateManager(this.instance);
+
     const detachOnReadyListener = this.instance.on('ready', () => {
       this.isInitialized = true;
       logger.info('Ninetailed Experience.js SDK is completely initialized.');
       detachOnReadyListener();
     });
 
-    // put in private method
-    this.onProfileChange((profileState) => {
-      this._profileState = profileState;
-
+    this.profileStateManager.onProfileChange((profileState) => {
       if (typeof window !== 'undefined') {
         window.ninetailed = Object.assign({}, window.ninetailed, {
-          profile: this.profileState.profile,
-          experiences: this.profileState.experiences,
+          profile: profileState.profile,
+          experiences: profileState.experiences,
         });
       }
     });
@@ -564,27 +554,9 @@ export class Ninetailed implements NinetailedInstance {
   };
 
   public onProfileChange = (cb: OnProfileChangeCallback) => {
-    cb(this.profileState);
+    cb(this.profileStateManager.getProfileState());
 
-    return this.instance.on(PROFILE_CHANGE, ({ payload }) => {
-      if (payload.error) {
-        cb({
-          ...this._profileState,
-          status: 'error',
-          profile: payload.profile,
-          experiences: payload.experiences,
-          error: payload.error,
-        });
-      } else {
-        cb({
-          ...this._profileState,
-          status: 'success',
-          profile: payload.profile,
-          experiences: payload.experiences,
-          error: null,
-        });
-      }
-    });
+    return this.profileStateManager.onProfileChange(cb);
   };
 
   public onSelectVariant = <
@@ -792,6 +764,19 @@ export class Ninetailed implements NinetailedInstance {
         return;
       }
 
+      console.log('variant', {
+        ...baseReturn,
+        status: 'success',
+        loading: false,
+        error: null,
+        experience: experienceWithStickyFromExperienceApi,
+        variant,
+        variantIndex: selectedExperience.variantIndex,
+        audience: experience.audience ? experience.audience : null,
+        profile,
+        isPersonalized: true,
+      });
+
       setSelectedVariant(
         overrideResult({
           ...baseReturn,
@@ -896,7 +881,7 @@ export class Ninetailed implements NinetailedInstance {
         identify: this.identifyAsWindowHandler.bind(this),
         reset: this.reset.bind(this),
         debug: this.debug.bind(this),
-        profile: this.profileState.profile,
+        profile: this.profileStateManager.getProfileState().profile,
       });
     }
   }
