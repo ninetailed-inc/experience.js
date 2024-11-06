@@ -152,9 +152,11 @@ export class NinetailedInsightsPlugin
 
     const previousProfile = this.profile ?? profile;
 
-    this.createEventsBatch(previousProfile);
+    if (previousProfile) {
+      this.createEventsBatch(previousProfile);
+    }
 
-    this.profile = profile;
+    this.profile = profile ?? undefined;
 
     this.seenElements = new WeakMap<Element, ElementSeenPayload[]>();
   };
