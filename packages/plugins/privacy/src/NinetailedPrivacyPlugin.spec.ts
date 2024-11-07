@@ -19,6 +19,8 @@ class TestPlugin extends NinetailedPlugin {
 
   public page = jest.fn();
 
+  public track = jest.fn();
+
   public [SET_ENABLED_FEATURES] = jest.fn();
 }
 
@@ -136,6 +138,15 @@ describe('NinetailedPrivacyPlugin', () => {
 
     await analytics.page();
     expect(testPlugin.page).not.toHaveBeenCalled();
+  });
+
+  it('should not intercept track events if all event names are allowed through *', async () => {
+    const { testPlugin, analytics } = setup({
+      allowedEvents: ['track'],
+      allowedTrackEvents: ['*'],
+    });
+    await analytics.track('test');
+    expect(testPlugin.track).toHaveBeenCalled();
   });
 
   it('Should set the features which are used correctly. E.g. not using the location of the user, even if the consent is given', async () => {
