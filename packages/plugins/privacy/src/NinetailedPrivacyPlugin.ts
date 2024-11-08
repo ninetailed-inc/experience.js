@@ -34,7 +34,7 @@ export type PrivacyConfig = {
   /**
    * Which events you want to allow?
    *
-   * default is ['page', 'track']
+   * default is ['page']
    */
   allowedEvents: EventType[];
   /**
@@ -77,10 +77,10 @@ export type PrivacyConfig = {
 };
 
 export const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
-  allowedEvents: ['page', 'track'],
+  allowedEvents: ['page'],
   allowedPageEventProperties: ['*'],
   allowedTrackEventProperties: [],
-  allowedTrackEvents: ['*'],
+  allowedTrackEvents: [],
   allowedTraits: [],
   blockProfileMerging: true,
   enabledFeatures: [],
