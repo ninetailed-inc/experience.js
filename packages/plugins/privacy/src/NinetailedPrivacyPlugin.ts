@@ -34,7 +34,7 @@ export type PrivacyConfig = {
   /**
    * Which events you want to allow?
    *
-   * default is ['page', 'track']
+   * default is ['page']
    */
   allowedEvents: EventType[];
   /**
@@ -77,7 +77,7 @@ export type PrivacyConfig = {
 };
 
 export const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
-  allowedEvents: ['page', 'track'],
+  allowedEvents: ['page'],
   allowedPageEventProperties: ['*'],
   allowedTrackEventProperties: [],
   allowedTrackEvents: [],
@@ -256,7 +256,10 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public [TRACK_EVENT_HANDLER] = this.handleEventStart(
     'track',
     (payload, abort) => {
-      if (!this.getConfig().allowedTrackEvents.includes(payload.event)) {
+      if (
+        !this.getConfig().allowedTrackEvents.includes('*') &&
+        !this.getConfig().allowedTrackEvents.includes(payload.event)
+      ) {
         logger.info(
           '[Ninetailed Privacy Plugin] The track event was blocked, as it is not allowed to send by your configuration.'
         );
