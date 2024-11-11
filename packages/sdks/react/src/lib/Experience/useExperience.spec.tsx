@@ -180,4 +180,77 @@ describe('useExperience', () => {
     expect(result.current.experience).toEqual(experience);
     expect(result.current.audience).toEqual(experience.audience);
   });
+
+  it('handles circular references in an object', async () => {
+    const ninetailed = mockNinetailed();
+
+    const experience = {
+      id: '3m1HTWSCdvCHz3qXDaqkOm',
+      type: 'nt_experiment' as const,
+      audience: {
+        id: '5A1ZvBh2chTzPnlD3N38V2',
+      },
+      distribution: [
+        {
+          index: 0,
+          start: 0,
+          end: 1,
+        },
+      ],
+      trafficAllocation: 1,
+      components: [
+        {
+          baseline: {
+            id: '3HQIlpV2OtnpSbs2zRwDGi',
+          },
+          variants: [
+            {
+              id: '6ytJPD38eqprLooUR0ms1q',
+            },
+            {
+              id: 'Z51sGdeBlUIVDqpbzF90H',
+            },
+            {
+              id: '642elZ1sAlE0F2WloYv3Jk',
+            },
+          ],
+        },
+      ],
+    };
+
+    const baseline = {
+      id: '3HQIlpV2OtnpSbs2zRwDGi',
+    };
+
+    // This is not necssarily a real life example, but it's a good way to test circular references
+    (experience as any).exp = experience;
+
+    const { result } = renderHook(
+      () =>
+        useExperience({
+          baseline,
+          experiences: [experience],
+        }),
+      {
+        wrapper: createNinetailedContextWrapper(ninetailed),
+      }
+    );
+
+    await sleep(5);
+
+    await act(async () => {
+      ninetailed.identify('test');
+    });
+
+    expect(result.current.status).toEqual('success');
+    expect(result.current.loading).toEqual(false);
+    expect(result.current.variantIndex).toEqual(1);
+    expect(result.current.variant).toEqual(
+      experience.components[0].variants[0]
+    );
+    expect(result.current.baseline).toEqual(experience.components[0].baseline);
+    expect(result.current.hasVariants).toEqual(true);
+    expect(result.current.experience).toEqual(experience);
+    expect(result.current.audience).toEqual(experience.audience);
+  });
 });
