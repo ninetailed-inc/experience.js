@@ -2,12 +2,15 @@ import Cookies from 'js-cookie';
 import {
   ANONYMOUS_ID,
   NINETAILED_ANONYMOUS_ID_COOKIE,
-  Profile,
   PROFILE_CHANGE,
   PROFILE_RESET,
 } from '@ninetailed/experience.js-shared';
 
-import { AnalyticsInstance } from '@ninetailed/experience.js';
+import {
+  AnalyticsInstance,
+  type ProfileChangedPayload,
+  type InterestedInProfileChange,
+} from '@ninetailed/experience.js';
 import {
   EventHandler,
   NinetailedPlugin,
@@ -23,7 +26,10 @@ type NinetailedSsrPluginOptions = {
   };
 };
 
-export class NinetailedSsrPlugin extends NinetailedPlugin {
+export class NinetailedSsrPlugin
+  extends NinetailedPlugin
+  implements InterestedInProfileChange
+{
   public name = 'ninetailed:ssr';
 
   private cookieDomain?: string;
@@ -44,7 +50,7 @@ export class NinetailedSsrPlugin extends NinetailedPlugin {
     }
   };
 
-  public [PROFILE_CHANGE]: EventHandler<{ profile?: Profile }> = ({
+  public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({
     payload,
   }) => {
     if (payload.profile) {

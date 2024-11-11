@@ -12,12 +12,17 @@ import {
   HasExperienceSelectionMiddleware,
   OnChangeEmitter,
   BuildExperienceSelectionMiddleware,
+  type ProfileChangedPayload,
+  type InterestedInProfileChange,
 } from '@ninetailed/experience.js';
 import type {
   PreviewPluginApi,
   ExposedAudienceDefinition,
 } from '@ninetailed/experience.js-preview-bridge';
-import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
+import {
+  type EventHandler,
+  NinetailedPlugin,
+} from '@ninetailed/experience.js-plugin-analytics';
 
 import { WidgetContainer } from './WidgetContainer';
 
@@ -43,7 +48,9 @@ type NinetailedPreviewPluginOptions = {
 
 export class NinetailedPreviewPlugin
   extends NinetailedPlugin
-  implements HasExperienceSelectionMiddleware<Reference, Reference>
+  implements
+    HasExperienceSelectionMiddleware<Reference, Reference>,
+    InterestedInProfileChange
 {
   public name = 'ninetailed:preview' + Math.random();
 
@@ -113,7 +120,9 @@ export class NinetailedPreviewPlugin
 
   public loaded = () => true;
 
-  public [PROFILE_CHANGE] = ({ payload }: { payload: any }) => {
+  public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({
+    payload,
+  }) => {
     if (!this.isActiveInstance) {
       return;
     }
