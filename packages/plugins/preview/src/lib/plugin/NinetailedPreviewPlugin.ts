@@ -204,7 +204,7 @@ export class NinetailedPreviewPlugin
 
     if (!this.isKnownAudience(id)) {
       logger.warn(
-        `You cannot deactivate an unkown audience (id: ${id}). How did you get it in the first place?`
+        `You cannot deactivate an unknown audience (id: ${id}). How did you get it in the first place?`
       );
       return;
     }
