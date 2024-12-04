@@ -17,7 +17,7 @@ type WidgetContainerOptions = {
 
 export class WidgetContainer {
   private static CONTAINER_CLASS = 'nt-preview-widget-container';
-  private container: HTMLDivElement;
+  private readonly container: HTMLDivElement;
 
   constructor(private readonly options: WidgetContainerOptions) {
     this.container = document.createElement('div');
@@ -28,6 +28,7 @@ export class WidgetContainer {
     this.container.style.bottom = `${BUTTON_BOTTOM_POSITION}px`;
     this.container.style.width = `${CONTAINER_WIDTH}px`;
     this.container.style.height = `${BUTTON_HEIGHT}px`;
+    this.container.style.overflow = 'hidden';
     if (options.ui?.opener?.hide) {
       this.container.style.transform = TRANSFORM_CLOSED_HIDE;
     } else {
