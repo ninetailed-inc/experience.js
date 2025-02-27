@@ -56,7 +56,6 @@
     "react-dom": "18.2.0",
     "react-final-form": "6.5.9",
     "react-helmet": "6.1.0",
-    "react-intersection-observer": "8.34.0",
     "react-is": "18.2.0",
     "regenerator-runtime": "0.13.7",
     "ts-toolbelt": "9.6.0",

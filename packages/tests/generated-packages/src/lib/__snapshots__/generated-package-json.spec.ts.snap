@@ -447,7 +447,6 @@ Object {
     "@testing-library/react": "13.4.0",
     "@testing-library/react-hooks": "7.0.2",
     "radash": "10.9.0",
-    "react-intersection-observer": "8.34.0",
     "react-is": "18.2.0",
   },
   "description": "Ninetailed SDK for React",
