@@ -13,6 +13,8 @@ import {
   unionBy,
   NinetailedRequestContext,
   buildComponentViewEvent,
+  Profile,
+  SelectedVariantInfo,
 } from '@ninetailed/experience.js-shared';
 import {
   NinetailedAnalyticsPlugin,
@@ -129,16 +131,14 @@ export class NinetailedCorePlugin
         'Found legacy anonymousId, migrating to new one.',
         legacyAnonymousId
       );
-      instance.storage.setItem(ANONYMOUS_ID, legacyAnonymousId);
+      this.setAnonymousId(legacyAnonymousId);
       instance.storage.removeItem(LEGACY_ANONYMOUS_ID);
     }
 
     if (typeof this.onInitProfileId === 'function') {
-      const profileId = await this.onInitProfileId(
-        instance.storage.getItem(ANONYMOUS_ID)
-      );
+      const profileId = await this.onInitProfileId(this.getAnonymousId());
       if (typeof profileId === 'string') {
-        instance.storage.setItem(ANONYMOUS_ID, profileId);
+        this.setAnonymousId(profileId);
       }
     }
 
@@ -273,15 +273,15 @@ export class NinetailedCorePlugin
       logger.debug('Resetting profile.');
       const instance = args[args.length - 1] as InternalAnalyticsInstance;
       instance.dispatch({ type: PROFILE_RESET });
-      instance.storage.removeItem(ANONYMOUS_ID);
-      instance.storage.removeItem(PROFILE_FALLBACK_CACHE);
-      instance.storage.removeItem(EXPERIENCES_FALLBACK_CACHE);
+
+      this.clearCaches();
+
       logger.debug('Removed old profile data from localstorage.');
 
       if (typeof this.onInitProfileId === 'function') {
         const profileId = await this.onInitProfileId(undefined);
         if (typeof profileId === 'string') {
-          instance.storage.setItem(ANONYMOUS_ID, profileId);
+          this.setAnonymousId(profileId);
         }
       }
 
@@ -330,6 +330,65 @@ export class NinetailedCorePlugin
 
   public flush = asyncThrottle<void, FlushResult>(this._flush.bind(this));
 
+  private getAnonymousId(): string | undefined {
+    return (this.instance.storage.getItem(ANONYMOUS_ID) as string) ?? undefined;
+  }
+
+  private setAnonymousId(id: string): void {
+    this.instance.storage.setItem(ANONYMOUS_ID, id);
+  }
+
+  private clearAnonymousId(): void {
+    this.instance.storage.removeItem(ANONYMOUS_ID);
+  }
+
+  private setFallbackProfile(profile: Profile): void {
+    this.instance.storage.setItem(PROFILE_FALLBACK_CACHE, profile);
+  }
+
+  private getFallbackProfile(): Profile | undefined {
+    return (
+      (this.instance.storage.getItem(PROFILE_FALLBACK_CACHE) as Profile) ??
+      undefined
+    );
+  }
+
+  private clearFallbackProfile(): void {
+    this.instance.storage.removeItem(PROFILE_FALLBACK_CACHE);
+  }
+
+  private setFallbackExperiences(experiences: SelectedVariantInfo[]): void {
+    this.instance.storage.setItem(EXPERIENCES_FALLBACK_CACHE, experiences);
+  }
+
+  private getFallbackExperiences(): SelectedVariantInfo[] {
+    return this.instance.storage.getItem(EXPERIENCES_FALLBACK_CACHE) || [];
+  }
+
+  private clearFallbackExperiences(): void {
+    this.instance.storage.removeItem(EXPERIENCES_FALLBACK_CACHE);
+  }
+
+  private clearCaches(): void {
+    this.clearAnonymousId();
+    this.clearFallbackProfile();
+    this.clearFallbackExperiences();
+  }
+
+  private populateCaches({
+    experiences,
+    profile,
+    anonymousId,
+  }: {
+    anonymousId: string;
+    profile: Profile;
+    experiences: SelectedVariantInfo[];
+  }) {
+    this.setAnonymousId(anonymousId);
+    this.setFallbackProfile(profile);
+    this.setFallbackExperiences(experiences);
+  }
+
   private async _flush() {
     const events: Event[] = Object.assign([], this.queue);
     logger.info('Start flushing events.');
@@ -339,7 +398,7 @@ export class NinetailedCorePlugin
     }
 
     try {
-      const anonymousId = this.instance.storage.getItem(ANONYMOUS_ID);
+      const anonymousId = this.getAnonymousId();
       const { profile, experiences } = await this.apiClient.upsertProfile(
         {
           profileId: anonymousId,
@@ -347,9 +406,13 @@ export class NinetailedCorePlugin
         },
         { locale: this.locale, enabledFeatures: this.enabledFeatures }
       );
-      this.instance.storage.setItem(ANONYMOUS_ID, profile.id);
-      this.instance.storage.setItem(PROFILE_FALLBACK_CACHE, profile);
-      this.instance.storage.setItem(EXPERIENCES_FALLBACK_CACHE, experiences);
+
+      this.populateCaches({
+        anonymousId: profile.id,
+        profile,
+        experiences,
+      });
+
       logger.debug('Profile from api: ', profile);
       logger.debug('Experiences from api: ', experiences);
       this.instance.dispatch({
@@ -361,11 +424,8 @@ export class NinetailedCorePlugin
       return { success: true };
     } catch (error) {
       logger.debug('An error occurred during flushing the events: ', error);
-      const fallbackProfile = this.instance.storage.getItem(
-        PROFILE_FALLBACK_CACHE
-      );
-      const fallbackExperiences =
-        this.instance.storage.getItem(EXPERIENCES_FALLBACK_CACHE) || [];
+      const fallbackProfile = this.getFallbackProfile();
+      const fallbackExperiences = this.getFallbackExperiences();
 
       if (fallbackProfile) {
         logger.debug('Found a fallback profile - will use this.');
