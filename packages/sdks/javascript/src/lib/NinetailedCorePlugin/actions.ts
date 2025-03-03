@@ -30,12 +30,14 @@ type ProfileChangeAction =
       type: typeof PROFILE_CHANGE;
       profile: Profile;
       experiences: SelectedVariantInfo[];
+      changes: Change[];
       error: undefined | null;
     }
   | {
       type: typeof PROFILE_CHANGE;
       profile: Profile | null;
       experiences: SelectedVariantInfo[];
+      changes: Change[];
       error: Error;
     };
 

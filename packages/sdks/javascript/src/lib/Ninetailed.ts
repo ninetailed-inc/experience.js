@@ -233,6 +233,7 @@ export class Ninetailed implements NinetailedInstance {
       status: 'loading',
       profile: null,
       experiences: null,
+      changes: null,
       error: null,
       from: 'api',
     };
@@ -573,6 +574,7 @@ export class Ninetailed implements NinetailedInstance {
           status: 'error',
           profile: payload.profile,
           experiences: payload.experiences,
+          changes: payload.changes,
           error: payload.error,
         });
       } else {
@@ -581,6 +583,7 @@ export class Ninetailed implements NinetailedInstance {
           status: 'success',
           profile: payload.profile,
           experiences: payload.experiences,
+          changes: payload.changes,
           error: null,
         });
       }

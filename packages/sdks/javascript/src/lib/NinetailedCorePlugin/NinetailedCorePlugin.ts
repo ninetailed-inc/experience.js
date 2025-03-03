@@ -15,6 +15,7 @@ import {
   buildComponentViewEvent,
   Profile,
   SelectedVariantInfo,
+  Change,
 } from '@ninetailed/experience.js-shared';
 import {
   NinetailedAnalyticsPlugin,
@@ -25,6 +26,7 @@ import { buildClientNinetailedRequestContext } from './Events';
 import { asyncThrottle } from '../utils/asyncThrottle';
 import {
   ANONYMOUS_ID,
+  CHANGES_FALLBACK_CACHE,
   CONSENT,
   DEBUG_FLAG,
   EMPTY_MERGE_ID,
@@ -382,24 +384,40 @@ export class NinetailedCorePlugin
     this.instance.storage.removeItem(EXPERIENCES_FALLBACK_CACHE);
   }
 
+  private setFallbackChanges(changes: Change[]): void {
+    this.instance.storage.setItem(CHANGES_FALLBACK_CACHE, changes);
+  }
+
+  private getFallbackChanges(): Change[] {
+    return this.instance.storage.getItem(CHANGES_FALLBACK_CACHE) || [];
+  }
+
+  private clearFallbackChanges(): void {
+    this.instance.storage.removeItem(CHANGES_FALLBACK_CACHE);
+  }
+
   private clearCaches(): void {
     this.clearAnonymousId();
     this.clearFallbackProfile();
     this.clearFallbackExperiences();
+    this.clearFallbackChanges();
   }
 
   private populateCaches({
     experiences,
     profile,
     anonymousId,
+    changes,
   }: {
     anonymousId: string;
     profile: Profile;
     experiences: SelectedVariantInfo[];
+    changes: Change[];
   }) {
     this.setAnonymousId(anonymousId);
     this.setFallbackProfile(profile);
     this.setFallbackExperiences(experiences);
+    this.setFallbackChanges(changes);
   }
 
   private async _flush() {
@@ -412,18 +430,20 @@ export class NinetailedCorePlugin
 
     try {
       const anonymousId = this.getAnonymousId();
-      const { profile, experiences } = await this.apiClient.upsertProfile(
-        {
-          profileId: anonymousId,
-          events,
-        },
-        { locale: this.locale, enabledFeatures: this.enabledFeatures }
-      );
+      const { profile, experiences, changes } =
+        await this.apiClient.upsertProfile(
+          {
+            profileId: anonymousId,
+            events,
+          },
+          { locale: this.locale, enabledFeatures: this.enabledFeatures }
+        );
 
       this.populateCaches({
         anonymousId: profile.id,
         profile,
         experiences,
+        changes,
       });
 
       logger.debug('Profile from api: ', profile);
@@ -433,6 +453,7 @@ export class NinetailedCorePlugin
         type: PROFILE_CHANGE,
         profile,
         experiences,
+        changes,
         error: undefined,
       });
       await delay(20);
@@ -441,6 +462,7 @@ export class NinetailedCorePlugin
       logger.debug('An error occurred during flushing the events: ', error);
       const fallbackProfile = this.getFallbackProfile();
       const fallbackExperiences = this.getFallbackExperiences();
+      const fallbackChanges = this.getFallbackChanges();
 
       if (fallbackProfile) {
         logger.debug('Found a fallback profile - will use this.');
@@ -448,6 +470,7 @@ export class NinetailedCorePlugin
           type: PROFILE_CHANGE,
           profile: fallbackProfile,
           experiences: fallbackExperiences,
+          changes: fallbackChanges,
           error: undefined,
         });
       } else {
@@ -456,6 +479,7 @@ export class NinetailedCorePlugin
           type: PROFILE_CHANGE,
           profile: null,
           experiences: fallbackExperiences,
+          changes: fallbackChanges,
           error: error as Error,
         });
       }
