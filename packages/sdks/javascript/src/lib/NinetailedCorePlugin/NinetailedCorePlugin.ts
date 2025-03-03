@@ -1,4 +1,4 @@
-import { AnalyticsInstance } from 'analytics';
+import { AnalyticsInstance, DetachListeners } from 'analytics';
 import {
   Event,
   Locale,
@@ -37,6 +37,7 @@ import {
 } from './constants';
 import { NinetailedInstance, FlushResult } from '../types';
 import { HAS_SEEN_STICKY_COMPONENT } from '../constants';
+import { DispatchAction, ActionPayloadMap } from './actions';
 
 export type OnInitProfileId = (
   profileId?: string
@@ -56,14 +57,22 @@ type AnalyticsPluginNinetailedConfig = {
 
 export const PLUGIN_NAME = 'ninetailed:core';
 
-type EventFn = { payload: any; instance: InternalAnalyticsInstance };
+type EventFn = { payload: any; instance: TypedEventHandlerAnalyticsInstance };
 
 type AbortableFnParams = { abort: () => void; payload: unknown };
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-type InternalAnalyticsInstance = AnalyticsInstance & {
-  dispatch: (action: any) => void;
+export type TypedEventHandlerAnalyticsInstance = Omit<
+  AnalyticsInstance,
+  'on' | 'dispatch'
+> & {
+  dispatch: (action: DispatchAction) => Promise<void>;
+
+  on<T extends DispatchAction['type']>(
+    action: T,
+    handler: (data: ActionPayloadMap[T]) => void
+  ): DetachListeners;
 };
 
 export interface NinetailedCorePlugin extends NinetailedAnalyticsPlugin {
@@ -76,7 +85,7 @@ export class NinetailedCorePlugin
 {
   public name = PLUGIN_NAME;
 
-  private _instance?: InternalAnalyticsInstance;
+  private _instance?: TypedEventHandlerAnalyticsInstance;
   private queue: Event[] = [];
 
   private enabledFeatures: Feature[] = Object.values(FEATURES);
@@ -115,7 +124,7 @@ export class NinetailedCorePlugin
   public async initialize({
     instance,
   }: {
-    instance: InternalAnalyticsInstance;
+    instance: TypedEventHandlerAnalyticsInstance;
   }) {
     this._instance = instance;
 
@@ -271,7 +280,9 @@ export class NinetailedCorePlugin
   public methods = {
     reset: async (...args: any[]) => {
       logger.debug('Resetting profile.');
-      const instance = args[args.length - 1] as InternalAnalyticsInstance;
+      const instance = args[
+        args.length - 1
+      ] as TypedEventHandlerAnalyticsInstance;
       instance.dispatch({ type: PROFILE_RESET });
 
       this.clearCaches();
@@ -292,7 +303,9 @@ export class NinetailedCorePlugin
     },
     debug: async (...args: any[]) => {
       const enabled: boolean = args[0];
-      const instance = args[args.length - 1] as InternalAnalyticsInstance;
+      const instance = args[
+        args.length - 1
+      ] as TypedEventHandlerAnalyticsInstance;
 
       const consoleLogSink = new ConsoleLogSink();
 
@@ -320,7 +333,7 @@ export class NinetailedCorePlugin
     return payload;
   }
 
-  private get instance(): InternalAnalyticsInstance {
+  private get instance(): TypedEventHandlerAnalyticsInstance {
     if (!this._instance) {
       throw new Error('Ninetailed Core plugin not initialized.');
     }
@@ -415,14 +428,16 @@ export class NinetailedCorePlugin
 
       logger.debug('Profile from api: ', profile);
       logger.debug('Experiences from api: ', experiences);
+
       this.instance.dispatch({
         type: PROFILE_CHANGE,
         profile,
         experiences,
+        error: undefined,
       });
       await delay(20);
       return { success: true };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.debug('An error occurred during flushing the events: ', error);
       const fallbackProfile = this.getFallbackProfile();
       const fallbackExperiences = this.getFallbackExperiences();
@@ -433,6 +448,7 @@ export class NinetailedCorePlugin
           type: PROFILE_CHANGE,
           profile: fallbackProfile,
           experiences: fallbackExperiences,
+          error: undefined,
         });
       } else {
         logger.debug('No fallback profile found - setting profile to null.');
@@ -440,7 +456,7 @@ export class NinetailedCorePlugin
           type: PROFILE_CHANGE,
           profile: null,
           experiences: fallbackExperiences,
-          error,
+          error: error as Error,
         });
       }
 
