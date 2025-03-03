@@ -444,7 +444,6 @@ Object {
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
-    "@testing-library/react": "16.2.0",
     "radash": "10.9.0",
     "react-is": "18.2.0",
   },

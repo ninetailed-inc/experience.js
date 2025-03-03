@@ -25,7 +25,9 @@
             "checkMissingDependencies": true,
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
-            "ignoredDependencies": []
+            // No need to declare test dependencies in the library's package.json
+            // as they are not used in the build target
+            "ignoredDependencies": ["@testing-library/react"]
           }
         ]
       }
