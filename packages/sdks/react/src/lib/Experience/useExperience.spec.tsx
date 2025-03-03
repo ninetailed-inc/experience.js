@@ -1,6 +1,6 @@
 import React from 'react';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 
 import { Ninetailed } from '@ninetailed/experience.js';
 import { NinetailedApiClient } from '@ninetailed/experience.js-shared';
