@@ -8,6 +8,8 @@ const ChangeBase = z.object({
   type: z.enum([Variable]),
 });
 
+export type AllowedVariableType = string | JsonObject;
+
 export const VariableChange = ChangeBase.extend({
   type: z.literal(Variable),
   value: z.union([z.string(), JsonObject]),
