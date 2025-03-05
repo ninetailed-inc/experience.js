@@ -15,7 +15,8 @@ export const CreateProfileResponse = withResponseEnvelope(
   z.object({
     profile: Profile,
     experiences: z.array(SelectedVariantInfo),
-    changes: z.array(Change),
+    // TODO: Remove default once the API sends it
+    changes: z.array(Change).default([]),
   })
 );
 export type CreateProfileResponse = z.infer<typeof CreateProfileResponse>;

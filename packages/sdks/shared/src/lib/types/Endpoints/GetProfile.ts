@@ -8,7 +8,8 @@ export const GetProfileResponse = withResponseEnvelope(
   z.object({
     profile: Profile,
     experiences: z.array(SelectedVariantInfo),
-    changes: z.array(Change),
+    // TODO: Remove default once the API sends it
+    changes: z.array(Change).default([]),
   })
 );
 export type GetProfileResponse = z.infer<typeof GetProfileResponse>;
