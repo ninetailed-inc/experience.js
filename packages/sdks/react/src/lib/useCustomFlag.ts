@@ -1,122 +1,118 @@
-import { useState, useEffect } from 'react';
-import { useNinetailed } from './useNinetailed';
-import { logger } from '@ninetailed/experience.js-shared';
+import { useEffect, useState, useRef } from 'react';
+import { AllowedVariableType } from '@ninetailed/experience.js-shared';
+import { useProfile } from './useProfile';
 
 export type CustomFlagStatus = 'loading' | 'success' | 'error';
 
-export interface CustomFlagOptions<T> {
-  defaultValue?: T;
-  fallback?: T;
-}
-
 export interface CustomFlagResult<T> {
-  value: T | null;
+  value: T;
   isLoading: boolean;
   status: CustomFlagStatus;
   error: Error | null;
 }
 
-export function useCustomFlag<T>(
+/**
+ * Custom hook to retrieve a specific feature flag from the Ninetailed profile.
+ *
+ * @param flagKey - The key of the feature flag to retrieve
+ * @param defaultValue - The default value to use if the flag is not found
+ * @returns An object containing the flag value and metadata about the request
+ */
+export function useCustomFlag<T extends AllowedVariableType>(
   flagKey: string,
-  options: CustomFlagOptions<T> = {}
+  defaultValue: T
 ): CustomFlagResult<T> {
-  const { defaultValue, fallback } = options;
-  const ninetailed = useNinetailed();
+  // Get the profile state from the useProfile hook
+  const profileState = useProfile();
+
+  // Track the last processed profile state to avoid unnecessary updates
+  // we are using typeof profileState because profileState has experience omitted
+  const lastProcessedState = useRef<typeof profileState | null>(null);
+
+  // Set up state for the flag result
   const [result, setResult] = useState<CustomFlagResult<T>>({
-    value: defaultValue || null,
-    isLoading: true,
-    status: 'loading',
+    value: defaultValue,
+    isLoading: profileState.status === 'loading',
+    status: profileState.status === 'loading' ? 'loading' : 'success',
     error: null,
   });
 
   useEffect(() => {
-    console.log(`[useCustomFlag] Initializing hook for flag: ${flagKey}`);
+    // Skip processing if the profile state hasn't changed
+    if (lastProcessedState.current === profileState) {
+      return;
+    }
 
-    const unsubscribe = ninetailed.onProfileChange((profileState) => {
-      console.log(
-        `[useCustomFlag] Profile state changed for flag: ${flagKey}`,
-        profileState
-      );
+    // Update our reference to the current profile state
+    lastProcessedState.current = profileState;
 
-      if (profileState.status === 'loading') {
-        console.log(`[useCustomFlag] Still loading flag: ${flagKey}`);
-        return;
-      }
+    // Handle loading state
+    if (profileState.status === 'loading') {
+      setResult((current) => ({
+        ...current,
+        isLoading: true,
+        status: 'loading',
+      }));
+      return;
+    }
 
-      if (profileState.status === 'error') {
-        console.log(
-          `[useCustomFlag] Error loading flag: ${flagKey}`,
-          profileState.error
+    // Handle error state
+    if (profileState.status === 'error') {
+      setResult({
+        value: defaultValue,
+        isLoading: false,
+        status: 'error',
+        error: profileState.error,
+      });
+      return;
+    }
+
+    // Process the flag value
+    try {
+      // Check if we have changes array in the profile state
+      if (profileState.changes && Array.isArray(profileState.changes)) {
+        // Find the change with our flag key
+        const change = profileState.changes.find(
+          (change) => change.key === flagKey
         );
-        setResult({
-          value: fallback !== undefined ? fallback : defaultValue || null,
-          isLoading: false,
-          status: 'error',
-          error: profileState.error,
-        });
-        return;
-      }
 
-      console.log(
-        `[useCustomFlag] Profile loaded, looking for flag: ${flagKey}`
-      );
-
-      try {
-        // Extract custom flag value from the changes array
-        let flagValue: T | undefined = undefined;
-
-        // Check if we have changes array in the profile state
-        if (profileState.changes && Array.isArray(profileState.changes)) {
-          // Find the change with our flag key
-          const change = profileState.changes.find(
-            (change) => change.key === flagKey
-          );
-
-          if (change && change.type === 'Variable') {
-            flagValue = change.value as unknown as T;
-            console.log(
-              `[useCustomFlag] Found flag ${flagKey} with value:`,
-              flagValue
-            );
-          }
+        if (change && change.type === 'Variable') {
+          // Flag found with the right type
+          const flagValue = change.value as unknown as T;
+          setResult({
+            value: flagValue,
+            isLoading: false,
+            status: 'success',
+            error: null,
+          });
+        } else {
+          // Flag not found or wrong type, use default
+          setResult({
+            value: defaultValue,
+            isLoading: false,
+            status: 'success',
+            error: null,
+          });
         }
-
+      } else {
+        // No changes array, use default
         setResult({
-          value:
-            flagValue !== undefined
-              ? flagValue
-              : fallback !== undefined
-              ? fallback
-              : defaultValue || null,
+          value: defaultValue,
           isLoading: false,
           status: 'success',
           error: null,
         });
-
-        console.log(
-          `[useCustomFlag] Flag ${flagKey} processing complete. Final value:`,
-          flagValue !== undefined
-            ? flagValue
-            : fallback !== undefined
-            ? fallback
-            : defaultValue || null
-        );
-      } catch (error) {
-        console.error(
-          `[useCustomFlag] Error extracting flag ${flagKey}:`,
-          error
-        );
-        setResult({
-          value: fallback !== undefined ? fallback : defaultValue || null,
-          isLoading: false,
-          status: 'error',
-          error: error instanceof Error ? error : new Error(String(error)),
-        });
       }
-    });
-
-    return unsubscribe;
-  }, [flagKey, defaultValue, fallback, ninetailed]);
+    } catch (error) {
+      // Handle any errors during processing
+      setResult({
+        value: defaultValue,
+        isLoading: false,
+        status: 'error',
+        error: error instanceof Error ? error : new Error(String(error)),
+      });
+    }
+  }, [profileState, flagKey, defaultValue]);
 
   return result;
 }
