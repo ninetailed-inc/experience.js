@@ -2,39 +2,62 @@ import { useState, useEffect, useRef } from 'react';
 import { ProfileState } from '@ninetailed/experience.js';
 import { logger } from '@ninetailed/experience.js-shared';
 import { isEqual } from 'radash';
-
 import { useNinetailed } from './useNinetailed';
 
+/**
+ * Custom hook that provides access to the Ninetailed profile state
+ * with the 'experiences' property removed to prevent unnecessary re-renders.
+ *
+ * This hook handles profile state changes efficiently by:
+ * 1. Only updating state when actual changes occur
+ * 2. Removing the large 'experiences' object from the state
+ * 3. Properly cleaning up subscriptions when components unmount
+ *
+ * @returns The profile state without the 'experiences' property
+ */
 export const useProfile = () => {
+  // Get the Ninetailed instance
   const ninetailed = useNinetailed();
-  const [profileState, setProfileState] = useState<ProfileState>(
-    ninetailed.profileState
-  );
-  const profileStateRef = useRef({});
 
-  /**
-   * This effect compares the old and new profile state before updating it.
-   * We use a ref to avoid an infinite loop which can happen when an empty profile state was updated with no changes.
-   * This behaviour occurred as the validation handling on the error property was not set properly in the "CreateProfile" and "UpdateProfile" endpoint types.
-   * Furthermore, it was also observed, that it "only" occurred when the preview plugin was used in parallel.
-   */
+  // Extract initial state without experiences
+  const { experiences, ...profileStateWithoutExperiences } =
+    ninetailed.profileState;
+
+  // State to hold the stripped profile state
+  const [strippedProfileState, setStrippedProfileState] = useState<
+    Omit<ProfileState, 'experiences'>
+  >(profileStateWithoutExperiences);
+
+  // Reference to track the previous profile state for comparison
+  const profileStateRef = useRef(ninetailed.profileState);
+
   useEffect(() => {
-    ninetailed.onProfileChange((profileState) => {
-      if (isEqual(profileState, profileStateRef.current)) {
-        logger.debug('Profile State Did Not Change', profileState);
+    // Subscribe to profile changes
+    const unsubscribe = ninetailed.onProfileChange((changedProfileState) => {
+      // Skip update if the profile hasn't actually changed
+      if (isEqual(changedProfileState, profileStateRef.current)) {
+        logger.debug('Profile State Did Not Change', changedProfileState);
         return;
-      } else {
-        setProfileState(profileState);
-        profileStateRef.current = profileState;
-        logger.debug('Profile State Changed', profileState);
       }
+
+      // Update the ref and log the change
+      profileStateRef.current = changedProfileState;
+      logger.debug('Profile State Changed', changedProfileState);
+
+      // Extract everything except experiences and update state
+      const { experiences, ...profileStateWithoutExperiences } =
+        changedProfileState;
+      setStrippedProfileState(profileStateWithoutExperiences);
     });
-  }, []);
 
-  const { experiences, ...profileStateWithoutExperiences } = profileState;
+    // Clean up subscription when component unmounts
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+        logger.debug('Unsubscribed from profile state changes');
+      }
+    };
+  }, []); // Empty dependency array means this effect runs once on mount
 
-  return {
-    ...profileStateWithoutExperiences,
-    loading: profileState.status === 'loading',
-  };
+  return strippedProfileState;
 };

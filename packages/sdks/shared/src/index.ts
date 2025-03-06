@@ -1,5 +1,6 @@
 // types
-export * from './lib/types/Endpoints/CreateProfile';
+
+export * from './lib/types/Changes';
 export * from './lib/types/Endpoints/UpdateProfile';
 export * from './lib/types/Endpoints/UpsertManyProfiles';
 export * from './lib/types/Endpoints/RequestBodyOptions';

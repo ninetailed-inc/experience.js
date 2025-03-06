@@ -8,6 +8,7 @@ import {
   SelectedVariantInfo,
   Reference,
   Event,
+  Change,
 } from '@ninetailed/experience.js-shared';
 import {
   ElementSeenPayload,
@@ -23,6 +24,7 @@ type Loading = {
   status: 'loading';
   profile: null;
   experiences: null;
+  changes: null;
   error: null;
 };
 
@@ -30,13 +32,15 @@ type Success = {
   status: 'success';
   profile: Profile;
   experiences: SelectedVariantInfo[];
+  changes: Change[];
   error: null;
 };
 
 type Fail = {
   status: 'error';
-  profile: null;
-  experiences: null;
+  profile: Profile | null;
+  experiences: SelectedVariantInfo[] | null;
+  changes: Change[] | null;
   error: Error;
 };
 
