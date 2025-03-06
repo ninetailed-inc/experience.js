@@ -13,11 +13,7 @@ export { useNinetailed } from './useNinetailed';
 export { useProfile } from './useProfile';
 export { usePersonalize } from './usePersonalize';
 export { useCustomFlag } from './useCustomFlag';
-export type {
-  CustomFlagOptions,
-  CustomFlagResult,
-  CustomFlagStatus,
-} from './useCustomFlag';
+export type { CustomFlagResult, CustomFlagStatus } from './useCustomFlag';
 export { Personalize } from './Personalize';
 export type { PersonalizedComponent } from './Personalize';
 export { MergeTag } from './MergeTag';
