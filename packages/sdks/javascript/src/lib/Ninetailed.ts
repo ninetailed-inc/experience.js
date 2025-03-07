@@ -31,6 +31,7 @@ import {
   OnInitProfileId,
   PLUGIN_NAME,
   PROFILE_CHANGE,
+  TypedEventHandlerAnalyticsInstance,
 } from './NinetailedCorePlugin';
 import {
   EventFunctionOptions,
@@ -39,7 +40,6 @@ import {
   OnProfileChangeCallback,
   ProfileState,
   TrackHasSeenComponent,
-  AnalyticsInstance,
   TrackComponentView,
 } from './types';
 import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
@@ -142,7 +142,7 @@ const buildOverrideMiddleware =
   };
 
 export class Ninetailed implements NinetailedInstance {
-  private readonly instance: AnalyticsInstance;
+  private readonly instance: TypedEventHandlerAnalyticsInstance;
   private _profileState: ProfileState;
   private isInitialized = false;
   private readonly apiClient: NinetailedApiClient;
@@ -252,7 +252,7 @@ export class Ninetailed implements NinetailedInstance {
       app: 'ninetailed',
       plugins: [...this.plugins, this.ninetailedCorePlugin],
       ...(storageImpl ? { storage: storageImpl } : {}),
-    }) as AnalyticsInstance;
+    }) as TypedEventHandlerAnalyticsInstance;
 
     const detachOnReadyListener = this.instance.on('ready', () => {
       this.isInitialized = true;

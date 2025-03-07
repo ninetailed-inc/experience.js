@@ -35,8 +35,8 @@ type Success = {
 
 type Fail = {
   status: 'error';
-  profile: null;
-  experiences: null;
+  profile: Profile | null;
+  experiences: SelectedVariantInfo[] | null;
   error: Error;
 };
 
