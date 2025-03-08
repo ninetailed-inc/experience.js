@@ -19,30 +19,28 @@ import { type Ninetailed } from '../Ninetailed';
 import { OnSelectVariant } from './OnSelectVariant';
 import { EventBuilder } from '../utils/EventBuilder';
 
-type Loading = {
-  status: 'loading';
-  profile: null;
-  experiences: null;
-  error: null;
-};
-
-type Success = {
-  status: 'success';
-  profile: Profile;
-  experiences: SelectedVariantInfo[];
-  error: null;
-};
-
-type Fail = {
-  status: 'error';
-  profile: Profile | null;
-  experiences: SelectedVariantInfo[] | null;
-  error: Error;
-};
-
-export type ProfileState = {
-  from: 'api' | 'hydrated';
-} & (Loading | Success | Fail);
+export type ProfileState =
+  | {
+      status: 'loading';
+      profile: null;
+      experiences: null;
+      error: null;
+      from: 'api' | 'hydrated';
+    }
+  | {
+      status: 'success';
+      profile: Profile;
+      experiences: SelectedVariantInfo[];
+      error: null;
+      from: 'api' | 'hydrated';
+    }
+  | {
+      status: 'error';
+      profile: Profile | null;
+      experiences: SelectedVariantInfo[] | null;
+      error: Error;
+      from: 'api' | 'hydrated';
+    };
 
 export type OnIsInitializedCallback = () => void;
 
@@ -56,6 +54,10 @@ export type EventFunctionOptions = {
 };
 
 export type FlushResult = { success: boolean };
+
+export type Result<T> =
+  | { success: true; data: T }
+  | { success: false; error: Error };
 
 export type OnProfileChangeCallback = (profile: ProfileState) => void;
 
