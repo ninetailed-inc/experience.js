@@ -565,6 +565,7 @@ export class Ninetailed implements NinetailedInstance {
     });
   };
 
+  // TODO: we need to find a way to make this more readable
   public onSelectVariant = <
     Baseline extends Reference,
     Variant extends Reference
@@ -572,12 +573,14 @@ export class Ninetailed implements NinetailedInstance {
     { baseline, experiences }: OnSelectVariantArgs<Baseline, Variant>,
     cb: OnSelectVariantCallback<Baseline, Variant>
   ) => {
-    let middlewareChangeListeners: RemoveOnChangeListener[] = [];
+    let middlewareChangeListenerCleanupFunctions: RemoveOnChangeListener[] = [];
     let state: OnSelectVariantCallbackArgs<Baseline, Variant> | null = null;
 
     const removeMiddlewareChangeListeners: RemoveOnChangeListener = () => {
-      middlewareChangeListeners.forEach((removeListener) => removeListener());
-      middlewareChangeListeners = [];
+      middlewareChangeListenerCleanupFunctions.forEach((removeListener) =>
+        removeListener()
+      );
+      middlewareChangeListenerCleanupFunctions = [];
     };
 
     const setSelectedVariant = (
@@ -588,6 +591,16 @@ export class Ninetailed implements NinetailedInstance {
     };
 
     const removeProfileChangeListener = this.onProfileChange((profileState) => {
+      removeMiddlewareChangeListeners();
+      const onExperienceSelectionChange = (
+        middleware: ExperienceSelectionMiddleware<Baseline, Variant>
+      ) => {
+        const overrideResult = buildOverrideMiddleware(middleware);
+        if (state !== null) {
+          setSelectedVariant(overrideResult(state));
+        }
+      };
+
       const {
         addListeners,
         removeListeners,
@@ -597,16 +610,11 @@ export class Ninetailed implements NinetailedInstance {
         experiences,
         baseline,
         profile: profileState.profile,
-        onChange: (middleware) => {
-          const overrideResult = buildOverrideMiddleware(middleware);
-          if (state !== null) {
-            setSelectedVariant(overrideResult(state));
-          }
-        },
+        onChange: onExperienceSelectionChange,
       });
 
       addListeners();
-      middlewareChangeListeners.push(removeListeners);
+      middlewareChangeListenerCleanupFunctions.push(removeListeners);
 
       const overrideResult = buildOverrideMiddleware(
         experienceSelectionMiddleware

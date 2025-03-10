@@ -104,7 +104,7 @@ export interface NinetailedInstance<
   page: Page;
   track: Track;
   /**
-   * @deprecated
+   * @deprecated use `trackComponentView` instead
    */
   trackHasSeenComponent: TrackHasSeenComponent;
   trackComponentView: TrackComponentView;

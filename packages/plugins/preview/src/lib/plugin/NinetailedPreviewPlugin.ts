@@ -72,7 +72,7 @@ export class NinetailedPreviewPlugin
    */
   private isActiveInstance = false;
 
-  private onChangeEmitter = new OnChangeEmitter();
+  public onChangeEmitter = new OnChangeEmitter();
 
   private readonly onOpenExperienceEditor;
   private readonly onOpenAudienceEditor;

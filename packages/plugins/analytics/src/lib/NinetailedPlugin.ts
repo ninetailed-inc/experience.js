@@ -3,7 +3,7 @@ import { AnalyticsPlugin } from 'analytics';
 import { AnalyticsInstance } from './AnalyticsInstance';
 import { HasComponentViewTrackingThreshold } from './types/interfaces/HasComponentViewTrackingThreshold';
 import { ElementSeenPayload } from './ElementSeenPayload';
-import { HAS_SEEN_ELEMENT, HAS_SEEN_ELEMENT_START } from './constants';
+import { HAS_SEEN_ELEMENT } from './constants';
 
 export type EventHandlerParams<T = unknown> = {
   payload: T;
