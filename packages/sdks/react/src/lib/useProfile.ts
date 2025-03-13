@@ -4,6 +4,18 @@ import { logger } from '@ninetailed/experience.js-shared';
 import { isEqual } from 'radash';
 import { useNinetailed } from './useNinetailed';
 
+type UseProfileHookResult = Omit<ProfileState, 'experiences'> & {
+  loading: boolean;
+};
+
+function formatProfileForHook(profile: ProfileState): UseProfileHookResult {
+  const { experiences, ...profileStateWithoutExperiences } = profile;
+  return {
+    ...profileStateWithoutExperiences,
+    loading: profile.status === 'loading',
+  };
+}
+
 /**
  * Custom hook that provides access to the Ninetailed profile state
  * with the 'experiences' property removed to prevent unnecessary re-renders.
@@ -15,21 +27,14 @@ import { useNinetailed } from './useNinetailed';
  *
  * @returns The profile state without the 'experiences' property
  */
-export const useProfile = () => {
+export const useProfile = (): UseProfileHookResult => {
   // Get the Ninetailed instance
   const ninetailed = useNinetailed();
-
-  // Extract initial state without experiences
-  const { experiences, ...profileStateWithoutExperiences } =
-    ninetailed.profileState;
 
   // State to hold the stripped profile state
   const [strippedProfileState, setStrippedProfileState] = useState<
     Omit<ProfileState, 'experiences'> & { loading: boolean }
-  >({
-    ...profileStateWithoutExperiences,
-    loading: ninetailed.profileState.status === 'loading',
-  });
+  >(formatProfileForHook(ninetailed.profileState));
 
   // Reference to track the previous profile state for comparison
   const profileStateRef = useRef(ninetailed.profileState);
@@ -48,13 +53,7 @@ export const useProfile = () => {
       profileStateRef.current = changedProfileState;
       logger.debug('Profile State Changed', changedProfileState);
 
-      // Extract everything except experiences and update state
-      const { experiences, ...profileStateWithoutExperiences } =
-        changedProfileState;
-      setStrippedProfileState({
-        ...profileStateWithoutExperiences,
-        loading: changedProfileState.status === 'loading',
-      });
+      setStrippedProfileState(formatProfileForHook(changedProfileState));
     });
 
     // Clean up subscription when component unmounts
