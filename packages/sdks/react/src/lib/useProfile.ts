@@ -28,10 +28,8 @@ function formatProfileForHook(profile: ProfileState): UseProfileHookResult {
  * @returns The profile state without the 'experiences' property
  */
 export const useProfile = (): UseProfileHookResult => {
-  // Get the Ninetailed instance
   const ninetailed = useNinetailed();
 
-  // State to hold the stripped profile state
   const [strippedProfileState, setStrippedProfileState] =
     useState<UseProfileHookResult>(
       formatProfileForHook(ninetailed.profileState)
@@ -41,7 +39,6 @@ export const useProfile = (): UseProfileHookResult => {
   const profileStateRef = useRef(ninetailed.profileState);
 
   useEffect(() => {
-    // Subscribe to profile changes
     const unsubscribe = ninetailed.onProfileChange((changedProfileState) => {
       // Skip update if the profile hasn't actually changed
       // Here we compare the entire profile including experiences and changes
@@ -50,7 +47,6 @@ export const useProfile = (): UseProfileHookResult => {
         return;
       }
 
-      // Update the ref and log the change
       profileStateRef.current = changedProfileState;
       logger.debug('Profile State Changed', changedProfileState);
 
@@ -64,7 +60,7 @@ export const useProfile = (): UseProfileHookResult => {
         logger.debug('Unsubscribed from profile state changes');
       }
     };
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []);
 
   return strippedProfileState;
 };
