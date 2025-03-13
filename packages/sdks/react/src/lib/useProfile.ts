@@ -32,9 +32,10 @@ export const useProfile = (): UseProfileHookResult => {
   const ninetailed = useNinetailed();
 
   // State to hold the stripped profile state
-  const [strippedProfileState, setStrippedProfileState] = useState<
-    Omit<ProfileState, 'experiences'> & { loading: boolean }
-  >(formatProfileForHook(ninetailed.profileState));
+  const [strippedProfileState, setStrippedProfileState] =
+    useState<UseProfileHookResult>(
+      formatProfileForHook(ninetailed.profileState)
+    );
 
   // Reference to track the previous profile state for comparison
   const profileStateRef = useRef(ninetailed.profileState);
