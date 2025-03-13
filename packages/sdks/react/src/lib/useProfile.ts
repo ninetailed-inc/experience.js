@@ -25,8 +25,11 @@ export const useProfile = () => {
 
   // State to hold the stripped profile state
   const [strippedProfileState, setStrippedProfileState] = useState<
-    Omit<ProfileState, 'experiences'>
-  >(profileStateWithoutExperiences);
+    Omit<ProfileState, 'experiences'> & { loading: boolean }
+  >({
+    ...profileStateWithoutExperiences,
+    loading: ninetailed.profileState.status === 'loading',
+  });
 
   // Reference to track the previous profile state for comparison
   const profileStateRef = useRef(ninetailed.profileState);
@@ -35,6 +38,7 @@ export const useProfile = () => {
     // Subscribe to profile changes
     const unsubscribe = ninetailed.onProfileChange((changedProfileState) => {
       // Skip update if the profile hasn't actually changed
+      // Here we compare the entire profile including experiences and changes
       if (isEqual(changedProfileState, profileStateRef.current)) {
         logger.debug('Profile State Did Not Change', changedProfileState);
         return;
@@ -47,7 +51,10 @@ export const useProfile = () => {
       // Extract everything except experiences and update state
       const { experiences, ...profileStateWithoutExperiences } =
         changedProfileState;
-      setStrippedProfileState(profileStateWithoutExperiences);
+      setStrippedProfileState({
+        ...profileStateWithoutExperiences,
+        loading: changedProfileState.status === 'loading',
+      });
     });
 
     // Clean up subscription when component unmounts

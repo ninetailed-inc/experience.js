@@ -7,8 +7,7 @@ import { useNinetailed, useProfile } from '@ninetailed/experience.js-next';
 import { IHubspotForm } from '@/types/contentful';
 
 export const HubspotForm: React.FC<IHubspotForm> = ({ fields }) => {
-  const { profile, status } = useProfile();
-  const loading = status === 'loading';
+  const { profile, loading } = useProfile();
   const { identify } = useNinetailed();
   const [anonymousIdInput, setAnonymousIdInput] = useState(null);
   const [submitData, setSubmitData] = useState(null);

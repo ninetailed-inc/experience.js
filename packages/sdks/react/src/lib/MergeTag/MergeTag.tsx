@@ -11,8 +11,7 @@ export const MergeTag = ({
   id,
   fallback,
 }: PropsWithChildren<MergeTagProps>) => {
-  const { status, profile } = useProfile();
-  const loading = status === 'loading';
+  const { profile, loading } = useProfile();
 
   if (loading || !profile) {
     return null;

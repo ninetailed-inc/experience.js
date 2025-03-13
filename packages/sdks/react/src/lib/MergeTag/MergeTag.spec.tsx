@@ -41,6 +41,7 @@ jest.mock('../useProfile');
 const mockUseProfile = useProfile as jest.MockedFunction<typeof useProfile>;
 
 mockUseProfile.mockReturnValue({
+  loading: false,
   from: 'api',
   status: 'success',
   profile: profile,
