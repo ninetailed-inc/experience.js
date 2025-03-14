@@ -12,6 +12,20 @@ import {
 import { v4 as uuid } from 'uuid';
 import { buildClientNinetailedRequestContext } from '../NinetailedCorePlugin';
 
+type PageData = Partial<Omit<BuildPageEventArgs, 'ctx' | 'properties'>>;
+type TrackData = Partial<
+  Omit<BuildTrackEventArgs, 'ctx' | 'event' | 'properties'>
+>;
+type IdentifyData = Partial<
+  Omit<IdentifyEventArgs, 'ctx' | 'userId' | 'traits'>
+>;
+type ComponentData = Partial<
+  Omit<
+    BuildPageEventArgs,
+    'ctx' | 'componentId' | 'experienceId' | 'variantIndex'
+  >
+>;
+
 export class EventBuilder {
   private readonly buildRequestContext: () => NinetailedRequestContext;
 
@@ -20,46 +34,37 @@ export class EventBuilder {
       buildRequestContext || buildClientNinetailedRequestContext;
   }
 
-  public page(
-    properties?: Properties,
-    data?: Partial<Omit<BuildPageEventArgs, 'ctx' | 'properties'>>
-  ) {
-    return buildPageEvent({
+  private buildEventBase<
+    T extends PageData | TrackData | IdentifyData | ComponentData
+  >(data?: T) {
+    return {
       messageId: data?.messageId || uuid(),
       ...data,
       timestamp: Date.now(),
-      properties: properties || {},
       ctx: this.buildRequestContext(),
+    };
+  }
+
+  public page(properties?: Properties, data?: PageData) {
+    return buildPageEvent({
+      ...this.buildEventBase(data),
+      properties: properties || {},
     });
   }
 
-  public track(
-    event: string,
-    properties?: Properties,
-    data?: Partial<Omit<BuildTrackEventArgs, 'ctx' | 'event' | 'properties'>>
-  ) {
+  public track(event: string, properties?: Properties, data?: TrackData) {
     return buildTrackEvent({
-      messageId: data?.messageId || uuid(),
-      timestamp: Date.now(),
-      ...data,
+      ...this.buildEventBase(data),
       event,
       properties: properties || {},
-      ctx: this.buildRequestContext(),
     });
   }
 
-  public identify(
-    userId: string,
-    traits?: Properties,
-    data?: Partial<Omit<IdentifyEventArgs, 'ctx' | 'userId' | 'traits'>>
-  ) {
+  public identify(userId: string, traits?: Properties, data?: IdentifyData) {
     return buildIdentifyEvent({
-      messageId: data?.messageId || uuid(),
-      timestamp: Date.now(),
-      ...data,
+      ...this.buildEventBase(data),
       traits: traits || {},
       userId: userId || '',
-      ctx: this.buildRequestContext(),
     });
   }
 
@@ -67,21 +72,13 @@ export class EventBuilder {
     componentId: string,
     experienceId?: string,
     variantIndex?: number,
-    data?: Partial<
-      Omit<
-        BuildPageEventArgs,
-        'ctx' | 'componentId' | 'experienceId' | 'variantIndex'
-      >
-    >
+    data?: ComponentData
   ) {
     return buildComponentViewEvent({
-      messageId: data?.messageId || uuid(),
-      timestamp: Date.now(),
-      ...data,
+      ...this.buildEventBase(data),
       componentId,
       experienceId: experienceId || '',
       variantIndex: variantIndex || 0,
-      ctx: this.buildRequestContext(),
     });
   }
 }
