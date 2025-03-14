@@ -7,6 +7,7 @@ import {
   Profile,
   SelectedVariantInfo,
   PROFILE_RESET,
+  Change,
 } from '@ninetailed/experience.js-shared';
 import { HAS_SEEN_STICKY_COMPONENT, PAGE_HIDDEN } from '../constants';
 
@@ -29,12 +30,14 @@ type ProfileChangeAction =
       type: typeof PROFILE_CHANGE;
       profile: Profile;
       experiences: SelectedVariantInfo[];
+      changes: Change[];
       error: undefined | null;
     }
   | {
       type: typeof PROFILE_CHANGE;
       profile: Profile | null;
       experiences: SelectedVariantInfo[];
+      changes: Change[];
       error: Error;
     };
 

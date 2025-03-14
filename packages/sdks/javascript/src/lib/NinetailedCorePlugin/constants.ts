@@ -5,6 +5,7 @@ export const DEBUG_FLAG = '__nt_debug__';
 
 export const PROFILE_FALLBACK_CACHE = '__nt_profile__';
 export const EXPERIENCES_FALLBACK_CACHE = '__nt_experiences__';
+export const CHANGES_FALLBACK_CACHE = '__nt_changes__';
 
 export const PROFILE_CHANGE = 'profile-change';
 export const PROFILE_RESET = 'profile-reset';

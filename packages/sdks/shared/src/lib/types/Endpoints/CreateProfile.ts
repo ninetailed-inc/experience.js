@@ -3,6 +3,7 @@ import { Profile } from '../Profile/Profile';
 import { RequestBodyOptions } from './RequestBodyOptions';
 import { SelectedVariantInfo } from '../SelectedVariantInfo/SelectedVariantInfo';
 import { withResponseEnvelope } from './shared';
+import { Change } from '../Change';
 
 export const CreateProfileRequestBody = z.object({
   events: z.array(z.unknown()).min(1),
@@ -14,6 +15,8 @@ export const CreateProfileResponse = withResponseEnvelope(
   z.object({
     profile: Profile,
     experiences: z.array(SelectedVariantInfo),
+    // TODO: Remove default once the API sends it
+    changes: z.array(Change).default([]),
   })
 );
 export type CreateProfileResponse = z.infer<typeof CreateProfileResponse>;

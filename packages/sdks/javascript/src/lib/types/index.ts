@@ -8,6 +8,7 @@ import {
   SelectedVariantInfo,
   Reference,
   Event,
+  Change,
 } from '@ninetailed/experience.js-shared';
 import {
   ElementSeenPayload,
@@ -24,6 +25,7 @@ export type ProfileState =
       status: 'loading';
       profile: null;
       experiences: null;
+      changes: null;
       error: null;
       from: 'api' | 'hydrated';
     }
@@ -31,6 +33,7 @@ export type ProfileState =
       status: 'success';
       profile: Profile;
       experiences: SelectedVariantInfo[];
+      changes: Change[];
       error: null;
       from: 'api' | 'hydrated';
     }
@@ -38,6 +41,7 @@ export type ProfileState =
       status: 'error';
       profile: Profile | null;
       experiences: SelectedVariantInfo[] | null;
+      changes: Change[] | null;
       error: Error;
       from: 'api' | 'hydrated';
     };
