@@ -57,13 +57,13 @@ type AnalyticsPluginNinetailedConfig = {
 
 export const PLUGIN_NAME = 'ninetailed:core';
 
-type EventFn = { payload: any; instance: TypedEventHandlerAnalyticsInstance };
+type EventFn = { payload: any; instance: EventHandlerAnalyticsInstance };
 
 type AbortableFnParams = { abort: () => void; payload: unknown };
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export type TypedEventHandlerAnalyticsInstance = Omit<
+export type EventHandlerAnalyticsInstance = Omit<
   AnalyticsInstance,
   'on' | 'dispatch'
 > & {
@@ -85,7 +85,7 @@ export class NinetailedCorePlugin
 {
   public name = PLUGIN_NAME;
 
-  private _instance?: TypedEventHandlerAnalyticsInstance;
+  private _instance?: EventHandlerAnalyticsInstance;
   private queue: Event[] = [];
 
   private enabledFeatures: Feature[] = Object.values(FEATURES);
@@ -124,7 +124,7 @@ export class NinetailedCorePlugin
   public async initialize({
     instance,
   }: {
-    instance: TypedEventHandlerAnalyticsInstance;
+    instance: EventHandlerAnalyticsInstance;
   }) {
     this._instance = instance;
 
@@ -280,9 +280,7 @@ export class NinetailedCorePlugin
   public methods = {
     reset: async (...args: any[]) => {
       logger.debug('Resetting profile.');
-      const instance = args[
-        args.length - 1
-      ] as TypedEventHandlerAnalyticsInstance;
+      const instance = args[args.length - 1] as EventHandlerAnalyticsInstance;
       instance.dispatch({ type: PROFILE_RESET });
 
       this.clearCaches();
@@ -303,9 +301,7 @@ export class NinetailedCorePlugin
     },
     debug: async (...args: any[]) => {
       const enabled: boolean = args[0];
-      const instance = args[
-        args.length - 1
-      ] as TypedEventHandlerAnalyticsInstance;
+      const instance = args[args.length - 1] as EventHandlerAnalyticsInstance;
 
       const consoleLogSink = new ConsoleLogSink();
 
@@ -333,7 +329,7 @@ export class NinetailedCorePlugin
     return payload;
   }
 
-  private get instance(): TypedEventHandlerAnalyticsInstance {
+  private get instance(): EventHandlerAnalyticsInstance {
     if (!this._instance) {
       throw new Error('Ninetailed Core plugin not initialized.');
     }

@@ -31,7 +31,7 @@ import {
   OnInitProfileId,
   PLUGIN_NAME,
   PROFILE_CHANGE,
-  TypedEventHandlerAnalyticsInstance,
+  EventHandlerAnalyticsInstance,
 } from './NinetailedCorePlugin';
 import {
   EventFunctionOptions,
@@ -142,7 +142,7 @@ const buildOverrideMiddleware =
   };
 
 export class Ninetailed implements NinetailedInstance {
-  private readonly instance: TypedEventHandlerAnalyticsInstance;
+  private readonly instance: EventHandlerAnalyticsInstance;
   private _profileState: ProfileState;
   private isInitialized = false;
   private readonly apiClient: NinetailedApiClient;
@@ -252,7 +252,7 @@ export class Ninetailed implements NinetailedInstance {
       app: 'ninetailed',
       plugins: [...this.plugins, this.ninetailedCorePlugin],
       ...(storageImpl ? { storage: storageImpl } : {}),
-    }) as TypedEventHandlerAnalyticsInstance;
+    }) as EventHandlerAnalyticsInstance;
 
     const detachOnReadyListener = this.instance.on('ready', () => {
       this.isInitialized = true;
