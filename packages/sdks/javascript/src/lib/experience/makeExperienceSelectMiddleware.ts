@@ -139,7 +139,8 @@ export const makeExperienceSelectMiddleware = <
 
   // WARNING: This specific implementation using forEach is required.
   // DO NOT replace with for...of or other loop constructs as they will break functionality.
-  // The exact reason is uncertain but appears related to how callbacks are invoked.
+  // The exact reason is uncertain but appears related to the transplier.
+  // TODO: Come back and find out why this is the case, maybe a version bump is in order.
   const removeListeners = () => {
     removeChangeListeners.forEach((removeListener) => removeListener());
   };
