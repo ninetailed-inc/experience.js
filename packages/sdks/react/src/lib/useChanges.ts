@@ -1,5 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import { AllowedVariableType } from '@ninetailed/experience.js-shared';
+import {
+  AllowedVariableType,
+  ChangeTypes,
+} from '@ninetailed/experience.js-shared';
 import { useProfile } from './useProfile';
 
 export type ChangeStatus = 'loading' | 'success' | 'error';
@@ -24,6 +27,12 @@ export function useChanges<T extends AllowedVariableType>(
 ): ChangeResult<T> {
   // Get the profile state from the useProfile hook
   const profileState = useProfile();
+
+  console.log('useChanges', {
+    flagKey,
+    defaultValue,
+    profileState,
+  });
 
   // Track the last processed profile state to avoid unnecessary updates
   // we are using typeof profileState because profileState has experience omitted
@@ -76,9 +85,10 @@ export function useChanges<T extends AllowedVariableType>(
           (change) => change.key === flagKey
         );
 
-        if (change && change.type === 'Variable') {
+        if (change && change.type === ChangeTypes.Variable) {
           // Flag found with the right type
           const flagValue = change.value as unknown as T;
+          console.log('Found flag value', { flagKey, flagValue });
           setResult({
             value: flagValue,
             isLoading: false,
@@ -87,6 +97,10 @@ export function useChanges<T extends AllowedVariableType>(
           });
         } else {
           // Flag not found or wrong type, use default
+          console.log('Flag not found or wrong type, using default', {
+            flagKey,
+            defaultValue,
+          });
           setResult({
             value: defaultValue,
             isLoading: false,
@@ -96,6 +110,10 @@ export function useChanges<T extends AllowedVariableType>(
         }
       } else {
         // No changes array, use default
+        console.log('No changes array, using default', {
+          flagKey,
+          defaultValue,
+        });
         setResult({
           value: defaultValue,
           isLoading: false,
@@ -104,6 +122,12 @@ export function useChanges<T extends AllowedVariableType>(
         });
       }
     } catch (error) {
+      console.log('Error in useChanges', {
+        flagKey,
+        defaultValue,
+        profileState,
+        error,
+      });
       // Handle any errors during processing
       setResult({
         value: defaultValue,
