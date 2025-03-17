@@ -26,21 +26,23 @@ async function unpublishAndDeleteEntry(entry) {
   }
 }
 
-contentfulClient.getSpace(process.env.CONTENTFUL_SPACE_ID).then((space) => {
-  space
-    .getEnvironment(process.env.CONTENTFUL_ENVIRONMENT)
-    .then((environment) => {
-      console.info(`Accessing Environment: ${environment.sys.id}`);
-      console.info(
-        `Deleting Entries Of ContentType: ${process.env.CONTENT_TYPE} `
-      );
-      environment
-        .getEntries({
-          content_type: `${process.env.CONTENT_TYPE}`,
-          limit: `${process.env.LIMIT}`,
-        })
-        .then(async (response) => {
-          await Promise.all(response.items.map(unpublishAndDeleteEntry));
-        });
-    });
-});
+contentfulClient
+  .getSpace(process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID)
+  .then((space) => {
+    space
+      .getEnvironment(process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT)
+      .then((environment) => {
+        console.info(`Accessing Environment: ${environment.sys.id}`);
+        console.info(
+          `Deleting Entries Of ContentType: ${process.env.CONTENT_TYPE} `
+        );
+        environment
+          .getEntries({
+            content_type: `${process.env.CONTENT_TYPE}`,
+            limit: `${process.env.LIMIT}`,
+          })
+          .then(async (response) => {
+            await Promise.all(response.items.map(unpublishAndDeleteEntry));
+          });
+      });
+  });
