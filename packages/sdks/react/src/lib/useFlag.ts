@@ -8,21 +8,17 @@ import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
 import { useNinetailed } from './useNinetailed';
 
-export type FlagStatus = 'loading' | 'success' | 'error';
-
-export interface FlagResult<T> {
-  value: T;
-  isLoading: boolean;
-  status: FlagStatus;
-  error: Error | null;
-}
+export type FlagResult<T> =
+  | { status: 'loading'; value: T; error: null }
+  | { status: 'success'; value: T; error: null }
+  | { status: 'error'; value: T; error: Error };
 
 /**
  * Custom hook to retrieve a specific feature flag from Ninetailed changes.
  *
  * @param flagKey - The key of the feature flag to retrieve
  * @param defaultValue - The default value to use if the flag is not found
- * @returns An object containing the flag value and metadata about the request
+ * @returns An object containing the flag value and status information
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
@@ -34,15 +30,14 @@ export function useFlag<T extends AllowedVariableType>(
 
   const [result, setResult] = useState<FlagResult<T>>({
     value: defaultValue,
-    isLoading: true,
     status: 'loading',
     error: null,
   });
 
   useEffect(() => {
+    // Reset state when dependencies change
     setResult({
       value: defaultValue,
-      isLoading: true,
       status: 'loading',
       error: null,
     });
@@ -60,18 +55,18 @@ export function useFlag<T extends AllowedVariableType>(
       lastProcessedState.current = changesState;
 
       if (changesState.status === 'loading') {
-        setResult((current) => ({
-          ...current,
-          isLoading: true,
+        // Don't use a function updater here to avoid type issues
+        setResult({
+          value: defaultValue,
           status: 'loading',
-        }));
+          error: null,
+        });
         return;
       }
 
       if (changesState.status === 'error') {
         setResult({
           value: defaultValue,
-          isLoading: false,
           status: 'error',
           error: changesState.error,
         });
@@ -88,7 +83,6 @@ export function useFlag<T extends AllowedVariableType>(
           const flagValue = change.value as unknown as T;
           setResult({
             value: flagValue,
-            isLoading: false,
             status: 'success',
             error: null,
           });
@@ -96,7 +90,6 @@ export function useFlag<T extends AllowedVariableType>(
           // Flag not found or wrong type, use default
           setResult({
             value: defaultValue,
-            isLoading: false,
             status: 'success',
             error: null,
           });
@@ -104,7 +97,6 @@ export function useFlag<T extends AllowedVariableType>(
       } catch (error) {
         setResult({
           value: defaultValue,
-          isLoading: false,
           status: 'error',
           error: error instanceof Error ? error : new Error(String(error)),
         });
