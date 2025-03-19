@@ -4,15 +4,16 @@ import {
   ChangeTypes,
   logger,
 } from '@ninetailed/experience.js-shared';
-import { useNinetailed } from './useNinetailed';
 import { ChangesState } from '@ninetailed/experience.js';
+import { isEqual } from 'radash';
+import { useNinetailed } from './useNinetailed';
 
-export type ChangeStatus = 'loading' | 'success' | 'error';
+export type FlagStatus = 'loading' | 'success' | 'error';
 
-export interface ChangeResult<T> {
+export interface FlagResult<T> {
   value: T;
   isLoading: boolean;
-  status: ChangeStatus;
+  status: FlagStatus;
   error: Error | null;
 }
 
@@ -26,12 +27,12 @@ export interface ChangeResult<T> {
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
   defaultValue: T
-): ChangeResult<T> {
+): FlagResult<T> {
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
 
-  const [result, setResult] = useState<ChangeResult<T>>({
+  const [result, setResult] = useState<FlagResult<T>>({
     value: defaultValue,
     isLoading: true,
     status: 'loading',
@@ -39,12 +40,18 @@ export function useFlag<T extends AllowedVariableType>(
   });
 
   useEffect(() => {
+    setResult({
+      value: defaultValue,
+      isLoading: true,
+      status: 'loading',
+      error: null,
+    });
+    lastProcessedState.current = null;
+
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
         lastProcessedState.current &&
-        lastProcessedState.current.status === changesState.status &&
-        lastProcessedState.current.changes === changesState.changes &&
-        lastProcessedState.current.error === changesState.error
+        isEqual(lastProcessedState.current, changesState)
       ) {
         logger.debug('Change State Did Not Change', changesState);
         return;
