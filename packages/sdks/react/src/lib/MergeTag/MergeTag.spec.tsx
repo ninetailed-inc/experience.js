@@ -4,6 +4,7 @@ import { render, RenderOptions, screen } from '@testing-library/react';
 import { PropsWithChildren, ReactElement } from 'react';
 import { useProfile } from '../useProfile';
 import { NinetailedProvider } from '../NinetailedProvider';
+import { Change, ChangeTypes } from '@ninetailed/experience.js-shared';
 
 const profile: Profile = {
   id: '',
@@ -36,6 +37,15 @@ const profile: Profile = {
   },
 };
 
+const changes: Change[] = [
+  {
+    key: 'key4',
+    value: 'baseline9',
+    type: ChangeTypes.Variable,
+    meta: { experienceId: 'exp_1', variantIndex: 0 },
+  },
+];
+
 jest.mock('../useProfile');
 
 const mockUseProfile = useProfile as jest.MockedFunction<typeof useProfile>;
@@ -44,6 +54,7 @@ mockUseProfile.mockReturnValue({
   loading: false,
   from: 'api',
   status: 'success',
+  changes,
   profile: profile,
   error: null,
 });
