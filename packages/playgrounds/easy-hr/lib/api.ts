@@ -11,13 +11,13 @@ import {
 
 const contentfulClient = createClient({
   space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID ?? '',
-  accessToken: process.env.CONTENTFUL_TOKEN ?? '',
+  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_TOKEN ?? '',
   environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT ?? 'master',
 });
 
 const previewClient = createClient({
   space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID ?? '',
-  accessToken: process.env.CONTENTFUL_PREVIEW_TOKEN ?? '',
+  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_TOKEN ?? '',
   host: 'preview.contentful.com',
 });
 
