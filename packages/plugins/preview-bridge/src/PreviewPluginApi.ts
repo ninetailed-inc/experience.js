@@ -1,4 +1,5 @@
 import { ExperienceConfiguration } from '@ninetailed/experience.js';
+import { Change, JsonObject } from './types';
 
 export type ExposedAudienceDefinition = {
   id: string;
@@ -39,4 +40,17 @@ export type PreviewPluginApi = {
   openExperienceEditor?: (experience: ExperienceConfiguration) => void;
   openExperienceAnalytics: (experience: ExperienceConfiguration) => void;
   openAudienceEditor?: (audienceDefinition: ExposedAudienceDefinition) => void;
+
+  changes?: Change[] | null;
+  computedChanges?: Change[] | null;
+  variableOverrides: Record<string, Change>;
+
+  setVariableValue: (args: {
+    experienceId: string;
+    key: string;
+    value: string | JsonObject;
+    variantIndex: number;
+  }) => void;
+  resetVariableValue: (args: { experienceId: string; key: string }) => void;
+  resetAllVariableValues: () => void;
 };
