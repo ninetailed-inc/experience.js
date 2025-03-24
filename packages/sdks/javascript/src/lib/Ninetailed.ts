@@ -802,6 +802,7 @@ export class Ninetailed implements NinetailedInstance {
    * @returns Function to unsubscribe from changes updates
    */
   public onChangesChange = (cb: OnChangesChangeCallback) => {
+    console.log('Profile changed: onChangesChange callback is registered', cb);
     this.notifyChangesCallback(cb, this._profileState);
 
     return this.onProfileChange((profileState) => {

@@ -13,7 +13,7 @@ import {
 } from '@/lib/api';
 import { PAGE_CONTENT_TYPES } from '@/lib/constants';
 import { IPage } from '@/types/contentful';
-import TestComponent from '@/components/TestComponent';
+import { CustomFlagTest } from '@/components/CustomFlagTest/CustomFlagTest';
 
 const Page = ({ page }: { page: IPage }) => {
   if (!page) {
@@ -41,8 +41,7 @@ const Page = ({ page }: { page: IPage }) => {
         {/* @ts-ignore */}
         {navigation && <BlockRenderer block={navigation} />}
         <main className="grow">
-          <TestComponent flagKey="checkout-sucesss" />
-          <TestComponent flagKey="checkout-fail" />
+          <CustomFlagTest />
           {/* @ts-ignore */}
           <BlockRenderer block={sections} />
         </main>

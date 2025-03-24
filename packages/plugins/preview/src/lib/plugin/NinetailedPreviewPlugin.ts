@@ -5,7 +5,7 @@ import {
   Reference,
   unionBy,
   ChangeTypes,
-  JsonObject,
+  AllowedVariableType,
 } from '@ninetailed/experience.js-shared';
 import {
   ExperienceConfiguration,
@@ -124,6 +124,10 @@ export class NinetailedPreviewPlugin
       });
 
       this.bridge.updateProps({ props: this.pluginApi });
+
+      if (!this.changes?.length) {
+        this.onChange();
+      }
     }
   };
 
@@ -132,6 +136,7 @@ export class NinetailedPreviewPlugin
   public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({
     payload,
   }) => {
+    console.log('Profile changed: PROFILE_CHANGE event received');
     if (!this.isActiveInstance) {
       return;
     }
@@ -353,6 +358,8 @@ export class NinetailedPreviewPlugin
   }
   /**
    * Sets a variable value override for preview
+   *
+   * TODO: Add events/hooks for plugins to react to flag changes
    */
   public setVariableValue({
     experienceId,
@@ -362,17 +369,22 @@ export class NinetailedPreviewPlugin
   }: {
     experienceId: string;
     key: string;
-    value: string | JsonObject;
+    value: AllowedVariableType;
     variantIndex: number;
   }) {
     if (!this.isActiveInstance) {
       return;
     }
 
-    // Create a unique key for the variable
+    console.log('Setting variable value in preview plugin:', {
+      experienceId,
+      key,
+      value,
+      variantIndex,
+    });
+
     const overrideKey = `${experienceId}:${variantIndex}:${key}`;
 
-    // Create a change object
     const change: Change = {
       type: ChangeTypes.Variable,
       key,
@@ -383,11 +395,19 @@ export class NinetailedPreviewPlugin
       },
     };
 
-    // Store the override
     this.variableOverrides = {
       ...this.variableOverrides,
       [overrideKey]: change,
     };
+
+    // If we have existing changes, reapply overrides and update computed changes
+    if (this.changes) {
+      this.computedChanges = this.applyVariableOverrides(this.changes);
+      console.log(
+        'Computed changes after applying override:',
+        this.computedChanges
+      );
+    }
 
     // Trigger change notification
     this.onChange();
@@ -675,10 +695,13 @@ export class NinetailedPreviewPlugin
 
   /**
    * Apply variable overrides to the provided changes
+   *
+   * TODO: Move this logic to a proper middleware function
+   * that can be composed with other middleware.
    */
   private applyVariableOverrides(changes: Change[]): Change[] {
-    if (Object.keys(this.variableOverrides).length === 0) {
-      return changes;
+    if (!changes || Object.keys(this.variableOverrides).length === 0) {
+      return changes || [];
     }
 
     // Start with original changes
@@ -688,7 +711,7 @@ export class NinetailedPreviewPlugin
     modifiedChanges = modifiedChanges.filter((change) => {
       if (change.type !== ChangeTypes.Variable) return true;
 
-      const changeKey = `${change.meta.experienceId}:${change.meta.variantIndex}:${change.key}`;
+      const changeKey = `${change.meta?.experienceId}:${change.meta?.variantIndex}:${change.key}`;
       return !this.variableOverrides[changeKey];
     });
 
@@ -707,12 +730,27 @@ export class NinetailedPreviewPlugin
       this.pluginApi
     );
 
-    Object.assign({}, window.ninetailed, {
-      plugins: {
-        ...window.ninetailed?.plugins,
-        preview: this.windowApi,
-      },
-    });
+    if (typeof window !== 'undefined') {
+      window.ninetailed = Object.assign({}, window.ninetailed, {
+        plugins: {
+          ...window.ninetailed?.plugins,
+          preview: this.windowApi,
+        },
+      });
+
+      // Dispatch a custom event to notify about changes
+      // This can be picked up by components without direct plugin access
+      const event = new CustomEvent('ninetailed:variable:change', {
+        detail: {
+          changes: this.computedChanges,
+        },
+      });
+      window.dispatchEvent(event);
+      console.log(
+        'Dispatched variable change event with changes:',
+        this.computedChanges
+      );
+    }
 
     this.bridge.updateProps({ props: this.pluginApi });
 
@@ -721,6 +759,11 @@ export class NinetailedPreviewPlugin
 
   private onProfileChange = (profile: Profile, changes: Change[] | null) => {
     this.profile = profile;
+
+    console.log('Profile changed:', {
+      profile,
+      changes,
+    });
 
     // If changes are provided, update them
     if (changes) {
@@ -733,6 +776,9 @@ export class NinetailedPreviewPlugin
   /**
    * Handles changes from the SDK and applies any variable overrides.
    * This should be called whenever the original changes are updated.
+   *
+   * TODO: Replace with a middleware-based approach similar to
+   * experience selection for better extensibility.
    */
   private onChangesChange = (incomingChanges: Change[]) => {
     if (!this.isActiveInstance) {
@@ -740,18 +786,11 @@ export class NinetailedPreviewPlugin
     }
 
     console.log('Received changes:', incomingChanges);
-    console.log(
-      'Variable changes:',
-      incomingChanges.filter((c) => c.type === ChangeTypes.Variable)
-    );
 
-    // Store the original changes
     this.changes = incomingChanges;
 
-    // Apply variable overrides to compute the modified changes
     this.computedChanges = this.applyVariableOverrides(incomingChanges);
 
-    // Trigger updates
     this.onChange();
   };
 

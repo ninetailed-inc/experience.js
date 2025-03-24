@@ -18,11 +18,15 @@ export type FlagResult<T> =
  *
  * @param flagKey - The key of the feature flag to retrieve
  * @param defaultValue - The default value to use if the flag is not found
+ * @param experienceId - Optional experienceId to filter changes by experience
+ * @param variantIndex - Optional variantIndex to filter by specific variant
  * @returns An object containing the flag value and status information
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
-  defaultValue: T
+  defaultValue: T,
+  experienceId?: string,
+  variantIndex?: number
 ): FlagResult<T> {
   const ninetailed = useNinetailed();
 
@@ -43,7 +47,7 @@ export function useFlag<T extends AllowedVariableType>(
     });
     lastProcessedState.current = null;
 
-    const unsubscribe = ninetailed.onChangesChange((changesState) => {
+    function processChanges(changesState: ChangesState) {
       if (
         lastProcessedState.current &&
         isEqual(lastProcessedState.current, changesState)
@@ -55,7 +59,6 @@ export function useFlag<T extends AllowedVariableType>(
       lastProcessedState.current = changesState;
 
       if (changesState.status === 'loading') {
-        // Don't use a function updater here to avoid type issues
         setResult({
           value: defaultValue,
           status: 'loading',
@@ -74,10 +77,20 @@ export function useFlag<T extends AllowedVariableType>(
       }
 
       try {
-        // Find the change with our flag key
+        // Find the change with our flag key and optional experience/variant filters
         const change = changesState.changes.find(
-          (change) => change.key === flagKey
+          (change) =>
+            change.key === flagKey &&
+            change.type === ChangeTypes.Variable &&
+            (experienceId
+              ? change.meta?.experienceId === experienceId
+              : true) &&
+            (variantIndex !== undefined
+              ? change.meta?.variantIndex === variantIndex
+              : true)
         );
+
+        console.log(`Processing flag ${flagKey}:`, { change, changesState });
 
         if (change && change.type === ChangeTypes.Variable) {
           const flagValue = change.value as unknown as T;
@@ -101,10 +114,40 @@ export function useFlag<T extends AllowedVariableType>(
           error: error instanceof Error ? error : new Error(String(error)),
         });
       }
+    }
+
+    // Listen for the custom event from the preview plugin
+    const handlePreviewChanges = (event: CustomEvent) => {
+      if (event.detail && event.detail.changes) {
+        console.log(`Flag ${flagKey}: Received variable change event`);
+
+        const changesState: ChangesState = {
+          status: 'success',
+          changes: event.detail.changes,
+          error: null,
+        };
+
+        processChanges(changesState);
+      }
+    };
+
+    window.addEventListener(
+      'ninetailed:variable:change',
+      handlePreviewChanges as EventListener
+    );
+
+    const unsubscribeChanges = ninetailed.onChangesChange((changesState) => {
+      processChanges(changesState);
     });
 
-    return unsubscribe;
-  }, [ninetailed, flagKey, defaultValue]);
+    return () => {
+      unsubscribeChanges();
+      window.removeEventListener(
+        'ninetailed:variable:change',
+        handlePreviewChanges as EventListener
+      );
+    };
+  }, [ninetailed, flagKey, defaultValue, experienceId, variantIndex]);
 
   return result;
 }
