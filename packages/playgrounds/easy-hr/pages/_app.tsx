@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '@/styles/globals.css';
 import { AppProps as NextAppProps } from 'next/app';
 import Script from 'next/script';
@@ -29,25 +29,33 @@ interface CustomPageProps {
 
 const B2BDemoApp = ({ Component, pageProps }: AppProps<CustomPageProps>) => {
   console.log({ pageProps });
+  const [counter, setCounter] = useState(0);
+
   return (
     <div className="app">
+      <button onClick={() => setCounter(counter + 1)}>Turn On Preview</button>
       <HubspotProvider>
         <NinetailedProvider
           /* preview*/
           plugins={[
-            new NinetailedPreviewPlugin({
-              experiences: pageProps.ninetailed?.preview.experiences || [],
-              audiences: pageProps.ninetailed?.preview.audiences || [],
-              onOpenExperienceEditor: (experience) => {
-                console.log({ experience });
-              },
-              onOpenAudienceEditor: (audience) => {
-                console.log({ audience });
-              },
-              // url: 'http://localhost:4201/v2',
-            }),
+            counter > 0
+              ? new NinetailedPreviewPlugin({
+                  experiences: pageProps.ninetailed?.preview.experiences || [],
+                  audiences: pageProps.ninetailed?.preview.audiences || [],
+                  // Something to fetch all experiences and audiences, server side
+                  // fetchAllExperiences: () => {},
+                  // fetchAllAudiences: () => {},
+                  onOpenExperienceEditor: (experience) => {
+                    console.log({ experience });
+                  },
+                  onOpenAudienceEditor: (audience) => {
+                    console.log({ audience });
+                  },
+                  url: 'http://localhost:4201/v2',
+                })
+              : undefined,
             new NinetailedInsightsPlugin(),
-          ]}
+          ].filter((x) => x !== undefined)}
           clientId={process.env.NEXT_PUBLIC_NINETAILED_CLIENT_ID ?? ''}
           environment={process.env.NEXT_PUBLIC_NINETAILED_ENVIRONMENT ?? 'main'}
         >

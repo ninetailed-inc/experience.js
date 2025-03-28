@@ -1,5 +1,5 @@
 import { ExperienceConfiguration } from '@ninetailed/experience.js';
-import { Change, JsonObject } from './types';
+import { AllowedVariableType, Change, JsonObject } from './types';
 
 export type ExposedAudienceDefinition = {
   id: string;
@@ -42,8 +42,8 @@ export type PreviewPluginApi = {
   openAudienceEditor?: (audienceDefinition: ExposedAudienceDefinition) => void;
 
   changes?: Change[] | null;
-  computedChanges?: Change[] | null;
-  variableOverrides: Record<string, Change>;
+  overriddenChanges?: Change[] | null;
+  variableOverwrites: Record<string, Change>;
 
   setVariableValue: (args: {
     experienceId: string;
@@ -53,4 +53,18 @@ export type PreviewPluginApi = {
   }) => void;
   resetVariableValue: (args: { experienceId: string; key: string }) => void;
   resetAllVariableValues: () => void;
+
+  isVariableOverridden: (
+    experienceId: string,
+    key: string,
+    variantIndex?: number | undefined
+  ) => boolean;
+  getVariableValue: (
+    experienceId: string,
+    key: string,
+    variantIndex: number
+  ) => AllowedVariableType | undefined;
+  getExperienceVariableOverrides: (
+    experienceId: string
+  ) => Record<string, Record<number, AllowedVariableType>>;
 };

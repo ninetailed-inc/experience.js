@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import {
   AllowedVariableType,
   ChangeTypes,
-  logger,
 } from '@ninetailed/experience.js-shared';
 import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
@@ -13,21 +12,25 @@ export type FlagResult<T> =
   | { status: 'success'; value: T; error: null }
   | { status: 'error'; value: T; error: Error };
 
+export type UseFlagOptions = {
+  experienceId?: string;
+  variantIndex?: number;
+};
+
 /**
  * Custom hook to retrieve a specific feature flag from Ninetailed changes.
  *
  * @param flagKey - The key of the feature flag to retrieve
  * @param defaultValue - The default value to use if the flag is not found
- * @param experienceId - Optional experienceId to filter changes by experience
- * @param variantIndex - Optional variantIndex to filter by specific variant
+ * @param options - Optional object containing experienceId and variantIndex
  * @returns An object containing the flag value and status information
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
   defaultValue: T,
-  experienceId?: string,
-  variantIndex?: number
+  options: UseFlagOptions = {}
 ): FlagResult<T> {
+  const { experienceId, variantIndex } = options;
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
@@ -47,18 +50,19 @@ export function useFlag<T extends AllowedVariableType>(
     });
     lastProcessedState.current = null;
 
-    function processChanges(changesState: ChangesState) {
+    const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
         lastProcessedState.current &&
         isEqual(lastProcessedState.current, changesState)
       ) {
-        logger.debug('Change State Did Not Change', changesState);
+        console.log('Change State Did Not Change', changesState);
         return;
       }
 
       lastProcessedState.current = changesState;
 
       if (changesState.status === 'loading') {
+        // Don't use a function updater here to avoid type issues
         setResult({
           value: defaultValue,
           status: 'loading',
@@ -77,23 +81,56 @@ export function useFlag<T extends AllowedVariableType>(
       }
 
       try {
-        // Find the change with our flag key and optional experience/variant filters
-        const change = changesState.changes.find(
-          (change) =>
-            change.key === flagKey &&
-            change.type === ChangeTypes.Variable &&
-            (experienceId
-              ? change.meta?.experienceId === experienceId
-              : true) &&
-            (variantIndex !== undefined
-              ? change.meta?.variantIndex === variantIndex
-              : true)
-        );
+        // Try multiple strategies to find the matching flag
+        let change = null;
 
-        console.log(`Processing flag ${flagKey}:`, { change, changesState });
+        // Strategy 1: Look for exact match with experienceId and variantIndex
+        if (experienceId !== undefined && variantIndex !== undefined) {
+          change = changesState.changes.find(
+            (c) =>
+              c.key === flagKey &&
+              c.type === ChangeTypes.Variable &&
+              c.meta?.experienceId === experienceId &&
+              c.meta?.variantIndex === variantIndex
+          );
+
+          console.log(
+            `Looking for flag ${flagKey} with exact match (experienceId=${experienceId}, variantIndex=${variantIndex})`,
+            change ? 'FOUND' : 'NOT FOUND'
+          );
+        }
+
+        // Strategy 2: If no exact match, try with just experienceId
+        if (!change && experienceId !== undefined) {
+          change = changesState.changes.find(
+            (c) =>
+              c.key === flagKey &&
+              c.type === ChangeTypes.Variable &&
+              c.meta?.experienceId === experienceId
+          );
+
+          console.log(
+            `Looking for flag ${flagKey} with experienceId match (experienceId=${experienceId})`,
+            change ? 'FOUND' : 'NOT FOUND'
+          );
+        }
+
+        // Strategy 3: If still no match, find any change with this key
+        if (!change) {
+          change = changesState.changes.find(
+            (c) => c.key === flagKey && c.type === ChangeTypes.Variable
+          );
+
+          console.log(
+            `Looking for flag ${flagKey} with any match`,
+            change ? 'FOUND' : 'NOT FOUND'
+          );
+        }
 
         if (change && change.type === ChangeTypes.Variable) {
           const flagValue = change.value as unknown as T;
+          console.log(`Setting flag ${flagKey} value:`, flagValue);
+
           setResult({
             value: flagValue,
             status: 'success',
@@ -101,6 +138,11 @@ export function useFlag<T extends AllowedVariableType>(
           });
         } else {
           // Flag not found or wrong type, use default
+          console.log(
+            `No matching flag found for ${flagKey}, using default:`,
+            defaultValue
+          );
+
           setResult({
             value: defaultValue,
             status: 'success',
@@ -108,45 +150,17 @@ export function useFlag<T extends AllowedVariableType>(
           });
         }
       } catch (error) {
+        console.error(`Error processing flag ${flagKey}:`, error);
+
         setResult({
           value: defaultValue,
           status: 'error',
           error: error instanceof Error ? error : new Error(String(error)),
         });
       }
-    }
-
-    // Listen for the custom event from the preview plugin
-    const handlePreviewChanges = (event: CustomEvent) => {
-      if (event.detail && event.detail.changes) {
-        console.log(`Flag ${flagKey}: Received variable change event`);
-
-        const changesState: ChangesState = {
-          status: 'success',
-          changes: event.detail.changes,
-          error: null,
-        };
-
-        processChanges(changesState);
-      }
-    };
-
-    window.addEventListener(
-      'ninetailed:variable:change',
-      handlePreviewChanges as EventListener
-    );
-
-    const unsubscribeChanges = ninetailed.onChangesChange((changesState) => {
-      processChanges(changesState);
     });
 
-    return () => {
-      unsubscribeChanges();
-      window.removeEventListener(
-        'ninetailed:variable:change',
-        handlePreviewChanges as EventListener
-      );
-    };
+    return unsubscribe;
   }, [ninetailed, flagKey, defaultValue, experienceId, variantIndex]);
 
   return result;
