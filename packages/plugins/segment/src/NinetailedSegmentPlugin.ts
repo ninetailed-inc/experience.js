@@ -7,6 +7,10 @@ import {
 import { template, logger } from '@ninetailed/experience.js-shared';
 import { type AnalyticsBrowser } from '@segment/analytics-next';
 
+type AnalyticsBrowserLike = {
+  track: AnalyticsBrowser['track'];
+};
+
 type NinetailedSegmentPluginOptions = {
   eventNameTemplate?: string;
   categoryPropertyTemplate?: string;
@@ -20,7 +24,7 @@ type NinetailedSegmentPluginOptions = {
    * Consider passing this if you are initializing Segment in your application in a way that doesn't attach
    * the analytics instance to the window object.
    */
-  analytics?: AnalyticsBrowser;
+  analytics?: AnalyticsBrowserLike;
 };
 
 const TEMPLATE_OPTIONS = {
