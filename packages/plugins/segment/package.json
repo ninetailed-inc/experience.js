@@ -16,10 +16,12 @@
     "a/b testing"
   ],
   "dependencies": {
-    "@segment/analytics-next": "1.48.0",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
     "tslib": "2.4.1"
+  },
+  "devDependencies": {
+    "@segment/analytics-next": "1.48.0"
   }
 }
