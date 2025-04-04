@@ -5,10 +5,12 @@ import {
   TrackComponentProperties,
 } from '@ninetailed/experience.js-plugin-analytics';
 import { template, logger } from '@ninetailed/experience.js-shared';
-import { type AnalyticsBrowser } from '@segment/analytics-next';
 
 type AnalyticsBrowserLike = {
-  track: AnalyticsBrowser['track'];
+  track: (
+    eventName: string,
+    properties: Record<string, unknown>
+  ) => Promise<unknown>;
 };
 
 type NinetailedSegmentPluginOptions = {
