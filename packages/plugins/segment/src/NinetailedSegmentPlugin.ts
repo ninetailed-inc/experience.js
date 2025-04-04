@@ -53,16 +53,15 @@ export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
       return this.options.analytics;
     }
 
-    const isAnalyticsInWindow =
+    if (
       typeof window === 'object' &&
       'analytics' in window &&
       typeof window.analytics === 'object' &&
       window.analytics !== null &&
       'track' in window.analytics &&
-      typeof window.analytics.track === 'function';
-
-    if (isAnalyticsInWindow) {
-      return window.analytics;
+      typeof window.analytics.track === 'function'
+    ) {
+      return window.analytics as AnalyticsBrowserLike;
     }
 
     logger.warn(
