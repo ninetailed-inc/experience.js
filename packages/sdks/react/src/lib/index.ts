@@ -12,7 +12,7 @@ export type {
 export { useNinetailed } from './useNinetailed';
 export { useProfile } from './useProfile';
 export { usePersonalize } from './usePersonalize';
-export { useFlag } from './useFlag';
+export { useFlag, UseFlagOptions, FlagResult } from './useFlag';
 export { Personalize } from './Personalize';
 export type { PersonalizedComponent } from './Personalize';
 export { MergeTag } from './MergeTag';

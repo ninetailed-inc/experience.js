@@ -6,6 +6,7 @@ import {
   unionBy,
   ChangeTypes,
   AllowedVariableType,
+  EntryReplacement,
 } from '@ninetailed/experience.js-shared';
 import {
   ExperienceConfiguration,
@@ -51,6 +52,11 @@ type NinetailedPreviewPluginOptions = {
     };
   };
 };
+
+enum ComponentTypeEnum {
+  EntryReplacement = 'EntryReplacement',
+  InlineVariable = 'InlineVariable',
+}
 
 export class NinetailedPreviewPlugin
   extends NinetailedPlugin
@@ -140,13 +146,9 @@ export class NinetailedPreviewPlugin
   public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({
     payload,
   }) => {
-    console.log('Profile changed: PROFILE_CHANGE event received');
     if (!this.isActiveInstance) {
       return;
     }
-
-    console.log('PROFILE_CHANGE event received:', payload);
-    console.log('Changes in payload:', payload.changes);
 
     if (payload?.profile) {
       this.onProfileChange(payload.profile, payload.changes || []);
@@ -304,7 +306,7 @@ export class NinetailedPreviewPlugin
     );
     if (!experience) {
       logger.warn(
-        `You cannot active a variant for an unknown experience (id: ${experienceId})`
+        `Cannot activate a variant for an unknown experience (id: ${experienceId})`
       );
       return;
     }
@@ -314,60 +316,50 @@ export class NinetailedPreviewPlugin
       !this.activeAudiences.some((id) => id === experience.audience?.id)
     ) {
       logger.warn(
-        `You cannot active a variant for an experience (id: ${experienceId}), which is not in the active audiences.`
+        `Cannot activate a variant for an experience (id: ${experienceId}) which is not in the active audiences.`
       );
       return;
     }
 
-    const isValidIndex = experience.components
-      .map((component) => component.variants.length + 1)
-      .every((length) => length > variantIndex);
-    if (!isValidIndex) {
-      logger.warn(
-        `You activated a variant at index ${variantIndex} for the experience (id: ${experienceId}). Not all components have that many variants, you may see the baseline for some.`
-      );
-    }
-
+    // Update the experience variant index
     this.experienceVariantIndexOverwrites = {
       ...this.experienceVariantIndexOverwrites,
       [experienceId]: variantIndex,
     };
 
-    // console.log('variants from component', experience.components);
-    const componentsAtIndex = experience.components.map((component) =>
-      variantIndex === 0 ? component.baseline : component.variants[variantIndex]
-    );
+    // Process all components and extract variable values
+    experience.components.forEach((component, index) => {
+      if (component.type === ComponentTypeEnum.InlineVariable) {
+        const key = component.key;
+        let value;
 
-    console.log('variants from component', componentsAtIndex);
-
-    if (this.changes) {
-      const experienceVariables = this.changes.filter(
-        (change) =>
-          change.type === ChangeTypes.Variable &&
-          change.meta?.experienceId === experienceId
-      );
-
-      // Find variables that match this variant or set defaults
-      for (const variable of experienceVariables) {
-        const variantSpecificValue =
-          variable.meta?.variantIndex === variantIndex
-            ? variable.value
-            : undefined;
-
-        // If we have a baseline value or a variant value, set it
-        if (
-          variantSpecificValue !== undefined ||
-          variable.value !== undefined
-        ) {
-          this.setVariableValue({
-            experienceId,
-            key: variable.key,
-            value: variantSpecificValue || variable.value,
-            variantIndex,
-          });
+        // Determine the value based on variant index
+        if (variantIndex === 0) {
+          // For baseline, use the baseline value
+          value = component.baseline;
+        } else {
+          // For other variants, use the variant value if available, otherwise use baseline
+          const variantValue = component.variants[variantIndex - 1]?.value;
+          value =
+            variantValue !== undefined ? variantValue : component.baseline;
         }
+
+        console.log(`Setting variable for ${key} from component:`, {
+          key,
+          value,
+          variantIndex,
+        });
+
+        // Set the variable value
+        this.setVariableValue({
+          experienceId,
+          key,
+          value,
+          variantIndex,
+        });
       }
-    }
+      // EntryReplacement components don't need variable settings
+    });
 
     this.onChange();
   }
@@ -440,7 +432,7 @@ export class NinetailedPreviewPlugin
       return;
     }
 
-    console.log('Setting variable value in preview plugin:', {
+    logger.debug('Setting variable value in preview plugin:', {
       experienceId,
       key,
       value,
@@ -470,7 +462,7 @@ export class NinetailedPreviewPlugin
     // Update overridden changes
     if (this.changes) {
       this.overriddenChanges = this.applyVariableOverwrites(this.changes);
-      console.log(
+      logger.debug(
         'Overridden changes after applying override:',
         this.overriddenChanges
       );
@@ -653,9 +645,18 @@ export class NinetailedPreviewPlugin
         };
       }
 
-      const baselineComponent = experience.components.find(
+      // Find components that are EntryReplacement type and have a baseline with an id property
+      const entryReplacementComponents = experience.components.filter(
+        (component): component is EntryReplacement<Reference> =>
+          component.type === ComponentTypeEnum.EntryReplacement &&
+          'id' in component.baseline
+      );
+
+      // Find the component that matches our baseline id
+      const baselineComponent = entryReplacementComponents.find(
         (component) => component.baseline.id === baseline.id
       );
+
       if (!baselineComponent) {
         return {
           experience,
@@ -919,7 +920,7 @@ export class NinetailedPreviewPlugin
   private onProfileChange = (profile: Profile, changes: Change[] | null) => {
     this.profile = profile;
 
-    console.log('Profile changed:', {
+    logger.debug('Profile changed:', {
       profile,
       changes,
     });
