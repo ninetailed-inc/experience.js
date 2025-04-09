@@ -41,6 +41,7 @@ export enum InlineVariableComponentValueTypeEnum {
 
 export const entryReplacementVariantSchema = z.object({
   id: z.string(),
+  hidden: z.boolean().default(false),
 });
 
 export const variableVariantSchema = z.object({
@@ -66,7 +67,7 @@ export function isEntryReplacementComponent(
 ): component is EntryReplacementComponent {
   return (
     component.type === ComponentTypeEnum.EntryReplacement ||
-    component.type === undefined // TODO: to be removed once migration is finalized
+    component.type === undefined
   );
 }
 
@@ -87,7 +88,7 @@ export function isInlineVariableComponent(
 ): component is InlineVariableComponent {
   return component.type === ComponentTypeEnum.InlineVariable;
 }
-export const ExperienceConfigComponentSchema = z.union([
+export const ExperienceConfigComponentSchema = z.discriminatedUnion('type', [
   EntryReplacementComponentSchema,
   InlineVariableComponentSchema,
 ]);

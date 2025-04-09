@@ -1,13 +1,16 @@
+import { ExperienceType, Reference } from '@ninetailed/experience.js';
 import {
   ExperienceConfiguration,
-  ExperienceType,
-  Reference,
-} from '@ninetailed/experience.js';
-import { logger } from '@ninetailed/experience.js-shared';
+  logger,
+} from '@ninetailed/experience.js-shared';
 
 import { Experiment } from '../types/Experiment';
 import { Experience, ExperienceLike } from '../types/Experience';
 import { ExperimentLike } from '../types/Experiment';
+import {
+  ComponentTypeEnum,
+  isEntryReplacementComponent,
+} from '../types/Config';
 
 export class ExperienceMapper {
   static isExperienceEntry<Variant extends Reference>(
@@ -52,34 +55,51 @@ export class ExperienceMapper {
         end: config.distribution.slice(0, index + 1).reduce((a, b) => a + b, 0),
       })),
       sticky,
-      components: components.map((component) => ({
-        baseline: component.baseline,
-        variants: component.variants
-          .map((variantRef) => {
-            if (variantRef.hidden) {
-              return variantRef;
-            }
+      components: components.map((component) => {
+        if (isEntryReplacementComponent(component)) {
+          // Process EntryReplacement component
+          const processedVariants = component.variants
+            .map((variantRef) => {
+              if (variantRef.hidden) {
+                return variantRef;
+              }
 
-            const matchingVariant = variants.find(
-              (variant) => variant.id === variantRef.id
-            );
+              const matchingVariant = variants.find(
+                (variant) => variant.id === variantRef.id
+              );
 
-            return matchingVariant ?? null;
-          })
-          .filter((variant): variant is Variant => variant !== null),
-      })),
+              return matchingVariant || null;
+            })
+            .filter((variant): variant is Variant => variant !== null);
+
+          return {
+            type: ComponentTypeEnum.EntryReplacement,
+            baseline: component.baseline,
+            variants: processedVariants,
+          };
+        } else {
+          const inlineComponent = component;
+          return {
+            type: ComponentTypeEnum.InlineVariable,
+            baseline: inlineComponent.baseline,
+            key: inlineComponent.key,
+            valueType: inlineComponent.valueType,
+            variants: inlineComponent.variants,
+          };
+        }
+      }),
     };
   }
 
   static isExperimentEntry<Variant extends Reference>(
     experiment: ExperimentLike<Variant>
-  ): experiment is ExperimentLike<Variant> {
+  ): experiment is Experiment<Variant> {
     return Experiment.safeParse(experiment).success;
   }
 
   static mapExperiment<Variant extends Reference>(
     experiment: ExperimentLike<Variant>
-  ) {
+  ): ExperienceConfiguration<Variant> {
     return ExperienceMapper.mapExperience(experiment);
   }
 }
