@@ -898,10 +898,9 @@ export class Ninetailed implements NinetailedInstance {
         error: profileState.error,
       });
     } else {
-      // Always create a fresh changes object to ensure React detects it as new
       cb({
         status: 'success',
-        changes: profileState.changes ? [...profileState.changes] : [],
+        changes: profileState.changes,
         error: null,
       });
     }

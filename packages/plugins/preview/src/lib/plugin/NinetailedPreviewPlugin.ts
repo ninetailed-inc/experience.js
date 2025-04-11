@@ -7,6 +7,7 @@ import {
   ChangeTypes,
   AllowedVariableType,
   EntryReplacement,
+  ComponentTypeEnum,
 } from '@ninetailed/experience.js-shared';
 import {
   ExperienceConfiguration,
@@ -52,11 +53,6 @@ type NinetailedPreviewPluginOptions = {
     };
   };
 };
-
-enum ComponentTypeEnum {
-  EntryReplacement = 'EntryReplacement',
-  InlineVariable = 'InlineVariable',
-}
 
 export class NinetailedPreviewPlugin
   extends NinetailedPlugin
@@ -327,28 +323,15 @@ export class NinetailedPreviewPlugin
       [experienceId]: variantIndex,
     };
 
-    // Process all components and extract variable values
-    experience.components.forEach((component, index) => {
+    // Process all components to extract variable values
+    experience.components.forEach((component) => {
       if (component.type === ComponentTypeEnum.InlineVariable) {
         const key = component.key;
-        let value;
-
-        // Determine the value based on variant index
-        if (variantIndex === 0) {
-          // For baseline, use the baseline value
-          value = component.baseline;
-        } else {
-          // For other variants, use the variant value if available, otherwise use baseline
-          const variantValue = component.variants[variantIndex - 1]?.value;
-          value =
-            variantValue !== undefined ? variantValue : component.baseline;
-        }
-
-        console.log(`Setting variable for ${key} from component:`, {
-          key,
-          value,
-          variantIndex,
-        });
+        const value =
+          variantIndex === 0
+            ? component.baseline.value
+            : component.variants[variantIndex - 1]?.value ??
+              component.baseline.value;
 
         // Set the variable value
         this.setVariableValue({
@@ -358,9 +341,9 @@ export class NinetailedPreviewPlugin
           variantIndex,
         });
       }
-      // EntryReplacement components don't need variable settings
     });
 
+    // Trigger change notification - this updates the middleware
     this.onChange();
   }
 
@@ -428,9 +411,7 @@ export class NinetailedPreviewPlugin
     value: AllowedVariableType;
     variantIndex: number;
   }) {
-    if (!this.isActiveInstance) {
-      return;
-    }
+    if (!this.isActiveInstance) return;
 
     logger.debug('Setting variable value in preview plugin:', {
       experienceId,
@@ -440,6 +421,11 @@ export class NinetailedPreviewPlugin
     });
 
     const overrideKey = `${experienceId}:${key}`;
+
+    // Only create new object if actually changing
+    if (this.variableOverwrites[overrideKey]?.value === value) {
+      return; // No change needed
+    }
 
     const change: Change = {
       type: ChangeTypes.Variable,
@@ -451,13 +437,11 @@ export class NinetailedPreviewPlugin
       },
     };
 
+    // Update variable overwrites
     this.variableOverwrites = {
       ...this.variableOverwrites,
       [overrideKey]: change,
     };
-
-    // Notify listeners that the variable overwrites have changed
-    this.onChangeEmitter.invokeListeners();
 
     // Update overridden changes
     if (this.changes) {
@@ -468,7 +452,8 @@ export class NinetailedPreviewPlugin
       );
     }
 
-    // Trigger change notification
+    // Notify listeners
+    this.onChangeEmitter.invokeListeners();
     this.onChange();
   }
 
@@ -645,18 +630,51 @@ export class NinetailedPreviewPlugin
         };
       }
 
-      // Find components that are EntryReplacement type and have a baseline with an id property
+      // Handle entry replacements as before
       const entryReplacementComponents = experience.components.filter(
         (component): component is EntryReplacement<Reference> =>
           component.type === ComponentTypeEnum.EntryReplacement &&
           'id' in component.baseline
       );
 
-      // Find the component that matches our baseline id
       const baselineComponent = entryReplacementComponents.find(
         (component) => component.baseline.id === baseline.id
       );
 
+      // Get the selected variant index
+      const variantIndex =
+        this.pluginApi.experienceVariantIndexes[experience.id];
+
+      // Handle variable components for this experience (NEW CODE)
+      if (variantIndex !== undefined) {
+        // Process all variable components for this experience
+        const variableComponents = experience.components.filter(
+          (component) => component.type === ComponentTypeEnum.InlineVariable
+        );
+
+        // Set variable values based on the selected variant index
+        variableComponents.forEach((component) => {
+          const key = component.key;
+          let value;
+
+          if (variantIndex === 0) {
+            value = component.baseline;
+          } else {
+            value =
+              component.variants[variantIndex - 1]?.value ?? component.baseline;
+          }
+
+          // Set the variable in our changes system
+          this.setVariableValue({
+            experienceId: experience.id,
+            key,
+            value,
+            variantIndex,
+          });
+        });
+      }
+
+      // Continue with entry replacement handling
       if (!baselineComponent) {
         return {
           experience,
@@ -666,8 +684,6 @@ export class NinetailedPreviewPlugin
       }
 
       const allVariants = [baseline, ...baselineComponent.variants];
-      const variantIndex =
-        this.pluginApi.experienceVariantIndexes[experience.id];
 
       if (allVariants.length <= variantIndex) {
         return {
@@ -761,7 +777,6 @@ export class NinetailedPreviewPlugin
         : undefined,
 
       changes: this.changes,
-      overriddenChanges: this.overriddenChanges,
       variableOverwrites: this.variableOverwrites,
 
       setVariableValue: this.setVariableValue.bind(this),
@@ -877,9 +892,8 @@ export class NinetailedPreviewPlugin
    * Apply variable overrides to the provided changes
    */
   private applyVariableOverwrites(changes: Change[]): Change[] {
-    // Early return if no changes or no overwrites
     if (!changes || Object.keys(this.variableOverwrites).length === 0) {
-      return changes || []; // Ensure we return empty array instead of null/undefined
+      return changes || [];
     }
 
     // Create a fresh copy to avoid modifying the original
