@@ -13,7 +13,7 @@ import {
 } from '@/lib/api';
 import { PAGE_CONTENT_TYPES } from '@/lib/constants';
 import { IPage } from '@/types/contentful';
-import { CustomFlag } from '@/components/CustomFlagTest/CustomFlagTest';
+import { Variable } from '@/components/Variable';
 
 const Page = ({ page }: { page: IPage }) => {
   if (!page) {
@@ -40,44 +40,8 @@ const Page = ({ page }: { page: IPage }) => {
         {banner && <BlockRenderer block={banner} />}
         {/* @ts-ignore */}
         {navigation && <BlockRenderer block={navigation} />}
+        <Variable />
         <main className="grow">
-          <CustomFlag
-            flagKey="candy-lover"
-            defaultValue="false"
-            options={{
-              experienceId: '50aPkYQHko6Rr5bGI2LBMY',
-            }}
-          >
-            {({ value, status, error }) => {
-              // Extract the actual value if we're getting a wrapped object with a value property
-              let displayValue;
-
-              if (
-                typeof value === 'object' &&
-                value !== null &&
-                'value' in value
-              ) {
-                // If the value is an object with a "value" property, use that
-                displayValue = value.value;
-              } else {
-                // Otherwise use the value directly
-                displayValue = value;
-              }
-
-              // Convert to string for display if it's still an object
-              if (typeof displayValue === 'object' && displayValue !== null) {
-                displayValue = JSON.stringify(displayValue);
-              }
-
-              return (
-                <div>
-                  <h1>Candy Lover: {displayValue}</h1>
-                  <p>Status: {status}</p>
-                  {error && <p>Error: {error.message || String(error)}</p>}
-                </div>
-              );
-            }}
-          </CustomFlag>
           {/* @ts-ignore */}
           <BlockRenderer block={sections} />
         </main>
