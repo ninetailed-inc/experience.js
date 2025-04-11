@@ -1,7 +1,7 @@
 export { ExperienceMapper } from './lib/ExperienceMapper';
 
 export { Audience } from './types/Audience';
-export { Config } from './types/Config';
+export { Config, ComponentTypeEnum } from './types/Config';
 export { Experience } from './types/Experience';
 export { Experiment } from './types/Experiment';
 export { Variant } from './types/Variant';

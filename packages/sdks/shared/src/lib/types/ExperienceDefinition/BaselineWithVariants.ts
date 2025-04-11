@@ -3,7 +3,7 @@ import { Baseline } from './Baseline';
 import { Reference } from './Reference';
 import { VariantRef } from './VariantRef';
 
-enum ComponentTypeEnum {
+export enum ComponentTypeEnum {
   EntryReplacement = 'EntryReplacement',
   InlineVariable = 'InlineVariable',
 }
