@@ -29,6 +29,7 @@ interface CustomPageProps {
 
 const B2BDemoApp = ({ Component, pageProps }: AppProps<CustomPageProps>) => {
   console.log({ pageProps });
+
   return (
     <div className="app">
       <HubspotProvider>
