@@ -16,9 +16,7 @@ export const Navigation: React.FC<INavigation> = ({ fields }) => {
   const { track, identify } = useNinetailed();
   const handleLogin = handleErrors(async () => {
     setLoggingIn(true);
-    await identify('', {
-      pricingplan: 'lite',
-    });
+    await identify('', { pricingplan: 'lite' });
     setLoggingIn(false);
   });
 
