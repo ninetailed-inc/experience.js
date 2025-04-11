@@ -40,31 +40,4 @@ export type PreviewPluginApi = {
   openExperienceEditor?: (experience: ExperienceConfiguration) => void;
   openExperienceAnalytics: (experience: ExperienceConfiguration) => void;
   openAudienceEditor?: (audienceDefinition: ExposedAudienceDefinition) => void;
-
-  changes?: Change[] | null;
-  overriddenChanges?: Change[] | null;
-  variableOverwrites: Record<string, Change>;
-
-  setVariableValue: (args: {
-    experienceId: string;
-    key: string;
-    value: string | JsonObject;
-    variantIndex: number;
-  }) => void;
-  resetVariableValue: (args: { experienceId: string; key: string }) => void;
-  resetAllVariableValues: () => void;
-
-  isVariableOverridden: (
-    experienceId: string,
-    key: string,
-    variantIndex?: number | undefined
-  ) => boolean;
-  getVariableValue: (
-    experienceId: string,
-    key: string,
-    variantIndex: number
-  ) => AllowedVariableType | undefined;
-  getExperienceVariableOverrides: (
-    experienceId: string
-  ) => Record<string, Record<number, AllowedVariableType>>;
 };

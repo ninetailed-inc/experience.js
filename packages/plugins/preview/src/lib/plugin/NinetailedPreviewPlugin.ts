@@ -65,11 +65,9 @@ export class NinetailedPreviewPlugin
 
   private isOpen = false;
 
-  // Represent the underlying configuration data that exist in the content management system. ???
   private readonly experiences: ExperienceConfiguration[] = [];
   private readonly audienceDefinitions: ExposedAudienceDefinition[] = [];
 
-  // Represent the current state of the preview, changes when users interact with the preview widget.
   private audienceOverwrites: Record<string, boolean> = {};
   private experienceVariantIndexOverwrites: Record<string, number> = {};
   private variableOverwrites: Record<string, Change> = {};
@@ -775,18 +773,6 @@ export class NinetailedPreviewPlugin
       openAudienceEditor: this.onOpenAudienceEditor
         ? this.openAudienceEditor.bind(this)
         : undefined,
-
-      changes: this.changes,
-      variableOverwrites: this.variableOverwrites,
-
-      setVariableValue: this.setVariableValue.bind(this),
-      resetVariableValue: this.resetVariableValue.bind(this),
-      resetAllVariableValues: this.resetAllVariableValues.bind(this),
-
-      isVariableOverridden: this.isVariableOverridden.bind(this),
-      getVariableValue: this.getVariableValue.bind(this),
-      getExperienceVariableOverrides:
-        this.getExperienceVariableOverrides.bind(this),
     };
   }
 

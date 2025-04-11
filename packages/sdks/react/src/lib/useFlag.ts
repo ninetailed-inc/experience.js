@@ -55,7 +55,6 @@ export function useFlag<T extends AllowedVariableType>(
         lastProcessedState.current &&
         isEqual(lastProcessedState.current, changesState)
       ) {
-        console.log('Change State Did Not Change', changesState);
         return;
       }
 
@@ -81,10 +80,8 @@ export function useFlag<T extends AllowedVariableType>(
       }
 
       try {
-        // Try multiple strategies to find the matching flag
         let change = null;
 
-        // Strategy 1: Look for exact match with experienceId and variantIndex
         if (experienceId !== undefined && variantIndex !== undefined) {
           change = changesState.changes.find(
             (c) =>
@@ -93,14 +90,8 @@ export function useFlag<T extends AllowedVariableType>(
               c.meta?.experienceId === experienceId &&
               c.meta?.variantIndex === variantIndex
           );
-
-          console.log(
-            `Looking for flag ${flagKey} with exact match (experienceId=${experienceId}, variantIndex=${variantIndex})`,
-            change ? 'FOUND' : 'NOT FOUND'
-          );
         }
 
-        // Strategy 2: If no exact match, try with just experienceId
         if (!change && experienceId !== undefined) {
           change = changesState.changes.find(
             (c) =>
@@ -108,28 +99,16 @@ export function useFlag<T extends AllowedVariableType>(
               c.type === ChangeTypes.Variable &&
               c.meta?.experienceId === experienceId
           );
-
-          console.log(
-            `Looking for flag ${flagKey} with experienceId match (experienceId=${experienceId})`,
-            change ? 'FOUND' : 'NOT FOUND'
-          );
         }
 
-        // Strategy 3: If still no match, find any change with this key
         if (!change) {
           change = changesState.changes.find(
             (c) => c.key === flagKey && c.type === ChangeTypes.Variable
-          );
-
-          console.log(
-            `Looking for flag ${flagKey} with any match`,
-            change ? 'FOUND' : 'NOT FOUND'
           );
         }
 
         if (change && change.type === ChangeTypes.Variable) {
           const flagValue = change.value as unknown as T;
-          console.log(`Setting flag ${flagKey} value:`, flagValue);
 
           setResult({
             value: flagValue,
@@ -137,12 +116,6 @@ export function useFlag<T extends AllowedVariableType>(
             error: null,
           });
         } else {
-          // Flag not found or wrong type, use default
-          console.log(
-            `No matching flag found for ${flagKey}, using default:`,
-            defaultValue
-          );
-
           setResult({
             value: defaultValue,
             status: 'success',
@@ -150,8 +123,6 @@ export function useFlag<T extends AllowedVariableType>(
           });
         }
       } catch (error) {
-        console.error(`Error processing flag ${flagKey}:`, error);
-
         setResult({
           value: defaultValue,
           status: 'error',

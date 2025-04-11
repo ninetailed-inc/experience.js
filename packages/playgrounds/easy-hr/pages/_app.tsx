@@ -39,18 +39,14 @@ const B2BDemoApp = ({ Component, pageProps }: AppProps<CustomPageProps>) => {
             new NinetailedPreviewPlugin({
               experiences: pageProps.ninetailed?.preview.experiences || [],
               audiences: pageProps.ninetailed?.preview.audiences || [],
-              // Something to fetch all experiences and audiences, server side
-              // fetchAllExperiences: () => {},
-              // fetchAllAudiences: () => {},
               onOpenExperienceEditor: (experience) => {
                 console.log({ experience });
               },
               onOpenAudienceEditor: (audience) => {
                 console.log({ audience });
               },
-              url: 'http://localhost:4201/v2',
+              // url: 'http://localhost:4201/v2',
             }),
-
             new NinetailedInsightsPlugin(),
           ]}
           clientId={process.env.NEXT_PUBLIC_NINETAILED_CLIENT_ID ?? ''}

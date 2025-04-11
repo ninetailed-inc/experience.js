@@ -93,7 +93,7 @@ export class ExperienceMapper {
 
   static isExperimentEntry<Variant extends Reference>(
     experiment: ExperimentLike<Variant>
-  ): experiment is Experiment<Variant> {
+  ): experiment is ExperimentLike<Variant> {
     return Experiment.safeParse(experiment).success;
   }
 
