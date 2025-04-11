@@ -1,5 +1,4 @@
 import { ExperienceConfiguration } from '@ninetailed/experience.js';
-import { AllowedVariableType, Change, JsonObject } from './types';
 
 export type ExposedAudienceDefinition = {
   id: string;

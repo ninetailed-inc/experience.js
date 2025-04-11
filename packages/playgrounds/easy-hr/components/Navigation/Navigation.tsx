@@ -18,8 +18,6 @@ export const Navigation: React.FC<INavigation> = ({ fields }) => {
     setLoggingIn(true);
     await identify('', {
       pricingplan: 'lite',
-      chocolate: '1',
-      lifecyclestage: 'customer',
     });
     setLoggingIn(false);
   });

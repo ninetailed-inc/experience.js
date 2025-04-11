@@ -80,35 +80,39 @@ export function useFlag<T extends AllowedVariableType>(
       }
 
       try {
-        let change = null;
+        const changeWithVariant =
+          experienceId !== undefined && variantIndex !== undefined
+            ? changesState.changes.find(
+                (c) =>
+                  c.key === flagKey &&
+                  c.type === ChangeTypes.Variable &&
+                  c.meta?.experienceId === experienceId &&
+                  c.meta?.variantIndex === variantIndex
+              )
+            : null;
 
-        if (experienceId !== undefined && variantIndex !== undefined) {
-          change = changesState.changes.find(
-            (c) =>
-              c.key === flagKey &&
-              c.type === ChangeTypes.Variable &&
-              c.meta?.experienceId === experienceId &&
-              c.meta?.variantIndex === variantIndex
-          );
-        }
+        const changeWithExperience =
+          !changeWithVariant && experienceId !== undefined
+            ? changesState.changes.find(
+                (c) =>
+                  c.key === flagKey &&
+                  c.type === ChangeTypes.Variable &&
+                  c.meta?.experienceId === experienceId
+              )
+            : null;
 
-        if (!change && experienceId !== undefined) {
-          change = changesState.changes.find(
-            (c) =>
-              c.key === flagKey &&
-              c.type === ChangeTypes.Variable &&
-              c.meta?.experienceId === experienceId
-          );
-        }
+        const defaultChange =
+          !changeWithVariant && !changeWithExperience
+            ? changesState.changes.find(
+                (c) => c.key === flagKey && c.type === ChangeTypes.Variable
+              )
+            : null;
 
-        if (!change) {
-          change = changesState.changes.find(
-            (c) => c.key === flagKey && c.type === ChangeTypes.Variable
-          );
-        }
+        const selectedChange =
+          changeWithVariant || changeWithExperience || defaultChange;
 
-        if (change && change.type === ChangeTypes.Variable) {
-          const flagValue = change.value as unknown as T;
+        if (selectedChange && selectedChange.type === ChangeTypes.Variable) {
+          const flagValue = selectedChange.value as unknown as T;
 
           setResult({
             value: flagValue,
