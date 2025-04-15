@@ -8,6 +8,7 @@ import {
   AllowedVariableType,
   EntryReplacement,
   ComponentTypeEnum,
+  InlineVariable,
 } from '@ninetailed/experience.js-shared';
 import {
   ExperienceConfiguration,
@@ -647,7 +648,8 @@ export class NinetailedPreviewPlugin
       if (variantIndex !== undefined) {
         // Process all variable components for this experience
         const variableComponents = experience.components.filter(
-          (component) => component.type === ComponentTypeEnum.InlineVariable
+          (component): component is InlineVariable =>
+            component.type === ComponentTypeEnum.InlineVariable
         );
 
         // Set variable values based on the selected variant index
@@ -658,8 +660,11 @@ export class NinetailedPreviewPlugin
           if (variantIndex === 0) {
             value = component.baseline;
           } else {
+            const variant = component.variants[variantIndex - 1];
             value =
-              component.variants[variantIndex - 1]?.value ?? component.baseline;
+              variant && 'value' in variant
+                ? variant.value
+                : component.baseline;
           }
 
           // Set the variable in our changes system
