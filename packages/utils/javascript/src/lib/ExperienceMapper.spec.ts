@@ -91,8 +91,7 @@ describe('Experience Mapper', () => {
     });
 
     const variant = mapped.components[0].variants[0];
-    if (!('hidden' in variant)) {
-      // Yeay! It correctly inferred the type of the property "foo" on the variant
+    if ('foo' in variant) {
       expect(variant.foo).toBe('bar');
     }
 

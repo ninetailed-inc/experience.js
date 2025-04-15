@@ -13,6 +13,7 @@ import {
 } from '@/lib/api';
 import { PAGE_CONTENT_TYPES } from '@/lib/constants';
 import { IPage } from '@/types/contentful';
+import { Variable } from '@/components/Variable';
 
 const Page = ({ page }: { page: IPage }) => {
   if (!page) {
@@ -39,6 +40,7 @@ const Page = ({ page }: { page: IPage }) => {
         {banner && <BlockRenderer block={banner} />}
         {/* @ts-ignore */}
         {navigation && <BlockRenderer block={navigation} />}
+        <Variable />
         <main className="grow">
           {/* @ts-ignore */}
           <BlockRenderer block={sections} />

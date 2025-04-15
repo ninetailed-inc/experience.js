@@ -11,8 +11,10 @@ Array [
     "components": Array [
       Object {
         "baseline": Object {
+          "hidden": false,
           "id": "2t0zGNkAgnSyhUAFigL1Fe",
         },
+        "type": "EntryReplacement",
         "variants": Array [
           Object {
             "headline": "[Ninetailed Variant] Home Page Hero Banner",

@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import {
   AllowedVariableType,
   ChangeTypes,
-  logger,
 } from '@ninetailed/experience.js-shared';
 import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
@@ -13,17 +12,25 @@ export type FlagResult<T> =
   | { status: 'success'; value: T; error: null }
   | { status: 'error'; value: T; error: Error };
 
+export type UseFlagOptions = {
+  experienceId?: string;
+  variantIndex?: number;
+};
+
 /**
  * Custom hook to retrieve a specific feature flag from Ninetailed changes.
  *
  * @param flagKey - The key of the feature flag to retrieve
  * @param defaultValue - The default value to use if the flag is not found
+ * @param options - Optional object containing experienceId and variantIndex
  * @returns An object containing the flag value and status information
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
-  defaultValue: T
+  defaultValue: T,
+  options: UseFlagOptions = {}
 ): FlagResult<T> {
+  const { experienceId, variantIndex } = options;
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
@@ -48,7 +55,6 @@ export function useFlag<T extends AllowedVariableType>(
         lastProcessedState.current &&
         isEqual(lastProcessedState.current, changesState)
       ) {
-        logger.debug('Change State Did Not Change', changesState);
         return;
       }
 
@@ -74,20 +80,46 @@ export function useFlag<T extends AllowedVariableType>(
       }
 
       try {
-        // Find the change with our flag key
-        const change = changesState.changes.find(
-          (change) => change.key === flagKey
-        );
+        const changeWithVariant =
+          experienceId !== undefined && variantIndex !== undefined
+            ? changesState.changes.find(
+                (c) =>
+                  c.key === flagKey &&
+                  c.type === ChangeTypes.Variable &&
+                  c.meta?.experienceId === experienceId &&
+                  c.meta?.variantIndex === variantIndex
+              )
+            : null;
 
-        if (change && change.type === ChangeTypes.Variable) {
-          const flagValue = change.value as unknown as T;
+        const changeWithExperience =
+          !changeWithVariant && experienceId !== undefined
+            ? changesState.changes.find(
+                (c) =>
+                  c.key === flagKey &&
+                  c.type === ChangeTypes.Variable &&
+                  c.meta?.experienceId === experienceId
+              )
+            : null;
+
+        const defaultChange =
+          !changeWithVariant && !changeWithExperience
+            ? changesState.changes.find(
+                (c) => c.key === flagKey && c.type === ChangeTypes.Variable
+              )
+            : null;
+
+        const selectedChange =
+          changeWithVariant || changeWithExperience || defaultChange;
+
+        if (selectedChange && selectedChange.type === ChangeTypes.Variable) {
+          const flagValue = selectedChange.value as unknown as T;
+
           setResult({
             value: flagValue,
             status: 'success',
             error: null,
           });
         } else {
-          // Flag not found or wrong type, use default
           setResult({
             value: defaultValue,
             status: 'success',
@@ -104,7 +136,7 @@ export function useFlag<T extends AllowedVariableType>(
     });
 
     return unsubscribe;
-  }, [ninetailed, flagKey, defaultValue]);
+  }, [ninetailed, flagKey, defaultValue, experienceId, variantIndex]);
 
   return result;
 }
