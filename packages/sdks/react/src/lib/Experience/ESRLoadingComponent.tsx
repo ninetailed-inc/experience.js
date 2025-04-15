@@ -66,7 +66,9 @@ export const ESRLoadingComponent = <
   }
 
   const component = experience.components.find(
-    (component) => component.baseline.id === baseline.id
+    (component) =>
+      'id' in component.baseline &&
+      component.baseline.id === ('id' in baseline ? baseline.id : undefined)
   );
 
   if (!component) {
