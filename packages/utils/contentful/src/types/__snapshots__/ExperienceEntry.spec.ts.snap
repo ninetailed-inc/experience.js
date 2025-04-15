@@ -8,6 +8,7 @@ Object {
       "components": Array [
         Object {
           "baseline": Object {
+            "hidden": false,
             "id": "50LFM6YHR9NoqPilYKEGeT",
           },
           "variants": Array [
