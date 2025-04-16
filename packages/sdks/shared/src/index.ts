@@ -38,6 +38,8 @@ export * from './lib/types/Session/SessionStatistics';
 
 export * from './lib/types/ExperienceDefinition';
 
+export * from './lib/types/SerializableObject/SerializableObject';
+
 export * from './lib/constants';
 
 // api
