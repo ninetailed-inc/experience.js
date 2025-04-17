@@ -184,7 +184,7 @@ describe('useExperience', () => {
       }
     );
 
-    await sleep(5);
+    await sleep(10);
 
     await act(async () => {
       ninetailed.identify('test');
