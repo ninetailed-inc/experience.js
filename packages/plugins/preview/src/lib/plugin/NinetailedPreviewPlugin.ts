@@ -1,4 +1,6 @@
 import {
+  ComponentTypeEnum,
+  EntryReplacement,
   logger,
   Profile,
   Reference,
@@ -364,9 +366,17 @@ export class NinetailedPreviewPlugin
         };
       }
 
-      const baselineComponent = experience.components.find(
+      // Handle entry replacements as before
+      const entryReplacementComponents = experience.components.filter(
+        (component): component is EntryReplacement<Reference> =>
+          component.type === ComponentTypeEnum.EntryReplacement &&
+          'id' in component.baseline
+      );
+
+      const baselineComponent = entryReplacementComponents.find(
         (component) => component.baseline.id === baseline.id
       );
+
       if (!baselineComponent) {
         return {
           experience,

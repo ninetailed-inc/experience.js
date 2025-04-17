@@ -1,6 +1,7 @@
 import {
   Baseline,
-  BaselineWithVariants,
+  EntryReplacement,
+  ComponentTypeEnum,
   ExperienceConfiguration,
   Reference,
 } from '../../types/ExperienceDefinition';
@@ -8,10 +9,13 @@ import {
 export const selectBaselineWithVariants = <TVariant extends Reference>(
   experience: ExperienceConfiguration<TVariant>,
   baseline: Baseline
-): BaselineWithVariants<TVariant> | null => {
-  return (
-    experience.components.find(
-      (baselineWithVariants) => baselineWithVariants.baseline.id === baseline.id
-    ) ?? null
+): EntryReplacement<TVariant> | null => {
+  const component = experience.components.find(
+    (entryReplacement) =>
+      'id' in entryReplacement.baseline &&
+      entryReplacement.baseline.id === baseline.id
   );
+  return component?.type === ComponentTypeEnum.EntryReplacement
+    ? component
+    : null;
 };
