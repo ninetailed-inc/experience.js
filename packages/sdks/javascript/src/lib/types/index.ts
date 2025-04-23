@@ -8,6 +8,7 @@ import {
   SelectedVariantInfo,
   Reference,
   Event,
+  Change,
 } from '@ninetailed/experience.js-shared';
 import {
   ElementSeenPayload,
@@ -24,6 +25,7 @@ export type ProfileState =
       status: 'loading';
       profile: null;
       experiences: null;
+      changes: null;
       error: null;
       from: 'api' | 'hydrated';
     }
@@ -31,6 +33,7 @@ export type ProfileState =
       status: 'success';
       profile: Profile;
       experiences: SelectedVariantInfo[];
+      changes: Change[];
       error: null;
       from: 'api' | 'hydrated';
     }
@@ -38,8 +41,26 @@ export type ProfileState =
       status: 'error';
       profile: Profile | null;
       experiences: SelectedVariantInfo[] | null;
+      changes: Change[] | null;
       error: Error;
       from: 'api' | 'hydrated';
+    };
+
+export type ChangesState =
+  | {
+      status: 'loading';
+      changes: null;
+      error: null;
+    }
+  | {
+      status: 'success';
+      changes: Change[];
+      error: null;
+    }
+  | {
+      status: 'error';
+      changes: null;
+      error: Error;
     };
 
 export type OnIsInitializedCallback = () => void;
@@ -60,6 +81,8 @@ export type Result<T> =
   | { success: false; error: Error };
 
 export type OnProfileChangeCallback = (profile: ProfileState) => void;
+
+export type OnChangesChangeCallback = (changesState: ChangesState) => void;
 
 export type Page = (
   data?: Partial<PageviewProperties>,
@@ -94,6 +117,8 @@ export type Debug = (enable: boolean) => void;
 
 export type OnProfileChange = (cb: OnProfileChangeCallback) => DetachListeners;
 
+export type OnChangesChange = (cb: OnChangesChangeCallback) => DetachListeners;
+
 type ObserveElement = Ninetailed['observeElement'];
 type UnObserveElement = Ninetailed['unobserveElement'];
 
@@ -114,6 +139,7 @@ export interface NinetailedInstance<
   debug: Debug;
   profileState: ProfileState;
   onProfileChange: OnProfileChange;
+  onChangesChange: OnChangesChange;
   plugins: NinetailedPlugin[];
   logger: Logger;
   eventBuilder: EventBuilder;

@@ -41,6 +41,7 @@ import {
   ProfileState,
   TrackHasSeenComponent,
   TrackComponentView,
+  OnChangesChangeCallback,
 } from './types';
 import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
@@ -233,6 +234,7 @@ export class Ninetailed implements NinetailedInstance {
       status: 'loading',
       profile: null,
       experiences: null,
+      changes: null,
       error: null,
       from: 'api',
     };
@@ -558,6 +560,7 @@ export class Ninetailed implements NinetailedInstance {
           ...this._profileState,
           status: 'success',
           profile: payload.profile,
+          changes: payload.changes,
           experiences: payload.experiences,
           error: null,
         });
@@ -791,6 +794,49 @@ export class Ninetailed implements NinetailedInstance {
       removeMiddlewareChangeListeners();
     };
   };
+
+  /**
+   * Registers a callback to be notified when changes occur in the profile state.
+   *
+   * @param cb - Callback function that receives the changes state
+   * @returns Function to unsubscribe from changes updates
+   */
+  public onChangesChange = (cb: OnChangesChangeCallback) => {
+    this.notifyChangesCallback(cb, this._profileState);
+
+    return this.onProfileChange((profileState) => {
+      this.notifyChangesCallback(cb, profileState);
+    });
+  };
+
+  /**
+   * Helper method to extract changes state from profile state and notify callback
+   * @private
+   */
+  private notifyChangesCallback(
+    cb: OnChangesChangeCallback,
+    profileState: ProfileState
+  ): void {
+    if (profileState.status === 'loading') {
+      cb({
+        status: 'loading',
+        changes: null,
+        error: null,
+      });
+    } else if (profileState.status === 'error') {
+      cb({
+        status: 'error',
+        changes: null,
+        error: profileState.error,
+      });
+    } else {
+      cb({
+        status: 'success',
+        changes: profileState.changes,
+        error: null,
+      });
+    }
+  }
 
   // Always throws, never returns
   private handleMethodError(error: unknown, method: string): never {
