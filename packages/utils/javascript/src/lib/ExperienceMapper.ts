@@ -11,6 +11,7 @@ import { ExperimentLike } from '../types/Experiment';
 import {
   ComponentTypeEnum,
   isEntryReplacementComponent,
+  isInlineVariableComponent,
 } from '../types/Config';
 
 export class ExperienceMapper {
@@ -78,15 +79,10 @@ export class ExperienceMapper {
             baseline: component.baseline,
             variants: processedVariants,
           };
+        } else if (isInlineVariableComponent(component)) {
+          return component;
         } else {
-          const inlineComponent = component;
-          return {
-            type: ComponentTypeEnum.InlineVariable,
-            baseline: inlineComponent.baseline,
-            key: inlineComponent.key,
-            valueType: inlineComponent.valueType,
-            variants: inlineComponent.variants,
-          };
+          throw new Error(`Unsupported component type encountered`);
         }
       }),
     };
