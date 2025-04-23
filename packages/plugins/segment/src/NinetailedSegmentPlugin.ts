@@ -4,7 +4,14 @@ import {
   Template,
   TrackComponentProperties,
 } from '@ninetailed/experience.js-plugin-analytics';
-import { template } from '@ninetailed/experience.js-shared';
+import { template, logger } from '@ninetailed/experience.js-shared';
+
+type AnalyticsBrowserLike = {
+  track: (
+    eventName: string,
+    properties: Record<string, unknown>
+  ) => Promise<unknown>;
+};
 
 type NinetailedSegmentPluginOptions = {
   eventNameTemplate?: string;
@@ -13,20 +20,17 @@ type NinetailedSegmentPluginOptions = {
   audiencePropertyTemplate?: string;
 
   template?: Template;
+
+  /**
+   * An optional Segment analytics instance to use.
+   * Consider passing this if you are initializing Segment in your application in a way that doesn't attach
+   * the analytics instance to the window object.
+   */
+  analytics?: AnalyticsBrowserLike;
 };
 
 const TEMPLATE_OPTIONS = {
   interpolate: /{{([\s\S]+?)}}/g,
-};
-
-const isSegmentInitialized = () => {
-  return (
-    typeof window === 'object' &&
-    'analytics' in window &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    typeof window.analytics !== 'undefined'
-  );
 };
 
 export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
@@ -44,25 +48,50 @@ export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
     });
   }
 
+  private get segmentInstance() {
+    if (this.options.analytics) {
+      return this.options.analytics;
+    }
+
+    if (
+      typeof window === 'object' &&
+      'analytics' in window &&
+      typeof window.analytics === 'object' &&
+      window.analytics !== null &&
+      'track' in window.analytics &&
+      typeof window.analytics.track === 'function'
+    ) {
+      return window.analytics as AnalyticsBrowserLike;
+    }
+
+    logger.warn(
+      'Ninetailed Segment Plugin: No analytics instance found. Make sure the Segment analytics instance is initialized and attached to the window. Alternatively, you can pass the analytics instance to the plugin options.'
+    );
+
+    return null;
+  }
+
   protected async onTrackExperience(
     properties: SanitizedElementSeenPayload,
     hasSeenExperienceEventPayload: Record<string, string>
   ): Promise<void> {
-    if (!isSegmentInitialized()) {
+    const analytics = this.segmentInstance;
+
+    if (!analytics) {
       return;
     }
 
     const { event, ...trackEventProperties } = hasSeenExperienceEventPayload;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    window.analytics.track(event, trackEventProperties);
+    analytics.track(event, trackEventProperties);
   }
 
   protected async onTrackComponent(
     properties: TrackComponentProperties
   ): Promise<void> {
-    if (!isSegmentInitialized()) {
+    const analytics = this.segmentInstance;
+
+    if (!analytics) {
       return;
     }
 
@@ -104,9 +133,7 @@ export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
       TEMPLATE_OPTIONS.interpolate
     );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    window.analytics.track(event, {
+    analytics.track(event, {
       category: categoryProperty,
       component: componentProperty,
       audience: audienceProperty,
