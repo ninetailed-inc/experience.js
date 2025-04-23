@@ -100,7 +100,7 @@ describe('Contentful Experience Mapper', () => {
       expect(mappedExperience.audience?.name).not.toBeUndefined();
       mappedExperience.components.forEach((component) => {
         component.variants.forEach((variant) => {
-          expect('id' in variant).not.toBeUndefined();
+          expect('id' in variant).toBe(true);
 
           if ('headline' in variant) {
             expect(variant.headline).not.toBeUndefined();
