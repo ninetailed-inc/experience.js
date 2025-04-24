@@ -12,3 +12,4 @@ export {
 } from '@ninetailed/experience.js-shared';
 export { decodeExperienceVariantsMap } from './decodeExperienceVariantsMap';
 export { makeExperienceSelectMiddleware } from './makeExperienceSelectMiddleware';
+export { makeChangesModificationMiddleware } from './makeChangesModificationMiddleware';

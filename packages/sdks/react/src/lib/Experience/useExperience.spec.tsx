@@ -3,7 +3,10 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { act, renderHook } from '@testing-library/react';
 
 import { Ninetailed } from '@ninetailed/experience.js';
-import { NinetailedApiClient } from '@ninetailed/experience.js-shared';
+import {
+  ComponentTypeEnum,
+  NinetailedApiClient,
+} from '@ninetailed/experience.js-shared';
 
 import { useExperience } from './useExperience';
 import { NinetailedContext } from '../NinetailedContext';
@@ -78,6 +81,7 @@ describe('useExperience', () => {
           baseline: {
             id: '32WvgBhIZI1HLS4MvWjkvb',
           },
+          type: ComponentTypeEnum.EntryReplacement,
           variants: [
             {
               id: '43SvtAkZ3zTzPnlD3N38V2',
@@ -93,7 +97,15 @@ describe('useExperience', () => {
           baseline: {
             id: '32WvgBhIZI1HLS4MvWjkvb',
           },
-          experiences: [experience],
+          experiences: [
+            {
+              ...experience,
+              components: experience.components.map((component) => ({
+                ...component,
+                type: ComponentTypeEnum.EntryReplacement,
+              })),
+            },
+          ],
         }),
       {
         wrapper: createNinetailedContextWrapper(ninetailed),
@@ -135,6 +147,7 @@ describe('useExperience', () => {
       trafficAllocation: 1,
       components: [
         {
+          type: ComponentTypeEnum.EntryReplacement,
           baseline: {
             id: '4hXsA6l0nWtToi8eWQmJ4n',
           },
@@ -156,7 +169,15 @@ describe('useExperience', () => {
           baseline: {
             id: '4hXsA6l0nWtToi8eWQmJ4n',
           },
-          experiences: [experience],
+          experiences: [
+            {
+              ...experience,
+              components: experience.components.map((component) => ({
+                ...component,
+                type: ComponentTypeEnum.EntryReplacement,
+              })),
+            },
+          ],
         }),
       {
         wrapper: createNinetailedContextWrapper(ninetailed),
@@ -164,7 +185,7 @@ describe('useExperience', () => {
     );
 
     // not sure why CI fails without this sleep
-    await sleep(10);
+    await sleep(8);
 
     await act(async () => {
       ninetailed.identify('test');
