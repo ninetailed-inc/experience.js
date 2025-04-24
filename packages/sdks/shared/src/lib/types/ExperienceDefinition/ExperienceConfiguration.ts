@@ -1,8 +1,10 @@
-import { BaselineWithVariants } from './BaselineWithVariants';
+import { z } from 'zod';
+import { EntryReplacement, InlineVariable } from './BaselineWithVariants';
 import { Distribution } from './Distribution';
 import { Reference } from './Reference';
 
 export type ExperienceType = 'nt_personalization' | 'nt_experiment';
+export const ExperienceType = z.enum(['nt_personalization', 'nt_experiment']);
 
 export type ExperienceConfiguration<Variant extends Reference = Reference> = {
   id: string;
@@ -18,5 +20,5 @@ export type ExperienceConfiguration<Variant extends Reference = Reference> = {
   distribution: Distribution[];
   sticky?: boolean;
 
-  components: BaselineWithVariants<Variant>[];
+  components: (EntryReplacement<Variant> | InlineVariable)[];
 };
