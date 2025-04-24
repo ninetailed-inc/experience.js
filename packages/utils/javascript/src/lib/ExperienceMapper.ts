@@ -70,7 +70,7 @@ export class ExperienceMapper {
                 (variant) => variant.id === variantRef.id
               );
 
-              return matchingVariant || null;
+              return matchingVariant ?? null;
             })
             .filter((variant): variant is Variant => variant !== null);
 
@@ -79,11 +79,11 @@ export class ExperienceMapper {
             baseline: component.baseline,
             variants: processedVariants,
           };
-        } else if (isInlineVariableComponent(component)) {
-          return component;
-        } else {
-          throw new Error(`Unsupported component type encountered`);
         }
+        if (isInlineVariableComponent(component)) {
+          return component;
+        }
+        throw new Error(`Unsupported component type encountered`);
       }),
     };
   }
