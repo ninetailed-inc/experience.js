@@ -184,6 +184,7 @@ describe('useExperience', () => {
       }
     );
 
+    // not sure why CI fails without this sleep
     await sleep(10);
 
     await act(async () => {
