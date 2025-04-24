@@ -3,7 +3,8 @@ export type {
   Baseline,
   VariantRef,
   ExperienceConfiguration,
-  BaselineWithVariants,
+  EntryReplacement,
+  InlineVariable,
   Distribution,
   ExperienceType,
 } from '@ninetailed/experience.js-shared';
