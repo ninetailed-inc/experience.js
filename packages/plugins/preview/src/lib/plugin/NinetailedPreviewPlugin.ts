@@ -76,8 +76,6 @@ export class NinetailedPreviewPlugin
   private profile: Profile | null = null;
   private changes: Change[] = [];
 
-  private overriddenChanges: Change[] | null = null;
-
   private container: WidgetContainer | null = null;
   private bridge: any = null;
 
@@ -391,8 +389,8 @@ export class NinetailedPreviewPlugin
           return { changes: inputChanges };
         }
 
-        // Apply variable overwrites
-        return { changes: this.applyVariableOverwrites(inputChanges) };
+        // Calculate and return overridden changes on demand instead of storing them
+        return { changes: this.getEffectiveChanges(inputChanges) };
       };
     };
 
@@ -411,13 +409,6 @@ export class NinetailedPreviewPlugin
     variantIndex: number;
   }) {
     if (!this.isActiveInstance) return;
-
-    logger.debug('Setting variable value in preview plugin:', {
-      experienceId,
-      key,
-      value,
-      variantIndex,
-    });
 
     const overrideKey = `${experienceId}:${key}`;
 
@@ -441,15 +432,6 @@ export class NinetailedPreviewPlugin
       ...this.variableOverwrites,
       [overrideKey]: change,
     };
-
-    // Update overridden changes
-    if (this.changes) {
-      this.overriddenChanges = this.applyVariableOverwrites(this.changes);
-      logger.debug(
-        'Overridden changes after applying override:',
-        this.overriddenChanges
-      );
-    }
 
     // Notify listeners
     this.onChangeEmitter.invokeListeners();
@@ -507,7 +489,7 @@ export class NinetailedPreviewPlugin
 
     // Update overridden changes
     if (this.changes) {
-      this.overriddenChanges = this.applyVariableOverwrites(this.changes);
+      this.overriddenChanges = this.getEffectiveChanges(this.changes);
     }
 
     // Trigger change notification
@@ -880,26 +862,33 @@ export class NinetailedPreviewPlugin
   }
 
   /**
-   * Apply variable overrides to the provided changes
+   * Get effective changes by applying overrides - compute on demand
    */
-  private applyVariableOverwrites(changes: Change[]): Change[] {
-    if (!changes || Object.keys(this.variableOverwrites).length === 0) {
-      return changes || [];
+  private getEffectiveChanges(inputChanges: Change[] = this.changes): Change[] {
+    if (!inputChanges || Object.keys(this.variableOverwrites).length === 0) {
+      return inputChanges || [];
     }
 
-    // Create a fresh copy to avoid modifying the original
-    const modifiedChanges = [...changes];
-
     // Filter out changes that we're overriding
-    const filteredChanges = modifiedChanges.filter((change) => {
+    const filteredChanges = inputChanges.filter((change) => {
       if (change.type !== ChangeTypes.Variable) return true;
 
       const changeKey = `${change.meta?.experienceId}:${change.key}`;
       return !this.variableOverwrites[changeKey];
     });
 
+    const effectiveChanges = [
+      ...filteredChanges,
+      ...Object.values(this.variableOverwrites),
+    ];
+
+    console.debug(
+      'Overridden changes after applying override:',
+      effectiveChanges
+    );
+
     // Add our overrides to create the final result
-    return [...filteredChanges, ...Object.values(this.variableOverwrites)];
+    return effectiveChanges;
   }
 
   private onChange = () => {
@@ -951,9 +940,6 @@ export class NinetailedPreviewPlugin
 
     // Store the original changes
     this.changes = incomingChanges;
-
-    // Apply variable overwrites to create overridden changes
-    this.overriddenChanges = this.applyVariableOverwrites(incomingChanges);
 
     // Notify listeners and update UI
     this.onChange();
