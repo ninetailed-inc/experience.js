@@ -185,7 +185,7 @@ describe('useExperience', () => {
     );
 
     // not sure why CI fails without this sleep
-    await sleep(10);
+    await sleep(8);
 
     await act(async () => {
       ninetailed.identify('test');
