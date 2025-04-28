@@ -13,6 +13,7 @@ export const wrapRootElement = (
   options: PluginOptions
 ) => {
   const resolvedPlugins = ninetailedPlugins.map(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ({ PluginCtor, options }: { PluginCtor: any; options: any }) =>
       new PluginCtor(options)
   );

@@ -4,6 +4,7 @@ import { makeExperienceSelectMiddleware } from './makeExperienceSelectMiddleware
 describe('makeExperienceSelectMiddleware', () => {
   describe('middleware', () => {
     it('should return a pass-through middleware when profile is null', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const plugins: any = [
         {
           getExperienceSelectionMiddleware: () => {
@@ -79,6 +80,7 @@ describe('makeExperienceSelectMiddleware', () => {
         id: 'variant2',
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const plugins: any = [
         {
           getExperienceSelectionMiddleware: () => () => ({
@@ -107,6 +109,7 @@ describe('makeExperienceSelectMiddleware', () => {
         },
         profile: {
           id: 'profile',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       });
 
@@ -160,6 +163,7 @@ describe('makeExperienceSelectMiddleware', () => {
         },
         profile: {
           id: 'profile',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       });
 
@@ -178,6 +182,7 @@ describe('makeExperienceSelectMiddleware', () => {
   describe('removeListeners', () => {
     it('should not invoke onChange once listener are removed', () => {
       const onChange = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const plugins: any = [
         {
           onChangeEmitter: new OnChangeEmitter(),
@@ -196,6 +201,7 @@ describe('makeExperienceSelectMiddleware', () => {
         },
         profile: {
           id: 'profile',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       });
 

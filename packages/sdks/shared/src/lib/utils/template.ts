@@ -7,7 +7,7 @@ import { get } from 'radash';
  */
 export const template = (
   str: string,
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   regex = /\{\{(.+?)\}\}/g
 ) => {
   return Array.from(str.matchAll(regex)).reduce((acc, match) => {

@@ -5,6 +5,7 @@ import { useNinetailed } from './useNinetailed';
 import { Variant } from './Variant';
 
 type TrackHasSeenComponentProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   variant: Variant<any>;
   audience: { id: string };
   isPersonalized: boolean;
