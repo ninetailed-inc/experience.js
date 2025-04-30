@@ -9,7 +9,8 @@ type UseProfileHookResult = Omit<ProfileState, 'experiences'> & {
 };
 
 function formatProfileForHook(profile: ProfileState): UseProfileHookResult {
-  const { experiences, ...profileStateWithoutExperiences } = profile;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { experiences: _, ...profileStateWithoutExperiences } = profile;
   return {
     ...profileStateWithoutExperiences,
     loading: profile.status === 'loading',

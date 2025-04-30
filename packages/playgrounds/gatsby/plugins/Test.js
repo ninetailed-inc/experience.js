@@ -3,10 +3,6 @@ import { NinetailedAnalyticsPlugin } from "@ninetailed/experience.js-plugin-anal
 class Test extends NinetailedAnalyticsPlugin {
   name = "Test"
 
-  constructor() {
-    super()
-  }
-
   onTrackComponent() {
     console.log("Track component")
   }

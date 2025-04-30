@@ -142,6 +142,7 @@ describe('makeExperienceSelectMiddleware', () => {
   describe('addListeners', () => {
     it('should invoke onChange when a plugin with onChangeEmitter is changed', () => {
       const onChange = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const plugins: any = [
         {
           onChangeEmitter: new OnChangeEmitter(),

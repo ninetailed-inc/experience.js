@@ -5,7 +5,6 @@ import {
   Storage,
 } from '@ninetailed/experience.js';
 import {
-  Profile,
   Locale,
   OnErrorHandler,
   OnLogHandler,

@@ -8,6 +8,7 @@ type PreviewBridgeOptions = {
   url?: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let bridge: any;
 
 export const PreviewBridge = ({ url = BASE_URL }: PreviewBridgeOptions) => {
