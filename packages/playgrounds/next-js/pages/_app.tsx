@@ -31,6 +31,7 @@ import { ExperienceMapper } from '@ninetailed/experience.js-utils-contentful';
 import productWithExperiment from '../../fixtures/contentful/product-with-experiment.json';
 
 function CustomApp({ Component, pageProps }: AppProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const experiences = productWithExperiment.fields.nt_experiences.map(
     (ctfExperience) => {
       const mapped = ExperienceMapper.mapCustomExperience(

@@ -14,18 +14,40 @@ import {
   ExperienceSelectionMiddlewareArg,
 } from '../types/interfaces/HasExperienceSelectionMiddleware';
 
-type MakeExperienceSelectMiddlewareArg<
+/**
+ * Args for creating an experience selection middleware
+ */
+
+type CreateExperienceSelectionMiddlewareArg<
   Baseline extends Reference,
   Variant extends Reference
 > = {
   plugins: NinetailedPlugin[];
   experiences: ExperienceConfiguration<Variant>[];
-  baseline: Reference;
+  baseline: Baseline;
   profile: Profile | null;
+};
+
+type MakeExperienceSelectMiddlewareArg<
+  Baseline extends Reference,
+  Variant extends Reference
+> = CreateExperienceSelectionMiddlewareArg<Baseline, Variant> & {
   onChange: (
     middleware: ExperienceSelectionMiddleware<Baseline, Variant>
   ) => void;
 };
+
+/**
+ * Result of creating an experience selection middleware
+ */
+interface ExperienceSelectMiddlewareResult<
+  Baseline extends Reference,
+  Variant extends Reference
+> {
+  addListeners: () => void;
+  removeListeners: () => void;
+  middleware: ExperienceSelectionMiddleware<Baseline, Variant>;
+}
 
 const createPassThroughMiddleware = <
   Baseline extends Reference,
@@ -40,46 +62,70 @@ const createPassThroughMiddleware = <
   };
 };
 
+function createExperienceSelectionMiddleware<
+  Baseline extends Reference,
+  Variant extends Reference
+>({
+  plugins,
+  experiences,
+  baseline,
+  profile,
+}: CreateExperienceSelectionMiddlewareArg<
+  Baseline,
+  Variant
+>): ExperienceSelectionMiddleware<Baseline, Variant> {
+  if (profile === null) {
+    return createPassThroughMiddleware<Baseline, Variant>();
+  }
+
+  const pluginsWithMiddleware =
+    selectPluginsHavingExperienceSelectionMiddleware<Baseline, Variant>(
+      plugins
+    );
+
+  const middlewareFunctions: ExperienceSelectionMiddleware<
+    Baseline,
+    Variant
+  >[] = [];
+
+  for (const plugin of pluginsWithMiddleware) {
+    const middleware = plugin.getExperienceSelectionMiddleware({
+      experiences,
+      baseline,
+    });
+
+    if (middleware !== undefined) {
+      middlewareFunctions.push(middleware);
+    }
+  }
+
+  return pipe(...middlewareFunctions);
+}
+
 export const makeExperienceSelectMiddleware = <
-  TBaseline extends Reference,
-  TVariant extends Reference
+  Baseline extends Reference,
+  Variant extends Reference
 >({
   plugins,
   onChange,
   experiences,
   baseline,
   profile,
-}: MakeExperienceSelectMiddlewareArg<TBaseline, TVariant>) => {
+}: MakeExperienceSelectMiddlewareArg<
+  Baseline,
+  Variant
+>): ExperienceSelectMiddlewareResult<Baseline, Variant> => {
   let removeChangeListeners: RemoveOnChangeListener[] = [];
 
   const pluginsHavingChangeEmitters =
     selectPluginsHavingOnChangeEmitter(plugins);
 
-  const prepareMiddleware = () => {
-    if (profile === null) {
-      return createPassThroughMiddleware<TBaseline, TVariant>();
-    }
-
-    const pluginsWithMiddleware =
-      selectPluginsHavingExperienceSelectionMiddleware<TBaseline, TVariant>(
-        plugins
-      );
-
-    const middlewareFunctions = pluginsWithMiddleware
-      .map((plugin) =>
-        plugin.getExperienceSelectionMiddleware({ experiences, baseline })
-      )
-      .filter(
-        (
-          result
-        ): result is ExperienceSelectionMiddleware<TBaseline, TVariant> =>
-          typeof result !== 'undefined'
-      );
-
-    return pipe(...middlewareFunctions);
-  };
-
-  const middleware = prepareMiddleware();
+  const middleware = createExperienceSelectionMiddleware<Baseline, Variant>({
+    plugins,
+    experiences,
+    baseline,
+    profile,
+  });
 
   const addListeners = () => {
     removeChangeListeners = pluginsHavingChangeEmitters.map((plugin) => {
@@ -91,8 +137,12 @@ export const makeExperienceSelectMiddleware = <
     });
   };
 
+  // WARNING: This specific implementation using forEach is required.
+  // DO NOT replace with for...of or other loop constructs as they will break functionality.
+  // The exact reason is uncertain but appears related to the transplier.
+  // TODO: Come back and find out why this is the case, maybe a version bump is in order.
   const removeListeners = () => {
-    removeChangeListeners.forEach((listener) => listener());
+    removeChangeListeners.forEach((removeListener) => removeListener());
   };
 
   return {

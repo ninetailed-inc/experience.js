@@ -26,6 +26,7 @@ describe('selectPluginsHavingExperienceSelectionMiddleware', () => {
     const plugins = [plugin1, plugin2, plugin3];
 
     expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       selectPluginsHavingExperienceSelectionMiddleware(plugins as any)
     ).toEqual([plugin1, plugin2]);
   });

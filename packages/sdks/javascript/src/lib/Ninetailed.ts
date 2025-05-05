@@ -31,6 +31,7 @@ import {
   OnInitProfileId,
   PLUGIN_NAME,
   PROFILE_CHANGE,
+  EventHandlerAnalyticsInstance,
 } from './NinetailedCorePlugin';
 import {
   EventFunctionOptions,
@@ -39,8 +40,8 @@ import {
   OnProfileChangeCallback,
   ProfileState,
   TrackHasSeenComponent,
-  AnalyticsInstance,
   TrackComponentView,
+  OnChangesChangeCallback,
 } from './types';
 import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
@@ -76,8 +77,10 @@ declare global {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GetItem<T = any> = (key: string) => T;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SetItem<T = any> = (key: string, value: T) => void;
 
 type RemoveItem = (key: string) => void;
@@ -142,7 +145,7 @@ const buildOverrideMiddleware =
   };
 
 export class Ninetailed implements NinetailedInstance {
-  private readonly instance: AnalyticsInstance;
+  private readonly instance: EventHandlerAnalyticsInstance;
   private _profileState: ProfileState;
   private isInitialized = false;
   private readonly apiClient: NinetailedApiClient;
@@ -233,6 +236,7 @@ export class Ninetailed implements NinetailedInstance {
       status: 'loading',
       profile: null,
       experiences: null,
+      changes: null,
       error: null,
       from: 'api',
     };
@@ -252,7 +256,7 @@ export class Ninetailed implements NinetailedInstance {
       app: 'ninetailed',
       plugins: [...this.plugins, this.ninetailedCorePlugin],
       ...(storageImpl ? { storage: storageImpl } : {}),
-    }) as AnalyticsInstance;
+    }) as EventHandlerAnalyticsInstance;
 
     const detachOnReadyListener = this.instance.on('ready', () => {
       this.isInitialized = true;
@@ -306,14 +310,7 @@ export class Ninetailed implements NinetailedInstance {
       await this.instance.page(data, this.buildOptions(options));
       return this.ninetailedCorePlugin.flush();
     } catch (error) {
-      logger.error(error as Error);
-
-      if (error instanceof RangeError) {
-        throw new Error(
-          `[Validation Error] "page" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
-        );
-      }
-      throw error;
+      return this.handleMethodError(error, 'page');
     }
   };
 
@@ -337,14 +334,7 @@ export class Ninetailed implements NinetailedInstance {
       );
       return this.ninetailedCorePlugin.flush();
     } catch (error) {
-      logger.error(error as Error);
-
-      if (error instanceof RangeError) {
-        throw new Error(
-          `[Validation Error] "track" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
-        );
-      }
-      throw error;
+      this.handleMethodError(error, 'track');
     }
   };
 
@@ -369,14 +359,7 @@ export class Ninetailed implements NinetailedInstance {
       );
       return this.ninetailedCorePlugin.flush();
     } catch (error) {
-      logger.error(error as Error);
-
-      if (error instanceof RangeError) {
-        throw new Error(
-          `[Validation Error] "identify" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
-        );
-      }
-      throw error;
+      this.handleMethodError(error, 'identify');
     }
   };
 
@@ -414,14 +397,7 @@ export class Ninetailed implements NinetailedInstance {
       await Promise.all(promises);
       return this.ninetailedCorePlugin.flush();
     } catch (error) {
-      logger.error(error as Error);
-
-      if (error instanceof RangeError) {
-        throw new Error(
-          `[Validation Error] "batch" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
-        );
-      }
-      throw error;
+      this.handleMethodError(error, 'batch');
     }
   };
 
@@ -444,14 +420,7 @@ export class Ninetailed implements NinetailedInstance {
       });
       return this.ninetailedCorePlugin.flush();
     } catch (error) {
-      logger.error(error as Error);
-
-      if (error instanceof RangeError) {
-        throw new Error(
-          `[Validation Error] "trackStickyComponentView" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
-        );
-      }
-      throw error;
+      this.handleMethodError(error, 'trackStickyComponentView');
     }
   };
 
@@ -482,51 +451,65 @@ export class Ninetailed implements NinetailedInstance {
     payload: ElementSeenPayload,
     options?: ObserveOptions
   ) => {
-    const { element, ...remaingPayload } = payload;
+    const { element, ...remainingPayload } = payload;
 
     if (!(element instanceof Element)) {
-      const isObject = typeof element === 'object' && element !== null;
-      const constructorName = isObject ? (element as any).constructor.name : '';
-      const isConstructorNameNotObject =
-        constructorName && constructorName !== 'Object';
-
-      logger.warn(
-        `ElementSeenObserver.observeElement was called with an invalid element. Expected an Element but got ${typeof element}${
-          isConstructorNameNotObject ? ` of type ${constructorName}` : ''
-        }. This call will be ignored.`
-      );
-    } else {
-      const existingPayloads = this.observedElements.get(element);
-
-      const delays = this.pluginsWithCustomComponentViewThreshold.map(
-        (plugin) => plugin.getComponentViewTrackingThreshold()
-      );
-      const uniqueDelays = Array.from(new Set([...delays, options?.delay]));
-
-      if (!existingPayloads) {
-        this.observedElements.set(element, [remaingPayload]);
-      } else {
-        const isPayloadAlreadyObserved = existingPayloads.some((payload) => {
-          return JSON.stringify(payload) === JSON.stringify(remaingPayload);
-        });
-
-        if (isPayloadAlreadyObserved) {
-          return;
-        }
-
-        this.observedElements.set(element, [
-          ...existingPayloads,
-          remaingPayload,
-        ]);
-      }
-
-      uniqueDelays.forEach((delay) => {
-        this.elementSeenObserver.observe(element, {
-          delay,
-        });
-      });
+      this.logInvalidElement(element);
+      return;
     }
+
+    this.storeElementPayload(element, remainingPayload);
+    this.setupElementObservation(element, options?.delay);
   };
+
+  private logInvalidElement(element: unknown) {
+    const isObject = typeof element === 'object' && element !== null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const constructorName = isObject ? (element as any).constructor.name : '';
+    const isConstructorNameNotObject =
+      constructorName && constructorName !== 'Object';
+
+    logger.warn(
+      `ElementSeenObserver.observeElement was called with an invalid element. Expected an Element but got ${typeof element}${
+        isConstructorNameNotObject ? ` of type ${constructorName}` : ''
+      }. This call will be ignored.`
+    );
+  }
+
+  private storeElementPayload(
+    element: Element,
+    payload: ObservedElementPayload
+  ) {
+    const existingPayloads = this.observedElements.get(element) || [];
+
+    // Check if the payload is already being observed for this element
+    const isPayloadAlreadyObserved = existingPayloads.some(
+      (existingPayload) =>
+        JSON.stringify(existingPayload) === JSON.stringify(payload)
+    );
+
+    if (isPayloadAlreadyObserved) {
+      return;
+    }
+
+    // Store the new or updated payloads
+    this.observedElements.set(element, [...existingPayloads, payload]);
+  }
+
+  private setupElementObservation(element: Element, delay?: number) {
+    // Get all relevant delays from plugins and the custom delay
+    const pluginDelays = this.pluginsWithCustomComponentViewThreshold.map(
+      (plugin) => plugin.getComponentViewTrackingThreshold()
+    );
+
+    // Ensure we only observe each delay once
+    const uniqueDelays = Array.from(new Set([...pluginDelays, delay]));
+
+    // Set up observation for each delay
+    uniqueDelays.forEach((delay) => {
+      this.elementSeenObserver.observe(element, { delay });
+    });
+  }
 
   public unobserveElement = (element: Element) => {
     this.observedElements.delete(element);
@@ -580,6 +563,7 @@ export class Ninetailed implements NinetailedInstance {
           ...this._profileState,
           status: 'success',
           profile: payload.profile,
+          changes: payload.changes,
           experiences: payload.experiences,
           error: null,
         });
@@ -814,14 +798,71 @@ export class Ninetailed implements NinetailedInstance {
     };
   };
 
-  public onIsInitialized = (onIsInitialized: OnIsInitializedCallback) => {
-    if (typeof onIsInitialized === 'function') {
+  /**
+   * Registers a callback to be notified when changes occur in the profile state.
+   *
+   * @param cb - Callback function that receives the changes state
+   * @returns Function to unsubscribe from changes updates
+   */
+  public onChangesChange = (cb: OnChangesChangeCallback) => {
+    this.notifyChangesCallback(cb, this._profileState);
+
+    return this.onProfileChange((profileState) => {
+      this.notifyChangesCallback(cb, profileState);
+    });
+  };
+
+  /**
+   * Helper method to extract changes state from profile state and notify callback
+   * @private
+   */
+  private notifyChangesCallback(
+    cb: OnChangesChangeCallback,
+    profileState: ProfileState
+  ): void {
+    if (profileState.status === 'loading') {
+      cb({
+        status: 'loading',
+        changes: null,
+        error: null,
+      });
+    } else if (profileState.status === 'error') {
+      cb({
+        status: 'error',
+        changes: null,
+        error: profileState.error,
+      });
+    } else {
+      cb({
+        status: 'success',
+        changes: profileState.changes,
+        error: null,
+      });
+    }
+  }
+
+  // Always throws, never returns
+  private handleMethodError(error: unknown, method: string): never {
+    logger.error(error as Error);
+
+    if (error instanceof RangeError) {
+      throw new Error(
+        `[Validation Error] "${method}" was called with invalid params. Could not validate due to "RangeError: Maximum call stack size exceeded". This can be caused by passing a cyclic data structure as a parameter. Refrain from passing a cyclic data structure or sanitize it beforehand.`
+      );
+    }
+    throw error;
+  }
+
+  public onIsInitialized = (
+    onIsInitializedCallback: OnIsInitializedCallback
+  ) => {
+    if (typeof onIsInitializedCallback === 'function') {
       if (this.isInitialized) {
-        onIsInitialized();
+        onIsInitializedCallback();
       } else {
         const detachOnReadyListener = this.instance.on('ready', () => {
           this.isInitialized = true;
-          onIsInitialized();
+          onIsInitializedCallback();
           detachOnReadyListener();
         });
       }

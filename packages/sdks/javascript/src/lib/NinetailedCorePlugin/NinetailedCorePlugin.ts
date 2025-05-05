@@ -1,4 +1,4 @@
-import { AnalyticsInstance } from 'analytics';
+import { AnalyticsInstance, DetachListeners } from 'analytics';
 import {
   Event,
   Locale,
@@ -13,6 +13,9 @@ import {
   unionBy,
   NinetailedRequestContext,
   buildComponentViewEvent,
+  Profile,
+  SelectedVariantInfo,
+  Change,
 } from '@ninetailed/experience.js-shared';
 import {
   NinetailedAnalyticsPlugin,
@@ -23,6 +26,7 @@ import { buildClientNinetailedRequestContext } from './Events';
 import { asyncThrottle } from '../utils/asyncThrottle';
 import {
   ANONYMOUS_ID,
+  CHANGES_FALLBACK_CACHE,
   CONSENT,
   DEBUG_FLAG,
   EMPTY_MERGE_ID,
@@ -35,6 +39,7 @@ import {
 } from './constants';
 import { NinetailedInstance, FlushResult } from '../types';
 import { HAS_SEEN_STICKY_COMPONENT } from '../constants';
+import { DispatchAction, ActionPayloadMap } from './actions';
 
 export type OnInitProfileId = (
   profileId?: string
@@ -54,14 +59,23 @@ type AnalyticsPluginNinetailedConfig = {
 
 export const PLUGIN_NAME = 'ninetailed:core';
 
-type EventFn = { payload: any; instance: InternalAnalyticsInstance };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type EventFn = { payload: any; instance: EventHandlerAnalyticsInstance };
 
 type AbortableFnParams = { abort: () => void; payload: unknown };
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-type InternalAnalyticsInstance = AnalyticsInstance & {
-  dispatch: (action: any) => void;
+export type EventHandlerAnalyticsInstance = Omit<
+  AnalyticsInstance,
+  'on' | 'dispatch'
+> & {
+  dispatch: (action: DispatchAction) => Promise<void>;
+
+  on<T extends DispatchAction['type']>(
+    action: T,
+    handler: (data: ActionPayloadMap[T]) => void
+  ): DetachListeners;
 };
 
 export interface NinetailedCorePlugin extends NinetailedAnalyticsPlugin {
@@ -74,7 +88,7 @@ export class NinetailedCorePlugin
 {
   public name = PLUGIN_NAME;
 
-  private _instance?: InternalAnalyticsInstance;
+  private _instance?: EventHandlerAnalyticsInstance;
   private queue: Event[] = [];
 
   private enabledFeatures: Feature[] = Object.values(FEATURES);
@@ -113,7 +127,7 @@ export class NinetailedCorePlugin
   public async initialize({
     instance,
   }: {
-    instance: InternalAnalyticsInstance;
+    instance: EventHandlerAnalyticsInstance;
   }) {
     this._instance = instance;
 
@@ -129,16 +143,14 @@ export class NinetailedCorePlugin
         'Found legacy anonymousId, migrating to new one.',
         legacyAnonymousId
       );
-      instance.storage.setItem(ANONYMOUS_ID, legacyAnonymousId);
+      this.setAnonymousId(legacyAnonymousId);
       instance.storage.removeItem(LEGACY_ANONYMOUS_ID);
     }
 
     if (typeof this.onInitProfileId === 'function') {
-      const profileId = await this.onInitProfileId(
-        instance.storage.getItem(ANONYMOUS_ID)
-      );
+      const profileId = await this.onInitProfileId(this.getAnonymousId());
       if (typeof profileId === 'string') {
-        instance.storage.setItem(ANONYMOUS_ID, profileId);
+        this.setAnonymousId(profileId);
       }
     }
 
@@ -252,6 +264,7 @@ export class NinetailedCorePlugin
     );
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public setItemStart({ abort, payload }: { abort: any; payload: any }) {
     if (
       ![
@@ -269,19 +282,20 @@ export class NinetailedCorePlugin
   }
 
   public methods = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reset: async (...args: any[]) => {
       logger.debug('Resetting profile.');
-      const instance = args[args.length - 1] as InternalAnalyticsInstance;
+      const instance = args[args.length - 1] as EventHandlerAnalyticsInstance;
       instance.dispatch({ type: PROFILE_RESET });
-      instance.storage.removeItem(ANONYMOUS_ID);
-      instance.storage.removeItem(PROFILE_FALLBACK_CACHE);
-      instance.storage.removeItem(EXPERIENCES_FALLBACK_CACHE);
+
+      this.clearCaches();
+
       logger.debug('Removed old profile data from localstorage.');
 
       if (typeof this.onInitProfileId === 'function') {
         const profileId = await this.onInitProfileId(undefined);
         if (typeof profileId === 'string') {
-          instance.storage.setItem(ANONYMOUS_ID, profileId);
+          this.setAnonymousId(profileId);
         }
       }
 
@@ -290,9 +304,10 @@ export class NinetailedCorePlugin
       logger.info('Profile reset successful.');
       await delay(10);
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     debug: async (...args: any[]) => {
       const enabled: boolean = args[0];
-      const instance = args[args.length - 1] as InternalAnalyticsInstance;
+      const instance = args[args.length - 1] as EventHandlerAnalyticsInstance;
 
       const consoleLogSink = new ConsoleLogSink();
 
@@ -320,7 +335,7 @@ export class NinetailedCorePlugin
     return payload;
   }
 
-  private get instance(): InternalAnalyticsInstance {
+  private get instance(): EventHandlerAnalyticsInstance {
     if (!this._instance) {
       throw new Error('Ninetailed Core plugin not initialized.');
     }
@@ -329,6 +344,81 @@ export class NinetailedCorePlugin
   }
 
   public flush = asyncThrottle<void, FlushResult>(this._flush.bind(this));
+
+  private getAnonymousId(): string | undefined {
+    return (this.instance.storage.getItem(ANONYMOUS_ID) as string) ?? undefined;
+  }
+
+  private setAnonymousId(id: string): void {
+    this.instance.storage.setItem(ANONYMOUS_ID, id);
+  }
+
+  private clearAnonymousId(): void {
+    this.instance.storage.removeItem(ANONYMOUS_ID);
+  }
+
+  private setFallbackProfile(profile: Profile): void {
+    this.instance.storage.setItem(PROFILE_FALLBACK_CACHE, profile);
+  }
+
+  private getFallbackProfile(): Profile | undefined {
+    return (
+      (this.instance.storage.getItem(PROFILE_FALLBACK_CACHE) as Profile) ??
+      undefined
+    );
+  }
+
+  private clearFallbackProfile(): void {
+    this.instance.storage.removeItem(PROFILE_FALLBACK_CACHE);
+  }
+
+  private setFallbackExperiences(experiences: SelectedVariantInfo[]): void {
+    this.instance.storage.setItem(EXPERIENCES_FALLBACK_CACHE, experiences);
+  }
+
+  private getFallbackExperiences(): SelectedVariantInfo[] {
+    return this.instance.storage.getItem(EXPERIENCES_FALLBACK_CACHE) || [];
+  }
+
+  private clearFallbackExperiences(): void {
+    this.instance.storage.removeItem(EXPERIENCES_FALLBACK_CACHE);
+  }
+
+  private setFallbackChanges(changes: Change[]): void {
+    this.instance.storage.setItem(CHANGES_FALLBACK_CACHE, changes);
+  }
+
+  private getFallbackChanges(): Change[] {
+    return this.instance.storage.getItem(CHANGES_FALLBACK_CACHE) || [];
+  }
+
+  private clearFallbackChanges(): void {
+    this.instance.storage.removeItem(CHANGES_FALLBACK_CACHE);
+  }
+
+  private clearCaches(): void {
+    this.clearAnonymousId();
+    this.clearFallbackProfile();
+    this.clearFallbackExperiences();
+    this.clearFallbackChanges();
+  }
+
+  private populateCaches({
+    experiences,
+    profile,
+    anonymousId,
+    changes,
+  }: {
+    anonymousId: string;
+    profile: Profile;
+    experiences: SelectedVariantInfo[];
+    changes: Change[];
+  }) {
+    this.setAnonymousId(anonymousId);
+    this.setFallbackProfile(profile);
+    this.setFallbackExperiences(experiences);
+    this.setFallbackChanges(changes);
+  }
 
   private async _flush() {
     const events: Event[] = Object.assign([], this.queue);
@@ -339,33 +429,40 @@ export class NinetailedCorePlugin
     }
 
     try {
-      const anonymousId = this.instance.storage.getItem(ANONYMOUS_ID);
-      const { profile, experiences } = await this.apiClient.upsertProfile(
-        {
-          profileId: anonymousId,
-          events,
-        },
-        { locale: this.locale, enabledFeatures: this.enabledFeatures }
-      );
-      this.instance.storage.setItem(ANONYMOUS_ID, profile.id);
-      this.instance.storage.setItem(PROFILE_FALLBACK_CACHE, profile);
-      this.instance.storage.setItem(EXPERIENCES_FALLBACK_CACHE, experiences);
+      const anonymousId = this.getAnonymousId();
+      const { profile, experiences, changes } =
+        await this.apiClient.upsertProfile(
+          {
+            profileId: anonymousId,
+            events,
+          },
+          { locale: this.locale, enabledFeatures: this.enabledFeatures }
+        );
+
+      this.populateCaches({
+        anonymousId: profile.id,
+        profile,
+        experiences,
+        changes,
+      });
+
       logger.debug('Profile from api: ', profile);
       logger.debug('Experiences from api: ', experiences);
+
       this.instance.dispatch({
         type: PROFILE_CHANGE,
         profile,
         experiences,
+        changes,
+        error: undefined,
       });
       await delay(20);
       return { success: true };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.debug('An error occurred during flushing the events: ', error);
-      const fallbackProfile = this.instance.storage.getItem(
-        PROFILE_FALLBACK_CACHE
-      );
-      const fallbackExperiences =
-        this.instance.storage.getItem(EXPERIENCES_FALLBACK_CACHE) || [];
+      const fallbackProfile = this.getFallbackProfile();
+      const fallbackExperiences = this.getFallbackExperiences();
+      const fallbackChanges = this.getFallbackChanges();
 
       if (fallbackProfile) {
         logger.debug('Found a fallback profile - will use this.');
@@ -373,14 +470,17 @@ export class NinetailedCorePlugin
           type: PROFILE_CHANGE,
           profile: fallbackProfile,
           experiences: fallbackExperiences,
+          changes: fallbackChanges,
+          error: undefined,
         });
       } else {
         logger.debug('No fallback profile found - setting profile to null.');
         this.instance.dispatch({
           type: PROFILE_CHANGE,
           profile: null,
+          changes: fallbackChanges,
           experiences: fallbackExperiences,
-          error,
+          error: error as Error,
         });
       }
 

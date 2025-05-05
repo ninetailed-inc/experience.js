@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const pickBy = <T extends Record<string, any>>(
   object: T,
   predicate: (value: T[keyof T], key: keyof T) => boolean

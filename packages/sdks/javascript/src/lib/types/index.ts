@@ -8,6 +8,7 @@ import {
   SelectedVariantInfo,
   Reference,
   Event,
+  Change,
 } from '@ninetailed/experience.js-shared';
 import {
   ElementSeenPayload,
@@ -19,30 +20,48 @@ import { type Ninetailed } from '../Ninetailed';
 import { OnSelectVariant } from './OnSelectVariant';
 import { EventBuilder } from '../utils/EventBuilder';
 
-type Loading = {
-  status: 'loading';
-  profile: null;
-  experiences: null;
-  error: null;
-};
+export type ProfileState =
+  | {
+      status: 'loading';
+      profile: null;
+      experiences: null;
+      changes: null;
+      error: null;
+      from: 'api' | 'hydrated';
+    }
+  | {
+      status: 'success';
+      profile: Profile;
+      experiences: SelectedVariantInfo[];
+      changes: Change[];
+      error: null;
+      from: 'api' | 'hydrated';
+    }
+  | {
+      status: 'error';
+      profile: Profile | null;
+      experiences: SelectedVariantInfo[] | null;
+      changes: Change[] | null;
+      error: Error;
+      from: 'api' | 'hydrated';
+    };
 
-type Success = {
-  status: 'success';
-  profile: Profile;
-  experiences: SelectedVariantInfo[];
-  error: null;
-};
-
-type Fail = {
-  status: 'error';
-  profile: null;
-  experiences: null;
-  error: Error;
-};
-
-export type ProfileState = {
-  from: 'api' | 'hydrated';
-} & (Loading | Success | Fail);
+export type ChangesState =
+  | {
+      status: 'loading';
+      changes: null;
+      error: null;
+    }
+  | {
+      status: 'success';
+      changes: Change[];
+      error: null;
+    }
+  | {
+      status: 'error';
+      changes: null;
+      error: Error;
+    };
 
 export type OnIsInitializedCallback = () => void;
 
@@ -57,7 +76,13 @@ export type EventFunctionOptions = {
 
 export type FlushResult = { success: boolean };
 
+export type Result<T> =
+  | { success: true; data: T }
+  | { success: false; error: Error };
+
 export type OnProfileChangeCallback = (profile: ProfileState) => void;
+
+export type OnChangesChangeCallback = (changesState: ChangesState) => void;
 
 export type Page = (
   data?: Partial<PageviewProperties>,
@@ -92,6 +117,8 @@ export type Debug = (enable: boolean) => void;
 
 export type OnProfileChange = (cb: OnProfileChangeCallback) => DetachListeners;
 
+export type OnChangesChange = (cb: OnChangesChangeCallback) => DetachListeners;
+
 type ObserveElement = Ninetailed['observeElement'];
 type UnObserveElement = Ninetailed['unobserveElement'];
 
@@ -112,6 +139,7 @@ export interface NinetailedInstance<
   debug: Debug;
   profileState: ProfileState;
   onProfileChange: OnProfileChange;
+  onChangesChange: OnChangesChange;
   plugins: NinetailedPlugin[];
   logger: Logger;
   eventBuilder: EventBuilder;

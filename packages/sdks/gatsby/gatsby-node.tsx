@@ -16,7 +16,8 @@ import { serializePluginOptionFunctions } from './utils/serialize';
 
 export const pluginOptionsSchema = ({
   Joi,
-}: PluginOptionsSchemaArgs): ObjectSchema<any> => {
+}: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+PluginOptionsSchemaArgs): ObjectSchema<any> => {
   return Joi.object({
     clientId: Joi.string()
       .required()

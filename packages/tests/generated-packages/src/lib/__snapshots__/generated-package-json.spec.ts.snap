@@ -234,10 +234,12 @@ Object {
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
-    "@segment/analytics-next": "1.48.0",
     "tslib": "2.4.1",
   },
   "description": "Ninetailed SDK plugin for Segment",
+  "devDependencies": Object {
+    "@segment/analytics-next": "1.48.0",
+  },
   "keywords": Array [
     "segment",
     "ninetailed",

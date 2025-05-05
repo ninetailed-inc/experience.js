@@ -38,6 +38,7 @@ export type ResolvedPluginOptions =
   | ResolvedPreviewPluginOptions;
 
 export type ResolvedPlugin = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   PluginCtor: any;
   options?: ResolvedPluginOptions;
 };

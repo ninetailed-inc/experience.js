@@ -108,6 +108,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
   private readonly config: PrivacyConfig;
   private readonly acceptedConsentConfig: PrivacyConfig;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly queue: any[] = [];
 
   constructor(
@@ -219,8 +220,10 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   private handleEventStart =
     (
       eventType: EventType,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       modifyPayloadFn?: (payload: any, abort: () => void) => any
     ) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ({ payload, abort }: { payload: any; abort: any }) => {
       if (!this.getConfig().allowedEvents.includes(eventType)) {
         this.queue.push(payload);

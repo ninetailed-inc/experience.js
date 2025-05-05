@@ -3,6 +3,7 @@ const createFunctionBody = (serializedFunction: string) => {
 };
 
 const deserializeFunction = (serializedFunction: string) => {
+  // eslint-disable-next-line no-new-func
   return new Function(createFunctionBody(serializedFunction))();
 };
 

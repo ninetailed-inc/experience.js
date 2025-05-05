@@ -29,6 +29,7 @@ import { deserializePluginOptionFunctions } from './utils/deserialize';
 let ninetailed: Ninetailed;
 
 const isSerializedPreviewPlugin = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options: any | undefined
 ): options is ResolvedPreviewPluginOptions => {
   return !!(

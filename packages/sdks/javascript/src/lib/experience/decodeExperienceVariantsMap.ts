@@ -1,22 +1,20 @@
 export const decodeExperienceVariantsMap = (
   encodedExperienceVariantsMap: string
 ): Record<string, number> => {
-  return encodedExperienceVariantsMap
-    .split(',')
-    .map((experienceIdWithVariant) => {
-      const [experienceId, _variantIndex] = experienceIdWithVariant.split('=');
+  const experientVariantsAssignments = encodedExperienceVariantsMap.split(',');
+  const experienceVariantsMap: Record<string, number> = {};
 
-      const variantIndex = parseInt(_variantIndex);
+  for (const experienceVariantAssignment of experientVariantsAssignments) {
+    const [experienceId, variantIndexString] =
+      experienceVariantAssignment.split('=');
+    const variantIndex = parseInt(variantIndexString);
 
-      if (!experienceId || !variantIndex) {
-        return null;
-      }
+    if (!experienceId || !variantIndex) {
+      continue;
+    }
 
-      return { experienceId, variantIndex };
-    })
-    .filter((x): x is { experienceId: string; variantIndex: number } => !!x)
-    .reduce(
-      (acc, curr) => ({ ...acc, [curr.experienceId]: curr.variantIndex }),
-      {}
-    );
+    experienceVariantsMap[experienceId] = variantIndex;
+  }
+
+  return experienceVariantsMap;
 };

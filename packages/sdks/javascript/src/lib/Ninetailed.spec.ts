@@ -450,17 +450,20 @@ describe('Ninetailed core class', () => {
       const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
       const { ninetailed } = mockProfile([testPlugin]);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getObserverOf(element as any);
 
       const experience = generateExperience();
 
       ninetailed.observeElement({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         element: element as any,
         variant: { id: 'variant-id' },
         variantIndex: 1,
         experience,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       intersect(element as any, true);
 
       jest.runAllTimers();

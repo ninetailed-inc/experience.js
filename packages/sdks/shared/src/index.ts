@@ -5,6 +5,7 @@ export * from './lib/types/Endpoints/UpsertManyProfiles';
 export * from './lib/types/Endpoints/RequestBodyOptions';
 
 export * from './lib/types/Event/Event';
+export * from './lib/types/Change';
 export * from './lib/types/Event/PageviewEvent';
 export * from './lib/types/Event/TrackEvent';
 export * from './lib/types/Event/IdentifyEvent';
