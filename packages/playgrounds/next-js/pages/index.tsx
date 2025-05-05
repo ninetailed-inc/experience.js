@@ -1,4 +1,5 @@
 /* eslint-disable @nx/enforce-module-boundaries */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect } from 'react';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';

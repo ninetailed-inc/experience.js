@@ -77,8 +77,10 @@ declare global {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GetItem<T = any> = (key: string) => T;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SetItem<T = any> = (key: string, value: T) => void;
 
 type RemoveItem = (key: string) => void;
@@ -462,6 +464,7 @@ export class Ninetailed implements NinetailedInstance {
 
   private logInvalidElement(element: unknown) {
     const isObject = typeof element === 'object' && element !== null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const constructorName = isObject ? (element as any).constructor.name : '';
     const isConstructorNameNotObject =
       constructorName && constructorName !== 'Object';

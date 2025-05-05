@@ -59,6 +59,7 @@ type AnalyticsPluginNinetailedConfig = {
 
 export const PLUGIN_NAME = 'ninetailed:core';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EventFn = { payload: any; instance: EventHandlerAnalyticsInstance };
 
 type AbortableFnParams = { abort: () => void; payload: unknown };
@@ -263,6 +264,7 @@ export class NinetailedCorePlugin
     );
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public setItemStart({ abort, payload }: { abort: any; payload: any }) {
     if (
       ![
@@ -280,6 +282,7 @@ export class NinetailedCorePlugin
   }
 
   public methods = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reset: async (...args: any[]) => {
       logger.debug('Resetting profile.');
       const instance = args[args.length - 1] as EventHandlerAnalyticsInstance;
@@ -301,6 +304,7 @@ export class NinetailedCorePlugin
       logger.info('Profile reset successful.');
       await delay(10);
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     debug: async (...args: any[]) => {
       const enabled: boolean = args[0];
       const instance = args[args.length - 1] as EventHandlerAnalyticsInstance;

@@ -13,6 +13,7 @@ describe('selectPluginsHavingOnChangeEmitter', () => {
 
     const plugins = [plugin1, plugin2, plugin3];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(selectPluginsHavingOnChangeEmitter(plugins as any)).toEqual([
       plugin1,
       plugin2,

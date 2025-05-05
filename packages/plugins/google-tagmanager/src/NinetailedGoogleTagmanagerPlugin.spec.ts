@@ -71,6 +71,7 @@ describe('NinetailedGoogleTagmanagerPlugin', () => {
       await sleep(5);
       expect(window.dataLayer).toHaveLength(1);
       expect(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         window.dataLayer && (window.dataLayer[0] as any).ninetailed_experience
       ).toEqual(fixtures.TRACK_COMPONENT_VIEW_PROPERTIES.experience.id);
     });

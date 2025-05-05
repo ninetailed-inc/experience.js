@@ -6,6 +6,7 @@ import {
 
 export const experienceMapper = (
   productEntry: BaselineWithExperiencesEntry
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ExperienceConfiguration<any>[] =>
   productEntry.fields.nt_experiences
     .filter(ExperienceMapper.isExperienceEntry)
