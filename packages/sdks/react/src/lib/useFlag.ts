@@ -26,8 +26,8 @@ export function useFlag<T extends AllowedVariableType>(
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
-  const previousDefaultValue = useRef<T>(defaultValue);
-  const lastKey = useRef<string>(flagKey);
+  const defaultValueRef = useRef<T>(defaultValue);
+  const flagKeyRef = useRef<string>(flagKey);
 
   const [result, setResult] = useState<FlagResult<T>>({
     value: defaultValue,
@@ -35,24 +35,25 @@ export function useFlag<T extends AllowedVariableType>(
     error: null,
   });
 
+  // Effect 1: Track changes to `flagKey` or `defaultValue`
   useEffect(() => {
-    const hasDefaultChanged = !isEqual(
-      previousDefaultValue.current,
-      defaultValue
-    );
-    const hasKeyChanged = lastKey.current !== flagKey;
-
-    if (hasDefaultChanged || hasKeyChanged) {
+    if (
+      !isEqual(defaultValueRef.current, defaultValue) ||
+      flagKeyRef.current !== flagKey
+    ) {
+      defaultValueRef.current = defaultValue;
+      flagKeyRef.current = flagKey;
       setResult({
         value: defaultValue,
         status: 'loading',
         error: null,
       });
       lastProcessedState.current = null;
-      previousDefaultValue.current = defaultValue;
-      lastKey.current = flagKey;
     }
+  }, [flagKey, defaultValue]);
 
+  // Effect 2: Handle Ninetailed changes
+  useEffect(() => {
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
         lastProcessedState.current &&
@@ -65,7 +66,7 @@ export function useFlag<T extends AllowedVariableType>(
 
       if (changesState.status === 'loading') {
         setResult({
-          value: defaultValue,
+          value: defaultValueRef.current,
           status: 'loading',
           error: null,
         });
@@ -74,7 +75,7 @@ export function useFlag<T extends AllowedVariableType>(
 
       if (changesState.status === 'error') {
         setResult({
-          value: defaultValue,
+          value: defaultValueRef.current,
           status: 'error',
           error: changesState.error,
         });
@@ -83,7 +84,7 @@ export function useFlag<T extends AllowedVariableType>(
 
       try {
         const change = changesState.changes.find(
-          (change) => change.key === flagKey
+          (change) => change.key === flagKeyRef.current
         );
 
         if (change && change.type === ChangeTypes.Variable) {
@@ -94,14 +95,14 @@ export function useFlag<T extends AllowedVariableType>(
           });
         } else {
           setResult({
-            value: defaultValue,
+            value: defaultValueRef.current,
             status: 'success',
             error: null,
           });
         }
       } catch (error) {
         setResult({
-          value: defaultValue,
+          value: defaultValueRef.current,
           status: 'error',
           error: error instanceof Error ? error : new Error(String(error)),
         });
@@ -109,7 +110,7 @@ export function useFlag<T extends AllowedVariableType>(
     });
 
     return unsubscribe;
-  }, [ninetailed, flagKey]);
+  }, [ninetailed]);
 
   return result;
 }
