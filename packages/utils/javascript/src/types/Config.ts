@@ -62,10 +62,35 @@ export function isInlineVariableComponent(
 ): component is InlineVariableComponent {
   return component.type === ComponentTypeEnum.InlineVariable;
 }
-export const ExperienceConfigComponentSchema = z.discriminatedUnion('type', [
-  EntryReplacementComponentSchema,
-  InlineVariableComponentSchema,
-]);
+
+// TODO: Using union with refinement instead of discriminatedUnion due to optional 'type' fields
+// during the component migration. Consider switching to discriminatedUnion once the migration
+// is complete and all components have mandatory type fields.
+export const ExperienceConfigComponentSchema = z
+  .union([EntryReplacementComponentSchema, InlineVariableComponentSchema])
+  .refine(
+    (component) => {
+      if (!component.type) {
+        // Default to EntryReplacement for backward compatibility
+        component.type = ComponentTypeEnum.EntryReplacement;
+        // Optionally log for monitoring migration progress
+        console.debug(
+          'Found component without type, defaulting to EntryReplacement'
+        );
+      }
+
+      // Additional validation logic as needed
+      if (isEntryReplacementComponent(component)) {
+        return component.variants.length > 0;
+      } else if (isInlineVariableComponent(component)) {
+        return component.variants.length > 0;
+      }
+      return false;
+    },
+    {
+      message: 'Invalid component configuration',
+    }
+  );
 
 export const Config = z.object({
   distribution: z.array(z.number()).optional().default([0.5, 0.5]),
