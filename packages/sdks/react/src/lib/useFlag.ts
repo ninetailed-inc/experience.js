@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import {
   AllowedVariableType,
   ChangeTypes,
-  logger,
 } from '@ninetailed/experience.js-shared';
 import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
@@ -27,6 +26,8 @@ export function useFlag<T extends AllowedVariableType>(
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
+  const previousDefaultValue = useRef<T>(defaultValue);
+  const lastKey = useRef<string>(flagKey);
 
   const [result, setResult] = useState<FlagResult<T>>({
     value: defaultValue,
@@ -35,27 +36,34 @@ export function useFlag<T extends AllowedVariableType>(
   });
 
   useEffect(() => {
-    // Reset state when dependencies change
-    setResult({
-      value: defaultValue,
-      status: 'loading',
-      error: null,
-    });
-    lastProcessedState.current = null;
+    const hasDefaultChanged = !isEqual(
+      previousDefaultValue.current,
+      defaultValue
+    );
+    const hasKeyChanged = lastKey.current !== flagKey;
+
+    if (hasDefaultChanged || hasKeyChanged) {
+      setResult({
+        value: defaultValue,
+        status: 'loading',
+        error: null,
+      });
+      lastProcessedState.current = null;
+      previousDefaultValue.current = defaultValue;
+      lastKey.current = flagKey;
+    }
 
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
         lastProcessedState.current &&
         isEqual(lastProcessedState.current, changesState)
       ) {
-        logger.debug('Change State Did Not Change', changesState);
         return;
       }
 
       lastProcessedState.current = changesState;
 
       if (changesState.status === 'loading') {
-        // Don't use a function updater here to avoid type issues
         setResult({
           value: defaultValue,
           status: 'loading',
@@ -74,20 +82,17 @@ export function useFlag<T extends AllowedVariableType>(
       }
 
       try {
-        // Find the change with our flag key
         const change = changesState.changes.find(
           (change) => change.key === flagKey
         );
 
         if (change && change.type === ChangeTypes.Variable) {
-          const flagValue = change.value as unknown as T;
           setResult({
-            value: flagValue,
+            value: change.value as unknown as T,
             status: 'success',
             error: null,
           });
         } else {
-          // Flag not found or wrong type, use default
           setResult({
             value: defaultValue,
             status: 'success',
@@ -104,7 +109,7 @@ export function useFlag<T extends AllowedVariableType>(
     });
 
     return unsubscribe;
-  }, [ninetailed, flagKey, defaultValue]);
+  }, [ninetailed, flagKey]);
 
   return result;
 }
