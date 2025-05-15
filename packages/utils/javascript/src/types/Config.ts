@@ -23,7 +23,7 @@ export const variableVariantSchema = z.object({
 });
 
 export const EntryReplacementComponentSchema = z.object({
-  type: z.literal(ComponentTypeEnum.EntryReplacement).optional(), // [components-migration] TODO: to become mandatory once migration is finalized
+  type: z.literal(ComponentTypeEnum.EntryReplacement),
   baseline: entryReplacementVariantSchema,
   variants: z.array(entryReplacementVariantSchema),
 });
@@ -63,34 +63,15 @@ export function isInlineVariableComponent(
   return component.type === ComponentTypeEnum.InlineVariable;
 }
 
-// TODO: Using union with refinement instead of discriminatedUnion due to optional 'type' fields
-// during the component migration. Consider switching to discriminatedUnion once the migration
-// is complete and all components have mandatory type fields.
-export const ExperienceConfigComponentSchema = z
-  .union([EntryReplacementComponentSchema, InlineVariableComponentSchema])
-  .refine(
-    (component) => {
-      if (!component.type) {
-        // Default to EntryReplacement for backward compatibility
-        component.type = ComponentTypeEnum.EntryReplacement;
-        // Optionally log for monitoring migration progress
-        console.debug(
-          'Found component without type, defaulting to EntryReplacement'
-        );
-      }
-
-      // Additional validation logic as needed
-      if (isEntryReplacementComponent(component)) {
-        return component.variants.length > 0;
-      } else if (isInlineVariableComponent(component)) {
-        return component.variants.length > 0;
-      }
-      return false;
-    },
-    {
-      message: 'Invalid component configuration',
+export const ExperienceConfigComponentSchema = z.preprocess((input) => {
+  const component = input as any;
+  if (!component?.type) {
+    if ('baseline' in component && 'variants' in component) {
+      return { ...component, type: ComponentTypeEnum.EntryReplacement };
     }
-  );
+  }
+  return component;
+}, z.discriminatedUnion('type', [EntryReplacementComponentSchema, InlineVariableComponentSchema]));
 
 export const Config = z.object({
   distribution: z.array(z.number()).optional().default([0.5, 0.5]),
