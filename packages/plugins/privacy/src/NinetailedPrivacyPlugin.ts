@@ -1,4 +1,8 @@
 import {
+  Event,
+  TrackEvent,
+  IdentifyEvent,
+  PageviewEvent,
   EventType,
   Feature,
   FEATURES,
@@ -105,15 +109,16 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
   private _instance: AnalyticsInstance | null = null;
   private _ready = false;
+  private _queue: Event[] = [];
 
   private readonly config: PrivacyConfig;
   private readonly acceptedConsentConfig: PrivacyConfig;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly queue: any[] = [];
+  private readonly impliedConsent: boolean = false;
 
   constructor(
     config?: Partial<PrivacyConfig>,
-    acceptedConsentConfig?: Partial<PrivacyConfig>
+    acceptedConsentConfig?: Partial<PrivacyConfig>,
+    impliedConsent?: boolean
   ) {
     super();
 
@@ -122,6 +127,8 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       ...DEFAULT_ACCEPTED_CONSENT_CONFIG,
       ...acceptedConsentConfig,
     };
+
+    this.impliedConsent = !!impliedConsent;
   }
 
   private get instance(): AnalyticsInstance {
@@ -137,14 +144,19 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   private consent(accepted: boolean) {
     if (accepted) {
       this.instance.storage.setItem(CONSENT, 'accepted');
+      this.replayQueue();
     } else {
-      this.instance.storage.removeItem(CONSENT);
+      this.instance.storage.setItem(CONSENT, 'denied');
     }
+  }
+
+  private isConsentSubmitted() {
+    return !!this.instance.storage.getItem(CONSENT);
   }
 
   private isConsentGiven() {
     const consent = this.instance.storage.getItem(CONSENT);
-    return consent && consent === 'accepted';
+    return consent === 'accepted';
   }
 
   private registerWindowHandlers() {
@@ -168,11 +180,14 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   }
 
   private getConfig() {
-    if (!this.isConsentGiven()) {
-      return this.config;
+    if (
+      (this.impliedConsent && !this.isConsentSubmitted()) ||
+      this.isConsentGiven()
+    ) {
+      return this.acceptedConsentConfig;
     }
 
-    return this.acceptedConsentConfig;
+    return this.config;
   }
 
   private pickAllowedKeys(object: object, allowedKeys: string[]) {
@@ -226,7 +241,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ({ payload, abort }: { payload: any; abort: any }) => {
       if (!this.getConfig().allowedEvents.includes(eventType)) {
-        this.queue.push(payload);
+        this._queue.push(payload);
 
         return abort();
       }
@@ -237,6 +252,22 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
       return payload;
     };
+
+  private replayQueue = () => {
+    if (!this._queue.length) return;
+
+    const events: Event[] = Object.assign([], this._queue);
+    this._queue = [];
+
+    events.forEach((event) => {
+      if (event.type === 'page' && 'properties' in event)
+        this.instance.page(event.properties);
+      else if (event.type === 'identify' && 'traits' in event && event.userId)
+        this.instance.identify(event.userId, event.traits);
+      else if (event.type === 'track' && 'event' in event)
+        this.instance.track(event.event, event.properties);
+    });
+  };
 
   public pageStart = this.handleEventStart('page');
   public [PAGE_EVENT_HANDLER] = this.handleEventStart('page', (payload) => {
@@ -267,7 +298,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
           '[Ninetailed Privacy Plugin] The track event was blocked, as it is not allowed to send by your configuration.'
         );
 
-        this.queue.push(payload);
+        this._queue.push(payload);
 
         return abort();
       }
