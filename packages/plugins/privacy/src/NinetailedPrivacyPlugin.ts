@@ -1,4 +1,5 @@
 import {
+  Event,
   EventType,
   Feature,
   FEATURES,
@@ -105,15 +106,16 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
   private _instance: AnalyticsInstance | null = null;
   private _ready = false;
+  private queue: Event[] = [];
 
   private readonly config: PrivacyConfig;
   private readonly acceptedConsentConfig: PrivacyConfig;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly queue: any[] = [];
+  private readonly impliedConsent: boolean = false;
 
   constructor(
     config?: Partial<PrivacyConfig>,
-    acceptedConsentConfig?: Partial<PrivacyConfig>
+    acceptedConsentConfig?: Partial<PrivacyConfig>,
+    impliedConsent?: boolean
   ) {
     super();
 
@@ -122,6 +124,8 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       ...DEFAULT_ACCEPTED_CONSENT_CONFIG,
       ...acceptedConsentConfig,
     };
+
+    this.impliedConsent = !!impliedConsent;
   }
 
   private get instance(): AnalyticsInstance {
@@ -137,14 +141,15 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   private consent(accepted: boolean) {
     if (accepted) {
       this.instance.storage.setItem(CONSENT, 'accepted');
+      this.replayQueue();
     } else {
-      this.instance.storage.removeItem(CONSENT);
+      this.instance.storage.setItem(CONSENT, 'denied');
     }
   }
 
   private isConsentGiven() {
     const consent = this.instance.storage.getItem(CONSENT);
-    return consent && consent === 'accepted';
+    return consent ? consent === 'accepted' : this.impliedConsent;
   }
 
   private registerWindowHandlers() {
@@ -168,11 +173,11 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   }
 
   private getConfig() {
-    if (!this.isConsentGiven()) {
-      return this.config;
+    if (this.isConsentGiven()) {
+      return this.acceptedConsentConfig;
     }
 
-    return this.acceptedConsentConfig;
+    return this.config;
   }
 
   private pickAllowedKeys(object: object, allowedKeys: string[]) {
@@ -237,6 +242,16 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
 
       return payload;
     };
+
+  private replayQueue = () => {
+    if (!this.queue.length) return;
+
+    const events: Event[] = Object.assign([], this.queue);
+
+    this.queue = [];
+
+    events.forEach((event) => this.instance.dispatch(event));
+  };
 
   public pageStart = this.handleEventStart('page');
   public [PAGE_EVENT_HANDLER] = this.handleEventStart('page', (payload) => {

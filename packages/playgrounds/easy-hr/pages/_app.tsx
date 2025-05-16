@@ -7,6 +7,7 @@ import {
   NinetailedProvider,
 } from '@ninetailed/experience.js-next';
 import { NinetailedPreviewPlugin } from '@ninetailed/experience.js-plugin-preview';
+import { NinetailedPrivacyPlugin } from '@ninetailed/experience.js-plugin-privacy';
 import { HubspotProvider } from '@aaronhayes/react-use-hubspot-form';
 import { IPage } from '@/types/contentful';
 import type { ExposedAudienceDefinition } from '@ninetailed/experience.js-preview-bridge';
@@ -35,6 +36,7 @@ const B2BDemoApp = ({ Component, pageProps }: AppProps<CustomPageProps>) => {
         <NinetailedProvider
           /* preview*/
           plugins={[
+            new NinetailedPrivacyPlugin({}, {}, true),
             new NinetailedPreviewPlugin({
               experiences: pageProps.ninetailed?.preview.experiences || [],
               audiences: pageProps.ninetailed?.preview.audiences || [],
