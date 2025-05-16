@@ -64,6 +64,7 @@ export function isInlineVariableComponent(
 }
 
 export const ExperienceConfigComponentSchema = z.preprocess((input) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const component = input as any;
   if (!component?.type) {
     if ('baseline' in component && 'variants' in component) {
