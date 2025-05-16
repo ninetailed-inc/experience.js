@@ -23,7 +23,7 @@ export const variableVariantSchema = z.object({
 });
 
 export const EntryReplacementComponentSchema = z.object({
-  type: z.literal(ComponentTypeEnum.EntryReplacement).optional(), // [components-migration] TODO: to become mandatory once migration is finalized
+  type: z.literal(ComponentTypeEnum.EntryReplacement),
   baseline: entryReplacementVariantSchema,
   variants: z.array(entryReplacementVariantSchema),
 });
@@ -62,10 +62,17 @@ export function isInlineVariableComponent(
 ): component is InlineVariableComponent {
   return component.type === ComponentTypeEnum.InlineVariable;
 }
-export const ExperienceConfigComponentSchema = z.discriminatedUnion('type', [
-  EntryReplacementComponentSchema,
-  InlineVariableComponentSchema,
-]);
+
+export const ExperienceConfigComponentSchema = z.preprocess((input) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const component = input as any;
+  if (!component?.type) {
+    if ('baseline' in component && 'variants' in component) {
+      return { ...component, type: ComponentTypeEnum.EntryReplacement };
+    }
+  }
+  return component;
+}, z.discriminatedUnion('type', [EntryReplacementComponentSchema, InlineVariableComponentSchema]));
 
 export const Config = z.object({
   distribution: z.array(z.number()).optional().default([0.5, 0.5]),
