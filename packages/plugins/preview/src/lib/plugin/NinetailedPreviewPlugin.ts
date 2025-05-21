@@ -77,6 +77,7 @@ export class NinetailedPreviewPlugin
   private changes: Change[] = [];
 
   private container: WidgetContainer | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private bridge: any = null;
 
   /**

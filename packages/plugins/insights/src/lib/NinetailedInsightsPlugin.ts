@@ -76,6 +76,7 @@ export class NinetailedInsightsPlugin
   }) => {
     const { element, experience, variant, variantIndex } = payload;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { element: _, ...elementPayloadWithoutElement } = payload;
 
     const componentId = variant.id;

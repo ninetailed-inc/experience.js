@@ -1,6 +1,5 @@
 import {
   NinetailedAnalyticsPlugin,
-  SanitizedElementSeenPayload,
   TrackComponentProperties,
 } from '@ninetailed/experience.js-plugin-analytics';
 import { template } from '@ninetailed/experience.js-shared';
@@ -31,9 +30,7 @@ export class NinetailedGoogleAnalyticsPlugin extends NinetailedAnalyticsPlugin {
     super();
   }
 
-  protected onTrackExperience(
-    properties: SanitizedElementSeenPayload
-  ): Promise<void> {
+  protected onTrackExperience(): Promise<void> {
     return Promise.resolve();
   }
 

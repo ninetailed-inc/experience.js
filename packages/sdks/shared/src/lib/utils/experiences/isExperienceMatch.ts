@@ -4,6 +4,7 @@ import { logger } from '../../logger/Logger';
 import { getTrafficRandom } from './random';
 
 type IsExperienceMatchArgs = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   experience: ExperienceConfiguration<any>;
   profile: Profile;
 };

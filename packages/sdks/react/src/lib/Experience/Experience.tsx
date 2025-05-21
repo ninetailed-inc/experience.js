@@ -146,7 +146,8 @@ export const Experience = <
       const isObject =
         typeof componentElement === 'object' && componentElement !== null;
       const constructorName = isObject
-        ? (componentElement as any).constructor.name
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (componentElement as any).constructor.name
         : '';
       const isConstructorNameNotObject =
         constructorName && constructorName !== 'Object';

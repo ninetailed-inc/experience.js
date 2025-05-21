@@ -8,6 +8,7 @@ export interface INtAudienceFields {
   nt_description?: string | undefined;
 
   /** Rules */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nt_rules: Record<string, any>;
 
   /** Audience Id */
@@ -44,6 +45,7 @@ export interface INtExperienceFields {
   nt_type: 'nt_experiment' | 'nt_personalization';
 
   /** Config */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nt_config: Record<string, any>;
 
   /** Audience */

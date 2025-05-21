@@ -5,6 +5,7 @@ import { Location, LocationContext } from '@reach/router';
 import { useNinetailed } from '@ninetailed/experience.js-react';
 import { NinetailedInstance } from '@ninetailed/experience.js';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const usePrevious = (value: any) => {
   const ref = useRef();
   useEffect(() => {

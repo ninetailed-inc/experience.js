@@ -1,7 +1,5 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-import { generateMock } from '@anatine/zod-mock';
 import { Ninetailed } from '@ninetailed/experience.js';
-import { ElementSeenPayloadSchema } from '@ninetailed/experience.js-plugin-analytics';
 
 import { NinetailedGoogleTagmanagerPlugin } from '@ninetailed/experience.js-plugin-google-tagmanager';
 import { NinetailedInsightsPlugin } from '@ninetailed/experience.js-plugin-insights';
@@ -22,11 +20,10 @@ const setup = () => {
 
 describe('A Ninetailed setup with multiple analytics plugins', () => {
   let ninetailed: Ninetailed;
-  let gtmPlugin: NinetailedGoogleTagmanagerPlugin;
   let insightsPlugin: NinetailedInsightsPlugin;
 
   beforeEach(() => {
-    ({ ninetailed, gtmPlugin, insightsPlugin } = setup());
+    ({ ninetailed, insightsPlugin } = setup());
   });
 
   describe('Sending component views directly', () => {

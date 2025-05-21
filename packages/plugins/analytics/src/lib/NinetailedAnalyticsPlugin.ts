@@ -10,7 +10,7 @@ import {
   TrackComponentPropertiesSchema,
 } from './TrackingProperties';
 import { EventHandler, NinetailedPlugin } from './NinetailedPlugin';
-import { HAS_SEEN_COMPONENT, HAS_SEEN_ELEMENT } from './constants';
+import { HAS_SEEN_COMPONENT } from './constants';
 
 export type Template = Record<string, string>;
 

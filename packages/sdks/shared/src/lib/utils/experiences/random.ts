@@ -18,10 +18,12 @@ const getRandom = (text: string) => {
 
 export const getTrafficRandom = (
   profile: Profile,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   experience: ExperienceConfiguration<any>
 ) => getRandom(`traffic-${experience.id}-${profile.stableId}`);
 
 export const getDistributionRandom = (
   profile: Profile,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   experience: ExperienceConfiguration<any>
 ) => getRandom(`distribution-${experience.id}-${profile.stableId}`);
