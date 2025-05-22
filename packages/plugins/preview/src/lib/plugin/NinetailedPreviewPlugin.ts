@@ -1,8 +1,14 @@
 import {
   logger,
   Profile,
+  Change,
   Reference,
   unionBy,
+  ChangeTypes,
+  AllowedVariableType,
+  EntryReplacement,
+  ComponentTypeEnum,
+  InlineVariable,
 } from '@ninetailed/experience.js-shared';
 import {
   ExperienceConfiguration,
@@ -12,6 +18,9 @@ import {
   HasExperienceSelectionMiddleware,
   OnChangeEmitter,
   BuildExperienceSelectionMiddleware,
+  HasChangesModificationMiddleware,
+  ChangesModificationMiddlewareArg,
+  BuildChangesModificationMiddleware,
   type ProfileChangedPayload,
   type InterestedInProfileChange,
 } from '@ninetailed/experience.js';
@@ -50,6 +59,7 @@ export class NinetailedPreviewPlugin
   extends NinetailedPlugin
   implements
     HasExperienceSelectionMiddleware<Reference, Reference>,
+    HasChangesModificationMiddleware,
     InterestedInProfileChange
 {
   public name = 'ninetailed:preview' + Math.random();
@@ -61,8 +71,10 @@ export class NinetailedPreviewPlugin
 
   private audienceOverwrites: Record<string, boolean> = {};
   private experienceVariantIndexOverwrites: Record<string, number> = {};
+  private variableOverwrites: Record<string, Change> = {};
 
   private profile: Profile | null = null;
+  private changes: Change[] = [];
 
   private container: WidgetContainer | null = null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,6 +128,10 @@ export class NinetailedPreviewPlugin
       });
 
       this.bridge.updateProps({ props: this.pluginApi });
+
+      if (!this.changes?.length) {
+        this.onChange();
+      }
     }
   };
 
@@ -129,7 +145,7 @@ export class NinetailedPreviewPlugin
     }
 
     if (payload?.profile) {
-      this.onProfileChange(payload.profile);
+      this.onProfileChange(payload.profile, payload.changes || []);
     }
   };
 
@@ -284,7 +300,7 @@ export class NinetailedPreviewPlugin
     );
     if (!experience) {
       logger.warn(
-        `You cannot active a variant for an unknown experience (id: ${experienceId})`
+        `Cannot activate a variant for an unknown experience (id: ${experienceId})`
       );
       return;
     }
@@ -294,7 +310,7 @@ export class NinetailedPreviewPlugin
       !this.activeAudiences.some((id) => id === experience.audience?.id)
     ) {
       logger.warn(
-        `You cannot active a variant for an experience (id: ${experienceId}), which is not in the active audiences.`
+        `Cannot activate a variant for an experience (id: ${experienceId}) which is not in the active audiences.`
       );
       return;
     }
@@ -308,10 +324,33 @@ export class NinetailedPreviewPlugin
       );
     }
 
+    // Update the experience variant index
     this.experienceVariantIndexOverwrites = {
       ...this.experienceVariantIndexOverwrites,
       [experienceId]: variantIndex,
     };
+
+    // Process all components to extract variable values
+    experience.components.forEach((component) => {
+      if (component.type === ComponentTypeEnum.InlineVariable) {
+        const key = component.key;
+        const value =
+          variantIndex === 0
+            ? component.baseline.value
+            : component.variants[variantIndex - 1]?.value ??
+              component.baseline.value;
+
+        // Set the variable value
+        this.setVariableValue({
+          experienceId,
+          key,
+          value,
+          variantIndex,
+        });
+      }
+    });
+
+    // Trigger change notification - this updates the middleware
     this.onChange();
   }
 
@@ -340,6 +379,76 @@ export class NinetailedPreviewPlugin
       window.ninetailed.reset();
     }
   }
+  /**
+   * Implements the HasChangesModificationMiddleware interface
+   * Returns a middleware function that applies variable overwrites to changes
+   */
+  public getChangesModificationMiddleware: BuildChangesModificationMiddleware =
+    () => {
+      if (
+        !this.isActiveInstance ||
+        Object.keys(this.variableOverwrites).length === 0
+      ) {
+        return undefined;
+      }
+
+      return ({
+        changes: inputChanges,
+      }: ChangesModificationMiddlewareArg): ChangesModificationMiddlewareArg => {
+        if (!inputChanges || inputChanges.length === 0) {
+          return { changes: inputChanges };
+        }
+
+        // Calculate and return overridden changes on demand instead of storing them
+        return { changes: this.getEffectiveChanges(inputChanges) };
+      };
+    };
+
+  /**
+   * Sets a variable value override for preview
+   */
+  public setVariableValue({
+    experienceId,
+    key,
+    value,
+    variantIndex,
+  }: {
+    experienceId: string;
+    key: string;
+    value: AllowedVariableType;
+    variantIndex: number;
+  }) {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
+    const overrideKey = `${experienceId}:${key}`;
+
+    // Only create new object if actually changing
+    if (this.variableOverwrites[overrideKey]?.value === value) {
+      return; // No change needed
+    }
+
+    const change: Change = {
+      type: ChangeTypes.Variable,
+      key,
+      value,
+      meta: {
+        experienceId,
+        variantIndex,
+      },
+    };
+
+    // Update variable overwrites
+    this.variableOverwrites = {
+      ...this.variableOverwrites,
+      [overrideKey]: change,
+    };
+
+    // Notify listeners
+    this.onChangeEmitter.invokeListeners();
+    this.onChange();
+  }
 
   public getExperienceSelectionMiddleware: BuildExperienceSelectionMiddleware<
     Reference,
@@ -365,9 +474,55 @@ export class NinetailedPreviewPlugin
         };
       }
 
-      const baselineComponent = experience.components.find(
+      // Handle entry replacements as before
+      const entryReplacementComponents = experience.components.filter(
+        (component): component is EntryReplacement<Reference> =>
+          component.type === ComponentTypeEnum.EntryReplacement &&
+          'id' in component.baseline
+      );
+
+      const baselineComponent = entryReplacementComponents.find(
         (component) => component.baseline.id === baseline.id
       );
+
+      // Get the selected variant index
+      const variantIndex =
+        this.pluginApi.experienceVariantIndexes[experience.id];
+
+      // Handle variable components for this experience (NEW CODE)
+      if (variantIndex !== undefined) {
+        // Process all variable components for this experience
+        const variableComponents = experience.components.filter(
+          (component): component is InlineVariable =>
+            component.type === ComponentTypeEnum.InlineVariable
+        );
+
+        // Set variable values based on the selected variant index
+        variableComponents.forEach((component) => {
+          const key = component.key;
+          let value;
+
+          if (variantIndex === 0) {
+            value = component.baseline;
+          } else {
+            const variant = component.variants[variantIndex - 1];
+            value =
+              variant && 'value' in variant
+                ? variant.value
+                : component.baseline;
+          }
+
+          // Set the variable in our changes system
+          this.setVariableValue({
+            experienceId: experience.id,
+            key,
+            value,
+            variantIndex,
+          });
+        });
+      }
+
+      // Continue with entry replacement handling
       if (!baselineComponent) {
         return {
           experience,
@@ -377,8 +532,6 @@ export class NinetailedPreviewPlugin
       }
 
       const allVariants = [baseline, ...baselineComponent.variants];
-      const variantIndex =
-        this.pluginApi.experienceVariantIndexes[experience.id];
 
       if (allVariants.length <= variantIndex) {
         return {
@@ -492,6 +645,8 @@ export class NinetailedPreviewPlugin
         ...this.experienceVariantIndexes,
         ...this.experienceVariantIndexOverwrites,
       },
+      setVariableValue: this.setVariableValue.bind(this),
+      variableOverwrites: this.variableOverwrites,
     };
   }
 
@@ -562,27 +717,96 @@ export class NinetailedPreviewPlugin
     });
   }
 
+  /**
+   * Get the override key for a variable
+   */
+  private getOverrideKey(experienceId: string, key: string) {
+    return `${experienceId}:${key}`;
+  }
+
+  /**
+   * Get effective changes by applying overrides - compute on demand
+   */
+  private getEffectiveChanges(inputChanges: Change[] = this.changes): Change[] {
+    if (!inputChanges || Object.keys(this.variableOverwrites).length === 0) {
+      return inputChanges || [];
+    }
+
+    // Filter out changes that we're overriding
+    const filteredChanges = inputChanges.filter((change) => {
+      if (change.type !== ChangeTypes.Variable) return true;
+
+      const changeKey = change.meta?.experienceId
+        ? this.getOverrideKey(change.meta.experienceId, change.key)
+        : change.key;
+      return !this.variableOverwrites[changeKey];
+    });
+
+    const effectiveChanges = [
+      ...filteredChanges,
+      ...Object.values(this.variableOverwrites),
+    ];
+
+    logger.debug(
+      'Overridden changes after applying override:',
+      effectiveChanges
+    );
+
+    // Add our overrides to create the final result
+    return effectiveChanges;
+  }
+
   private onChange = () => {
     logger.debug(
       'Ninetailed Preview Plugin onChange pluginApi:',
       this.pluginApi
     );
 
-    Object.assign({}, window.ninetailed, {
-      plugins: {
-        ...window.ninetailed?.plugins,
-        preview: this.windowApi,
-      },
-    });
+    if (typeof window !== 'undefined') {
+      window.ninetailed = Object.assign({}, window.ninetailed, {
+        plugins: {
+          ...window.ninetailed?.plugins,
+          preview: this.windowApi,
+        },
+      });
+    }
 
     this.bridge.updateProps({ props: this.pluginApi });
 
     this.onChangeEmitter.invokeListeners();
   };
 
-  private onProfileChange = (profile: Profile) => {
+  private onProfileChange = (profile: Profile, changes: Change[] | null) => {
     this.profile = profile;
 
+    logger.debug('Profile changed:', {
+      profile,
+      changes,
+    });
+
+    // If changes are provided, update them
+    if (changes) {
+      this.onChangesChange(changes);
+    }
+
+    this.onChange();
+  };
+
+  /**
+   * Handles changes from the SDK and applies any variable overrides.
+   * This should be called whenever the original changes are updated.
+   */
+  private onChangesChange = (incomingChanges: Change[]) => {
+    if (!this.isActiveInstance) {
+      return;
+    }
+
+    logger.debug('Received changes:', incomingChanges);
+
+    // Store the original changes
+    this.changes = incomingChanges;
+
+    // Notify listeners and update UI
     this.onChange();
   };
 
