@@ -4,6 +4,7 @@ import { Ninetailed } from '@ninetailed/experience.js';
 import { NinetailedGoogleTagmanagerPlugin } from '@ninetailed/experience.js-plugin-google-tagmanager';
 import { NinetailedInsightsPlugin } from '@ninetailed/experience.js-plugin-insights';
 import { NinetailedSegmentPlugin } from '@ninetailed/experience.js-plugin-segment';
+import { ComponentViewEventComponentType } from '@ninetailed/experience.js-plugin-analytics';
 
 const setup = () => {
   const gtmPlugin = new NinetailedGoogleTagmanagerPlugin();
@@ -32,6 +33,7 @@ describe('A Ninetailed setup with multiple analytics plugins', () => {
         experience: { id: 'experience-1', name: 'test', type: 'nt_experiment' },
         variant: { id: 'variant-1', name: 'test' },
         audience: { id: 'audience-1', name: 'test' },
+        componentType: ComponentViewEventComponentType.Entry,
         element: document.createElement('div'),
         variantIndex: 1,
       });
