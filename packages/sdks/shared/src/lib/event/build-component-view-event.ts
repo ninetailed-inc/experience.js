@@ -8,6 +8,7 @@ export type BuildComponentViewEventData = Object.Omit<
     BuildEventArgs,
     {
       componentId: string;
+      componentType: string;
       experienceId?: string;
       variantIndex?: number;
     },
@@ -21,6 +22,7 @@ export const buildComponentViewEvent = (
 ): ComponentViewEvent => {
   return {
     ...buildEvent({ ...data, type: 'component' }),
+    componentType: data.componentType,
     componentId: data.componentId,
     experienceId: data.experienceId,
     variantIndex: data.variantIndex,

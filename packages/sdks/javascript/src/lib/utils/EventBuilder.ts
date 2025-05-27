@@ -70,6 +70,7 @@ export class EventBuilder {
 
   public component(
     componentId: string,
+    componentType: string,
     experienceId?: string,
     variantIndex?: number,
     data?: ComponentData
@@ -77,6 +78,7 @@ export class EventBuilder {
     return buildComponentViewEvent({
       ...this.buildEventBase(data),
       componentId,
+      componentType: componentType || 'Entry',
       experienceId: experienceId || '',
       variantIndex: variantIndex || 0,
     });

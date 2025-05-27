@@ -5,6 +5,7 @@ export type ComponentViewEvent = Object.Merge<
   SharedEventProperties,
   {
     type: 'component';
+    componentType: string;
     componentId: string;
     experienceId?: string;
     variantIndex?: number;

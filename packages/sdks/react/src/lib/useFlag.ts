@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import {
   AllowedVariableType,
   ChangeTypes,
+  ComponentTypeEnum,
 } from '@ninetailed/experience.js-shared';
 import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
@@ -12,22 +13,27 @@ export type FlagResult<T> =
   | { status: 'success'; value: T; error: null }
   | { status: 'error'; value: T; error: Error };
 
+type ShouldTrackHook = () => boolean;
+
+export enum ComponentViewEventComponentType {
+  Entry = 'Entry',
+  Variable = 'Variable',
+}
+
 /**
- * Custom hook to retrieve a specific feature flag from Ninetailed changes.
- *
- * @param flagKey - The key of the feature flag to retrieve
- * @param defaultValue - The default value to use if the flag is not found
- * @returns An object containing the flag value and status information
+ * Hook to access a Ninetailed variable flag with built-in tracking.
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
-  defaultValue: T
+  defaultValue: T,
+  shouldTrackHook?: ShouldTrackHook
 ): FlagResult<T> {
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
   const defaultValueRef = useRef<T>(defaultValue);
   const flagKeyRef = useRef<string>(flagKey);
+  const trackedFlagsRef = useRef<Set<string>>(new Set());
 
   const [result, setResult] = useState<FlagResult<T>>({
     value: defaultValue,
@@ -35,7 +41,7 @@ export function useFlag<T extends AllowedVariableType>(
     error: null,
   });
 
-  // Effect 1: Track changes to `flagKey` or `defaultValue`
+  // Reset state when inputs change
   useEffect(() => {
     if (
       !isEqual(defaultValueRef.current, defaultValue) ||
@@ -52,7 +58,7 @@ export function useFlag<T extends AllowedVariableType>(
     }
   }, [flagKey, defaultValue]);
 
-  // Effect 2: Handle Ninetailed changes
+  // Handle changes
   useEffect(() => {
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
@@ -93,6 +99,21 @@ export function useFlag<T extends AllowedVariableType>(
             status: 'success',
             error: null,
           });
+
+          // Track view once per key unless hook disables it
+          const key = flagKeyRef.current;
+          const shouldTrack = shouldTrackHook ? shouldTrackHook() : true;
+
+          if (shouldTrack && !trackedFlagsRef.current.has(key)) {
+            ninetailed.trackVariableComponentView({
+              variable: change.value,
+              variant: { id: `Variable-${key}` },
+              componentType: ComponentTypeEnum.Variable,
+              variantIndex: change.meta.variantIndex,
+              experienceId: change.meta.experienceId,
+            });
+            trackedFlagsRef.current.add(key);
+          }
         } else {
           setResult({
             value: defaultValueRef.current,
@@ -110,7 +131,7 @@ export function useFlag<T extends AllowedVariableType>(
     });
 
     return unsubscribe;
-  }, [ninetailed]);
+  }, [ninetailed, shouldTrackHook]);
 
   return result;
 }

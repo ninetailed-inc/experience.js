@@ -257,6 +257,7 @@ export class NinetailedCorePlugin
         messageId: payload.meta.rid,
         timestamp: payload.meta.ts,
         componentId: payload.componentId,
+        componentType: payload.componentType,
         experienceId: payload.experienceId,
         variantIndex: payload.variantIndex,
         ctx,
