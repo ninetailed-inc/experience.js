@@ -11,6 +11,7 @@ export * from './lib/types/interfaces/RequiresEventBuilder';
 export * from './lib/types/interfaces/HasExperienceSelectionMiddleware';
 export * from './lib/types/interfaces/HasChangesModificationMiddleware';
 export * from './lib/types/interfaces/InterestedInSeenElements';
+export * from './lib/types/interfaces/InterestedInSeenVariables';
 export * from './lib/types/interfaces/InterestedInProfileChange';
 export * from './lib/types/interfaces/InterestedInHiddenPage';
 export * from './lib/types/interfaces/AcceptsCredentials';

@@ -1,6 +1,19 @@
+import {
+  ComponentTypeEnum,
+  SerializableObject,
+} from '@ninetailed/experience.js-shared';
 import { z } from 'zod';
 
-export const ElementSeenPayloadSchema = z.object({
+// Base schema with shared properties
+const BaseSeenPayloadSchema = z.object({
+  componentType: z.nativeEnum(ComponentTypeEnum),
+  variant: z.object({ id: z.string() }).catchall(z.unknown()),
+  variantIndex: z.number(),
+  seenFor: z.number().optional().default(0),
+});
+
+// Element specific schema
+export const ElementSeenPayloadSchema = BaseSeenPayloadSchema.extend({
   element: z.any(),
   experience: z
     .object({
@@ -29,12 +42,17 @@ export const ElementSeenPayloadSchema = z.object({
       description:
         'This is the default all visitors audience as no audience was set.',
     }),
-  variant: z.object({ id: z.string() }).catchall(z.unknown()),
-  variantIndex: z.number(),
-  seenFor: z.number().optional().default(0),
 });
 
 export type ElementSeenPayload = Omit<
   z.input<typeof ElementSeenPayloadSchema>,
   'element'
 > & { element: Element };
+
+// Variable specific schema
+export const VariableSeenPayloadSchema = BaseSeenPayloadSchema.extend({
+  variable: SerializableObject,
+  experienceId: z.string().optional(),
+});
+
+export type VariableSeenPayload = z.input<typeof VariableSeenPayloadSchema>;

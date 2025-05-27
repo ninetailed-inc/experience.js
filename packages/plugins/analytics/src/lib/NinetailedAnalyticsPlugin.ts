@@ -4,6 +4,8 @@ import { logger, template } from '@ninetailed/experience.js-shared';
 import {
   type ElementSeenPayload,
   ElementSeenPayloadSchema,
+  type VariableSeenPayload,
+  VariableSeenPayloadSchema,
 } from './ElementSeenPayload';
 import {
   type TrackComponentProperties,
@@ -24,12 +26,23 @@ export type SanitizedElementSeenPayload = {
   selectedVariantSelector: string;
   selectedVariant: ElementSeenPayload['variant'];
   selectedVariantIndex: ElementSeenPayload['variantIndex'];
+  componentType: ElementSeenPayload['componentType'];
+};
+
+export type SanitizedVariableSeenPayload = {
+  componentId: string;
+  componentType: VariableSeenPayload['componentType'];
+  selectedVariant: VariableSeenPayload['variant'];
+  selectedVariantIndex: VariableSeenPayload['variantIndex'];
+  selectedVariantSelector: string;
 };
 
 export abstract class NinetailedAnalyticsPlugin<
   THasSeenExperienceEventTemplate extends Template = Template
 > extends NinetailedPlugin {
   private seenElements = new WeakMap<Element, SanitizedElementSeenPayload[]>();
+
+  private seenVariables = new Map<string, SanitizedVariableSeenPayload[]>();
 
   constructor(
     private readonly hasSeenExperienceEventTemplate: THasSeenExperienceEventTemplate = {} as THasSeenExperienceEventTemplate
@@ -115,6 +128,7 @@ export abstract class NinetailedAnalyticsPlugin<
     const sanitizedTrackExperienceProperties = {
       experience: sanitizedPayload.data.experience,
       audience: sanitizedPayload.data.audience,
+      componentType: sanitizedPayload.data.componentType,
       selectedVariant: sanitizedPayload.data.variant,
       selectedVariantIndex: sanitizedPayload.data.variantIndex,
       selectedVariantSelector,
@@ -139,6 +153,63 @@ export abstract class NinetailedAnalyticsPlugin<
       sanitizedTrackExperienceProperties,
       this.getHasSeenExperienceEventPayload(sanitizedTrackExperienceProperties)
     );
+  };
+
+  public override onHasSeenVariable: EventHandler<VariableSeenPayload> = ({
+    payload,
+  }) => {
+    const sanitizedPayload = VariableSeenPayloadSchema.safeParse(payload);
+
+    if (!sanitizedPayload.success) {
+      logger.error(
+        'Invalid payload for has_seen_variable event',
+        sanitizedPayload.error.format()
+      );
+      return;
+    }
+
+    const componentId = sanitizedPayload.data.variant.id;
+    if (typeof componentId === 'undefined') {
+      logger.error(
+        'Component ID is undefined in has_seen_variable event payload'
+      );
+      return;
+    }
+
+    const variableKey = componentId;
+    const variablePayloads = this.seenVariables.get(variableKey) || [];
+
+    const selectedVariantSelector =
+      sanitizedPayload.data.variantIndex === 0
+        ? 'control'
+        : `variant ${sanitizedPayload.data.variantIndex}`;
+
+    const sanitizedTrackVariableProperties: SanitizedVariableSeenPayload = {
+      componentId,
+      componentType: sanitizedPayload.data.componentType,
+      selectedVariant: sanitizedPayload.data.variant,
+      selectedVariantIndex: sanitizedPayload.data.variantIndex,
+      selectedVariantSelector,
+    };
+
+    const isVariableAlreadySeenWithPayload = variablePayloads.some(
+      (variablePayload) => {
+        return isEqual(variablePayload, sanitizedTrackVariableProperties);
+      }
+    );
+
+    if (isVariableAlreadySeenWithPayload) {
+      return;
+    }
+
+    this.seenVariables.set(variableKey, [
+      ...variablePayloads,
+      sanitizedTrackVariableProperties,
+    ]);
+
+    // TODO: Would we need to track the variable view here?
+    // using this.onTrackExperience? since its probably an experience,
+    // but we would need to conform the payload to look like the onHasSeenElement
   };
 
   /**
