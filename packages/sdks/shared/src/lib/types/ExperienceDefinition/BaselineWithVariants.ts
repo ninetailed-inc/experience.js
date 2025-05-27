@@ -4,8 +4,8 @@ import { Reference } from './Reference';
 import { VariantRef } from './VariantRef';
 
 export enum ComponentTypeEnum {
-  Entry = 'Entry',
-  Variable = 'Variable',
+  EntryReplacement = 'EntryReplacement',
+  InlineVariable = 'InlineVariable',
 }
 
 enum InlineVariableComponentValueTypeEnum {
@@ -14,13 +14,13 @@ enum InlineVariableComponentValueTypeEnum {
 }
 
 export type EntryReplacement<Variant extends Reference> = {
-  type: ComponentTypeEnum.Entry;
+  type: ComponentTypeEnum.EntryReplacement;
   baseline: Baseline;
   variants: (Variant | VariantRef)[];
 };
 
 export type InlineVariable = {
-  type: ComponentTypeEnum.Variable;
+  type: ComponentTypeEnum.InlineVariable;
   key: string;
   valueType: InlineVariableComponentValueTypeEnum;
   baseline: { value: string | SerializableObject };

@@ -8,6 +8,7 @@ export type { Template } from './lib/NinetailedAnalyticsPlugin';
 export {
   ElementSeenPayloadSchema,
   VariableSeenPayloadSchema,
+  ComponentViewEventComponentType,
 } from './lib/ElementSeenPayload';
 export type {
   ElementSeenPayload,

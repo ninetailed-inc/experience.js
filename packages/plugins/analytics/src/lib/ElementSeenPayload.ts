@@ -1,12 +1,14 @@
-import {
-  ComponentTypeEnum,
-  SerializableObject,
-} from '@ninetailed/experience.js-shared';
+import { SerializableObject } from '@ninetailed/experience.js-shared';
 import { z } from 'zod';
+
+export enum ComponentViewEventComponentType {
+  Entry = 'Entry',
+  Variable = 'Variable',
+}
 
 // Base schema with shared properties
 const BaseSeenPayloadSchema = z.object({
-  componentType: z.nativeEnum(ComponentTypeEnum),
+  componentType: z.nativeEnum(ComponentViewEventComponentType),
   variant: z.object({ id: z.string() }).catchall(z.unknown()),
   variantIndex: z.number(),
   seenFor: z.number().optional().default(0),

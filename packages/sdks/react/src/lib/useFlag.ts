@@ -2,11 +2,11 @@ import { useEffect, useState, useRef } from 'react';
 import {
   AllowedVariableType,
   ChangeTypes,
-  ComponentTypeEnum,
 } from '@ninetailed/experience.js-shared';
 import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
 import { useNinetailed } from './useNinetailed';
+import { ComponentViewEventComponentType } from '@ninetailed/experience.js-plugin-analytics';
 
 export type FlagResult<T> =
   | { status: 'loading'; value: T; error: null }
@@ -14,11 +14,6 @@ export type FlagResult<T> =
   | { status: 'error'; value: T; error: Error };
 
 type ShouldTrackHook = () => boolean;
-
-export enum ComponentViewEventComponentType {
-  Entry = 'Entry',
-  Variable = 'Variable',
-}
 
 /**
  * Hook to access a Ninetailed variable flag with built-in tracking.
@@ -94,8 +89,20 @@ export function useFlag<T extends AllowedVariableType>(
         );
 
         if (change && change.type === ChangeTypes.Variable) {
+          const rawValue = change.value;
+
+          // Unwrap value if it was mistakenly stored as { value: {...} } (common CMS issue)
+          const actualValue =
+            rawValue &&
+            typeof rawValue === 'object' &&
+            rawValue !== null &&
+            'value' in rawValue &&
+            typeof (rawValue as Record<string, unknown>)['value'] === 'object'
+              ? (rawValue as Record<string, unknown>)['value']
+              : rawValue;
+
           setResult({
-            value: change.value as unknown as T,
+            value: actualValue as T,
             status: 'success',
             error: null,
           });
@@ -108,7 +115,7 @@ export function useFlag<T extends AllowedVariableType>(
             ninetailed.trackVariableComponentView({
               variable: change.value,
               variant: { id: `Variable-${key}` },
-              componentType: ComponentTypeEnum.Variable,
+              componentType: ComponentViewEventComponentType.Variable,
               variantIndex: change.meta.variantIndex,
               experienceId: change.meta.experienceId,
             });
@@ -131,7 +138,8 @@ export function useFlag<T extends AllowedVariableType>(
     });
 
     return unsubscribe;
-  }, [ninetailed, shouldTrackHook]);
+    // TODO: Should we have shouldTrackHook as a dependency? i think it should not change often unless the user changes the tracking logic
+  }, [ninetailed]);
 
   return result;
 }
