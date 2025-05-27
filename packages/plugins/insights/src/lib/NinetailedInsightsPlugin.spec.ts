@@ -1,6 +1,9 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { NinetailedApiClient } from '@ninetailed/experience.js-shared';
-import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
+import {
+  ComponentViewEventComponentType,
+  NinetailedPlugin,
+} from '@ninetailed/experience.js-plugin-analytics';
 import { Ninetailed } from '@ninetailed/experience.js';
 
 import { NinetailedInsightsPlugin } from './NinetailedInsightsPlugin';
@@ -62,6 +65,7 @@ describe('NinetailedInsightsPlugin', () => {
 
       ninetailed.observeElement({
         element,
+        componentType: ComponentViewEventComponentType.Entry,
         variant: { id: `variant-id-${i + 1}` },
         variantIndex: i,
       });
@@ -113,6 +117,7 @@ describe('NinetailedInsightsPlugin', () => {
 
       ninetailed.observeElement({
         element,
+        componentType: ComponentViewEventComponentType.Entry,
         variant: { id: `variant-id-${i + 1}` },
         variantIndex: i,
       });
@@ -147,6 +152,7 @@ describe('NinetailedInsightsPlugin', () => {
     for (let i = 0; i < 25; i++) {
       ninetailed.observeElement({
         element,
+        componentType: ComponentViewEventComponentType.Entry,
         variant: { id: `variant-id-${i + 1}` },
         variantIndex: i,
       });
@@ -181,6 +187,7 @@ describe('NinetailedInsightsPlugin', () => {
     for (let i = 0; i < 25; i++) {
       ninetailed.observeElement({
         element,
+        componentType: ComponentViewEventComponentType.Entry,
         variant: { id: `variant-id-1` },
         variantIndex: 0,
       });
