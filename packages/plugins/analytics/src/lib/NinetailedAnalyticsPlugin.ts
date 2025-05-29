@@ -26,7 +26,7 @@ export type SanitizedElementSeenPayload = {
   selectedVariantSelector: string;
   selectedVariant: ElementSeenPayload['variant'];
   selectedVariantIndex: ElementSeenPayload['variantIndex'];
-  componentType: ElementSeenPayload['componentType'];
+  componentType: NonNullable<ElementSeenPayload['componentType']>;
 };
 
 export type SanitizedVariableSeenPayload = {
@@ -65,6 +65,10 @@ export abstract class NinetailedAnalyticsPlugin<
   private getHasSeenExperienceEventPayload = (
     data: SanitizedElementSeenPayload
   ) => {
+    console.log(
+      'Generating has seen experience event payload with data:',
+      data
+    );
     const event = Object.entries(
       this.hasSeenExperienceEventTemplate
     ).reduce<THasSeenExperienceEventTemplate>(
