@@ -3,6 +3,7 @@ import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/
 import { Ninetailed } from '@ninetailed/experience.js';
 import { setTimeout as sleep } from 'node:timers/promises';
 import {
+  ComponentViewEventComponentType,
   ElementSeenPayloadSchema,
   TrackComponentPropertiesSchema,
 } from '@ninetailed/experience.js-plugin-analytics';
@@ -27,6 +28,7 @@ describe('Analytics pipeline', () => {
   it('Should be able to send track experience events which will be received from the TestAnalyticsPlugin', async () => {
     const data = {
       ...generateMock(ElementSeenPayloadSchema),
+      componentType: ComponentViewEventComponentType.Entry,
       element: document.createElement('div'),
       variantIndex: 1,
     };
@@ -39,6 +41,7 @@ describe('Analytics pipeline', () => {
       {
         experience: data.experience,
         audience: data.audience,
+        componentType: data.componentType,
         selectedVariant: data.variant,
         selectedVariantIndex: data.variantIndex,
         selectedVariantSelector: 'variant 1',
