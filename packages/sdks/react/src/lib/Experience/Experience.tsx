@@ -9,7 +9,6 @@ import {
 import { useExperience } from './useExperience';
 import { useNinetailed } from '../useNinetailed';
 import { ComponentMarker } from './ComponentMarker';
-import { ComponentViewEventComponentType } from '@ninetailed/experience.js-plugin-analytics';
 
 export type ExperienceComponent<P> = React.ComponentType<
   Omit<P, 'id'> & {
@@ -168,7 +167,7 @@ export const Experience = <
       observeElement({
         element: componentElement,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
         audience,
         variant: isVariantHidden
           ? { ...variant, id: `${baseline.id}-hidden` }

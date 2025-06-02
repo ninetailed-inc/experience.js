@@ -26,7 +26,6 @@ type HasSeenElementAction = {
 type HasSeenVariableAction = {
   type: typeof HAS_SEEN_VARIABLE;
   variable: SerializableObject;
-  seenFor: number | undefined;
 };
 
 type PageHiddenAction = {

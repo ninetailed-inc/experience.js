@@ -1,5 +1,3 @@
-import { ComponentViewEventComponentType } from '../src/lib/ElementSeenPayload';
-
 export const TRACK_COMPONENT_PROPERTIES = {
   variant: {
     id: 'test',
@@ -27,6 +25,6 @@ export const TRACK_COMPONENT_VIEW_PROPERTIES = {
     id: 'test',
     test: 'test',
   },
-  componentType: ComponentViewEventComponentType.Entry,
+  componentType: 'Entry',
   variantIndex: 1,
 };

@@ -1,17 +1,13 @@
 import { SerializableObject } from '@ninetailed/experience.js-shared';
 import { z } from 'zod';
 
-export enum ComponentViewEventComponentType {
-  Entry = 'Entry',
-  Variable = 'Variable',
-}
+export type ComponentViewEventComponentType = 'Entry' | 'Variable';
 
 // Base schema with shared properties
 const BaseSeenPayloadSchema = z.object({
-  componentType: z.nativeEnum(ComponentViewEventComponentType),
+  componentType: z.union([z.literal('Entry'), z.literal('Variable')]),
   variant: z.object({ id: z.string() }).catchall(z.unknown()),
   variantIndex: z.number(),
-  seenFor: z.number().optional().default(0),
 });
 
 // Element specific schema
@@ -44,6 +40,7 @@ export const ElementSeenPayloadSchema = BaseSeenPayloadSchema.extend({
       description:
         'This is the default all visitors audience as no audience was set.',
     }),
+  seenFor: z.number().optional().default(0),
 });
 
 export type ElementSeenPayload = Omit<

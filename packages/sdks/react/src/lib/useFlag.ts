@@ -6,7 +6,6 @@ import {
 import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
 import { useNinetailed } from './useNinetailed';
-import { ComponentViewEventComponentType } from '@ninetailed/experience.js-plugin-analytics';
 
 export type FlagResult<T> =
   | { status: 'loading'; value: T; error: null }
@@ -115,7 +114,7 @@ export function useFlag<T extends AllowedVariableType>(
             ninetailed.trackVariableComponentView({
               variable: change.value,
               variant: { id: `Variable-${key}` },
-              componentType: ComponentViewEventComponentType.Variable,
+              componentType: 'Entry',
               variantIndex: change.meta.variantIndex,
               experienceId: change.meta.experienceId,
             });

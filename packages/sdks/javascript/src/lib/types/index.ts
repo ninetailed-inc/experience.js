@@ -105,7 +105,7 @@ export type TrackComponentView = (
 ) => Promise<void>;
 
 export type TrackVariableComponentView = (
-  properties: Omit<VariableSeenPayload, 'seenFor'>
+  properties: VariableSeenPayload
 ) => Promise<void>;
 
 export type Identify = (

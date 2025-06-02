@@ -30,10 +30,6 @@ export abstract class NinetailedPlugin
   };
 
   public [HAS_SEEN_VARIABLE]: EventHandler<VariableSeenPayload> = (event) => {
-    // TODO: might need to also keep/remove this, but will need to ask someone which is prefered
-    if (event.payload.seenFor !== this.getComponentViewTrackingThreshold()) {
-      return;
-    }
     this.onHasSeenVariable(event);
   };
 

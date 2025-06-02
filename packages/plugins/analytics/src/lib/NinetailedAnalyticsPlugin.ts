@@ -65,10 +65,6 @@ export abstract class NinetailedAnalyticsPlugin<
   private getHasSeenExperienceEventPayload = (
     data: SanitizedElementSeenPayload
   ) => {
-    console.log(
-      'Generating has seen experience event payload with data:',
-      data
-    );
     const event = Object.entries(
       this.hasSeenExperienceEventTemplate
     ).reduce<THasSeenExperienceEventTemplate>(
@@ -210,10 +206,6 @@ export abstract class NinetailedAnalyticsPlugin<
       ...variablePayloads,
       sanitizedTrackVariableProperties,
     ]);
-
-    // TODO: Would we need to track the variable view here?
-    // using this.onTrackExperience? since its probably an experience,
-    // but we would need to conform the payload to look like the onHasSeenElement
   };
 
   /**

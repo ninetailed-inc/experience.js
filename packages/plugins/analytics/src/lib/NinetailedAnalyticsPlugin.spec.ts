@@ -1,10 +1,7 @@
 import { Analytics } from 'analytics';
 import { generateMock } from '@anatine/zod-mock';
 import { setTimeout as sleep } from 'node:timers/promises';
-import {
-  ComponentViewEventComponentType,
-  ElementSeenPayloadSchema,
-} from './ElementSeenPayload';
+import { ElementSeenPayloadSchema } from './ElementSeenPayload';
 import { Template } from './NinetailedAnalyticsPlugin';
 import { TestAnalyticsPlugin } from '../../test';
 import { AnalyticsInstance } from './AnalyticsInstance';
@@ -36,7 +33,7 @@ describe('NinetailedAnalyticsPlugin', () => {
     const mock = generateMock(ElementSeenPayloadSchema);
     return {
       ...mock,
-      componentType: ComponentViewEventComponentType.Entry,
+      componentType: 'Entry',
       element: document.createElement('div'),
       seenFor: testAnalyticsPlugin.getComponentViewTrackingThreshold(),
       experience: { ...mock.experience, id: 'experience-1' },
@@ -64,7 +61,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         {
           experience: data.experience,
           audience: data.audience,
-          componentType: ComponentViewEventComponentType.Entry,
+          componentType: 'Entry',
           selectedVariant: data.variant,
           selectedVariantIndex: 1,
           selectedVariantSelector: 'variant 1',

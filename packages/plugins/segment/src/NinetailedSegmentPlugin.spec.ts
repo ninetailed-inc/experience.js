@@ -3,7 +3,6 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 
 import { NinetailedSegmentPlugin } from './NinetailedSegmentPlugin';
-import { ComponentViewEventComponentType } from '@ninetailed/experience.js-plugin-analytics';
 
 type SetupArgs = {
   attachAnalyticsToWindow: boolean;
@@ -70,7 +69,7 @@ describe('NinetailedSegmentPlugin', () => {
         variant: {
           id: 'test-component',
         },
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
         experience: {
           id: 'test-experience',
           type: 'nt_experiment',
@@ -133,7 +132,7 @@ describe('NinetailedSegmentPlugin', () => {
       await ninetailed.trackComponentView({
         element: {} as Element,
         variantIndex: 0,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
         variant: {
           id: 'test-component',
         },
@@ -199,7 +198,7 @@ describe('NinetailedSegmentPlugin', () => {
       await ninetailed.trackComponentView({
         element: {} as Element,
         variantIndex: 0,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
         variant: {
           id: 'test-component',
         },

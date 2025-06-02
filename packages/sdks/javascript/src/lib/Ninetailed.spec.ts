@@ -3,10 +3,7 @@ import {
   FEATURES,
   NinetailedApiClient,
 } from '@ninetailed/experience.js-shared';
-import {
-  ComponentViewEventComponentType,
-  NinetailedPlugin,
-} from '@ninetailed/experience.js-plugin-analytics';
+import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
 
 import { Ninetailed } from './Ninetailed';
@@ -267,7 +264,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-id' },
         variantIndex: 1,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       // Simulate the intersection of the element with the viewport
@@ -304,7 +301,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       ninetailed.observeElement({
@@ -312,7 +309,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-2-id' },
         variantIndex: 2,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       intersect(element1, true);
@@ -355,7 +352,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       ninetailed.observeElement({
@@ -363,7 +360,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-2-id' },
         variantIndex: 2,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       intersect(element, true);
@@ -405,7 +402,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       ninetailed.observeElement({
@@ -413,7 +410,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       intersect(element, true);
@@ -444,7 +441,7 @@ describe('Ninetailed core class', () => {
         element,
         variant: { id: 'variant-id' },
         variantIndex: 1,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       intersect(element, true);
@@ -472,7 +469,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-id' },
         variantIndex: 1,
         experience,
-        componentType: ComponentViewEventComponentType.Entry,
+        componentType: 'Entry',
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

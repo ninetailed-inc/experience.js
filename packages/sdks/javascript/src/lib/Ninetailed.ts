@@ -441,14 +441,12 @@ export class Ninetailed implements NinetailedInstance {
   public trackVariableComponentView: TrackVariableComponentView = (
     properties
   ) => {
-    console.log('===== trackVariableComponentView ====>', properties);
     const validatedVariable = SerializableObject.parse(properties.variable);
 
     return this.instance.dispatch({
       ...properties,
       type: HAS_SEEN_VARIABLE,
       variable: validatedVariable,
-      seenFor: this.componentViewTrackingThreshold,
     });
   };
 
