@@ -137,7 +137,6 @@ export function useFlag<T extends AllowedVariableType>(
     });
 
     return unsubscribe;
-    // TODO: Should we have shouldTrackHook as a dependency? i think it should not change often unless the user changes the tracking logic
   }, [ninetailed]);
 
   return result;
