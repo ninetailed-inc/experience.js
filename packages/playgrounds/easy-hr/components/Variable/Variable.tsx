@@ -16,7 +16,9 @@ export const Variable: React.FC = () => {
       padding: '10px',
       color: 'blue',
     },
-    shouldTrack
+    {
+      shouldTrack,
+    }
   );
 
   // If still loading, return fallback
