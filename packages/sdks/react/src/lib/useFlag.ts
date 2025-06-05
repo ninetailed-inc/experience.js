@@ -12,7 +12,9 @@ export type FlagResult<T> =
   | { status: 'success'; value: T; error: null }
   | { status: 'error'; value: T; error: Error };
 
-type ShouldTrackHook = () => boolean;
+type UseFlagOptions = {
+  shouldTrack?: boolean | (() => boolean);
+};
 
 /**
  * Hook to access a Ninetailed variable flag with built-in tracking.
@@ -20,14 +22,13 @@ type ShouldTrackHook = () => boolean;
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
   defaultValue: T,
-  shouldTrackHook?: ShouldTrackHook
+  options: UseFlagOptions = {}
 ): FlagResult<T> {
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
   const defaultValueRef = useRef<T>(defaultValue);
   const flagKeyRef = useRef<string>(flagKey);
-  const trackedFlagsRef = useRef<Set<string>>(new Set());
 
   const [result, setResult] = useState<FlagResult<T>>({
     value: defaultValue,
@@ -35,7 +36,7 @@ export function useFlag<T extends AllowedVariableType>(
     error: null,
   });
 
-  // Reset state when inputs change
+  // Reset on input change
   useEffect(() => {
     if (
       !isEqual(defaultValueRef.current, defaultValue) ||
@@ -52,7 +53,7 @@ export function useFlag<T extends AllowedVariableType>(
     }
   }, [flagKey, defaultValue]);
 
-  // Handle changes
+  // Track changes
   useEffect(() => {
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
@@ -90,7 +91,6 @@ export function useFlag<T extends AllowedVariableType>(
         if (change && change.type === ChangeTypes.Variable) {
           const rawValue = change.value;
 
-          // Unwrap value if it was mistakenly stored as { value: {...} } (common CMS issue)
           const actualValue =
             rawValue &&
             typeof rawValue === 'object' &&
@@ -106,19 +106,20 @@ export function useFlag<T extends AllowedVariableType>(
             error: null,
           });
 
-          // Track view once per key unless hook disables it
           const key = flagKeyRef.current;
-          const shouldTrack = shouldTrackHook ? shouldTrackHook() : true;
+          const shouldTrack =
+            typeof options.shouldTrack === 'function'
+              ? options.shouldTrack()
+              : options.shouldTrack !== false;
 
-          if (shouldTrack && !trackedFlagsRef.current.has(key)) {
+          if (shouldTrack) {
             ninetailed.trackVariableComponentView({
               variable: change.value,
               variant: { id: `Variable-${key}` },
-              componentType: 'Entry',
+              componentType: 'Variable',
               variantIndex: change.meta.variantIndex,
               experienceId: change.meta.experienceId,
             });
-            trackedFlagsRef.current.add(key);
           }
         } else {
           setResult({
