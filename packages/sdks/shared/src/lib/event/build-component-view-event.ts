@@ -1,8 +1,8 @@
 import { Object } from 'ts-toolbelt';
 
-import {
+import type {
   ComponentViewEventComponentType,
-  type ComponentViewEvent,
+  ComponentViewEvent,
 } from '../types/Event/ComponentViewEvent';
 import { type BuildEventArgs, buildEvent } from './build-event';
 
