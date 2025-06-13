@@ -1,6 +1,9 @@
 import { Object } from 'ts-toolbelt';
 
-import { type ComponentViewEvent } from '../types/Event/ComponentViewEvent';
+import type {
+  ComponentViewEventComponentType,
+  ComponentViewEvent,
+} from '../types/Event/ComponentViewEvent';
 import { type BuildEventArgs, buildEvent } from './build-event';
 
 export type BuildComponentViewEventData = Object.Omit<
@@ -8,6 +11,7 @@ export type BuildComponentViewEventData = Object.Omit<
     BuildEventArgs,
     {
       componentId: string;
+      componentType: ComponentViewEventComponentType;
       experienceId?: string;
       variantIndex?: number;
     },
@@ -21,6 +25,7 @@ export const buildComponentViewEvent = (
 ): ComponentViewEvent => {
   return {
     ...buildEvent({ ...data, type: 'component' }),
+    componentType: data.componentType,
     componentId: data.componentId,
     experienceId: data.experienceId,
     variantIndex: data.variantIndex,

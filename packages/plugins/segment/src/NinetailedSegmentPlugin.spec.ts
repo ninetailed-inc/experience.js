@@ -69,6 +69,7 @@ describe('NinetailedSegmentPlugin', () => {
         variant: {
           id: 'test-component',
         },
+        componentType: 'Entry',
         experience: {
           id: 'test-experience',
           type: 'nt_experiment',
@@ -131,6 +132,7 @@ describe('NinetailedSegmentPlugin', () => {
       await ninetailed.trackComponentView({
         element: {} as Element,
         variantIndex: 0,
+        componentType: 'Entry',
         variant: {
           id: 'test-component',
         },
@@ -196,6 +198,7 @@ describe('NinetailedSegmentPlugin', () => {
       await ninetailed.trackComponentView({
         element: {} as Element,
         variantIndex: 0,
+        componentType: 'Entry',
         variant: {
           id: 'test-component',
         },

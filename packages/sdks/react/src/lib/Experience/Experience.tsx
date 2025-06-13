@@ -167,6 +167,7 @@ export const Experience = <
       observeElement({
         element: componentElement,
         experience,
+        componentType: 'Entry',
         audience,
         variant: isVariantHidden
           ? { ...variant, id: `${baseline.id}-hidden` }

@@ -12,6 +12,7 @@ import {
 } from '@ninetailed/experience.js-shared';
 import {
   ElementSeenPayload,
+  VariableSeenPayload,
   NinetailedPlugin,
   TrackComponentProperties,
 } from '@ninetailed/experience.js-plugin-analytics';
@@ -103,6 +104,10 @@ export type TrackComponentView = (
   properties: Omit<ElementSeenPayload, 'seenFor'>
 ) => Promise<void>;
 
+export type TrackVariableComponentView = (
+  properties: VariableSeenPayload
+) => Promise<void>;
+
 export type Identify = (
   uid: string,
   traits?: Traits,
@@ -133,6 +138,7 @@ export interface NinetailedInstance<
    */
   trackHasSeenComponent: TrackHasSeenComponent;
   trackComponentView: TrackComponentView;
+  trackVariableComponentView: TrackVariableComponentView;
   identify: Identify;
   batch: Batch;
   reset: Reset;

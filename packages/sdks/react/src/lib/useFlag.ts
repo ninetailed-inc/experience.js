@@ -12,16 +12,17 @@ export type FlagResult<T> =
   | { status: 'success'; value: T; error: null }
   | { status: 'error'; value: T; error: Error };
 
+type UseFlagOptions = {
+  shouldTrack?: boolean | (() => boolean);
+};
+
 /**
- * Custom hook to retrieve a specific feature flag from Ninetailed changes.
- *
- * @param flagKey - The key of the feature flag to retrieve
- * @param defaultValue - The default value to use if the flag is not found
- * @returns An object containing the flag value and status information
+ * Hook to access a Ninetailed variable flag with built-in tracking.
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
-  defaultValue: T
+  defaultValue: T,
+  options: UseFlagOptions = {}
 ): FlagResult<T> {
   const ninetailed = useNinetailed();
 
@@ -35,7 +36,7 @@ export function useFlag<T extends AllowedVariableType>(
     error: null,
   });
 
-  // Effect 1: Track changes to `flagKey` or `defaultValue`
+  // Reset on input change
   useEffect(() => {
     if (
       !isEqual(defaultValueRef.current, defaultValue) ||
@@ -52,7 +53,7 @@ export function useFlag<T extends AllowedVariableType>(
     }
   }, [flagKey, defaultValue]);
 
-  // Effect 2: Handle Ninetailed changes
+  // Track changes
   useEffect(() => {
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
@@ -88,11 +89,38 @@ export function useFlag<T extends AllowedVariableType>(
         );
 
         if (change && change.type === ChangeTypes.Variable) {
+          const rawValue = change.value;
+
+          const actualValue =
+            rawValue &&
+            typeof rawValue === 'object' &&
+            rawValue !== null &&
+            'value' in rawValue &&
+            typeof (rawValue as Record<string, unknown>)['value'] === 'object'
+              ? (rawValue as Record<string, unknown>)['value']
+              : rawValue;
+
           setResult({
-            value: change.value as unknown as T,
+            value: actualValue as T,
             status: 'success',
             error: null,
           });
+
+          const key = flagKeyRef.current;
+          const shouldTrack =
+            typeof options.shouldTrack === 'function'
+              ? options.shouldTrack()
+              : options.shouldTrack !== false;
+
+          if (shouldTrack) {
+            ninetailed.trackVariableComponentView({
+              variable: change.value,
+              variant: { id: `Variable-${key}` },
+              componentType: 'Variable',
+              variantIndex: change.meta.variantIndex,
+              experienceId: change.meta.experienceId,
+            });
+          }
         } else {
           setResult({
             value: defaultValueRef.current,

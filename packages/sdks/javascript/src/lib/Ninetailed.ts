@@ -23,6 +23,7 @@ import {
   isTrackEvent,
   isIdentifyEvent,
   isComponentViewEvent,
+  SerializableObject,
 } from '@ninetailed/experience.js-shared';
 
 import {
@@ -42,6 +43,7 @@ import {
   TrackHasSeenComponent,
   TrackComponentView,
   OnChangesChangeCallback,
+  TrackVariableComponentView,
 } from './types';
 import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
@@ -62,6 +64,7 @@ import {
   ElementSeenPayload,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
+  HAS_SEEN_VARIABLE,
   HasComponentViewTrackingThreshold,
   NinetailedPlugin,
   hasComponentViewTrackingThreshold,
@@ -433,6 +436,18 @@ export class Ninetailed implements NinetailedInstance {
    */
   public trackHasSeenComponent: TrackHasSeenComponent = async (properties) => {
     return this.instance.dispatch({ ...properties, type: HAS_SEEN_COMPONENT });
+  };
+
+  public trackVariableComponentView: TrackVariableComponentView = (
+    properties
+  ) => {
+    const validatedVariable = SerializableObject.parse(properties.variable);
+
+    return this.instance.dispatch({
+      ...properties,
+      type: HAS_SEEN_VARIABLE,
+      variable: validatedVariable,
+    });
   };
 
   public trackComponentView: TrackComponentView = (properties) => {

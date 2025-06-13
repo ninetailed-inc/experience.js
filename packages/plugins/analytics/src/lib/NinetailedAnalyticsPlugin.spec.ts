@@ -33,6 +33,7 @@ describe('NinetailedAnalyticsPlugin', () => {
     const mock = generateMock(ElementSeenPayloadSchema);
     return {
       ...mock,
+      componentType: 'Entry',
       element: document.createElement('div'),
       seenFor: testAnalyticsPlugin.getComponentViewTrackingThreshold(),
       experience: { ...mock.experience, id: 'experience-1' },
@@ -60,6 +61,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         {
           experience: data.experience,
           audience: data.audience,
+          componentType: 'Entry',
           selectedVariant: data.variant,
           selectedVariantIndex: 1,
           selectedVariantSelector: 'variant 1',
@@ -134,6 +136,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         {
           experience: data.experience,
           audience: data.audience,
+          componentType: data.componentType,
           selectedVariant: data.variant,
           selectedVariantIndex: 1,
           selectedVariantSelector: 'variant 1',
@@ -167,6 +170,7 @@ describe('NinetailedAnalyticsPlugin', () => {
           experience: data.experience,
           audience: data.audience,
           selectedVariant: data.variant,
+          componentType: data.componentType,
           selectedVariantIndex: 1,
           selectedVariantSelector: 'variant 1',
         },
@@ -198,6 +202,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         {
           experience: data.experience,
           audience: data.audience,
+          componentType: data.componentType,
           selectedVariant: data.variant,
           selectedVariantIndex: 1,
           selectedVariantSelector: 'variant 1',
@@ -230,6 +235,7 @@ describe('NinetailedAnalyticsPlugin', () => {
         {
           experience: data.experience,
           audience: data.audience,
+          componentType: data.componentType,
           selectedVariant: data.variant,
           selectedVariantIndex: 1,
           selectedVariantSelector: 'variant 1',
