@@ -37,6 +37,9 @@ export type PreviewPluginApi = {
   experiences: ExperienceConfiguration[];
 
   openExperienceEditor?: (experience: ExperienceConfiguration) => void;
+  /**
+   * @deprecated Will be removed in a future release. Use `openExperienceEditor` instead to see the experience insights.
+   */
   openExperienceAnalytics: (experience: ExperienceConfiguration) => void;
   openAudienceEditor?: (audienceDefinition: ExposedAudienceDefinition) => void;
 };

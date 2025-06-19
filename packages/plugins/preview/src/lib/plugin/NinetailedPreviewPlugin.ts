@@ -567,7 +567,13 @@ export class NinetailedPreviewPlugin
       return this.onOpenExperienceEditor(experience);
   }
 
+  /**
+   * @deprecated This method will be removed in a future release. Use `openExperienceEditor` instead to see the experience insights.
+   */
   public openExperienceAnalytics(experience: ExperienceConfiguration) {
+    logger.warn(
+      'The `openExperienceAnalytics` method is deprecated and will be removed in a future release. Use `openExperienceEditor` instead to see the experience insights.'
+    );
     window.open(
       `https://app.ninetailed.io/${this.clientId}/${this.environment}/experiences/${experience.id}`,
       '_blank'
