@@ -1,21 +1,22 @@
 # How the CODEOWNERS file works:
-#       https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # These owners will be the default owners for everything in
 # the repo. Unless a later match takes precedence,
-*       @BraunreutherA
+
+*                               @phobetron
 
 # Plugins
 /packages/plugins/preview-*/    @maxrawlinger
 /packages/plugins/insights/     @maroun9t
 
 # SDKs
-/packages/sdks/nodejs/          @maxrawlinger @BraunreutherA
+/packages/sdks/nodejs/          @maxrawlinger
 /packages/sdks/gatsby/          @maxrawlinger
-/packages/sdks/react/           @maroun9t @BraunreutherA
+/packages/sdks/react/           @maroun9t
 /packages/sdks/nextjs/          @maroun9t
-/packages/sdks/javascript/      @maroun9t @BraunreutherA
-/packages/sdks/shared/          @maroun9t @BraunreutherA
+/packages/sdks/javascript/      @maroun9t
+/packages/sdks/shared/          @maroun9t
 
 # github actions
 *.yaml                          @Lp-Francois
