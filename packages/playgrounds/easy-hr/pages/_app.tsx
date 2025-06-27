@@ -36,6 +36,7 @@ const B2BDemoApp = ({ Component, pageProps }: AppProps<CustomPageProps>) => {
           /* preview*/
           plugins={[
             new NinetailedPreviewPlugin({
+              nonce: 'CSP-nonce-string',
               experiences: pageProps.ninetailed?.preview.experiences || [],
               audiences: pageProps.ninetailed?.preview.audiences || [],
               onOpenExperienceEditor: (experience) => {
