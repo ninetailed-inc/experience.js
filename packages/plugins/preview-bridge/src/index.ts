@@ -1,4 +1,4 @@
-export { PreviewBridge } from './PreviewBridge';
+export { PreviewBridge, type PreviewBridgeOptions } from './PreviewBridge';
 export type {
   PreviewPluginApi,
   ExposedAudienceDefinition,

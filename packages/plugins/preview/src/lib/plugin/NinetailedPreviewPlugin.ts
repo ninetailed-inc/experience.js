@@ -27,13 +27,14 @@ import {
 import type {
   PreviewPluginApi,
   ExposedAudienceDefinition,
+  PreviewBridgeOptions,
 } from '@ninetailed/experience.js-preview-bridge';
 import {
   type EventHandler,
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
 
-import { WidgetContainer } from './WidgetContainer';
+import { WidgetContainer, WidgetContainerOptions } from './WidgetContainer';
 
 export const NINETAILED_PREVIEW_EVENTS = {
   previewAudiences: 'previewAudiences',
@@ -41,19 +42,12 @@ export const NINETAILED_PREVIEW_EVENTS = {
 };
 
 type NinetailedPreviewPluginOptions = {
-  url?: string;
-
   experiences: ExperienceConfiguration[];
   audiences: ExposedAudienceDefinition[];
   onOpenExperienceEditor?: (experience: ExperienceConfiguration) => void;
   onOpenAudienceEditor?: (audience: ExposedAudienceDefinition) => void;
-
-  ui?: {
-    opener?: {
-      hide: boolean;
-    };
-  };
-};
+} & PreviewBridgeOptions &
+  WidgetContainerOptions;
 
 export class NinetailedPreviewPlugin
   extends NinetailedPlugin
@@ -117,7 +111,10 @@ export class NinetailedPreviewPlugin
 
       this.container = new WidgetContainer({ ui: this.options.ui });
 
-      this.bridge = PreviewBridge({ url: this.options.url });
+      this.bridge = PreviewBridge({
+        url: this.options.url,
+        nonce: this.options.nonce,
+      });
       this.bridge.render(this.container.element);
 
       window.ninetailed = Object.assign({}, window.ninetailed, {
