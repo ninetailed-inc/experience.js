@@ -222,6 +222,7 @@ describe('useExperience', () => {
       trafficAllocation: 1,
       components: [
         {
+          type: ComponentTypeEnum.EntryReplacement as const,
           baseline: {
             id: '3HQIlpV2OtnpSbs2zRwDGi',
           },
