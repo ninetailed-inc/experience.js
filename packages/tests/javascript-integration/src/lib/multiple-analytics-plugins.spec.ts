@@ -32,6 +32,7 @@ describe('A Ninetailed setup with multiple analytics plugins', () => {
         experience: { id: 'experience-1', name: 'test', type: 'nt_experiment' },
         variant: { id: 'variant-1', name: 'test' },
         audience: { id: 'audience-1', name: 'test' },
+        componentType: 'Entry',
         element: document.createElement('div'),
         variantIndex: 1,
       });

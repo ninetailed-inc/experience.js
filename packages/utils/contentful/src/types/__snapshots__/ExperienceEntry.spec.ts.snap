@@ -8,8 +8,10 @@ Object {
       "components": Array [
         Object {
           "baseline": Object {
+            "hidden": false,
             "id": "50LFM6YHR9NoqPilYKEGeT",
           },
+          "type": "EntryReplacement",
           "variants": Array [
             Object {
               "hidden": false,

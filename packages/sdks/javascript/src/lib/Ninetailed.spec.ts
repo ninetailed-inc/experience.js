@@ -264,6 +264,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-id' },
         variantIndex: 1,
         experience,
+        componentType: 'Entry',
       });
 
       // Simulate the intersection of the element with the viewport
@@ -300,6 +301,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
+        componentType: 'Entry',
       });
 
       ninetailed.observeElement({
@@ -307,6 +309,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-2-id' },
         variantIndex: 2,
         experience,
+        componentType: 'Entry',
       });
 
       intersect(element1, true);
@@ -349,6 +352,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
+        componentType: 'Entry',
       });
 
       ninetailed.observeElement({
@@ -356,6 +360,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-2-id' },
         variantIndex: 2,
         experience,
+        componentType: 'Entry',
       });
 
       intersect(element, true);
@@ -397,6 +402,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
+        componentType: 'Entry',
       });
 
       ninetailed.observeElement({
@@ -404,6 +410,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-1-id' },
         variantIndex: 1,
         experience,
+        componentType: 'Entry',
       });
 
       intersect(element, true);
@@ -434,6 +441,7 @@ describe('Ninetailed core class', () => {
         element,
         variant: { id: 'variant-id' },
         variantIndex: 1,
+        componentType: 'Entry',
       });
 
       intersect(element, true);
@@ -461,6 +469,7 @@ describe('Ninetailed core class', () => {
         variant: { id: 'variant-id' },
         variantIndex: 1,
         experience,
+        componentType: 'Entry',
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

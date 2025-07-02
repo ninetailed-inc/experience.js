@@ -7,7 +7,7 @@ const TRANSFORM_CLOSED = `translate(${CONTAINER_WIDTH - BUTTON_WIDTH}px, 0px)`;
 const TRANSFORM_CLOSED_HIDE = `translate(${CONTAINER_WIDTH}px, 0px)`;
 const TRANSFORM_OPEN = `translate(0px, 0px)`;
 
-type WidgetContainerOptions = {
+export type WidgetContainerOptions = {
   ui?: {
     opener?: {
       hide: boolean;

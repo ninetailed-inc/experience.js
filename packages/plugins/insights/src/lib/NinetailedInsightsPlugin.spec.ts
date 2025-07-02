@@ -62,6 +62,7 @@ describe('NinetailedInsightsPlugin', () => {
 
       ninetailed.observeElement({
         element,
+        componentType: 'Entry',
         variant: { id: `variant-id-${i + 1}` },
         variantIndex: i,
       });
@@ -113,6 +114,7 @@ describe('NinetailedInsightsPlugin', () => {
 
       ninetailed.observeElement({
         element,
+        componentType: 'Entry',
         variant: { id: `variant-id-${i + 1}` },
         variantIndex: i,
       });
@@ -147,6 +149,7 @@ describe('NinetailedInsightsPlugin', () => {
     for (let i = 0; i < 25; i++) {
       ninetailed.observeElement({
         element,
+        componentType: 'Entry',
         variant: { id: `variant-id-${i + 1}` },
         variantIndex: i,
       });
@@ -181,6 +184,7 @@ describe('NinetailedInsightsPlugin', () => {
     for (let i = 0; i < 25; i++) {
       ninetailed.observeElement({
         element,
+        componentType: 'Entry',
         variant: { id: `variant-id-1` },
         variantIndex: 0,
       });

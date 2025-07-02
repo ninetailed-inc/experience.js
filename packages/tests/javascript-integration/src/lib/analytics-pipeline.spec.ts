@@ -27,6 +27,7 @@ describe('Analytics pipeline', () => {
   it('Should be able to send track experience events which will be received from the TestAnalyticsPlugin', async () => {
     const data = {
       ...generateMock(ElementSeenPayloadSchema),
+      componentType: 'Entry' as const,
       element: document.createElement('div'),
       variantIndex: 1,
     };
@@ -39,6 +40,7 @@ describe('Analytics pipeline', () => {
       {
         experience: data.experience,
         audience: data.audience,
+        componentType: data.componentType,
         selectedVariant: data.variant,
         selectedVariantIndex: data.variantIndex,
         selectedVariantSelector: 'variant 1',

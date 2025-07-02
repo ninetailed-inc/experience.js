@@ -20,6 +20,7 @@ import {
 } from '@ninetailed/experience.js-shared';
 import type {
   EventBuilder,
+  InterestedInSeenVariables,
   RequiresEventBuilder,
 } from '@ninetailed/experience.js';
 
@@ -27,16 +28,20 @@ import type { ComponentViewEventBatch } from './types/Event/ComponentViewEventBa
 import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
 import {
   ElementSeenPayload,
+  VariableSeenPayload,
   EventHandler,
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
 
 type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
 
+type VariableSeenPayloadWithoutVariable = Omit<VariableSeenPayload, 'variable'>;
+
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin
   implements
     InterestedInSeenElements,
+    InterestedInSeenVariables,
     InterestedInProfileChange,
     InterestedInHiddenPage,
     AcceptsCredentials,
@@ -45,6 +50,11 @@ export class NinetailedInsightsPlugin
   public override name = 'ninetailed:insights';
 
   private seenElements = new WeakMap<Element, ObservedElementPayload[]>();
+
+  private seenVariables = new Map<
+    string,
+    VariableSeenPayloadWithoutVariable[]
+  >();
 
   private profile?: Profile;
 
@@ -74,7 +84,8 @@ export class NinetailedInsightsPlugin
   public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    const { element, experience, variant, variantIndex } = payload;
+    const { element, experience, variant, variantIndex, componentType } =
+      payload;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { element: _, ...elementPayloadWithoutElement } = payload;
@@ -114,6 +125,7 @@ export class NinetailedInsightsPlugin
     this.instance?.dispatch({
       type: COMPONENT_START,
       componentId,
+      componentType,
       variantIndex,
       experienceId: experience?.id,
     });
@@ -127,10 +139,11 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const { componentId, experienceId, variantIndex } = payload;
+    const { componentId, experienceId, variantIndex, componentType } = payload;
 
     const event = this.eventBuilder.component(
       componentId,
+      componentType,
       experienceId,
       variantIndex
     );
@@ -144,6 +157,55 @@ export class NinetailedInsightsPlugin
 
       this.flushEventsQueue();
     }
+  };
+
+  public override onHasSeenVariable: EventHandler<VariableSeenPayload> = ({
+    payload,
+  }) => {
+    const { variant, variantIndex, componentType, experienceId } = payload;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { variable: _, ...variablePayloadWithoutVariable } = payload;
+
+    const componentId = variant.id;
+
+    if (typeof componentId === 'undefined') {
+      return;
+    }
+
+    const variablePayloads = this.seenVariables.get(componentId) || [];
+
+    const isVariableAlreadySeenWithPayload = variablePayloads.some(
+      (variablePayload) => {
+        return isEqual(variablePayload, variablePayloadWithoutVariable);
+      }
+    );
+
+    if (isVariableAlreadySeenWithPayload) {
+      return;
+    }
+
+    this.seenVariables.set(componentId, [
+      ...variablePayloads,
+      variablePayloadWithoutVariable,
+    ]);
+
+    /**
+     * Intentionally sending a COMPONENT_START event instead of COMPONENT.
+     * The NinetailedPrivacyPlugin, when used, will listen to COMPONENT_START and abort it if no consent is given.
+     * If COMPONENT_START is aborted, the COMPONENT event will not be sent.
+     * If NinetailedPrivacyPlugin is not used, the COMPONENT_START event will trigger the COMPONENT event.
+     *
+     * This behavior of the analytics library can be seen in the source code here:
+     * https://github.com/DavidWells/analytics/blob/ba02d13d8b9d092cf24835b65f4f90af18f2740b/packages/analytics-core/src/index.js#L577
+     */
+    this.instance?.dispatch({
+      type: COMPONENT_START,
+      componentId,
+      componentType,
+      variantIndex,
+      experienceId,
+    });
   };
 
   public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({

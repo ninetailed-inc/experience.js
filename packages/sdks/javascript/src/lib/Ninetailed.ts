@@ -23,6 +23,7 @@ import {
   isTrackEvent,
   isIdentifyEvent,
   isComponentViewEvent,
+  SerializableObject,
 } from '@ninetailed/experience.js-shared';
 
 import {
@@ -42,6 +43,7 @@ import {
   TrackHasSeenComponent,
   TrackComponentView,
   OnChangesChangeCallback,
+  TrackVariableComponentView,
 } from './types';
 import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
 import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
@@ -52,13 +54,17 @@ import {
   OnSelectVariantCallback,
   OnSelectVariantCallbackArgs,
 } from './types/OnSelectVariant';
-import { makeExperienceSelectMiddleware } from './experience';
+import {
+  makeChangesModificationMiddleware,
+  makeExperienceSelectMiddleware,
+} from './experience';
 import { ExperienceSelectionMiddleware } from './types/interfaces/HasExperienceSelectionMiddleware';
 import { RemoveOnChangeListener } from './utils/OnChangeEmitter';
 import {
   ElementSeenPayload,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
+  HAS_SEEN_VARIABLE,
   HasComponentViewTrackingThreshold,
   NinetailedPlugin,
   hasComponentViewTrackingThreshold,
@@ -432,6 +438,18 @@ export class Ninetailed implements NinetailedInstance {
     return this.instance.dispatch({ ...properties, type: HAS_SEEN_COMPONENT });
   };
 
+  public trackVariableComponentView: TrackVariableComponentView = (
+    properties
+  ) => {
+    const validatedVariable = SerializableObject.parse(properties.variable);
+
+    return this.instance.dispatch({
+      ...properties,
+      type: HAS_SEEN_VARIABLE,
+      variable: validatedVariable,
+    });
+  };
+
   public trackComponentView: TrackComponentView = (properties) => {
     return this.instance.dispatch({
       ...properties,
@@ -800,16 +818,82 @@ export class Ninetailed implements NinetailedInstance {
 
   /**
    * Registers a callback to be notified when changes occur in the profile state.
+   * Uses the changes modification middleware system to process changes.
+   * Changes are processed in the following order:
    *
    * @param cb - Callback function that receives the changes state
    * @returns Function to unsubscribe from changes updates
    */
   public onChangesChange = (cb: OnChangesChangeCallback) => {
+    // Initially notify with current state
     this.notifyChangesCallback(cb, this._profileState);
 
-    return this.onProfileChange((profileState) => {
-      this.notifyChangesCallback(cb, profileState);
+    let middlewareChangeListeners: RemoveOnChangeListener[] = [];
+
+    const removeProfileChangeListener = this.onProfileChange((profileState) => {
+      // Clean up any existing middleware listeners
+      middlewareChangeListeners.forEach((removeListener) => removeListener());
+      middlewareChangeListeners = [];
+
+      // If we're in loading or error state, simply pass through
+      if (profileState.status !== 'success') {
+        this.notifyChangesCallback(cb, profileState);
+        return;
+      }
+
+      // Set up middleware for changes
+      const {
+        addListeners,
+        removeListeners,
+        middleware: changesModificationMiddleware,
+      } = makeChangesModificationMiddleware({
+        plugins: this.plugins,
+        changes: profileState.changes || [],
+        onChange: (updatedMiddleware) => {
+          // When plugin state changes, reapply middleware to current changes
+          if (profileState.status === 'success' && profileState.changes) {
+            const { changes: modifiedChanges } = updatedMiddleware({
+              changes: profileState.changes,
+            });
+
+            cb({
+              status: 'success',
+              changes: modifiedChanges,
+              error: null,
+            });
+          }
+        },
+      });
+
+      // Add listeners for plugin changes
+      addListeners();
+      middlewareChangeListeners.push(removeListeners);
+
+      // Apply middleware to current changes
+      if (profileState.changes) {
+        const { changes: modifiedChanges } = changesModificationMiddleware({
+          changes: profileState.changes,
+        });
+
+        cb({
+          status: 'success',
+          changes: modifiedChanges,
+          error: null,
+        });
+      } else {
+        cb({
+          status: 'success',
+          changes: [],
+          error: null,
+        });
+      }
     });
+
+    // Return a function that cleans up all listeners
+    return () => {
+      removeProfileChangeListener();
+      middlewareChangeListeners.forEach((removeListener) => removeListener());
+    };
   };
 
   /**

@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import {
   AllowedVariableType,
   ChangeTypes,
-  logger,
 } from '@ninetailed/experience.js-shared';
 import { ChangesState } from '@ninetailed/experience.js';
 import { isEqual } from 'radash';
@@ -13,20 +12,23 @@ export type FlagResult<T> =
   | { status: 'success'; value: T; error: null }
   | { status: 'error'; value: T; error: Error };
 
+type UseFlagOptions = {
+  shouldTrack?: boolean | (() => boolean);
+};
+
 /**
- * Custom hook to retrieve a specific feature flag from Ninetailed changes.
- *
- * @param flagKey - The key of the feature flag to retrieve
- * @param defaultValue - The default value to use if the flag is not found
- * @returns An object containing the flag value and status information
+ * Hook to access a Ninetailed variable flag with built-in tracking.
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
-  defaultValue: T
+  defaultValue: T,
+  options: UseFlagOptions = {}
 ): FlagResult<T> {
   const ninetailed = useNinetailed();
 
   const lastProcessedState = useRef<ChangesState | null>(null);
+  const defaultValueRef = useRef<T>(defaultValue);
+  const flagKeyRef = useRef<string>(flagKey);
 
   const [result, setResult] = useState<FlagResult<T>>({
     value: defaultValue,
@@ -34,30 +36,38 @@ export function useFlag<T extends AllowedVariableType>(
     error: null,
   });
 
+  // Reset on input change
   useEffect(() => {
-    // Reset state when dependencies change
-    setResult({
-      value: defaultValue,
-      status: 'loading',
-      error: null,
-    });
-    lastProcessedState.current = null;
+    if (
+      !isEqual(defaultValueRef.current, defaultValue) ||
+      flagKeyRef.current !== flagKey
+    ) {
+      defaultValueRef.current = defaultValue;
+      flagKeyRef.current = flagKey;
+      setResult({
+        value: defaultValue,
+        status: 'loading',
+        error: null,
+      });
+      lastProcessedState.current = null;
+    }
+  }, [flagKey, defaultValue]);
 
+  // Track changes
+  useEffect(() => {
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
         lastProcessedState.current &&
         isEqual(lastProcessedState.current, changesState)
       ) {
-        logger.debug('Change State Did Not Change', changesState);
         return;
       }
 
       lastProcessedState.current = changesState;
 
       if (changesState.status === 'loading') {
-        // Don't use a function updater here to avoid type issues
         setResult({
-          value: defaultValue,
+          value: defaultValueRef.current,
           status: 'loading',
           error: null,
         });
@@ -66,7 +76,7 @@ export function useFlag<T extends AllowedVariableType>(
 
       if (changesState.status === 'error') {
         setResult({
-          value: defaultValue,
+          value: defaultValueRef.current,
           status: 'error',
           error: changesState.error,
         });
@@ -74,29 +84,53 @@ export function useFlag<T extends AllowedVariableType>(
       }
 
       try {
-        // Find the change with our flag key
         const change = changesState.changes.find(
-          (change) => change.key === flagKey
+          (change) => change.key === flagKeyRef.current
         );
 
         if (change && change.type === ChangeTypes.Variable) {
-          const flagValue = change.value as unknown as T;
+          const rawValue = change.value;
+
+          const actualValue =
+            rawValue &&
+            typeof rawValue === 'object' &&
+            rawValue !== null &&
+            'value' in rawValue &&
+            typeof (rawValue as Record<string, unknown>)['value'] === 'object'
+              ? (rawValue as Record<string, unknown>)['value']
+              : rawValue;
+
           setResult({
-            value: flagValue,
+            value: actualValue as T,
             status: 'success',
             error: null,
           });
+
+          const key = flagKeyRef.current;
+          const shouldTrack =
+            typeof options.shouldTrack === 'function'
+              ? options.shouldTrack()
+              : options.shouldTrack !== false;
+
+          if (shouldTrack) {
+            ninetailed.trackVariableComponentView({
+              variable: change.value,
+              variant: { id: `Variable-${key}` },
+              componentType: 'Variable',
+              variantIndex: change.meta.variantIndex,
+              experienceId: change.meta.experienceId,
+            });
+          }
         } else {
-          // Flag not found or wrong type, use default
           setResult({
-            value: defaultValue,
+            value: defaultValueRef.current,
             status: 'success',
             error: null,
           });
         }
       } catch (error) {
         setResult({
-          value: defaultValue,
+          value: defaultValueRef.current,
           status: 'error',
           error: error instanceof Error ? error : new Error(String(error)),
         });
@@ -104,7 +138,7 @@ export function useFlag<T extends AllowedVariableType>(
     });
 
     return unsubscribe;
-  }, [ninetailed, flagKey, defaultValue]);
+  }, [ninetailed]);
 
   return result;
 }

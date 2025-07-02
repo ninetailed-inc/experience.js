@@ -1,6 +1,7 @@
 import {
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
+  HAS_SEEN_VARIABLE,
 } from '@ninetailed/experience.js-plugin-analytics';
 import {
   PROFILE_CHANGE,
@@ -8,6 +9,7 @@ import {
   SelectedVariantInfo,
   PROFILE_RESET,
   Change,
+  SerializableObject,
 } from '@ninetailed/experience.js-shared';
 import { HAS_SEEN_STICKY_COMPONENT, PAGE_HIDDEN } from '../constants';
 
@@ -19,6 +21,11 @@ type HasSeenElementAction = {
   type: typeof HAS_SEEN_ELEMENT;
   seenFor: number | undefined;
   element: Element;
+};
+
+type HasSeenVariableAction = {
+  type: typeof HAS_SEEN_VARIABLE;
+  variable: SerializableObject;
 };
 
 type PageHiddenAction = {
@@ -66,6 +73,7 @@ export type DispatchAction =
   | ProfileResetAction
   | ProfileHasSeenStickyComponentAction
   | HasSeenElementAction
+  | HasSeenVariableAction
   | ProfileHasSeenComponentAction
   | PageHiddenAction;
 

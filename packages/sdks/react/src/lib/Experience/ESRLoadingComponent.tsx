@@ -65,9 +65,17 @@ export const ESRLoadingComponent = <
     );
   }
 
-  const component = experience.components.find(
-    (component) => component.baseline.id === baseline.id
-  );
+  const component = experience.components.find((component) => {
+    if (!('id' in component.baseline)) {
+      return false;
+    }
+
+    if (!('id' in baseline)) {
+      return component.baseline.id === undefined;
+    }
+
+    return component.baseline.id === baseline.id;
+  });
 
   if (!component) {
     return (

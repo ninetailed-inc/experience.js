@@ -11,6 +11,7 @@ import {
 } from '@ninetailed/experience.js-shared';
 import { v4 as uuid } from 'uuid';
 import { buildClientNinetailedRequestContext } from '../NinetailedCorePlugin';
+import type { ComponentViewEventComponentType } from '@ninetailed/experience.js-plugin-analytics';
 
 type PageData = Partial<Omit<BuildPageEventArgs, 'ctx' | 'properties'>>;
 type TrackData = Partial<
@@ -70,6 +71,7 @@ export class EventBuilder {
 
   public component(
     componentId: string,
+    componentType: ComponentViewEventComponentType,
     experienceId?: string,
     variantIndex?: number,
     data?: ComponentData
@@ -77,6 +79,7 @@ export class EventBuilder {
     return buildComponentViewEvent({
       ...this.buildEventBase(data),
       componentId,
+      componentType: componentType || 'Entry',
       experienceId: experienceId || '',
       variantIndex: variantIndex || 0,
     });
