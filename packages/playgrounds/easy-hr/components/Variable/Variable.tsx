@@ -2,7 +2,7 @@ import { useFlag } from '@ninetailed/experience.js-react';
 import React from 'react';
 
 export const Variable: React.FC = () => {
-  const shouldTrack = () => {
+  const shouldAutoTrack = () => {
     // we can use this to conditionally track the variable
     // e.g. based on user state, feature flags, etc.
     return true;
@@ -17,7 +17,7 @@ export const Variable: React.FC = () => {
       color: 'blue',
     },
     {
-      shouldTrack,
+      shouldAutoTrack,
     }
   );
 
