@@ -5,6 +5,7 @@ import {
   Reference,
   VariantRef,
 } from '@ninetailed/experience.js';
+import { circularJsonStringify } from '@ninetailed/experience.js-shared';
 
 import { useNinetailed } from '../useNinetailed';
 import { useEffect, useState } from 'react';
@@ -103,7 +104,7 @@ export const useExperience = <
     return ninetailed.onSelectVariant({ baseline, experiences }, (state) => {
       setExperience(state as UseExperienceReturn<TBaseline, TVariant>);
     });
-  }, [JSON.stringify(baseline), JSON.stringify(experiences)]);
+  }, [circularJsonStringify(baseline), circularJsonStringify(experiences)]);
 
   return experience;
 };
