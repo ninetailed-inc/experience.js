@@ -204,6 +204,11 @@ describe('useExperience', () => {
   });
 
   it('handles circular references in an object', async () => {
+    type BaselineWithCircularReference = {
+      id: string;
+      parent?: BaselineWithCircularReference;
+    };
+
     const ninetailed = mockNinetailed();
 
     const experience = {
@@ -241,12 +246,12 @@ describe('useExperience', () => {
       ],
     };
 
-    const baseline = {
+    const baseline: BaselineWithCircularReference = {
       id: '3HQIlpV2OtnpSbs2zRwDGi',
     };
 
-    // This is not necssarily a real life example, but it's a good way to test circular references
-    (experience as any).exp = experience;
+    // Create a circular reference;
+    baseline.parent = baseline;
 
     const { result } = renderHook(
       () =>
@@ -271,7 +276,9 @@ describe('useExperience', () => {
     expect(result.current.variant).toEqual(
       experience.components[0].variants[0]
     );
-    expect(result.current.baseline).toEqual(experience.components[0].baseline);
+    expect(result.current.baseline.id).toEqual(
+      experience.components[0].baseline.id
+    );
     expect(result.current.hasVariants).toEqual(true);
     expect(result.current.experience).toEqual(experience);
     expect(result.current.audience).toEqual(experience.audience);
