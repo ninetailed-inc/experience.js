@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { AllowedVariableType } from '@ninetailed/experience.js-shared';
-import { useFlagWithManualTracking } from './useFlagWithManualTracking'; // <-- make sure to import the manual hook
+import { useFlagWithManualTracking } from './useFlagWithManualTracking';
 
 export type FlagResult<T> =
   | { status: 'loading'; value: T; error: null }
