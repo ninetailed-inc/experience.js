@@ -13,7 +13,9 @@ type UseFlagOptions = {
 
 /**
  * Hook to access a Ninetailed variable flag with built-in auto-tracking.
- * Internally reuses useFlagWithManualTracking.
+ *
+ * @remarks
+ * For manual control over tracking behavior, consider using {@link useFlagWithManualTracking}.
  */
 export function useFlag<T extends AllowedVariableType>(
   flagKey: string,
