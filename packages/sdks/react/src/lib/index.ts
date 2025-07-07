@@ -13,6 +13,7 @@ export { useNinetailed } from './useNinetailed';
 export { useProfile } from './useProfile';
 export { usePersonalize } from './usePersonalize';
 export { useFlag } from './useFlag';
+export { useFlagWithManualTracking } from './useFlagWithManualTracking';
 export { Personalize } from './Personalize';
 export type { PersonalizedComponent } from './Personalize';
 export { MergeTag } from './MergeTag';

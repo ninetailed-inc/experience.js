@@ -1,40 +1,35 @@
-import { useFlag } from '@ninetailed/experience.js-react';
 import React from 'react';
+import { useFlagWithManualTracking } from '@ninetailed/experience.js-react';
 
 export const Variable: React.FC = () => {
-  const shouldTrack = () => {
-    // we can use this to conditionally track the variable
-    // e.g. based on user state, feature flags, etc.
-    return true;
-  };
-  const { value, status } = useFlag<{
+  const [flag, track] = useFlagWithManualTracking<{
     padding: string;
     color: string;
-  }>(
-    'testing-component-tracking',
-    {
-      padding: '10px',
-      color: 'blue',
-    },
-    {
-      shouldTrack,
-    }
-  );
+  }>('testing-component-tracking', {
+    padding: '10px',
+    color: 'blue',
+  });
 
-  // If still loading, return fallback
-  if (status === 'loading') return <>{'fallback'}</>;
+  if (flag.status === 'loading') return <>Loading fallback…</>;
 
-  // Otherwise, render the value directly
+  const handleClick = () => {
+    // This is when the user is actually "affected" by the flag
+    track();
+    alert('User saw and interacted with the variable component');
+  };
+
   return (
-    <>
+    <div>
       <h1
         style={{
-          padding: value.padding,
-          color: value.color,
+          padding: flag.value.padding,
+          color: flag.value.color,
         }}
       >
         Variable Component
       </h1>
-    </>
+
+      <button onClick={handleClick}>Acknowledge Variant</button>
+    </div>
   );
 };
