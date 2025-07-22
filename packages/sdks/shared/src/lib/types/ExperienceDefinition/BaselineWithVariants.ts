@@ -11,6 +11,8 @@ export enum ComponentTypeEnum {
 enum InlineVariableComponentValueTypeEnum {
   String = 'String',
   Object = 'Object',
+  Boolean = 'Boolean',
+  Number = 'Number',
 }
 
 export type EntryReplacement<Variant extends Reference> = {
