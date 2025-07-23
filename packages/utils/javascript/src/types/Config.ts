@@ -11,8 +11,6 @@ export enum ComponentTypeEnum {
 export enum InlineVariableComponentValueTypeEnum {
   String = 'String',
   Object = 'Object',
-  Boolean = 'Boolean',
-  Number = 'Number',
 }
 
 export const entryReplacementVariantSchema = z.object({
