@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { SerializableObject } from '../SerializableObject/SerializableObject';
 import { Baseline } from './Baseline';
 import { Reference } from './Reference';
@@ -8,9 +9,11 @@ export enum ComponentTypeEnum {
   InlineVariable = 'InlineVariable',
 }
 
-enum InlineVariableComponentValueTypeEnum {
+export enum InlineVariableComponentValueTypeEnum {
   String = 'String',
   Object = 'Object',
+  Boolean = 'Boolean',
+  Number = 'Number',
 }
 
 export type EntryReplacement<Variant extends Reference> = {
@@ -19,10 +22,25 @@ export type EntryReplacement<Variant extends Reference> = {
   variants: (Variant | VariantRef)[];
 };
 
+export const allowVariableTypeSchema = z.union([
+  z.string(),
+  z.boolean(),
+  z.number(),
+  SerializableObject,
+]);
+
+export type AllowedVariableType = z.infer<typeof allowVariableTypeSchema>;
+
+export const variableVariantSchema = z.object({
+  value: allowVariableTypeSchema,
+});
+
+type InlineVariableValueType = z.infer<typeof variableVariantSchema>;
+
 export type InlineVariable = {
   type: ComponentTypeEnum.InlineVariable;
   key: string;
   valueType: InlineVariableComponentValueTypeEnum;
-  baseline: { value: string | SerializableObject };
-  variants: { value: string | SerializableObject }[];
+  baseline: InlineVariableValueType;
+  variants: InlineVariableValueType[];
 };

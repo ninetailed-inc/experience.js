@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { JsonObject } from '../generic/Json';
+import { allowVariableTypeSchema } from '../ExperienceDefinition';
 
 export enum ChangeTypes {
   Variable = 'Variable',
@@ -14,11 +14,9 @@ const ChangeBase = z.object({
   }),
 });
 
-export type AllowedVariableType = string | JsonObject;
-
 export const VariableChange = ChangeBase.extend({
   type: z.literal(ChangeTypes.Variable),
-  value: z.union([z.string(), JsonObject]),
+  value: allowVariableTypeSchema,
 });
 
 export const Change = z.discriminatedUnion('type', [VariableChange]);
