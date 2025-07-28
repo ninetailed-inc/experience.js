@@ -1,5 +1,9 @@
-import { Baseline, VariantRef } from '@ninetailed/experience.js';
-import { SerializableObject } from '@ninetailed/experience.js-shared';
+import {
+  VariantRef,
+  Baseline,
+  variableVariantSchema,
+  InlineVariableComponentValueTypeEnum,
+} from '@ninetailed/experience.js-shared';
 
 import { z } from 'zod';
 
@@ -8,18 +12,9 @@ export enum ComponentTypeEnum {
   InlineVariable = 'InlineVariable',
 }
 
-export enum InlineVariableComponentValueTypeEnum {
-  String = 'String',
-  Object = 'Object',
-}
-
 export const entryReplacementVariantSchema = z.object({
   id: z.string(),
   hidden: z.boolean().default(false),
-});
-
-export const variableVariantSchema = z.object({
-  value: z.union([z.string(), SerializableObject]),
 });
 
 export const EntryReplacementComponentSchema = z.object({
