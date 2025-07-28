@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SerializableObject } from '../SerializableObject/SerializableObject';
+import { JsonObject } from '../generic/Json';
 import { Baseline } from './Baseline';
 import { Reference } from './Reference';
 import { VariantRef } from './VariantRef';
@@ -26,7 +26,7 @@ export const allowVariableTypeSchema = z.union([
   z.string(),
   z.boolean(),
   z.number(),
-  SerializableObject,
+  JsonObject,
 ]);
 
 export type AllowedVariableType = z.infer<typeof allowVariableTypeSchema>;
