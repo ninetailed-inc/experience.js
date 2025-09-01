@@ -1,4 +1,4 @@
-import { SerializableObject } from '@ninetailed/experience.js-shared';
+import { allowVariableTypeSchema } from '@ninetailed/experience.js-shared';
 import { z } from 'zod';
 
 export type ComponentViewEventComponentType = 'Entry' | 'Variable';
@@ -50,7 +50,7 @@ export type ElementSeenPayload = Omit<
 
 // Variable specific schema
 export const VariableSeenPayloadSchema = BaseSeenPayloadSchema.extend({
-  variable: SerializableObject,
+  variable: allowVariableTypeSchema,
   experienceId: z.string().optional(),
 });
 

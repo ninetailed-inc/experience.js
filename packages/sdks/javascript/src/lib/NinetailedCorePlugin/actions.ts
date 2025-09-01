@@ -9,7 +9,7 @@ import {
   SelectedVariantInfo,
   PROFILE_RESET,
   Change,
-  SerializableObject,
+  AllowedVariableType,
 } from '@ninetailed/experience.js-shared';
 import { HAS_SEEN_STICKY_COMPONENT, PAGE_HIDDEN } from '../constants';
 
@@ -25,7 +25,7 @@ type HasSeenElementAction = {
 
 type HasSeenVariableAction = {
   type: typeof HAS_SEEN_VARIABLE;
-  variable: SerializableObject;
+  variable: AllowedVariableType;
 };
 
 type PageHiddenAction = {
