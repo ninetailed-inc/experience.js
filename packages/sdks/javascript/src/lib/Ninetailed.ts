@@ -23,7 +23,7 @@ import {
   isTrackEvent,
   isIdentifyEvent,
   isComponentViewEvent,
-  SerializableObject,
+  allowVariableTypeSchema,
 } from '@ninetailed/experience.js-shared';
 
 import {
@@ -441,7 +441,9 @@ export class Ninetailed implements NinetailedInstance {
   public trackVariableComponentView: TrackVariableComponentView = (
     properties
   ) => {
-    const validatedVariable = SerializableObject.parse(properties.variable);
+    const validatedVariable = allowVariableTypeSchema.parse(
+      properties.variable
+    );
 
     return this.instance.dispatch({
       ...properties,
