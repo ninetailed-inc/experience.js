@@ -84,8 +84,7 @@ export class NinetailedInsightsPlugin
   public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    const { element, experience, variant, variantIndex, componentType } =
-      payload;
+    const { element, experience, variant, variantIndex } = payload;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { element: _, ...elementPayloadWithoutElement } = payload;
@@ -125,7 +124,7 @@ export class NinetailedInsightsPlugin
     this.instance?.dispatch({
       type: COMPONENT_START,
       componentId,
-      componentType,
+      componentType: 'Entry',
       variantIndex,
       experienceId: experience?.id,
     });
@@ -162,7 +161,7 @@ export class NinetailedInsightsPlugin
   public override onHasSeenVariable: EventHandler<VariableSeenPayload> = ({
     payload,
   }) => {
-    const { variant, variantIndex, componentType, experienceId } = payload;
+    const { variant, variantIndex, experienceId } = payload;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { variable: _, ...variablePayloadWithoutVariable } = payload;
@@ -202,7 +201,7 @@ export class NinetailedInsightsPlugin
     this.instance?.dispatch({
       type: COMPONENT_START,
       componentId,
-      componentType,
+      componentType: 'Variable',
       variantIndex,
       experienceId,
     });
