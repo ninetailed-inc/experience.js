@@ -104,7 +104,6 @@ const IDENTIFY_EVENT_HANDLER =
 export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
   private _instance: AnalyticsInstance | null = null;
-  private _ready = false;
 
   private readonly config: PrivacyConfig;
   private readonly acceptedConsentConfig: PrivacyConfig;
@@ -143,6 +142,10 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   }
 
   private isConsentGiven() {
+    // Pre-init can call isConsentGiven() via getConfig(); treat as "no consent" instead of throwing.
+    if (!this._instance) {
+      return false;
+    }
     const consent = this.instance.storage.getItem(CONSENT);
     return consent && consent === 'accepted';
   }
@@ -205,16 +208,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     await this.enableFeatures(this.getConfig().enabledFeatures);
 
     this.registerWindowHandlers();
-
-    this._ready = true;
-  };
-
-  public ready = async () => {
-    return this._ready;
-  };
-
-  public loaded = () => {
-    return this._ready;
   };
 
   private handleEventStart =
