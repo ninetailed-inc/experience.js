@@ -104,7 +104,6 @@ const IDENTIFY_EVENT_HANDLER =
 export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   public name = PLUGIN_NAME;
   private _instance: AnalyticsInstance | null = null;
-  private _ready = false;
 
   private readonly config: PrivacyConfig;
   private readonly acceptedConsentConfig: PrivacyConfig;
@@ -205,16 +204,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     await this.enableFeatures(this.getConfig().enabledFeatures);
 
     this.registerWindowHandlers();
-
-    this._ready = true;
-  };
-
-  public ready = async () => {
-    return this._ready;
-  };
-
-  public loaded = () => {
-    return this._ready;
   };
 
   private handleEventStart =
@@ -226,6 +215,9 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ({ payload, abort }: { payload: any; abort: any }) => {
       if (!this.getConfig().allowedEvents.includes(eventType)) {
+        console.warn(
+          `[Ninetailed Privacy Plugin] The ${eventType} event was blocked, as it is not allowed to send by your configuration.`
+        );
         this.queue.push(payload);
 
         return abort();
