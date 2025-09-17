@@ -25,6 +25,5 @@ export const TRACK_COMPONENT_VIEW_PROPERTIES = {
     id: 'test',
     test: 'test',
   },
-  componentType: 'Entry' as const,
   variantIndex: 1,
 };

@@ -5,7 +5,6 @@ export type ComponentViewEventComponentType = 'Entry' | 'Variable';
 
 // Base schema with shared properties
 const BaseSeenPayloadSchema = z.object({
-  componentType: z.union([z.literal('Entry'), z.literal('Variable')]),
   variant: z.object({ id: z.string() }).catchall(z.unknown()),
   variantIndex: z.number(),
 });
@@ -40,6 +39,7 @@ export const ElementSeenPayloadSchema = BaseSeenPayloadSchema.extend({
       description:
         'This is the default all visitors audience as no audience was set.',
     }),
+  componentType: z.literal('Entry').default('Entry'),
   seenFor: z.number().optional().default(0),
 });
 
@@ -50,6 +50,7 @@ export type ElementSeenPayload = Omit<
 
 // Variable specific schema
 export const VariableSeenPayloadSchema = BaseSeenPayloadSchema.extend({
+  componentType: z.literal('Variable').default('Variable'),
   variable: allowVariableTypeSchema,
   experienceId: z.string().optional(),
 });

@@ -26,12 +26,10 @@ export type SanitizedElementSeenPayload = {
   selectedVariantSelector: string;
   selectedVariant: ElementSeenPayload['variant'];
   selectedVariantIndex: ElementSeenPayload['variantIndex'];
-  componentType: NonNullable<ElementSeenPayload['componentType']>;
 };
 
 export type SanitizedVariableSeenPayload = {
   componentId: string;
-  componentType: VariableSeenPayload['componentType'];
   selectedVariant: VariableSeenPayload['variant'];
   selectedVariantIndex: VariableSeenPayload['variantIndex'];
   selectedVariantSelector: string;
@@ -128,7 +126,6 @@ export abstract class NinetailedAnalyticsPlugin<
     const sanitizedTrackExperienceProperties = {
       experience: sanitizedPayload.data.experience,
       audience: sanitizedPayload.data.audience,
-      componentType: sanitizedPayload.data.componentType,
       selectedVariant: sanitizedPayload.data.variant,
       selectedVariantIndex: sanitizedPayload.data.variantIndex,
       selectedVariantSelector,
@@ -144,14 +141,19 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
+    const insightsPayload = {
+      ...sanitizedTrackExperienceProperties,
+      componentType: 'Entry',
+    };
+
     this.seenElements.set(payload.element, [
       ...elementPayloads,
-      sanitizedTrackExperienceProperties,
+      insightsPayload,
     ]);
 
     this.onTrackExperience(
-      sanitizedTrackExperienceProperties,
-      this.getHasSeenExperienceEventPayload(sanitizedTrackExperienceProperties)
+      insightsPayload,
+      this.getHasSeenExperienceEventPayload(insightsPayload)
     );
   };
 
@@ -186,15 +188,19 @@ export abstract class NinetailedAnalyticsPlugin<
 
     const sanitizedTrackVariableProperties: SanitizedVariableSeenPayload = {
       componentId,
-      componentType: sanitizedPayload.data.componentType,
       selectedVariant: sanitizedPayload.data.variant,
       selectedVariantIndex: sanitizedPayload.data.variantIndex,
       selectedVariantSelector,
     };
+    // Add type only for Insights API payload
+    const insightsPayload = {
+      ...sanitizedTrackVariableProperties,
+      componentType: 'Variable',
+    };
 
     const isVariableAlreadySeenWithPayload = variablePayloads.some(
       (variablePayload) => {
-        return isEqual(variablePayload, sanitizedTrackVariableProperties);
+        return isEqual(variablePayload, insightsPayload);
       }
     );
 
@@ -202,10 +208,7 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
-    this.seenVariables.set(variableKey, [
-      ...variablePayloads,
-      sanitizedTrackVariableProperties,
-    ]);
+    this.seenVariables.set(variableKey, [...variablePayloads, insightsPayload]);
   };
 
   /**
