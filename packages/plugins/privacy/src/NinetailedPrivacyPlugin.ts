@@ -142,6 +142,10 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   }
 
   private isConsentGiven() {
+    // Pre-init can call isConsentGiven() via getConfig(); treat as "no consent" instead of throwing.
+    if (!this._instance) {
+      return false;
+    }
     const consent = this.instance.storage.getItem(CONSENT);
     return consent && consent === 'accepted';
   }
@@ -215,9 +219,6 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ({ payload, abort }: { payload: any; abort: any }) => {
       if (!this.getConfig().allowedEvents.includes(eventType)) {
-        console.warn(
-          `[Ninetailed Privacy Plugin] The ${eventType} event was blocked, as it is not allowed to send by your configuration.`
-        );
         this.queue.push(payload);
 
         return abort();
