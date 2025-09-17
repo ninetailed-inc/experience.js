@@ -147,6 +147,7 @@ Object {
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-preview-bridge": "*",
     "@ninetailed/experience.js-shared": "*",
+    "radash": "10.9.0",
   },
   "description": "Ninetailed SDK plugin for preview",
   "keywords": Array [
