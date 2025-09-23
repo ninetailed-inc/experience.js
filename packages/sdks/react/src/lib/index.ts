@@ -32,3 +32,6 @@ export type {
   ExperienceComponent,
   ExperienceLoadingComponent,
 } from './Experience';
+
+export { EntryAnalytics } from './EntryAnalytics';
+export type { EntryAnalyticsProps } from './EntryAnalytics';

@@ -1,4 +1,4 @@
-import { ContentfulClientApi, createClient } from 'contentful';
+import { ContentfulClientApi, createClient, Entry } from 'contentful';
 import { IPage, IPageFields } from '@/types/contentful';
 import {
   AudienceEntryLike,
@@ -48,6 +48,29 @@ export async function getPage(pageParams: IPageQueryParams): Promise<IPage> {
   const entries = await client.getEntries<IPageFields>(query);
   const [page] = entries.items as IPage[];
   return page;
+}
+
+interface IEntryQueryParams {
+  name: string;
+  contentType: string;
+  preview?: boolean;
+}
+
+const getEntryQuery = (entryParams: IEntryQueryParams) => {
+  return {
+    limit: 1,
+    include: 10,
+    'fields.internalName': entryParams.name,
+    content_type: entryParams.contentType,
+  };
+};
+
+export async function getEntry<T>(entryParams: IEntryQueryParams) {
+  const query = getEntryQuery(entryParams);
+  const client = getClient(!!entryParams.preview);
+  const entries = await client.getEntries<T>(query);
+  const [entry = null] = entries.items as Entry<T>[];
+  return entry;
 }
 
 interface IPagesOfTypeQueryParams {
