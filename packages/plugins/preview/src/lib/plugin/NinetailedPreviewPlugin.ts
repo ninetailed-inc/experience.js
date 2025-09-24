@@ -224,37 +224,38 @@ export class NinetailedPreviewPlugin
       return;
     }
 
-    this.experienceVariantIndexOverwrites = Object.entries(
-      this.experienceVariantIndexOverwrites
-    )
-      .filter(([key, _]) => {
-        return !this.experiences
-          .filter((experience) => experience.audience?.id === id)
-          .map((experience) => experience.id)
-          .includes(key);
-      })
-      .reduce((acc, [key, value]) => {
-        return {
-          ...acc,
-          [key]: value,
-        };
-      }, {});
+    // Identify all experiences that belong to this audience
+    const experiencesToReset = this.experiences.filter(
+      (experience) => experience.audience?.id === id
+    );
 
-    this.audienceOverwrites = {
-      ...this.audienceOverwrites,
-      [id]: false,
-    };
-
-    this.onChange();
-
-    this.experiences
-      .filter((experience) => experience.audience?.id === id)
-      .forEach((experience) => {
-        this.setExperienceVariant({
-          experienceId: experience.id,
-          variantIndex: 0,
-        });
+    // 1. Reset each experience to baseline BEFORE removing the audience so the guard in setExperienceVariant passes
+    experiencesToReset.forEach((experience) => {
+      this.setExperienceVariant({
+        experienceId: experience.id,
+        variantIndex: 0,
       });
+    });
+
+    // 2. Remove experience variant index overwrites for these experiences
+    const experienceIdsToReset = experiencesToReset.map((e) => e.id);
+    this.experienceVariantIndexOverwrites = Object.fromEntries(
+      Object.entries(this.experienceVariantIndexOverwrites).filter(
+        ([key]) => !experienceIdsToReset.includes(key)
+      )
+    );
+
+    // 3. Remove any variable overwrites that were set for these experiences (prevents being stuck on a variant value)
+    if (experienceIdsToReset.length > 0) {
+      this.variableOverwrites = Object.fromEntries(
+        Object.entries(this.variableOverwrites).filter(([, change]) => {
+          return !(
+            change.meta?.experienceId &&
+            experienceIdsToReset.includes(change.meta.experienceId)
+          );
+        })
+      );
+    }
 
     this.audienceOverwrites = {
       ...this.audienceOverwrites,
@@ -276,6 +277,33 @@ export class NinetailedPreviewPlugin
       return;
     }
 
+    // Identify all experiences that belong to this audience
+    const experiencesToReset = this.experiences.filter(
+      (experience) => experience.audience?.id === id
+    );
+
+    if (experiencesToReset.length > 0) {
+      const experienceIdsToReset = experiencesToReset.map((e) => e.id);
+
+      // 1. Clear any variable overwrites that were set for these experiences (allows natural evaluation)
+      this.variableOverwrites = Object.fromEntries(
+        Object.entries(this.variableOverwrites).filter(([, change]) => {
+          return !(
+            change.meta?.experienceId &&
+            experienceIdsToReset.includes(change.meta.experienceId)
+          );
+        })
+      );
+
+      // 2. Clear experience variant index overwrites for these experiences (allows natural variant selection)
+      this.experienceVariantIndexOverwrites = Object.fromEntries(
+        Object.entries(this.experienceVariantIndexOverwrites).filter(
+          ([key]) => !experienceIdsToReset.includes(key)
+        )
+      );
+    }
+
+    // 3. Remove audience override (allows natural audience evaluation)
     const { [id]: _, ...audienceOverwrites } = this.audienceOverwrites;
     this.audienceOverwrites = audienceOverwrites;
 
@@ -483,13 +511,15 @@ export class NinetailedPreviewPlugin
         (component) => component.baseline.id === baseline.id
       );
 
-      // Get the selected variant index
       const variantIndex =
         this.pluginApi.experienceVariantIndexes[experience.id];
 
-      // Handle variable components for this experience (NEW CODE)
-      if (variantIndex !== undefined) {
-        // Process all variable components for this experience
+      // Natural evaluation should not create overwrites, letting the core SDK handle variable evaluation
+      if (
+        variantIndex !== undefined &&
+        this.experienceVariantIndexOverwrites[experience.id] !== undefined
+      ) {
+        // Only set variable overwrites when there's an explicit preview override for this experience
         const variableComponents = experience.components.filter(
           (component): component is InlineVariable =>
             component.type === ComponentTypeEnum.InlineVariable
