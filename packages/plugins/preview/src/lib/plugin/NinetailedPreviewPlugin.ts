@@ -501,13 +501,13 @@ export class NinetailedPreviewPlugin
           let value;
 
           if (variantIndex === 0) {
-            value = component.baseline;
+            value = component.baseline.value;
           } else {
             const variant = component.variants[variantIndex - 1];
             value =
               variant && 'value' in variant
                 ? variant.value
-                : component.baseline;
+                : component.baseline.value;
           }
 
           // Set the variable in our changes system

@@ -97,12 +97,12 @@ export function useFlagWithManualTracking<T extends AllowedVariableType>(
 
         const rawValue = change.value;
 
+        // Unwrap { value: ... } structure if present
         const actualValue =
           rawValue &&
           typeof rawValue === 'object' &&
           rawValue !== null &&
-          'value' in rawValue &&
-          typeof (rawValue as Record<string, unknown>)['value'] === 'object'
+          'value' in rawValue
             ? (rawValue as Record<string, unknown>)['value']
             : rawValue;
 
