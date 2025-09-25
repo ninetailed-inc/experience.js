@@ -10,12 +10,15 @@ import {
   getExperiments,
   getAllExperiences,
   getAllAudiences,
+  getEntry,
 } from '@/lib/api';
 import { PAGE_CONTENT_TYPES } from '@/lib/constants';
-import { IPage } from '@/types/contentful';
+import { ICta, IPage } from '@/types/contentful';
 import { Variable } from '@/components/Variable/Variable';
+import { CTA } from '@/components/Cta';
+import { EntryAnalytics } from '@ninetailed/experience.js-react';
 
-const Page = ({ page }: { page: IPage }) => {
+const Page = ({ page, entry }: { page: IPage; entry: ICta }) => {
   if (!page) {
     return null;
   }
@@ -35,18 +38,26 @@ const Page = ({ page }: { page: IPage }) => {
         nofollow={page.fields.seo?.fields.no_follow as boolean}
         noindex={page.fields.seo?.fields.no_index as boolean}
       />
+
       <div className="w-full h-full flex flex-col">
         {/* @ts-ignore */}
         {banner && <BlockRenderer block={banner} />}
+
         {/* @ts-ignore */}
         {navigation && <BlockRenderer block={navigation} />}
+
         <main className="grow">
           <Variable />
+
           {/* @ts-ignore */}
           <BlockRenderer block={sections} />
-        </main>
-        {/* @ts-ignore */}
 
+          {entry && (
+            <EntryAnalytics {...entry} component={CTA} id={entry.sys.id} />
+          )}
+        </main>
+
+        {/* @ts-ignore */}
         {footer && <BlockRenderer block={footer} />}
       </div>
     </>
@@ -57,11 +68,15 @@ export const getStaticProps: GetStaticProps = async ({ params, preview }) => {
   const rawSlug = get(params, 'slug', []) as string[];
   const slug = rawSlug.join('/');
 
-  const [page, experiments, experiences, audiences] = await Promise.all([
+  const [page, entry, experiments, experiences, audiences] = await Promise.all([
     getPage({
       slug: slug === '' ? '/' : slug,
       pageContentType: PAGE_CONTENT_TYPES.PAGE,
       childPageContentType: PAGE_CONTENT_TYPES.LANDING_PAGE,
+    }),
+    getEntry<ICta>({
+      name: 'Arbitrary CTA',
+      contentType: 'cta',
     }),
     getExperiments(),
     getAllExperiences(),
@@ -71,6 +86,7 @@ export const getStaticProps: GetStaticProps = async ({ params, preview }) => {
   return {
     props: {
       page,
+      entry,
       ninetailed: {
         experiments,
         preview: { experiences, audiences },
