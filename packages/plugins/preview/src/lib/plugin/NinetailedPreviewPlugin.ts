@@ -8,7 +8,6 @@ import {
   AllowedVariableType,
   EntryReplacement,
   ComponentTypeEnum,
-  InlineVariable,
 } from '@ninetailed/experience.js-shared';
 import {
   ExperienceConfiguration,
@@ -224,39 +223,6 @@ export class NinetailedPreviewPlugin
       return;
     }
 
-    // Identify all experiences that belong to this audience
-    const experiencesToReset = this.experiences.filter(
-      (experience) => experience.audience?.id === id
-    );
-
-    // 1. Reset each experience to baseline BEFORE removing the audience so the guard in setExperienceVariant passes
-    experiencesToReset.forEach((experience) => {
-      this.setExperienceVariant({
-        experienceId: experience.id,
-        variantIndex: 0,
-      });
-    });
-
-    // 2. Remove experience variant index overwrites for these experiences
-    const experienceIdsToReset = experiencesToReset.map((e) => e.id);
-    this.experienceVariantIndexOverwrites = Object.fromEntries(
-      Object.entries(this.experienceVariantIndexOverwrites).filter(
-        ([key]) => !experienceIdsToReset.includes(key)
-      )
-    );
-
-    // 3. Remove any variable overwrites that were set for these experiences (prevents being stuck on a variant value)
-    if (experienceIdsToReset.length > 0) {
-      this.variableOverwrites = Object.fromEntries(
-        Object.entries(this.variableOverwrites).filter(([, change]) => {
-          return !(
-            change.meta?.experienceId &&
-            experienceIdsToReset.includes(change.meta.experienceId)
-          );
-        })
-      );
-    }
-
     this.audienceOverwrites = {
       ...this.audienceOverwrites,
       [id]: false,
@@ -413,7 +379,8 @@ export class NinetailedPreviewPlugin
     () => {
       if (
         !this.isActiveInstance ||
-        Object.keys(this.variableOverwrites).length === 0
+        (Object.keys(this.variableOverwrites).length === 0 &&
+          Object.keys(this.audienceOverwrites).length === 0)
       ) {
         return undefined;
       }
@@ -425,8 +392,19 @@ export class NinetailedPreviewPlugin
           return { changes: inputChanges };
         }
 
-        // Calculate and return overridden changes on demand instead of storing them
-        return { changes: this.getEffectiveChanges(inputChanges) };
+        const filteredChanges = inputChanges.filter((change) => {
+          const experienceId = change.meta?.experienceId;
+          if (!experienceId) return true;
+
+          const experience = this.experiences.find(
+            (e) => e.id === experienceId
+          );
+          if (!experience?.audience?.id) return true;
+
+          return this.audienceOverwrites[experience.audience.id] !== false;
+        });
+
+        return { changes: this.getEffectiveChanges(filteredChanges) };
       };
     };
 
@@ -513,42 +491,6 @@ export class NinetailedPreviewPlugin
 
       const variantIndex =
         this.pluginApi.experienceVariantIndexes[experience.id];
-
-      // Natural evaluation should not create overwrites, letting the core SDK handle variable evaluation
-      if (
-        variantIndex !== undefined &&
-        this.experienceVariantIndexOverwrites[experience.id] !== undefined
-      ) {
-        // Only set variable overwrites when there's an explicit preview override for this experience
-        const variableComponents = experience.components.filter(
-          (component): component is InlineVariable =>
-            component.type === ComponentTypeEnum.InlineVariable
-        );
-
-        // Set variable values based on the selected variant index
-        variableComponents.forEach((component) => {
-          const key = component.key;
-          let value;
-
-          if (variantIndex === 0) {
-            value = component.baseline.value;
-          } else {
-            const variant = component.variants[variantIndex - 1];
-            value =
-              variant && 'value' in variant
-                ? variant.value
-                : component.baseline.value;
-          }
-
-          // Set the variable in our changes system
-          this.setVariableValue({
-            experienceId: experience.id,
-            key,
-            value,
-            variantIndex,
-          });
-        });
-      }
 
       // Continue with entry replacement handling
       if (!baselineComponent) {
@@ -759,7 +701,7 @@ export class NinetailedPreviewPlugin
   }
 
   /**
-   * Get effective changes by applying overrides - compute on demand
+   * Get effective changes by applying overwrites - compute on demand
    */
   private getEffectiveChanges(inputChanges: Change[] = this.changes): Change[] {
     if (!inputChanges || Object.keys(this.variableOverwrites).length === 0) {
