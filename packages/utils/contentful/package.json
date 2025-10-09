@@ -2,14 +2,6 @@
   "name": "@ninetailed/experience.js-utils-contentful",
   "version": "7.6.0-beta.1",
   "description": "Contentful utilities for Experience.js",
-  "dependencies": {
-    "contentful": "^9.1.32",
-    "@contentful/rich-text-types": "16.2.0",
-    "@ninetailed/experience.js-utils": "*",
-    "@ninetailed/experience.js": "*",
-    "@ninetailed/experience.js-shared": "*",
-    "zod": "3.23.0"
-  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -21,5 +13,26 @@
     "ninetailed",
     "personalization",
     "a/b testing"
-  ]
+  ],
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.cjs.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.cjs.d.ts",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "default": "./index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "contentful": "^9.1.32",
+    "@contentful/rich-text-types": "16.2.0",
+    "@ninetailed/experience.js-utils": "*",
+    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "*",
+    "zod": "3.23.0"
+  }
 }

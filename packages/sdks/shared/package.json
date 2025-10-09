@@ -18,5 +18,18 @@
     "i18n-iso-countries": "7.5.0",
     "murmurhash-js": "1.0.0",
     "radash": "10.9.0"
-  }
+  },
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.cjs.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.cjs.d.ts",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "default": "./index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
 }

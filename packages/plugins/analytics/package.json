@@ -14,6 +14,19 @@
     "url": "https://github.com/ninetailed-inc/experience.js.git",
     "directory": "packages/plugins/analytics"
   },
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.cjs.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.cjs.d.ts",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "default": "./index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "dependencies": {
     "@anatine/zod-mock": "3.8.1",
     "@ninetailed/experience.js-shared": "*",

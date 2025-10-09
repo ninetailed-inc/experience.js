@@ -14,6 +14,19 @@
     "personalization",
     "a/b testing"
   ],
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.cjs.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.cjs.d.ts",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "default": "./index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "dependencies": {
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js": "*",
