@@ -10,6 +10,15 @@ Object {
     "zod": "3.23.0",
   },
   "description": "Ninetailed SDK plugin for analytics",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "analytics",
     "ninetailed",
@@ -25,6 +34,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -60,6 +71,15 @@ Object {
     "@ninetailed/experience.js-shared": "*",
   },
   "description": "Ninetailed SDK plugin for Google Analytics",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "google-analytics",
     "ninetailed",
@@ -75,6 +95,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -150,6 +172,15 @@ Object {
     "radash": "10.9.0",
   },
   "description": "Ninetailed SDK plugin for preview",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "preview",
     "ninetailed",
@@ -165,6 +196,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -176,6 +209,15 @@ Object {
     "zoid": "9.0.86",
   },
   "description": "Ninetailed SDK plugin for Experience.js preview bridge",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "preview-bridge",
     "ninetailed",
@@ -191,6 +233,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -271,6 +315,15 @@ Object {
     "uuid": "9.0.0",
   },
   "description": "Ninetailed SDK plugin for SSR",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "ssr",
     "ninetailed",
@@ -286,6 +339,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -360,6 +415,15 @@ Object {
     "@ninetailed/experience.js-shared": "*",
   },
   "description": "Ninetailed SDK for Next.js",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "nextjs",
     "ninetailed",
@@ -379,6 +443,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -389,6 +455,15 @@ Object {
     "next": "13.3.0",
   },
   "description": "Ninetailed SDK for Next.js ESR",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "nextjs-esr",
     "ninetailed",
@@ -408,6 +483,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -451,6 +528,15 @@ Object {
     "react-is": "18.2.0",
   },
   "description": "Ninetailed SDK for React",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "react",
     "ninetailed",
@@ -469,6 +555,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -487,6 +575,15 @@ Object {
     "zod": "3.23.0",
   },
   "description": "Shared code for Experience.js",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "license": "MIT",
   "main": "./index.cjs.js",
   "module": "./index.esm.js",
@@ -496,6 +593,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -511,6 +610,15 @@ Object {
     "zod": "3.23.0",
   },
   "description": "Contentful utilities for Experience.js",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "keywords": Array [
     "contentful",
     "ninetailed",
@@ -526,6 +634,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -538,6 +648,15 @@ Object {
     "zod": "3.23.0",
   },
   "description": "Ninetailed Experience.js Utils",
+  "exports": Object {
+    ".": Object {
+      "default": "./index.esm.js",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "types": "./index.cjs.d.ts",
+    },
+    "./package.json": "./package.json",
+  },
   "license": "MIT",
   "main": "./index.cjs.js",
   "module": "./index.esm.js",
@@ -547,6 +666,8 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
+  "sideEffects": false,
+  "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
