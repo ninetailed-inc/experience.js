@@ -2,13 +2,6 @@
   "name": "@ninetailed/experience.js-next-esr",
   "version": "7.6.0-beta.1",
   "description": "Ninetailed SDK for Next.js ESR",
-  "dependencies": {
-    "next": "13.3.0"
-  },
-  "peerDependencies": {
-    "@ninetailed/experience.js-shared": "*",
-    "uuid": "9.0.0"
-  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,5 +13,25 @@
     "ninetailed",
     "personalization",
     "a/b testing"
-  ]
+  ],
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.cjs.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.cjs.d.ts",
+      "import": "./index.esm.js",
+      "require": "./index.cjs.js",
+      "default": "./index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "next": "13.3.0"
+  },
+  "peerDependencies": {
+    "@ninetailed/experience.js-shared": "*",
+    "uuid": "9.0.0"
+  }
 }

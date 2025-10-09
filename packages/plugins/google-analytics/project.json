@@ -11,9 +11,7 @@
         "outputPath": "dist/packages/plugins/google-analytics",
         "tsConfig": "packages/plugins/google-analytics/tsconfig.lib.json",
         "project": "packages/plugins/google-analytics/package.json",
-        "entryFile": "packages/plugins/google-analytics/src/index.ts",
-        "external": [],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "main": "packages/plugins/google-analytics/src/index.ts",
         "format": ["cjs", "esm"],
         "assets": [
           {
