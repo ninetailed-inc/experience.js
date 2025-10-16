@@ -24,6 +24,7 @@ import {
   isIdentifyEvent,
   isComponentViewEvent,
   allowVariableTypeSchema,
+  circularJsonStringify,
 } from '@ninetailed/experience.js-shared';
 
 import {
@@ -505,7 +506,8 @@ export class Ninetailed implements NinetailedInstance {
     // Check if the payload is already being observed for this element
     const isPayloadAlreadyObserved = existingPayloads.some(
       (existingPayload) =>
-        JSON.stringify(existingPayload) === JSON.stringify(payload)
+        circularJsonStringify(existingPayload) ===
+        circularJsonStringify(payload)
     );
 
     if (isPayloadAlreadyObserved) {
