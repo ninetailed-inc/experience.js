@@ -1,8 +1,11 @@
 import { z } from 'zod';
 
-import { getAlpha2Codes } from 'i18n-iso-countries';
+import countries from 'i18n-iso-countries';
 
-export const Alpha2Code = z.enum(['unknown', ...Object.keys(getAlpha2Codes())]);
+export const Alpha2Code = z.enum([
+  'unknown',
+  ...Object.keys(countries.getAlpha2Codes()),
+]);
 export type Alpha2Code = z.infer<typeof Alpha2Code>;
 
 export const GeoLocation = z.object({
