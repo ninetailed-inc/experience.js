@@ -80,7 +80,7 @@ export class EventBuilder {
       ...this.buildEventBase(data),
       componentId,
       componentType: componentType || 'Entry',
-      experienceId: experienceId || '',
+      experienceId,
       variantIndex: variantIndex || 0,
     });
   }
