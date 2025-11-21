@@ -107,6 +107,9 @@ export abstract class NinetailedAnalyticsPlugin<
   public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
+    // Safe parsing the payload not only ensures type safety,
+    // but also strips out any additional fields that the analytics library attaches to an event's payload. (i.e. meta, _)
+    // See the `Payload` type in plugins/analytics/src/lib/NinetailedPlugin.ts for more details.
     const sanitizedPayload = ElementSeenPayloadSchema.safeParse(payload);
 
     if (!sanitizedPayload.success) {
