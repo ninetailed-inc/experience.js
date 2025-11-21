@@ -33,14 +33,14 @@ type Payload<CustomPayload> = CustomPayload & {
   /** 
     This object is automatically injected by the analytics library when events are dispatched.
     
-    Note: When compairing two payloads, make sure the `meta` object is not included. 
+    Note: When comparing two payloads, make sure the `meta` object is not included. 
     Its properties will be different even for events that are otherwise identical.
   */
   meta: PayloadMetaProperties;
   /**
    * This object is automatically injected by the analytics library when events are dispatched.
    *
-   * Note: When compairing two payloads, make sure the `_` object is not included.
+   * Note: When comparing two payloads, make sure the `_` object is not included.
    * It's meant for internal use inside the analytics library only, and its properties should not affect event equality.
    */
   _: PayloadPrivateProperties;
