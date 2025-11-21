@@ -30,12 +30,12 @@ type PayloadPrivateProperties = {
  * Represents the `payload` object of an event dispatched by the analytics library.
  */
 type Payload<CustomPayload> = CustomPayload & {
-  /** 
-    This object is automatically injected by the analytics library when events are dispatched.
-    
-    Note: When comparing two payloads, make sure the `meta` object is not included. 
-    Its properties will be different even for events that are otherwise identical.
-  */
+  /**
+   * This object is automatically injected by the analytics library when events are dispatched.
+   *
+   * Note: When comparing two payloads, make sure the `meta` object is not included.
+   * Its properties will be different even for events that are otherwise identical.
+   */
   meta: PayloadMetaProperties;
   /**
    * This object is automatically injected by the analytics library when events are dispatched.
