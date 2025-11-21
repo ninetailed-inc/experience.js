@@ -1,7 +1,10 @@
 import { Analytics } from 'analytics';
 import { generateMock } from '@anatine/zod-mock';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { ElementSeenPayloadSchema } from './ElementSeenPayload';
+import {
+  type ElementSeenPayload,
+  ElementSeenPayloadSchema,
+} from './ElementSeenPayload';
 import { Template } from './NinetailedAnalyticsPlugin';
 import { TestAnalyticsPlugin } from '../../test';
 import { AnalyticsInstance } from './AnalyticsInstance';
@@ -29,14 +32,19 @@ describe('NinetailedAnalyticsPlugin', () => {
     ({ analytics, testAnalyticsPlugin } = setup());
   });
 
-  const generateHasSeenElementMock = () => {
+  const generateHasSeenElementMock = (): ElementSeenPayload => {
     const mock = generateMock(ElementSeenPayloadSchema);
+
     return {
       ...mock,
       componentType: 'Entry',
       element: document.createElement('div'),
       seenFor: testAnalyticsPlugin.getComponentViewTrackingThreshold(),
-      experience: { ...mock.experience, id: 'experience-1' },
+      experience: {
+        ...mock.experience,
+        type: 'nt_experiment',
+        id: 'experience-1',
+      },
     };
   };
 
@@ -65,6 +73,121 @@ describe('NinetailedAnalyticsPlugin', () => {
           selectedVariant: data.variant,
           selectedVariantIndex: 1,
           selectedVariantSelector: 'variant 1',
+        },
+        {}
+      );
+    });
+
+    it(`should call onTrackExperience multiple times when the same element is seen with different payloads`, async () => {
+      // Emulates the same element being seen two times but with different payloads.
+      // For example, an element is seen first as part of one experience, then reenters the viewport as part of another experience.
+
+      const element = document.createElement('div');
+
+      const basePayload = generateHasSeenElementMock();
+
+      // payload1 and payload2 differ only by experience
+
+      const payload1: ElementSeenPayload = {
+        ...basePayload,
+        element,
+        experience: {
+          ...basePayload.experience,
+          id: 'experience-1',
+          type: 'nt_experiment',
+        },
+      };
+
+      const payload2: ElementSeenPayload = {
+        ...basePayload,
+        element,
+        experience: {
+          ...basePayload.experience,
+          id: 'experience-2',
+          type: 'nt_experiment',
+        },
+      };
+
+      await analytics.dispatch({
+        type: HAS_SEEN_ELEMENT,
+        ...payload1,
+      });
+
+      await analytics.dispatch({
+        type: HAS_SEEN_ELEMENT,
+        ...payload2,
+      });
+
+      await sleep(5);
+
+      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+        2
+      );
+
+      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        {
+          experience: payload1.experience,
+          audience: payload1.audience,
+          componentType: 'Entry',
+          selectedVariant: payload1.variant,
+          selectedVariantIndex: payload1.variantIndex,
+          selectedVariantSelector: `variant ${payload1.variantIndex}`,
+        },
+        {}
+      );
+
+      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        {
+          experience: payload2.experience,
+          audience: payload2.audience,
+          componentType: 'Entry',
+          selectedVariant: payload2.variant,
+          selectedVariantIndex: payload2.variantIndex,
+          selectedVariantSelector: `variant ${payload2.variantIndex}`,
+        },
+        {}
+      );
+    });
+
+    it('should not call onTrackExperience multiple times when the same element is seen with the same payload', async () => {
+      const element = document.createElement('div');
+
+      const basePayload = generateHasSeenElementMock();
+
+      const payload1 = {
+        ...basePayload,
+        element,
+      };
+
+      const payload2 = {
+        ...basePayload,
+        element,
+      };
+
+      await analytics.dispatch({
+        type: HAS_SEEN_ELEMENT,
+        ...payload1,
+      });
+
+      await analytics.dispatch({
+        type: HAS_SEEN_ELEMENT,
+        ...payload2,
+      });
+
+      await sleep(5);
+
+      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+        1
+      );
+
+      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        {
+          experience: payload1.experience,
+          audience: payload1.audience,
+          componentType: 'Entry',
+          selectedVariant: payload1.variant,
+          selectedVariantIndex: payload1.variantIndex,
+          selectedVariantSelector: `variant ${payload1.variantIndex}`,
         },
         {}
       );

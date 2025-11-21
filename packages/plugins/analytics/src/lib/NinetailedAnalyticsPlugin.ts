@@ -20,12 +20,16 @@ const TEMPLATE_OPTIONS = {
   interpolate: /{{([\s\S]+?)}}/g,
 };
 
+/**
+ * This type is only used for the `onTrackExperience` method that is implemented in subclasses of `NinetailedAnalyticsPlugin`.
+ */
 export type SanitizedElementSeenPayload = {
   experience: NonNullable<ElementSeenPayload['experience']>;
   audience: NonNullable<ElementSeenPayload['audience']>;
   selectedVariantSelector: string;
   selectedVariant: ElementSeenPayload['variant'];
   selectedVariantIndex: ElementSeenPayload['variantIndex'];
+  componentType: NonNullable<ElementSeenPayload['componentType']>;
 };
 
 export type SanitizedVariableSeenPayload = {
@@ -123,17 +127,22 @@ export abstract class NinetailedAnalyticsPlugin<
       sanitizedPayload.data.variantIndex === 0
         ? 'control'
         : `variant ${sanitizedPayload.data.variantIndex}`;
-    const sanitizedTrackExperienceProperties = {
+
+    const sanitizedTrackExperienceProperties: SanitizedElementSeenPayload = {
       experience: sanitizedPayload.data.experience,
       audience: sanitizedPayload.data.audience,
       selectedVariant: sanitizedPayload.data.variant,
       selectedVariantIndex: sanitizedPayload.data.variantIndex,
       selectedVariantSelector,
+      componentType: sanitizedPayload.data.componentType,
     };
 
     const isElementAlreadySeenWithPayload = elementPayloads.some(
       (elementPayload) => {
-        return isEqual(elementPayload, sanitizedTrackExperienceProperties);
+        return isEqual<SanitizedElementSeenPayload>(
+          elementPayload,
+          sanitizedTrackExperienceProperties
+        );
       }
     );
 
@@ -141,19 +150,14 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
-    const insightsPayload = {
-      ...sanitizedTrackExperienceProperties,
-      componentType: 'Entry',
-    };
-
     this.seenElements.set(payload.element, [
       ...elementPayloads,
-      insightsPayload,
+      sanitizedTrackExperienceProperties,
     ]);
 
     this.onTrackExperience(
-      insightsPayload,
-      this.getHasSeenExperienceEventPayload(insightsPayload)
+      sanitizedTrackExperienceProperties,
+      this.getHasSeenExperienceEventPayload(sanitizedTrackExperienceProperties)
     );
   };
 
