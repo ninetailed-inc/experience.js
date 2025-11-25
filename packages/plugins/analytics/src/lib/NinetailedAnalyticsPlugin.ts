@@ -212,6 +212,7 @@ export abstract class NinetailedAnalyticsPlugin<
       }
     );
 
+    // Should we track it once or multiple times if it is the same payload?
     if (isVariableAlreadySeenWithPayload) {
       return;
     }

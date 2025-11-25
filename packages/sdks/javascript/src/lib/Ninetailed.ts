@@ -442,6 +442,7 @@ export class Ninetailed implements NinetailedInstance {
   public trackVariableComponentView: TrackVariableComponentView = (
     properties
   ) => {
+    // TODO: it would be better to use a safe parse. this can throw and we want to handle that accordingly
     const validatedVariable = allowVariableTypeSchema.parse(
       properties.variable
     );
