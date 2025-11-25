@@ -195,4 +195,49 @@ describe('NinetailedInsightsPlugin', () => {
 
     expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
   });
+
+  it('should not track the same element with the same payload on multiple views', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const { ninetailed } = mockProfile([insightsPlugin]);
+
+    insightsPlugin.setCredentials({
+      clientId: 'test',
+      environment: 'development',
+    });
+
+    await ninetailed.identify('test');
+
+    jest.useFakeTimers();
+
+    const element = document.body.appendChild(document.createElement('div'));
+    getObserverOf(element);
+
+    for (let i = 0; i < 25; i++) {
+      ninetailed.observeElement({
+        element,
+        variant: { id: `variant-id-1` },
+        variantIndex: 0,
+      });
+    }
+
+    // Intersect twice to simulate multiple views
+    intersect(element, true);
+    intersect(element, true);
+
+    jest.runAllTimers();
+    jest.useRealTimers();
+
+    await sleep(5);
+
+    const events = (insightsPlugin as any).events || [];
+    expect(events).toHaveLength(1);
+
+    // Should not flush because only one unique event
+    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+
+    const seenElements =
+      (insightsPlugin as any).seenElements.get(element) || [];
+
+    expect(seenElements).toHaveLength(1);
+  });
 });
