@@ -85,8 +85,6 @@ export class NinetailedInsightsPlugin
   public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    console.log({ payload });
-
     const sanitizedPayload = ElementSeenPayloadSchema.safeParse(payload);
 
     if (!sanitizedPayload.success) {
