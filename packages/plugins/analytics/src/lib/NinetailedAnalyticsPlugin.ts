@@ -32,11 +32,13 @@ export type SanitizedElementSeenPayload = {
   componentType: NonNullable<ElementSeenPayload['componentType']>;
 };
 
+// This type is only used in this class right now
 export type SanitizedVariableSeenPayload = {
   componentId: string;
   selectedVariant: VariableSeenPayload['variant'];
   selectedVariantIndex: VariableSeenPayload['variantIndex'];
   selectedVariantSelector: string;
+  componentType: NonNullable<VariableSeenPayload['componentType']>;
 };
 
 export abstract class NinetailedAnalyticsPlugin<
@@ -177,15 +179,15 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
-    const componentId = sanitizedPayload.data.variant.id;
-    if (typeof componentId === 'undefined') {
+    const variableKey = sanitizedPayload.data.variant.id;
+
+    if (typeof variableKey === 'undefined') {
       logger.error(
-        'Component ID is undefined in has_seen_variable event payload'
+        'Variable key is undefined in has_seen_variable event payload'
       );
       return;
     }
 
-    const variableKey = componentId;
     const variablePayloads = this.seenVariables.get(variableKey) || [];
 
     const selectedVariantSelector =
@@ -194,20 +196,19 @@ export abstract class NinetailedAnalyticsPlugin<
         : `variant ${sanitizedPayload.data.variantIndex}`;
 
     const sanitizedTrackVariableProperties: SanitizedVariableSeenPayload = {
-      componentId,
+      componentId: variableKey,
       selectedVariant: sanitizedPayload.data.variant,
       selectedVariantIndex: sanitizedPayload.data.variantIndex,
       selectedVariantSelector,
-    };
-    // Add type only for Insights API payload
-    const insightsPayload = {
-      ...sanitizedTrackVariableProperties,
-      componentType: 'Variable',
+      componentType: sanitizedPayload.data.componentType,
     };
 
     const isVariableAlreadySeenWithPayload = variablePayloads.some(
       (variablePayload) => {
-        return isEqual(variablePayload, insightsPayload);
+        return isEqual<SanitizedVariableSeenPayload>(
+          variablePayload,
+          sanitizedTrackVariableProperties
+        );
       }
     );
 
@@ -215,7 +216,12 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
-    this.seenVariables.set(variableKey, [...variablePayloads, insightsPayload]);
+    this.seenVariables.set(variableKey, [
+      ...variablePayloads,
+      sanitizedTrackVariableProperties,
+    ]);
+
+    // TODO: this does nothing for now, we need to implement how track variables to 3rd party plugins
   };
 
   /**
