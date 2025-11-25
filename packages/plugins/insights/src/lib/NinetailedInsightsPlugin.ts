@@ -85,6 +85,8 @@ export class NinetailedInsightsPlugin
   public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
+    console.log({ payload });
+
     const sanitizedPayload = ElementSeenPayloadSchema.safeParse(payload);
 
     if (!sanitizedPayload.success) {
@@ -107,7 +109,8 @@ export class NinetailedInsightsPlugin
     const seenElementPayloads = this.seenElements.get(element) || [];
 
     const isElementAlreadySeenWithPayload = seenElementPayloads.some(
-      (seenElementPayload) => isEqual(seenElementPayload, elementPayload)
+      (seenElementPayload) =>
+        isEqual<ObservedElementPayload>(seenElementPayload, elementPayload)
     );
 
     if (isElementAlreadySeenWithPayload) {
