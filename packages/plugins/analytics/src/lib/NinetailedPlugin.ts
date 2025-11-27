@@ -1,5 +1,4 @@
 import { AnalyticsPlugin } from 'analytics';
-
 import { AnalyticsInstance } from './AnalyticsInstance';
 import { HasComponentViewTrackingThreshold } from './types/interfaces/HasComponentViewTrackingThreshold';
 import { ElementSeenPayload, VariableSeenPayload } from './ElementSeenPayload';
