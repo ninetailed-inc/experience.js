@@ -26,6 +26,7 @@ export const allowVariableTypeSchema = z.union([
   z.string(),
   z.boolean(),
   z.number(),
+  // TODO: this causes the type to resolve to unknown
   JsonObject,
 ]);
 

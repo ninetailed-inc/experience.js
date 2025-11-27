@@ -8,6 +8,13 @@ export type FlagResult<T> =
   | { status: 'error'; value: T; error: Error };
 
 type UseFlagOptions = {
+  /**
+   * Type for auto tracking
+   *
+   * @remarks
+   * if this is a function then it should be stable, otherwise tracking will happen more frequently than expected
+   */
+
   shouldAutoTrack?: boolean | (() => boolean);
 };
 
