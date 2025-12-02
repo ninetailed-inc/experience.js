@@ -31,6 +31,7 @@ import {
   VariableSeenPayload,
   EventHandler,
   NinetailedPlugin,
+  ElementSeenPayloadSchema,
 } from '@ninetailed/experience.js-plugin-analytics';
 
 type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
@@ -84,10 +85,18 @@ export class NinetailedInsightsPlugin
   public override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
     payload,
   }) => {
-    const { element, experience, variant, variantIndex } = payload;
+    const sanitizedPayload = ElementSeenPayloadSchema.safeParse(payload);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { element: _, ...elementPayloadWithoutElement } = payload;
+    if (!sanitizedPayload.success) {
+      logger.error(
+        'Insights Plugin: Invalid payload for has_seen_element event',
+        sanitizedPayload.error.format()
+      );
+      return;
+    }
+
+    const { element, ...elementPayload } = sanitizedPayload.data;
+    const { componentType, experience, variant, variantIndex } = elementPayload;
 
     const componentId = variant.id;
 
@@ -95,22 +104,18 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const elementPayloads = this.seenElements.get(payload.element) || [];
+    const seenElementPayloads = this.seenElements.get(element) || [];
 
-    const isElementAlreadySeenWithPayload = elementPayloads.some(
-      (elementPayload) => {
-        return isEqual(elementPayload, elementPayloadWithoutElement);
-      }
+    const isElementAlreadySeenWithPayload = seenElementPayloads.some(
+      (seenElementPayload) =>
+        isEqual<ObservedElementPayload>(seenElementPayload, elementPayload)
     );
 
     if (isElementAlreadySeenWithPayload) {
       return;
     }
 
-    this.seenElements.set(element, [
-      ...elementPayloads,
-      elementPayloadWithoutElement,
-    ]);
+    this.seenElements.set(element, [...seenElementPayloads, elementPayload]);
 
     /**
      * Intentionally sending a COMPONENT_START event instead of COMPONENT.
@@ -124,7 +129,7 @@ export class NinetailedInsightsPlugin
     this.instance?.dispatch({
       type: COMPONENT_START,
       componentId,
-      componentType: 'Entry',
+      componentType,
       variantIndex,
       experienceId: experience?.id,
     });
