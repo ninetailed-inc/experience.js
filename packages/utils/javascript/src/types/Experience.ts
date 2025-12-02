@@ -6,6 +6,10 @@ import { Variant } from './Variant';
 import { zodArrayIgnoreUnknown } from './zodArrayIgnoreUnknown';
 
 export const ExperienceSchema = z.object({
+  /**
+   * The experience's ID from the Experience API's standpoint.
+   * It maps to the `nt_experience_id` field on the Ninetailed Experience entry in Contentful.
+   */
   id: z.string(),
   /**
    * The name of the experience (Short Text)

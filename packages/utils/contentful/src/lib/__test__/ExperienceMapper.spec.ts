@@ -12,6 +12,28 @@ interface IButtonFields {
 }
 
 describe('Contentful Experience Mapper', () => {
+  const EXPERIENCE = EXPERIENCES[0];
+
+  // An Experience entry that has the same nt_experience_id as its sys.id
+  // In real scenarios, this is the default behavior when creating a new Experience entry in Contentful
+  const EXPERIENCE_WITH_SAME_NT_EXPERIENCE_ID = {
+    ...EXPERIENCES[0],
+    fields: {
+      ...EXPERIENCES[0].fields,
+      nt_experience_id: EXPERIENCES[0].sys.id,
+    },
+  };
+
+  // An Experience entry that has a different nt_experience_id than its sys.id
+  // In real scenarios, this would be created in Contentful by the user duplicating an existing Experience entry and regenerating its nt_experience_id field in the UI
+  const EXPERIENCE_WITH_DIFFERENT_NT_EXPERIENCE_ID = {
+    ...EXPERIENCE,
+    fields: {
+      ...EXPERIENCE.fields,
+      nt_experience_id: 'a42f5cde-1234-5678-9101-abcdef123456',
+    },
+  };
+
   describe('mapCustomExperience', () => {
     it('should map experiences with a custom mapping function', () => {
       const experienceConfig = EXPERIENCES.map((experience) => {
@@ -38,6 +60,47 @@ describe('Contentful Experience Mapper', () => {
       expect(experienceConfig[0].name).not.toBeUndefined();
       expect(experienceConfig[0].audience?.description).not.toBeUndefined();
       expect(experienceConfig[0].audience?.name).not.toBeUndefined();
+    });
+
+    it(`should map an experience's nt_experience_id to id`, () => {
+      /**
+       * Testing an experience with the same nt_experience_id as its sys.id
+       */
+
+      const mappedExperiencesSameId = [
+        EXPERIENCE_WITH_SAME_NT_EXPERIENCE_ID,
+      ].map((experience) =>
+        ExperienceMapper.mapCustomExperience(experience, (variant) => ({
+          id: variant.sys.id,
+          headline: variant.fields.entryTitle,
+          x: variant.fields.desktopImage,
+        }))
+      );
+
+      expect(mappedExperiencesSameId.length).toBe(1);
+      expect(mappedExperiencesSameId[0].id).toBe(EXPERIENCE.sys.id);
+      expect(mappedExperiencesSameId[0].id).toBe(
+        EXPERIENCE_WITH_SAME_NT_EXPERIENCE_ID.fields.nt_experience_id
+      );
+
+      /**
+       * Testing an experience with a different nt_experience_id than its sys.id
+       */
+
+      const mappedExperiencesDifferentId = [
+        EXPERIENCE_WITH_DIFFERENT_NT_EXPERIENCE_ID,
+      ].map((experience) =>
+        ExperienceMapper.mapCustomExperience(experience, (variant) => ({
+          id: variant.sys.id,
+          headline: variant.fields.entryTitle,
+          x: variant.fields.desktopImage,
+        }))
+      );
+
+      expect(mappedExperiencesDifferentId.length).toBe(1);
+      expect(mappedExperiencesDifferentId[0].id).toBe(
+        'a42f5cde-1234-5678-9101-abcdef123456'
+      );
     });
   });
 
@@ -107,6 +170,35 @@ describe('Contentful Experience Mapper', () => {
       const mapped = ntExperiences
         .filter(ExperienceMapper.isExperienceEntry)
         .map((experience) => ExperienceMapper.mapExperience(experience));
+    });
+
+    it(`should map an experience's nt_experience_id to id`, () => {
+      /**
+       * Testing an experience with the same nt_experience_id as its sys.id
+       */
+
+      const mappedExperiencesSameId = [
+        EXPERIENCE_WITH_SAME_NT_EXPERIENCE_ID,
+      ].map(ExperienceMapper.mapExperience);
+
+      expect(mappedExperiencesSameId.length).toBe(1);
+      expect(mappedExperiencesSameId[0].id).toBe(EXPERIENCE.sys.id);
+      expect(mappedExperiencesSameId[0].id).toBe(
+        EXPERIENCE_WITH_SAME_NT_EXPERIENCE_ID.fields.nt_experience_id
+      );
+
+      /**
+       * Testing an experience with a different nt_experience_id than its sys.id
+       */
+
+      const mappedExperiencesDifferentId = [
+        EXPERIENCE_WITH_DIFFERENT_NT_EXPERIENCE_ID,
+      ].map(ExperienceMapper.mapExperience);
+
+      expect(mappedExperiencesDifferentId.length).toBe(1);
+      expect(mappedExperiencesDifferentId[0].id).toBe(
+        'a42f5cde-1234-5678-9101-abcdef123456'
+      );
     });
   });
 
