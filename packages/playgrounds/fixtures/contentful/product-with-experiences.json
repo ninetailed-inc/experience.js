@@ -291,6 +291,7 @@
         "fields": {
           "nt_name": "Yellow picture backgrounds",
           "nt_type": "nt_experiment",
+          "nt_experience_id": "13gr03iDPXcOIVJmGVnRy6",
           "nt_config": {
             "type": "nt_experiment",
             "traffic": 0.9,

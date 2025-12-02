@@ -70,6 +70,7 @@
         "fields": {
           "nt_name": "A flower like your personality",
           "nt_type": "nt_personalization",
+          "nt_experience_id": "3j4nCGLDLVyQ4Ycs51ih9L",
           "nt_config": {
             "traffic": 0.9,
             "distribution": [0.5, 0.5],
