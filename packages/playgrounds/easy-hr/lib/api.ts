@@ -98,19 +98,24 @@ export async function getPagesOfType(
 }
 
 export async function getExperiments() {
-  const query = {
-    content_type: 'nt_experience',
-    'fields.nt_type': 'nt_experiment',
-  };
-  const client = getClient(false);
-  const entries = await client.getEntries(query);
-  const experiments = entries.items as ExperimentEntry[];
+  try {
+    const query = {
+      content_type: 'nt_experience',
+      'fields.nt_type': 'nt_experiment',
+    };
+    const client = getClient(false);
+    const entries = await client.getEntries(query);
+    const experiments = entries.items as ExperimentEntry[];
 
-  const mappedExperiments = (experiments || []).filter(isEntry).map((entry) => {
-    return ExperienceMapper.mapExperiment(entry);
-  });
+    const mappedExperiments = (experiments || [])
+      .filter(ExperienceMapper.isExperienceEntry)
+      .map(ExperienceMapper.mapExperiment);
 
-  return mappedExperiments;
+    return mappedExperiments;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
 
 export const getAllExperiences = async () => {
