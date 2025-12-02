@@ -46,6 +46,7 @@ export const ctfHero: IHero = {
           nt_name: 'are-you-cool',
           nt_description: 'Do you have isCool=true in your query params?',
           nt_type: 'nt_personalization' as const,
+          nt_experience_id: '1zPgxFzQNPjhvjRKBPr203',
           nt_config: {
             traffic: 1,
             components: [

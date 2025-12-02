@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Contentful Experience Mapper should map experiences 1`] = `
+exports[`Contentful Experience Mapper mapCustomExperience should map experiences with a custom mapping function 1`] = `
 Array [
   Object {
     "audience": Object {

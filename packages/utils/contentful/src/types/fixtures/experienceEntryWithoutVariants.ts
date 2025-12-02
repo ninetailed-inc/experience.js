@@ -34,6 +34,7 @@ export const experienceEntryWithoutVariants = {
   fields: {
     nt_name: '[Experiment] No heroes',
     nt_type: 'nt_experiment',
+    nt_experience_id: '44jIanEK8sjH9SoJ5AOa7m',
     nt_config: {
       traffic: 1,
       components: [

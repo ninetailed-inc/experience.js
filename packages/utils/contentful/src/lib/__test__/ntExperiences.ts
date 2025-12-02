@@ -35,6 +35,7 @@ export const EXPERIENCES = [
     fields: {
       nt_name: 'are-you-cool',
       nt_description: 'Do you have isCool=true in your query params?',
+      nt_experience_id: '1zPgxFzQNPjhvjRKBPr203',
       nt_type: 'nt_personalization' as const,
       nt_config: {
         traffic: 1,

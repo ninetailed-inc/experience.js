@@ -48,6 +48,8 @@ export const ExperienceEntryFields = z.object({
    * All used variants of the experience (Contentful references to other Content Types)
    */
   nt_variants: z.array(EntrySchema).optional(),
+
+  nt_experience_id: z.string(),
 });
 export type ExperienceFieldsLike<
   VariantFields extends EntryFields = EntryFields

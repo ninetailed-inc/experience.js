@@ -87,6 +87,7 @@ export const experienceEntryWithoutLinkType = [
       nt_name: 'OS Testing',
       nt_description: null,
       nt_type: 'nt_experiment',
+      nt_experience_id: '4l5B7sToaNGT0pL8wNAtsP',
       nt_config: {
         traffic: 1,
         components: [
