@@ -77,6 +77,11 @@ export class ExperienceMapper {
     return ExperienceEntry.safeParse(entry).success;
   }
 
+  /**
+   * Maps a Contentful Ninetailed Experience Entry to a format compatible with the Experience.js SDK.
+   *
+   * @param ctfEntry A Contentful Ninetailed Experience Entry
+   */
   static mapExperience<VariantFields extends EntryFields>(
     ctfEntry: ExperienceEntryLike<VariantFields>
   ) {
@@ -89,6 +94,14 @@ export class ExperienceMapper {
     return DefaultExperienceMapper.mapExperience(experience);
   }
 
+  /**
+   *
+   * Maps a Contentful Ninetailed Experience Entry to a format compatible with the Experience.js SDK
+   * using a custom mapping function for the Experience's variants.
+   *
+   * @param ctfEntry A Contentful Ninetailed Experience Entry
+   * @param mapFn  A custom function to map the Experience's variants
+   */
   static mapCustomExperience<
     Variant extends Reference,
     VariantFields extends EntryFields
@@ -102,6 +115,10 @@ export class ExperienceMapper {
     return DefaultExperienceMapper.mapExperience(experience);
   }
 
+  /**
+   * Similar to `mapCustomExperience` but supports asynchronous mapping functions.
+   * @see mapCustomExperience
+   */
   static async mapCustomExperienceAsync<
     Variant extends Reference,
     VariantFields extends EntryFields
