@@ -7074,6 +7074,9 @@
         "nt_name": {
           "en-US": "[AB Test] No heroes"
         },
+        "nt_experience_id": {
+          "en-US": "44jIanEK8sjH9SoJ5AOa7m"
+        },
         "nt_description": {
           "en-US": "Multiple components are hidden in this A/B Test. The variant is shown to all. You can change the variant distribution in the experiment to show the control variant."
         },
@@ -8320,6 +8323,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[AB Test] Alternative hero image"
+        },
+        "nt_experience_id": {
+          "en-US": "3nVQTua2mO8h24jW7Ys2ga"
         },
         "nt_description": {
           "en-US": "This A/B Test a different visual is shown in the homepage hero. The variant is shown to all. You can change the variant distribution in the experiment to show the control variant."
@@ -12585,6 +12591,9 @@
         "nt_name": {
           "en-US": "[All Visitors] Greet By Location"
         },
+        "nt_experience_id": {
+          "en-US": "6ZbWjihD33P0ZQDi1NBPNj"
+        },
         "nt_description": {
           "en-US": ""
         },
@@ -12700,6 +12709,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[Campaign] Lite Upsell To Growth"
+        },
+        "nt_experience_id": {
+          "en-US": "1fOaEZdwvoUCt4ODSfn9QP"
         },
         "nt_description": {
           "en-US": ""
@@ -12817,6 +12829,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[Location] North America"
+        },
+        "nt_experience_id": {
+          "en-US": "CHLlJkxjtvr5xHgGCme8R"
         },
         "nt_description": {
           "en-US": ""
@@ -12951,6 +12966,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[Behaviour] New Registration"
+        },
+        "nt_experience_id": {
+          "en-US": "4RcJ9uBkBuK5DtlQn8RTL8"
         },
         "nt_description": {
           "en-US": ""
@@ -13445,6 +13463,9 @@
         "nt_name": {
           "en-US": "[Campaign] Enterprises"
         },
+        "nt_experience_id": {
+          "en-US": "31ywFPATXKsR6quIjlU4t2"
+        },
         "nt_description": {
           "en-US": "This personalization campaign shows different components for enterprise companies. You can change the holdout in the personalization to show the baseline."
         },
@@ -13872,6 +13893,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[Behaviour] Interest in Pricing"
+        },
+        "nt_experience_id": {
+          "en-US": "1YjFMh5409sdAxHBf3Na5P"
         },
         "nt_description": {
           "en-US": "This personalization campaign shows a different banner for visitors with a pricing intent behaviour. You can change the holdout in the personalization to show the baseline."
@@ -14334,6 +14358,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[Campaign] Startups"
+        },
+        "nt_experience_id": {
+          "en-US": "2ZM65PCq3xLCpbyJXeKGPj"
         },
         "nt_description": {
           "en-US": "This personalization campaign shows different components for startups. You can change the holdout in the personalization to show the baseline."
@@ -17111,6 +17138,9 @@
         "nt_name": {
           "en-US": "[Campaign] TikTok"
         },
+        "nt_experience_id": {
+          "en-US": "1z8mHTv2Z57dJcD6CPwg7R"
+        },
         "nt_description": {
           "en-US": "This personalization campaign shows content for visitors from TikTok. You can change the holdout in the personalization to show the baseline."
         },
@@ -17279,6 +17309,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[Behaviour] Returning Visitors"
+        },
+        "nt_experience_id": {
+          "en-US": "3xYlmUaVqxwctTZRQUu7SJ"
         },
         "nt_description": {
           "en-US": "This personalization campaign shows a different banner for returning visitors. You can change the holdout in the personalization to show the baseline."
@@ -17556,6 +17589,9 @@
         "nt_name": {
           "en-US": "[Lead Stage] Customer"
         },
+        "nt_experience_id": {
+          "en-US": "7maiYu3ahIrCFqh1EhT4Ll"
+        },
         "nt_description": {
           "en-US": "This personalization shows a different case study for customers. You can change the holdout in the personalization to show the baseline."
         },
@@ -17809,6 +17845,9 @@
         "nt_name": {
           "en-US": "[Lead Stage] Opportunity"
         },
+        "nt_experience_id": {
+          "en-US": "6I2DJ44yM0v5rzHVa1f1GM"
+        },
         "nt_description": {
           "en-US": "This personalization shows a different hero for opportunities lifecycle stage. You can change the holdout in the personalization to show the baseline."
         },
@@ -17959,6 +17998,9 @@
       "fields": {
         "nt_name": {
           "en-US": "[Location] Europe"
+        },
+        "nt_experience_id": {
+          "en-US": "2kT7B3F1GH3sDBo2glpywy"
         },
         "nt_description": {
           "en-US": "Location based experience."

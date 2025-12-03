@@ -23,13 +23,21 @@ function mapAudience(ctfAudienceEntry: AudienceEntry): Audience {
 }
 
 function createExperience<Variant extends Reference>(
-  id: string,
   fields: ExperienceFields,
   variants: Variant[]
 ): Experience<Variant> {
-  const { nt_name, nt_description, nt_type, nt_audience, nt_config } = fields;
+  const {
+    nt_name,
+    nt_description,
+    nt_type,
+    nt_audience,
+    nt_config,
+    nt_experience_id,
+  } = fields;
+
   return {
-    id,
+    // By the time we reach here, nt_experience_id is guaranteed to be defined thanks to zod validations in validateExperienceEntry
+    id: nt_experience_id,
     name: nt_name,
     description: nt_description || '',
     type: nt_type,
@@ -77,18 +85,31 @@ export class ExperienceMapper {
     return ExperienceEntry.safeParse(entry).success;
   }
 
+  /**
+   * Maps a Contentful Ninetailed Experience Entry to a format compatible with the Experience.js SDK.
+   *
+   * @param ctfEntry A Contentful Ninetailed Experience Entry
+   */
   static mapExperience<VariantFields extends EntryFields>(
     ctfEntry: ExperienceEntryLike<VariantFields>
   ) {
-    const { sys, fields } = validateExperienceEntry(ctfEntry);
+    const { fields } = validateExperienceEntry(ctfEntry);
     const variants = fields.nt_variants.map((variant) => ({
       ...variant,
       id: variant.sys.id,
     }));
-    const experience = createExperience(sys.id, fields, variants);
+    const experience = createExperience(fields, variants);
     return DefaultExperienceMapper.mapExperience(experience);
   }
 
+  /**
+   *
+   * Maps a Contentful Ninetailed Experience Entry to a format compatible with the Experience.js SDK
+   * using a custom mapping function for the Experience's variants.
+   *
+   * @param ctfEntry A Contentful Ninetailed Experience Entry
+   * @param mapFn  A custom function to map the Experience's variants
+   */
   static mapCustomExperience<
     Variant extends Reference,
     VariantFields extends EntryFields
@@ -96,12 +117,16 @@ export class ExperienceMapper {
     ctfEntry: ExperienceEntryLike<VariantFields>,
     mapFn: MapVariantFunction<VariantFields, Variant>
   ) {
-    const { sys, fields } = validateExperienceEntry(ctfEntry);
+    const { fields } = validateExperienceEntry(ctfEntry);
     const variants = fields.nt_variants.map(mapFn);
-    const experience = createExperience(sys.id, fields, variants);
+    const experience = createExperience(fields, variants);
     return DefaultExperienceMapper.mapExperience(experience);
   }
 
+  /**
+   * Similar to `mapCustomExperience` but supports asynchronous mapping functions.
+   * @see mapCustomExperience
+   */
   static async mapCustomExperienceAsync<
     Variant extends Reference,
     VariantFields extends EntryFields
@@ -109,9 +134,9 @@ export class ExperienceMapper {
     ctfEntry: ExperienceEntryLike<VariantFields>,
     mapFn: MapVariantFunctionAsync<VariantFields, Variant>
   ) {
-    const { sys, fields } = validateExperienceEntry(ctfEntry);
+    const { fields } = validateExperienceEntry(ctfEntry);
     const variants = await Promise.all(fields.nt_variants.map(mapFn));
-    const experience = createExperience(sys.id, fields, variants);
+    const experience = createExperience(fields, variants);
     return DefaultExperienceMapper.mapExperience(experience);
   }
 

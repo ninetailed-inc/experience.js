@@ -374,6 +374,8 @@ export interface INtExperienceFields {
 
   /** Variants */
   nt_variants?: Entry<{ [fieldId: string]: unknown }>[] | undefined;
+
+  nt_experience_id: string;
 }
 
 /** Ninetailed Experience */

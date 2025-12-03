@@ -11,7 +11,7 @@ describe('ExperienceEntry', () => {
     ).toEqual([]);
   });
 
-  it('Should not accept a null value as variants', () => {
+  it('should not accept a null value as variants', () => {
     expect(
       () =>
         ExperienceEntry.parse({
@@ -34,7 +34,7 @@ describe('ExperienceEntry', () => {
     });
   });
 
-  it('Should not accept invalid variants', () => {
+  it('should not accept invalid variants', () => {
     expect(() =>
       ExperienceEntry.parse({
         sys: { id: 'experience' },
