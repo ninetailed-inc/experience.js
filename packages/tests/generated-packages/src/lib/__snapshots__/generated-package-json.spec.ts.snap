@@ -435,7 +435,7 @@ Object {
   "module": "./index.esm.js",
   "name": "@ninetailed/experience.js-next",
   "peerDependencies": Object {
-    "next": ">=9.0.0",
+    "next": ">=13.5.9",
     "react": ">=16.8.0",
   },
   "repository": Object {
@@ -452,7 +452,7 @@ Object {
 exports[`Generated package.json files dist/packages/sdks/nextjs-esr/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
-    "next": "13.3.0",
+    "next": "13.5.9",
   },
   "description": "Ninetailed SDK for Next.js ESR",
   "exports": Object {
