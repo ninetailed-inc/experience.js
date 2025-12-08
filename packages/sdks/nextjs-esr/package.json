@@ -27,9 +27,6 @@
     "./package.json": "./package.json"
   },
   "sideEffects": false,
-  "dependencies": {
-    "next": "13.3.0"
-  },
   "peerDependencies": {
     "@ninetailed/experience.js-shared": "*",
     "uuid": "9.0.0"
