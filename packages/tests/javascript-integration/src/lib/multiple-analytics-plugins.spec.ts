@@ -1,4 +1,4 @@
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 import { Ninetailed } from '@ninetailed/experience.js';
 
 import { NinetailedGoogleTagmanagerPlugin } from '@ninetailed/experience.js-plugin-google-tagmanager';
@@ -35,16 +35,17 @@ describe('A Ninetailed setup with multiple analytics plugins', () => {
         element: document.createElement('div'),
         variantIndex: 1,
       });
-      await sleep(5);
 
-      // check if GTM was called e2e
-      expect(window.dataLayer).toHaveLength(1);
-      expect(window.dataLayer && window.dataLayer[0]).toMatchSnapshot();
+      await waitFor(() => {
+        // check if GTM was called e2e
+        expect(window.dataLayer).toHaveLength(1);
+        expect(window.dataLayer && window.dataLayer[0]).toMatchSnapshot();
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const eventsQueue = insightsPlugin.events;
-      expect(eventsQueue).toHaveLength(1);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const eventsQueue = insightsPlugin.events;
+        expect(eventsQueue).toHaveLength(1);
+      });
     });
   });
 });

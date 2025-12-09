@@ -1,4 +1,4 @@
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 import { NinetailedApiClient } from '@ninetailed/experience.js-shared';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 import { Ninetailed } from '@ninetailed/experience.js';
@@ -68,25 +68,25 @@ describe('NinetailedInsightsPlugin', () => {
     jest.runAllTimers();
     jest.useRealTimers();
 
-    await sleep(5);
-
-    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
-    expect(
-      insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.length
-    ).toBe(25);
-    expect(
-      insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events
-    ).toEqual(
-      expect.arrayContaining(
-        Array.from({ length: 25 }).map((_, i) =>
-          expect.objectContaining({
-            type: 'component',
-            componentId: expect.any(String),
-            variantIndex: i,
-          })
+    await waitFor(() => {
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+      expect(
+        insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.length
+      ).toBe(25);
+      expect(
+        insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events
+      ).toEqual(
+        expect.arrayContaining(
+          Array.from({ length: 25 }).map((_, i) =>
+            expect.objectContaining({
+              type: 'component',
+              componentId: expect.any(String),
+              variantIndex: i,
+            })
+          )
         )
-      )
-    );
+      );
+    });
   });
 
   it('should not send component events when the queue is not ready to be flushed', async () => {
@@ -116,9 +116,9 @@ describe('NinetailedInsightsPlugin', () => {
     jest.runAllTimers();
     jest.useRealTimers();
 
-    await sleep(5);
-
-    expect(insightsApiClientSendEventBatchesMock).not.toBeCalled();
+    await waitFor(() => {
+      expect(insightsApiClientSendEventBatchesMock).not.toBeCalled();
+    });
   });
 
   // This is a rare case and would only happen if a profile changes while the user is on the same page and the component would change e.g. from baseline to variant 1
@@ -152,9 +152,9 @@ describe('NinetailedInsightsPlugin', () => {
     jest.runAllTimers();
     jest.useRealTimers();
 
-    await sleep(5);
-
-    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(1);
+    await waitFor(() => {
+      expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(1);
+    });
   });
 
   it('should not track the same element with the same payload', async () => {
@@ -185,9 +185,9 @@ describe('NinetailedInsightsPlugin', () => {
     jest.runAllTimers();
     jest.useRealTimers();
 
-    await sleep(5);
-
-    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+    await waitFor(() => {
+      expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+    });
   });
 
   // TODO We need to refactor the test as the insightsApiClientSendEventBatchesMock cannot be relied on here to check if the same element with same payload was sent multiple times or not
@@ -221,9 +221,9 @@ describe('NinetailedInsightsPlugin', () => {
     jest.runAllTimers();
     jest.useRealTimers();
 
-    await sleep(5);
-
-    // Should not flush because only one unique event
-    expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+    await waitFor(() => {
+      // Should not flush because only one unique event
+      expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 import {
   FEATURES,
   NinetailedApiClient,
@@ -273,16 +273,16 @@ describe('Ninetailed core class', () => {
       // Advance the timers to trigger the callback inside ElementSeenObserver
       jest.runAllTimers();
 
-      await sleep(5);
-
-      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
-      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          selectedVariantIndex: 1,
-          selectedVariant: { id: 'variant-id' },
-        }),
-        expect.any(Object)
-      );
+      await waitFor(() => {
+        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            selectedVariantIndex: 1,
+            selectedVariant: { id: 'variant-id' },
+          }),
+          expect.any(Object)
+        );
+      });
     });
 
     it('should track a component view for multiple intersecting elements', async () => {
@@ -317,25 +317,25 @@ describe('Ninetailed core class', () => {
 
       jest.runAllTimers();
 
-      await sleep(5);
+      await waitFor(() => {
+        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
 
-      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            selectedVariantIndex: 1,
+            selectedVariant: { id: 'variant-1-id' },
+          }),
+          expect.any(Object)
+        );
 
-      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          selectedVariantIndex: 1,
-          selectedVariant: { id: 'variant-1-id' },
-        }),
-        expect.any(Object)
-      );
-
-      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          selectedVariantIndex: 2,
-          selectedVariant: { id: 'variant-2-id' },
-        }),
-        expect.any(Object)
-      );
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            selectedVariantIndex: 2,
+            selectedVariant: { id: 'variant-2-id' },
+          }),
+          expect.any(Object)
+        );
+      });
     });
 
     it('should track component views for an intersecting element with different payloads', async () => {
@@ -367,25 +367,25 @@ describe('Ninetailed core class', () => {
 
       jest.runAllTimers();
 
-      await sleep(5);
+      await waitFor(() => {
+        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
 
-      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            selectedVariantIndex: 1,
+            selectedVariant: { id: 'variant-1-id' },
+          }),
+          expect.any(Object)
+        );
 
-      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          selectedVariantIndex: 1,
-          selectedVariant: { id: 'variant-1-id' },
-        }),
-        expect.any(Object)
-      );
-
-      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          selectedVariantIndex: 2,
-          selectedVariant: { id: 'variant-2-id' },
-        }),
-        expect.any(Object)
-      );
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            selectedVariantIndex: 2,
+            selectedVariant: { id: 'variant-2-id' },
+          }),
+          expect.any(Object)
+        );
+      });
     });
 
     it('should track a single component view for an intersecting element with multiple but equal payloads', async () => {
@@ -417,17 +417,17 @@ describe('Ninetailed core class', () => {
 
       jest.runAllTimers();
 
-      await sleep(5);
+      await waitFor(() => {
+        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
 
-      expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
-
-      expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          selectedVariantIndex: 1,
-          selectedVariant: { id: 'variant-1-id' },
-        }),
-        expect.any(Object)
-      );
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            selectedVariantIndex: 1,
+            selectedVariant: { id: 'variant-1-id' },
+          }),
+          expect.any(Object)
+        );
+      });
     });
 
     it('should not track a component view when no experience is provided', async () => {
@@ -448,9 +448,9 @@ describe('Ninetailed core class', () => {
 
       jest.runAllTimers();
 
-      await sleep(5);
-
-      expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
+      await waitFor(() => {
+        expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
+      });
     });
 
     it('should not track a component view for elements that are not instances of Element', async () => {
@@ -477,9 +477,9 @@ describe('Ninetailed core class', () => {
 
       jest.runAllTimers();
 
-      await sleep(5);
-
-      expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
+      await waitFor(() => {
+        expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
+      });
     });
   });
 });

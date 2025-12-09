@@ -1,6 +1,6 @@
 import { Ninetailed } from '@ninetailed/experience.js';
 import { fixtures } from '@ninetailed/experience.js-plugin-analytics/test';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 
 import { NinetailedContentsquarePlugin } from './NinetailedContentsquarePlugin';
 
@@ -36,20 +36,21 @@ describe('NinetailedContentsquarePlugin', () => {
       fixtures.TRACK_COMPONENT_VIEW_PROPERTIES
     );
 
-    await sleep(5);
-    expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).ninetailed.plugins.contentsquare.dataLayer
-    ).toHaveLength(1);
-    expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).ninetailed.plugins.contentsquare.dataLayer[0]
-    ).toEqual({
-      event: 'nt_experience',
-      variant: 'variant 1',
-      experience: 'test',
-      audience: 'test',
-      component: 'test',
+    await waitFor(() => {
+      expect(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).ninetailed.plugins.contentsquare.dataLayer
+      ).toHaveLength(1);
+      expect(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).ninetailed.plugins.contentsquare.dataLayer[0]
+      ).toEqual({
+        event: 'nt_experience',
+        variant: 'variant 1',
+        experience: 'test',
+        audience: 'test',
+        component: 'test',
+      });
     });
   });
 });

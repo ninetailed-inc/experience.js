@@ -12,7 +12,7 @@ import {
   PrivacyConfig,
 } from './NinetailedPrivacyPlugin';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
-import { sleep } from 'radash';
+import { waitFor } from '@testing-library/dom';
 
 class TestPlugin extends NinetailedPlugin {
   public name = NINETAILED_CORE_PLUGIN_NAME;
@@ -28,13 +28,25 @@ const setup = (
   config?: Partial<PrivacyConfig>,
   afterConsentConfig?: Partial<PrivacyConfig>
 ) => {
-  const testPlugin = new TestPlugin();
-  const privacyPlugin = new NinetailedPrivacyPlugin(config, afterConsentConfig);
-  const analytics = Analytics({
-    plugins: [testPlugin, privacyPlugin],
-  });
+  return new Promise<{
+    analytics: AnalyticsInstance;
+    testPlugin: TestPlugin;
+    privacyPlugin: NinetailedPrivacyPlugin;
+  }>((resolve) => {
+    const testPlugin = new TestPlugin();
+    const privacyPlugin = new NinetailedPrivacyPlugin(
+      config,
+      afterConsentConfig
+    );
+    const analytics = Analytics({
+      plugins: [testPlugin, privacyPlugin],
+    });
 
-  return { analytics, testPlugin, privacyPlugin };
+    analytics.once('ready', () => {
+      // We resolve once the analytics instance is ready to ensure plugins are properly initialized and their _instance properties are set.
+      resolve({ analytics, testPlugin, privacyPlugin });
+    });
+  });
 };
 
 describe('NinetailedPrivacyPlugin', () => {
@@ -43,17 +55,13 @@ describe('NinetailedPrivacyPlugin', () => {
   let privacyPlugin: NinetailedPrivacyPlugin;
 
   beforeEach(async () => {
-    const setupResult = setup();
+    const setupResult = await setup();
     analytics = setupResult.analytics;
     testPlugin = setupResult.testPlugin;
     privacyPlugin = setupResult.privacyPlugin;
 
-    await sleep(1);
-
     // @ts-expect-error
     await privacyPlugin.consent(false);
-    // I'm not sure why we need the sleep here. The localstorage write should be synchronous.
-    await sleep(1);
   });
 
   it('Should be able to instantiate with default configs', () => {
@@ -97,11 +105,11 @@ describe('NinetailedPrivacyPlugin', () => {
   it('Should correctly accept consent', async () => {
     // @ts-expect-error
     await privacyPlugin.consent(true);
-    // I'm not sure why we need the sleep here. The localstorage write should be synchronous.
-    await sleep(1);
 
-    // @ts-expect-error
-    expect(privacyPlugin.isConsentGiven()).toBeTruthy();
+    await waitFor(() => {
+      // @ts-expect-error
+      expect(privacyPlugin.isConsentGiven()).toBeTruthy();
+    });
   });
 
   it('Should allow Pageview events if the config sets it as allowedEvents', async () => {
@@ -111,7 +119,7 @@ describe('NinetailedPrivacyPlugin', () => {
   });
 
   it('Should intercept Pageview events', async () => {
-    const { testPlugin } = setup({ allowedEvents: [] });
+    const { testPlugin } = await setup({ allowedEvents: [] });
 
     await analytics.page();
 
@@ -119,29 +127,31 @@ describe('NinetailedPrivacyPlugin', () => {
   });
 
   it("should intercept page events, if the after consent config won't allow them", async () => {
-    const { testPlugin, privacyPlugin, analytics } = setup(
+    const { testPlugin, privacyPlugin, analytics } = await setup(
       {},
       { allowedEvents: [] }
     );
 
-    // await sleep(1);
-
     await analytics.page();
-    expect(testPlugin.page).toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(testPlugin.page).toHaveBeenCalled();
+    });
 
     // @ts-expect-error
     await privacyPlugin.consent(true);
-    // I'm not sure why we need the sleep here. The localstorage write should be synchronous.
-    await sleep(1);
 
     testPlugin.page.mockClear();
 
     await analytics.page();
-    expect(testPlugin.page).not.toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(testPlugin.page).not.toHaveBeenCalled();
+    });
   });
 
   it('should not intercept track events if all event names are allowed through *', async () => {
-    const { testPlugin, analytics } = setup({
+    const { testPlugin, analytics } = await setup({
       allowedEvents: ['track'],
       allowedTrackEvents: ['*'],
     });
@@ -150,36 +160,35 @@ describe('NinetailedPrivacyPlugin', () => {
   });
 
   it('Should set the features which are used correctly. E.g. not using the location of the user, even if the consent is given', async () => {
-    const { testPlugin, privacyPlugin } = setup(
+    const { testPlugin, privacyPlugin } = await setup(
       { enabledFeatures: [] },
       { enabledFeatures: [FEATURES.IP_ENRICHMENT] }
     );
 
-    await sleep(1);
-
-    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledTimes(1);
-    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledWith(
-      expect.objectContaining({
-        payload: expect.objectContaining({
-          features: [],
-        }),
-      })
-    );
+    await waitFor(() => {
+      expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledTimes(1);
+      expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            features: [],
+          }),
+        })
+      );
+    });
 
     // @ts-expect-error
     await privacyPlugin.consent(true);
 
-    // It's not clear why we need the sleep here. Awaiting the dispatch in the consent method should be enough.
-    await sleep(1);
-
-    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledTimes(2);
-    expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        payload: expect.objectContaining({
-          features: [FEATURES.IP_ENRICHMENT],
-        }),
-      })
-    );
+    await waitFor(() => {
+      expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenCalledTimes(2);
+      expect(testPlugin[SET_ENABLED_FEATURES]).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            features: [FEATURES.IP_ENRICHMENT],
+          }),
+        })
+      );
+    });
   });
 });

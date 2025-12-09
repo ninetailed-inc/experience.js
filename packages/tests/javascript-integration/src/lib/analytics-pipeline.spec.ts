@@ -1,7 +1,7 @@
 import { generateMock } from '@anatine/zod-mock';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
 import { Ninetailed } from '@ninetailed/experience.js';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 import {
   ElementSeenPayloadSchema,
   TrackComponentPropertiesSchema,
@@ -34,19 +34,22 @@ describe('Analytics pipeline', () => {
 
     await ninetailed.trackComponentView(data);
 
-    await sleep(5);
-    expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(1);
-    expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-      {
-        experience: data.experience,
-        audience: data.audience,
-        componentType: data.componentType,
-        selectedVariant: data.variant,
-        selectedVariantIndex: data.variantIndex,
-        selectedVariantSelector: 'variant 1',
-      },
-      {}
-    );
+    await waitFor(() => {
+      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+        1
+      );
+      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+        {
+          experience: data.experience,
+          audience: data.audience,
+          componentType: data.componentType,
+          selectedVariant: data.variant,
+          selectedVariantIndex: data.variantIndex,
+          selectedVariantSelector: 'variant 1',
+        },
+        {}
+      );
+    });
   });
 
   it('Should be able to send track component events which will be received from the TestAnalyticsPlugin', async () => {
@@ -54,8 +57,11 @@ describe('Analytics pipeline', () => {
 
     await ninetailed.trackHasSeenComponent(data);
 
-    await sleep(5);
-    expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(1);
-    expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledWith(data);
+    await waitFor(() => {
+      expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(1);
+      expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledWith(
+        data
+      );
+    });
   });
 });

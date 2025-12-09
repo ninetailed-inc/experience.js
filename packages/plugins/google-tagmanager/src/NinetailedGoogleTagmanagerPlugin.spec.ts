@@ -1,7 +1,7 @@
 import { Ninetailed } from '@ninetailed/experience.js';
 import { Template } from '@ninetailed/experience.js-plugin-analytics';
 import { fixtures } from '@ninetailed/experience.js-plugin-analytics/test';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 
 import { NinetailedGoogleTagmanagerPlugin } from './NinetailedGoogleTagmanagerPlugin';
 
@@ -40,23 +40,25 @@ describe('NinetailedGoogleTagmanagerPlugin', () => {
       fixtures.TRACK_COMPONENT_VIEW_PROPERTIES
     );
 
-    await sleep(5);
-    expect(window.dataLayer).toHaveLength(1);
-    expect(window.dataLayer && window.dataLayer[0]).toMatchSnapshot();
+    await waitFor(() => {
+      expect(window.dataLayer).toHaveLength(1);
+      expect(window.dataLayer && window.dataLayer[0]).toMatchSnapshot();
+    });
   });
 
   it('should add the has_seen_component events to the window.dataLayer', async () => {
     await ninetailed.trackHasSeenComponent(fixtures.TRACK_COMPONENT_PROPERTIES);
 
-    await sleep(5);
-    expect(window.dataLayer).toHaveLength(1);
-    expect(window.dataLayer && window.dataLayer[0]).toEqual({
-      event: 'Has Seen Experience',
-      properties: {
-        category: 'Ninetailed',
-        label: 'Variant:test',
-        nonInteraction: true,
-      },
+    await waitFor(() => {
+      expect(window.dataLayer).toHaveLength(1);
+      expect(window.dataLayer && window.dataLayer[0]).toEqual({
+        event: 'Has Seen Experience',
+        properties: {
+          category: 'Ninetailed',
+          label: 'Variant:test',
+          nonInteraction: true,
+        },
+      });
     });
   });
 
@@ -68,12 +70,13 @@ describe('NinetailedGoogleTagmanagerPlugin', () => {
         fixtures.TRACK_COMPONENT_VIEW_PROPERTIES
       );
 
-      await sleep(5);
-      expect(window.dataLayer).toHaveLength(1);
-      expect(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        window.dataLayer && (window.dataLayer[0] as any).ninetailed_experience
-      ).toEqual(fixtures.TRACK_COMPONENT_VIEW_PROPERTIES.experience.id);
+      await waitFor(() => {
+        expect(window.dataLayer).toHaveLength(1);
+        expect(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          window.dataLayer && (window.dataLayer[0] as any).ninetailed_experience
+        ).toEqual(fixtures.TRACK_COMPONENT_VIEW_PROPERTIES.experience.id);
+      });
     });
   });
 });

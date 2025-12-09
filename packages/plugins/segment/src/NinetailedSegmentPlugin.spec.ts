@@ -1,5 +1,5 @@
 import { Ninetailed } from '@ninetailed/experience.js';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 
 import { NinetailedSegmentPlugin } from './NinetailedSegmentPlugin';
@@ -80,15 +80,15 @@ describe('NinetailedSegmentPlugin', () => {
         },
       });
 
-      await sleep(5);
-
-      expect(segment.track).toBeCalledTimes(1);
-      expect(segment.track).toBeCalledWith('nt_experience', {
-        ninetailed_audience: 'test-audience',
-        ninetailed_component: 'test-component',
-        ninetailed_experience: 'test-experience',
-        ninetailed_experience_name: 'test-experience-name',
-        ninetailed_variant: 'control',
+      await waitFor(() => {
+        expect(segment.track).toBeCalledTimes(1);
+        expect(segment.track).toBeCalledWith('nt_experience', {
+          ninetailed_audience: 'test-audience',
+          ninetailed_component: 'test-component',
+          ninetailed_experience: 'test-experience',
+          ninetailed_experience_name: 'test-experience-name',
+          ninetailed_variant: 'control',
+        });
       });
     });
 
@@ -103,17 +103,18 @@ describe('NinetailedSegmentPlugin', () => {
         isPersonalized: true,
       });
 
-      await sleep(5);
-      expect(segment.track).toBeCalledTimes(1);
-      expect(segment.track).toBeCalledWith(
-        'Has Seen Component - Audience:test',
-        {
-          audience: 'test',
-          category: 'Ninetailed',
-          component: 'test',
-          isPersonalized: true,
-        }
-      );
+      await waitFor(() => {
+        expect(segment.track).toBeCalledTimes(1);
+        expect(segment.track).toBeCalledWith(
+          'Has Seen Component - Audience:test',
+          {
+            audience: 'test',
+            category: 'Ninetailed',
+            component: 'test',
+            isPersonalized: true,
+          }
+        );
+      });
     });
   });
 
@@ -146,15 +147,15 @@ describe('NinetailedSegmentPlugin', () => {
         },
       });
 
-      await sleep(5);
-
-      expect(segment.track).toBeCalledTimes(1);
-      expect(segment.track).toBeCalledWith('nt_experience', {
-        ninetailed_audience: 'test-audience',
-        ninetailed_component: 'test-component',
-        ninetailed_experience: 'test-experience',
-        ninetailed_experience_name: 'test-experience-name',
-        ninetailed_variant: 'control',
+      await waitFor(() => {
+        expect(segment.track).toBeCalledTimes(1);
+        expect(segment.track).toBeCalledWith('nt_experience', {
+          ninetailed_audience: 'test-audience',
+          ninetailed_component: 'test-component',
+          ninetailed_experience: 'test-experience',
+          ninetailed_experience_name: 'test-experience-name',
+          ninetailed_variant: 'control',
+        });
       });
     });
 
@@ -169,17 +170,18 @@ describe('NinetailedSegmentPlugin', () => {
         isPersonalized: true,
       });
 
-      await sleep(5);
-      expect(segment.track).toBeCalledTimes(1);
-      expect(segment.track).toBeCalledWith(
-        'Has Seen Component - Audience:test',
-        {
-          audience: 'test',
-          category: 'Ninetailed',
-          component: 'test',
-          isPersonalized: true,
-        }
-      );
+      await waitFor(() => {
+        expect(segment.track).toBeCalledTimes(1);
+        expect(segment.track).toBeCalledWith(
+          'Has Seen Component - Audience:test',
+          {
+            audience: 'test',
+            category: 'Ninetailed',
+            component: 'test',
+            isPersonalized: true,
+          }
+        );
+      });
     });
   });
 
@@ -212,9 +214,9 @@ describe('NinetailedSegmentPlugin', () => {
         },
       });
 
-      await sleep(5);
-
-      expect(segment.track).not.toBeCalled();
+      await waitFor(() => {
+        expect(segment.track).not.toBeCalled();
+      });
     });
 
     it('should not send has seen component events to segment', async () => {
@@ -228,9 +230,9 @@ describe('NinetailedSegmentPlugin', () => {
         isPersonalized: true,
       });
 
-      await sleep(5);
-
-      expect(segment.track).not.toBeCalled();
+      await waitFor(() => {
+        expect(segment.track).not.toBeCalled();
+      });
     });
   });
 });

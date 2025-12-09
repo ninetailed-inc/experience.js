@@ -1,6 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 import { generateMock } from '@anatine/zod-mock';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 
 import { logger } from '../logger/Logger';
 import { LogSink } from '../logger/LogSink';
@@ -60,14 +60,14 @@ describe('NinetailedApiClient', () => {
         })
       ).rejects.toThrowError();
 
-      await sleep(1);
+      await waitFor(() => {
+        expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
+        expect(mockLogSink.onWarnMock).toBeCalledWith(
+          'Create Profile request aborted due to network issues. This request is not retryable.'
+        );
 
-      expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
-      expect(mockLogSink.onWarnMock).toBeCalledWith(
-        'Create Profile request aborted due to network issues. This request is not retryable.'
-      );
-
-      expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+        expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+      });
     });
 
     it('should report FetchErrors to the errorLogSink', async () => {
@@ -78,12 +78,12 @@ describe('NinetailedApiClient', () => {
         })
       ).rejects.toThrowError();
 
-      await sleep(1);
-
-      expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
-      expect(mockLogSink.onErrorMock).toBeCalledWith(
-        'Create Profile request failed with error: [Error] test'
-      );
+      await waitFor(() => {
+        expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
+        expect(mockLogSink.onErrorMock).toBeCalledWith(
+          'Create Profile request failed with error: [Error] test'
+        );
+      });
     });
   });
 
@@ -97,14 +97,14 @@ describe('NinetailedApiClient', () => {
         })
       ).rejects.toThrowError();
 
-      await sleep(1);
+      await waitFor(() => {
+        expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
+        expect(mockLogSink.onWarnMock).toBeCalledWith(
+          'Update Profile request aborted due to network issues. This request is not retryable.'
+        );
 
-      expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
-      expect(mockLogSink.onWarnMock).toBeCalledWith(
-        'Update Profile request aborted due to network issues. This request is not retryable.'
-      );
-
-      expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+        expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+      });
     });
 
     it('should report FetchErrors to the errorLogSink', async () => {
@@ -116,12 +116,12 @@ describe('NinetailedApiClient', () => {
         })
       ).rejects.toThrowError();
 
-      await sleep(1);
-
-      expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
-      expect(mockLogSink.onErrorMock).toBeCalledWith(
-        'Update Profile request failed with error: [Error] test'
-      );
+      await waitFor(() => {
+        expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
+        expect(mockLogSink.onErrorMock).toBeCalledWith(
+          'Update Profile request failed with error: [Error] test'
+        );
+      });
     });
   });
 
@@ -134,14 +134,14 @@ describe('NinetailedApiClient', () => {
         })
       ).rejects.toThrowError();
 
-      await sleep(1);
+      await waitFor(() => {
+        expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
+        expect(mockLogSink.onWarnMock).toBeCalledWith(
+          'Upsert Many Profiles request aborted due to network issues. This request is not retryable.'
+        );
 
-      expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
-      expect(mockLogSink.onWarnMock).toBeCalledWith(
-        'Upsert Many Profiles request aborted due to network issues. This request is not retryable.'
-      );
-
-      expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+        expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+      });
     });
 
     it('should report FetchErrors to the errorLogSink', async () => {
@@ -152,12 +152,12 @@ describe('NinetailedApiClient', () => {
         })
       ).rejects.toThrowError();
 
-      await sleep(1);
-
-      expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
-      expect(mockLogSink.onErrorMock).toBeCalledWith(
-        'Upsert Many Profiles request failed with error: [Error] test'
-      );
+      await waitFor(() => {
+        expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
+        expect(mockLogSink.onErrorMock).toBeCalledWith(
+          'Upsert Many Profiles request failed with error: [Error] test'
+        );
+      });
     });
   });
 

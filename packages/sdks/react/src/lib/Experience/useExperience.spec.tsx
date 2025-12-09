@@ -1,6 +1,5 @@
 import React from 'react';
-import { setTimeout as sleep } from 'node:timers/promises';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { Ninetailed } from '@ninetailed/experience.js';
 import {
@@ -112,20 +111,22 @@ describe('useExperience', () => {
       }
     );
 
-    await sleep(5);
-
     await act(async () => {
       ninetailed.identify('test');
     });
 
-    expect(result.current.status).toEqual('success');
-    expect(result.current.loading).toEqual(false);
-    expect(result.current.variantIndex).toEqual(0);
-    expect(result.current.variant).toEqual(experience.components[0].baseline);
-    expect(result.current.baseline).toEqual(experience.components[0].baseline);
-    expect(result.current.hasVariants).toEqual(true);
-    expect(result.current.experience).toEqual(experience);
-    expect(result.current.audience).toEqual(experience.audience);
+    await waitFor(() => {
+      expect(result.current.status).toEqual('success');
+      expect(result.current.loading).toEqual(false);
+      expect(result.current.variantIndex).toEqual(0);
+      expect(result.current.variant).toEqual(experience.components[0].baseline);
+      expect(result.current.baseline).toEqual(
+        experience.components[0].baseline
+      );
+      expect(result.current.hasVariants).toEqual(true);
+      expect(result.current.experience).toEqual(experience);
+      expect(result.current.audience).toEqual(experience.audience);
+    });
   });
 
   it('should handle when a variant is selected', async () => {
@@ -184,23 +185,24 @@ describe('useExperience', () => {
       }
     );
 
-    // not sure why CI fails without this sleep
-    await sleep(8);
-
     await act(async () => {
       ninetailed.identify('test');
     });
 
-    expect(result.current.status).toEqual('success');
-    expect(result.current.loading).toEqual(false);
-    expect(result.current.variantIndex).toEqual(1);
-    expect(result.current.variant).toEqual(
-      experience.components[0].variants[0]
-    );
-    expect(result.current.baseline).toEqual(experience.components[0].baseline);
-    expect(result.current.hasVariants).toEqual(true);
-    expect(result.current.experience).toEqual(experience);
-    expect(result.current.audience).toEqual(experience.audience);
+    await waitFor(() => {
+      expect(result.current.status).toEqual('success');
+      expect(result.current.loading).toEqual(false);
+      expect(result.current.variantIndex).toEqual(1);
+      expect(result.current.variant).toEqual(
+        experience.components[0].variants[0]
+      );
+      expect(result.current.baseline).toEqual(
+        experience.components[0].baseline
+      );
+      expect(result.current.hasVariants).toEqual(true);
+      expect(result.current.experience).toEqual(experience);
+      expect(result.current.audience).toEqual(experience.audience);
+    });
   });
 
   it('handles circular references in an object', async () => {
@@ -264,23 +266,23 @@ describe('useExperience', () => {
       }
     );
 
-    await sleep(5);
-
     await act(async () => {
       ninetailed.identify('test');
     });
 
-    expect(result.current.status).toEqual('success');
-    expect(result.current.loading).toEqual(false);
-    expect(result.current.variantIndex).toEqual(1);
-    expect(result.current.variant).toEqual(
-      experience.components[0].variants[0]
-    );
-    expect(result.current.baseline.id).toEqual(
-      experience.components[0].baseline.id
-    );
-    expect(result.current.hasVariants).toEqual(true);
-    expect(result.current.experience).toEqual(experience);
-    expect(result.current.audience).toEqual(experience.audience);
+    await waitFor(() => {
+      expect(result.current.status).toEqual('success');
+      expect(result.current.loading).toEqual(false);
+      expect(result.current.variantIndex).toEqual(1);
+      expect(result.current.variant).toEqual(
+        experience.components[0].variants[0]
+      );
+      expect(result.current.baseline.id).toEqual(
+        experience.components[0].baseline.id
+      );
+      expect(result.current.hasVariants).toEqual(true);
+      expect(result.current.experience).toEqual(experience);
+      expect(result.current.audience).toEqual(experience.audience);
+    });
   });
 });
