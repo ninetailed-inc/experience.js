@@ -435,7 +435,7 @@ Object {
   "module": "./index.esm.js",
   "name": "@ninetailed/experience.js-next",
   "peerDependencies": Object {
-    "next": ">=13.5.9",
+    "next": ">=9.0.0",
     "react": ">=16.8.0",
   },
   "repository": Object {

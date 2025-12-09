@@ -34,7 +34,7 @@
     "@ninetailed/experience.js-shared": "*"
   },
   "peerDependencies": {
-    "next": ">=13.5.9",
+    "next": ">=9.0.0",
     "react": ">=16.8.0"
   }
 }
