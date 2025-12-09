@@ -25,7 +25,7 @@
             "checkMissingDependencies": true,
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
-            "ignoredDependencies": []
+            "ignoredDependencies": ["@testing-library/dom"]
           }
         ]
       }

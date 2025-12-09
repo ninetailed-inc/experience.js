@@ -1,6 +1,6 @@
 import { Ninetailed } from '@ninetailed/experience.js';
 import { fixtures } from '@ninetailed/experience.js-plugin-analytics/test';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 
 import { NinetailedGoogleAnalyticsPlugin } from './NinetailedGoogleAnalyticsPlugin';
 
@@ -41,12 +41,17 @@ describe('NinetailedGoogleAnalyticsPlugin', () => {
   it('should send has_seen_component events to google analytics', async () => {
     await ninetailed.trackHasSeenComponent(fixtures.TRACK_COMPONENT_PROPERTIES);
 
-    await sleep(5);
-    expect(gtag).toBeCalledTimes(1);
-    expect(gtag).toBeCalledWith('event', 'Has Seen Component - Audience:test', {
-      category: 'Ninetailed',
-      label: 'Variant:test',
-      nonInteraction: true,
+    await waitFor(() => {
+      expect(gtag).toBeCalledTimes(1);
+      expect(gtag).toBeCalledWith(
+        'event',
+        'Has Seen Component - Audience:test',
+        {
+          category: 'Ninetailed',
+          label: 'Variant:test',
+          nonInteraction: true,
+        }
+      );
     });
   });
 });

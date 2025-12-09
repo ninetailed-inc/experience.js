@@ -1,6 +1,6 @@
 import { Analytics } from 'analytics';
 import { generateMock } from '@anatine/zod-mock';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { waitFor } from '@testing-library/dom';
 import {
   type ElementSeenPayload,
   ElementSeenPayloadSchema,
@@ -61,21 +61,22 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...data,
       });
 
-      await sleep(5);
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        1
-      );
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: data.experience,
-          audience: data.audience,
-          componentType: 'Entry',
-          selectedVariant: data.variant,
-          selectedVariantIndex: 1,
-          selectedVariantSelector: 'variant 1',
-        },
-        {}
-      );
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          1
+        );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: data.experience,
+            audience: data.audience,
+            componentType: 'Entry',
+            selectedVariant: data.variant,
+            selectedVariantIndex: 1,
+            selectedVariantSelector: 'variant 1',
+          },
+          {}
+        );
+      });
     });
 
     it(`should call onTrackExperience multiple times when the same element is seen with different payloads`, async () => {
@@ -118,35 +119,35 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...payload2,
       });
 
-      await sleep(5);
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          2
+        );
 
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        2
-      );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: payload1.experience,
+            audience: payload1.audience,
+            componentType: 'Entry',
+            selectedVariant: payload1.variant,
+            selectedVariantIndex: payload1.variantIndex,
+            selectedVariantSelector: `variant ${payload1.variantIndex}`,
+          },
+          {}
+        );
 
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: payload1.experience,
-          audience: payload1.audience,
-          componentType: 'Entry',
-          selectedVariant: payload1.variant,
-          selectedVariantIndex: payload1.variantIndex,
-          selectedVariantSelector: `variant ${payload1.variantIndex}`,
-        },
-        {}
-      );
-
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: payload2.experience,
-          audience: payload2.audience,
-          componentType: 'Entry',
-          selectedVariant: payload2.variant,
-          selectedVariantIndex: payload2.variantIndex,
-          selectedVariantSelector: `variant ${payload2.variantIndex}`,
-        },
-        {}
-      );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: payload2.experience,
+            audience: payload2.audience,
+            componentType: 'Entry',
+            selectedVariant: payload2.variant,
+            selectedVariantIndex: payload2.variantIndex,
+            selectedVariantSelector: `variant ${payload2.variantIndex}`,
+          },
+          {}
+        );
+      });
     });
 
     it('should not call onTrackExperience multiple times when the same element is seen with the same payload', async () => {
@@ -174,23 +175,23 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...payload2,
       });
 
-      await sleep(5);
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          1
+        );
 
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        1
-      );
-
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: payload1.experience,
-          audience: payload1.audience,
-          componentType: 'Entry',
-          selectedVariant: payload1.variant,
-          selectedVariantIndex: payload1.variantIndex,
-          selectedVariantSelector: `variant ${payload1.variantIndex}`,
-        },
-        {}
-      );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: payload1.experience,
+            audience: payload1.audience,
+            componentType: 'Entry',
+            selectedVariant: payload1.variant,
+            selectedVariantIndex: payload1.variantIndex,
+            selectedVariantSelector: `variant ${payload1.variantIndex}`,
+          },
+          {}
+        );
+      });
     });
 
     it('should not receive the has_seen_element event if the payload is wrong', async () => {
@@ -199,10 +200,11 @@ describe('NinetailedAnalyticsPlugin', () => {
         foo: 'bar',
       });
 
-      await sleep(5);
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        0
-      );
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          0
+        );
+      });
     });
   });
 
@@ -215,11 +217,14 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...data,
       });
 
-      await sleep(5);
-      expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(1);
-      expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledWith(
-        data
-      );
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(
+          1
+        );
+        expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledWith(
+          data
+        );
+      });
     });
 
     it('should not receive the has_seen_component event if the payload is wrong', async () => {
@@ -230,8 +235,11 @@ describe('NinetailedAnalyticsPlugin', () => {
         foo: 'bar',
       });
 
-      await sleep(5);
-      expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(0);
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(
+          0
+        );
+      });
     });
   });
 
@@ -251,23 +259,24 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...data,
       });
 
-      await sleep(5);
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        1
-      );
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: data.experience,
-          audience: data.audience,
-          componentType: data.componentType,
-          selectedVariant: data.variant,
-          selectedVariantIndex: 1,
-          selectedVariantSelector: 'variant 1',
-        },
-        {
-          ninetailed_experience_name: 'nt_experience',
-        }
-      );
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          1
+        );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: data.experience,
+            audience: data.audience,
+            componentType: data.componentType,
+            selectedVariant: data.variant,
+            selectedVariantIndex: 1,
+            selectedVariantSelector: 'variant 1',
+          },
+          {
+            ninetailed_experience_name: 'nt_experience',
+          }
+        );
+      });
     });
 
     it('should not throw if data is not defined', async () => {
@@ -284,23 +293,24 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...data,
       });
 
-      await sleep(5);
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        1
-      );
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: data.experience,
-          audience: data.audience,
-          selectedVariant: data.variant,
-          componentType: data.componentType,
-          selectedVariantIndex: 1,
-          selectedVariantSelector: 'variant 1',
-        },
-        {
-          ninetailed_experience_name: 'undefined',
-        }
-      );
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          1
+        );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: data.experience,
+            audience: data.audience,
+            selectedVariant: data.variant,
+            componentType: data.componentType,
+            selectedVariantIndex: 1,
+            selectedVariantSelector: 'variant 1',
+          },
+          {
+            ninetailed_experience_name: 'undefined',
+          }
+        );
+      });
     });
 
     it('should generate dynamic keys', async () => {
@@ -316,24 +326,25 @@ describe('NinetailedAnalyticsPlugin', () => {
         type: HAS_SEEN_ELEMENT,
         ...data,
       });
-      await sleep(5);
 
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        1
-      );
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: data.experience,
-          audience: data.audience,
-          componentType: data.componentType,
-          selectedVariant: data.variant,
-          selectedVariantIndex: 1,
-          selectedVariantSelector: 'variant 1',
-        },
-        {
-          'experience-1': 'bar',
-        }
-      );
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          1
+        );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: data.experience,
+            audience: data.audience,
+            componentType: data.componentType,
+            selectedVariant: data.variant,
+            selectedVariantIndex: 1,
+            selectedVariantSelector: 'variant 1',
+          },
+          {
+            'experience-1': 'bar',
+          }
+        );
+      });
     });
 
     it('should generate dynamic values', async () => {
@@ -350,23 +361,24 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...data,
       });
 
-      await sleep(5);
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
-        1
-      );
-      expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
-        {
-          experience: data.experience,
-          audience: data.audience,
-          componentType: data.componentType,
-          selectedVariant: data.variant,
-          selectedVariantIndex: 1,
-          selectedVariantSelector: 'variant 1',
-        },
-        {
-          foo: 'experience-1',
-        }
-      );
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          1
+        );
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
+          {
+            experience: data.experience,
+            audience: data.audience,
+            componentType: data.componentType,
+            selectedVariant: data.variant,
+            selectedVariantIndex: 1,
+            selectedVariantSelector: 'variant 1',
+          },
+          {
+            foo: 'experience-1',
+          }
+        );
+      });
     });
   });
 });

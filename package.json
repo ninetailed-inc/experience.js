@@ -97,6 +97,7 @@
     "@swc/cli": "0.1.63",
     "@swc/core": "1.2.118",
     "@swc/jest": "0.2.15",
+    "@testing-library/dom": "8.19.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.2.0",
     "@types/async-retry": "1.4.5",
