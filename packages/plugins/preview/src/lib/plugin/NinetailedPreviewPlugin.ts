@@ -208,6 +208,19 @@ export class NinetailedPreviewPlugin
         }, {}),
     };
 
+    this.experiences
+      .filter((experience) => experience.audience?.id === id)
+      .forEach((experience) => {
+        const variantIndex =
+          this.experienceVariantIndexOverwrites[experience.id] || 0;
+
+        // Keep inline variable flags in sync when forcing an audience.
+        this.applyInlineVariableOverridesForExperience(
+          experience,
+          variantIndex
+        );
+      });
+
     this.onChange();
   }
 
@@ -222,6 +235,13 @@ export class NinetailedPreviewPlugin
       );
       return;
     }
+
+    const experiencesToReset = this.experiences.filter(
+      (experience) => experience.audience?.id === id
+    );
+
+    // Remove forced variants/flags for experiences tied to this audience.
+    this.clearExperienceOverrides(experiencesToReset.map((exp) => exp.id));
 
     this.audienceOverwrites = {
       ...this.audienceOverwrites,
@@ -248,28 +268,9 @@ export class NinetailedPreviewPlugin
       (experience) => experience.audience?.id === id
     );
 
-    if (experiencesToReset.length > 0) {
-      const experienceIdsToReset = experiencesToReset.map((e) => e.id);
+    this.clearExperienceOverrides(experiencesToReset.map((exp) => exp.id));
 
-      // 1. Clear any variable overwrites that were set for these experiences (allows natural evaluation)
-      this.variableOverwrites = Object.fromEntries(
-        Object.entries(this.variableOverwrites).filter(([, change]) => {
-          return !(
-            change.meta?.experienceId &&
-            experienceIdsToReset.includes(change.meta.experienceId)
-          );
-        })
-      );
-
-      // 2. Clear experience variant index overwrites for these experiences (allows natural variant selection)
-      this.experienceVariantIndexOverwrites = Object.fromEntries(
-        Object.entries(this.experienceVariantIndexOverwrites).filter(
-          ([key]) => !experienceIdsToReset.includes(key)
-        )
-      );
-    }
-
-    // 3. Remove audience override (allows natural audience evaluation)
+    // Remove audience override (allows natural audience evaluation)
     const { [id]: _, ...audienceOverwrites } = this.audienceOverwrites;
     this.audienceOverwrites = audienceOverwrites;
 
@@ -322,25 +323,7 @@ export class NinetailedPreviewPlugin
       [experienceId]: variantIndex,
     };
 
-    // Process all components to extract variable values
-    experience.components.forEach((component) => {
-      if (component.type === ComponentTypeEnum.InlineVariable) {
-        const key = component.key;
-        const value =
-          variantIndex === 0
-            ? component.baseline.value
-            : component.variants[variantIndex - 1]?.value ??
-              component.baseline.value;
-
-        // Set the variable value
-        this.setVariableValue({
-          experienceId,
-          key,
-          value,
-          variantIndex,
-        });
-      }
-    });
+    this.applyInlineVariableOverridesForExperience(experience, variantIndex);
 
     // Trigger change notification - this updates the middleware
     this.onChange();
@@ -351,9 +334,8 @@ export class NinetailedPreviewPlugin
       return;
     }
 
-    const { [experienceId]: _, ...experienceVariantIndexOverwrites } =
-      this.experienceVariantIndexOverwrites;
-    this.experienceVariantIndexOverwrites = experienceVariantIndexOverwrites;
+    // Clear any forced variant/variable overrides for this experience so the SDK can return to baseline.
+    this.clearExperienceOverrides([experienceId]);
 
     this.onChange();
   }
@@ -368,6 +350,12 @@ export class NinetailedPreviewPlugin
       window.ninetailed &&
       typeof window.ninetailed.reset === 'function'
     ) {
+      this.audienceOverwrites = {};
+      this.clearExperienceOverrides(
+        this.experiences.map((experience) => experience.id)
+      );
+      this.onChange();
+
       window.ninetailed.reset();
     }
   }
@@ -701,6 +689,56 @@ export class NinetailedPreviewPlugin
   }
 
   /**
+   * Ensure inline variables for a given experience reflect the selected variant
+   * without triggering multiple onChange calls. Keeps custom flags in sync with forced variants.
+   */
+  private applyInlineVariableOverridesForExperience(
+    experience: ExperienceConfiguration,
+    variantIndex: number
+  ): boolean {
+    let hasChanges = false;
+    const overrides = { ...this.variableOverwrites };
+
+    experience.components.forEach((component) => {
+      if (component.type !== ComponentTypeEnum.InlineVariable) return;
+
+      const value =
+        variantIndex === 0
+          ? component.baseline.value
+          : component.variants[variantIndex - 1]?.value ??
+            component.baseline.value;
+
+      const overrideKey = this.getOverrideKey(experience.id, component.key);
+      const previousOverride = overrides[overrideKey];
+      const nextChange: Change = {
+        type: ChangeTypes.Variable,
+        key: component.key,
+        value,
+        meta: {
+          experienceId: experience.id,
+          variantIndex,
+        },
+      };
+
+      if (
+        previousOverride &&
+        isEqual(previousOverride.value, value) &&
+        previousOverride.meta?.variantIndex === variantIndex
+      )
+        return;
+
+      overrides[overrideKey] = nextChange;
+      hasChanges = true;
+    });
+
+    if (hasChanges) {
+      this.variableOverwrites = overrides;
+    }
+
+    return hasChanges;
+  }
+
+  /**
    * Get effective changes by applying overwrites - compute on demand
    */
   private getEffectiveChanges(inputChanges: Change[] = this.changes): Change[] {
@@ -730,6 +768,49 @@ export class NinetailedPreviewPlugin
 
     // Add our overrides to create the final result
     return effectiveChanges;
+  }
+
+  /**
+   * Clear variant and variable overrides for a given set of experiences.
+   * Used when audiences/experiences are reset to avoid stale flag/variant state.
+   */
+  private clearExperienceOverrides(experienceIdsToReset: string[]): boolean {
+    if (!experienceIdsToReset.length) {
+      return false;
+    }
+
+    const cleanedVariableOverwrites = Object.fromEntries(
+      Object.entries(this.variableOverwrites).filter(([, change]) => {
+        return !(
+          change.meta?.experienceId &&
+          experienceIdsToReset.includes(change.meta.experienceId)
+        );
+      })
+    );
+
+    const cleanedExperienceVariantIndexOverwrites = Object.fromEntries(
+      Object.entries(this.experienceVariantIndexOverwrites).filter(
+        ([key]) => !experienceIdsToReset.includes(key)
+      )
+    );
+
+    const hasVariableChanges =
+      Object.keys(cleanedVariableOverwrites).length !==
+      Object.keys(this.variableOverwrites).length;
+    const hasVariantIndexChanges =
+      Object.keys(cleanedExperienceVariantIndexOverwrites).length !==
+      Object.keys(this.experienceVariantIndexOverwrites).length;
+
+    if (hasVariableChanges) {
+      this.variableOverwrites = cleanedVariableOverwrites;
+    }
+
+    if (hasVariantIndexChanges) {
+      this.experienceVariantIndexOverwrites =
+        cleanedExperienceVariantIndexOverwrites;
+    }
+
+    return hasVariableChanges || hasVariantIndexChanges;
   }
 
   private onChange = () => {
