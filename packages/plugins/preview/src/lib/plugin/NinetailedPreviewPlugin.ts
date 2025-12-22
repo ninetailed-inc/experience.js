@@ -703,47 +703,52 @@ export class NinetailedPreviewPlugin
   private applyInlineVariableOverridesForExperience(
     experience: ExperienceConfiguration,
     variantIndex: number
-  ): boolean {
-    let hasChanges = false;
-    const overrides = { ...this.variableOverwrites };
+  ): void {
+    const { hasChanges, overrides } = experience.components.reduce(
+      (acc, component) => {
+        if (component.type !== ComponentTypeEnum.InlineVariable) {
+          return acc;
+        }
 
-    experience.components.forEach((component) => {
-      if (component.type !== ComponentTypeEnum.InlineVariable) return;
+        const value =
+          variantIndex === 0
+            ? component.baseline.value
+            : component.variants[variantIndex - 1].value;
 
-      const value =
-        variantIndex === 0
-          ? component.baseline.value
-          : component.variants[variantIndex - 1]?.value ??
-            component.baseline.value;
+        const overrideKey = this.getOverrideKey(experience.id, component.key);
+        const currentOverride = acc.overrides[overrideKey];
+        const nextChange: Change = {
+          type: ChangeTypes.Variable,
+          key: component.key,
+          value,
+          meta: {
+            experienceId: experience.id,
+            variantIndex,
+          },
+        };
 
-      const overrideKey = this.getOverrideKey(experience.id, component.key);
-      const previousOverride = overrides[overrideKey];
-      const nextChange: Change = {
-        type: ChangeTypes.Variable,
-        key: component.key,
-        value,
-        meta: {
-          experienceId: experience.id,
-          variantIndex,
-        },
-      };
+        if (
+          currentOverride &&
+          isEqual(currentOverride.value, value) &&
+          currentOverride.meta?.variantIndex === variantIndex
+        ) {
+          return acc;
+        }
 
-      if (
-        previousOverride &&
-        isEqual(previousOverride.value, value) &&
-        previousOverride.meta?.variantIndex === variantIndex
-      )
-        return;
-
-      overrides[overrideKey] = nextChange;
-      hasChanges = true;
-    });
+        return {
+          hasChanges: true,
+          overrides: {
+            ...acc.overrides,
+            [overrideKey]: nextChange,
+          },
+        };
+      },
+      { hasChanges: false, overrides: { ...this.variableOverwrites } }
+    );
 
     if (hasChanges) {
       this.variableOverwrites = overrides;
     }
-
-    return hasChanges;
   }
 
   /**
