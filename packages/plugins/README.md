@@ -49,6 +49,7 @@ const ninetailed = new Ninetailed(
 ```
 
 The SDK automatically:
+
 - Initializes plugins when ready
 - Passes credentials to plugins that need them
 - Sets component view tracking thresholds
@@ -88,6 +89,7 @@ export class MyCustomPlugin extends NinetailedPlugin {
 ```
 
 **Key Features:**
+
 - Implements `AnalyticsPlugin` interface from the analytics library
 - Handles `has_seen_element` and `has_seen_variable` events
 - Supports component view tracking thresholds
@@ -102,7 +104,10 @@ An abstract class that extends `NinetailedPlugin` specifically for analytics int
 - **Sanitized payload handling** for type safety
 
 ```typescript
-import { NinetailedAnalyticsPlugin, Template } from '@ninetailed/experience.js-plugin-analytics';
+import {
+  NinetailedAnalyticsPlugin,
+  Template,
+} from '@ninetailed/experience.js-plugin-analytics';
 
 export class MyAnalyticsPlugin extends NinetailedAnalyticsPlugin {
   public readonly name = 'my-analytics-plugin';
@@ -124,6 +129,7 @@ export class MyAnalyticsPlugin extends NinetailedAnalyticsPlugin {
 ```
 
 **Key Features:**
+
 - Template-based event payload generation using `{{variable}}` syntax
 - Automatic deduplication of tracked experiences
 - Sanitized payload validation using Zod schemas
@@ -143,16 +149,16 @@ Plugins follow a specific lifecycle:
 
 Plugins can implement various interfaces to hook into different SDK events:
 
-| Interface | Purpose | Example Use Case |
-|-----------|---------|------------------|
-| `InterestedInProfileChange` | React to profile updates | Update UI when profile changes |
-| `InterestedInSeenElements` | React to element visibility | Track component views |
-| `InterestedInSeenVariables` | React to variable visibility | Track variable usage |
-| `InterestedInHiddenPage` | React to page visibility changes | Flush events when page hidden |
-| `HasExperienceSelectionMiddleware` | Modify experience selection | Preview plugin override variants |
-| `HasChangesModificationMiddleware` | Modify changes before application | Preview plugin override variables |
-| `AcceptsCredentials` | Receive SDK credentials | Insights plugin API authentication |
-| `RequiresEventBuilder` | Need event builder injection | Insights plugin event construction |
+| Interface                          | Purpose                           | Example Use Case                   |
+| ---------------------------------- | --------------------------------- | ---------------------------------- |
+| `InterestedInProfileChange`        | React to profile updates          | Update UI when profile changes     |
+| `InterestedInSeenElements`         | React to element visibility       | Track component views              |
+| `InterestedInSeenVariables`        | React to variable visibility      | Track variable usage               |
+| `InterestedInHiddenPage`           | React to page visibility changes  | Flush events when page hidden      |
+| `HasExperienceSelectionMiddleware` | Modify experience selection       | Preview plugin override variants   |
+| `HasChangesModificationMiddleware` | Modify changes before application | Preview plugin override variables  |
+| `AcceptsCredentials`               | Receive SDK credentials           | Insights plugin API authentication |
+| `RequiresEventBuilder`             | Need event builder injection      | Insights plugin event construction |
 
 ## Available Plugins
 
@@ -167,6 +173,7 @@ Sends experience events to Google Analytics via the `gtag` function.
 **Use Case:** Track Ninetailed experiences in Google Analytics for reporting and analysis.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedGoogleAnalyticsPlugin } from '@ninetailed/experience.js-plugin-google-analytics';
 
@@ -177,9 +184,11 @@ const plugin = new NinetailedGoogleAnalyticsPlugin({
 ```
 
 **Requirements:**
+
 - Google Analytics must be initialized with `gtag` available on `window`
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 
 ---
@@ -191,6 +200,7 @@ Pushes experience events to Google Tag Manager's `dataLayer`.
 **Use Case:** Send Ninetailed data to GTM for flexible tag management and routing to multiple destinations.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedGoogleTagmanagerPlugin } from '@ninetailed/experience.js-plugin-google-tagmanager';
 
@@ -204,6 +214,7 @@ const plugin = new NinetailedGoogleTagmanagerPlugin({
 ```
 
 **Default Event Payload:**
+
 ```javascript
 {
   event: 'nt_experience',
@@ -216,6 +227,7 @@ const plugin = new NinetailedGoogleTagmanagerPlugin({
 ```
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 
 ---
@@ -227,6 +239,7 @@ Sends experience events to Segment's analytics platform.
 **Use Case:** Route Ninetailed events through Segment to multiple downstream analytics tools.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedSegmentPlugin } from '@ninetailed/experience.js-plugin-segment';
 import { AnalyticsBrowser } from '@segment/analytics-next';
@@ -244,6 +257,7 @@ const plugin = new NinetailedSegmentPlugin({
 ```
 
 **Default Event Payload:**
+
 ```javascript
 {
   event: 'nt_experience',
@@ -256,6 +270,7 @@ const plugin = new NinetailedSegmentPlugin({
 ```
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 - Segment analytics instance (can be passed or auto-detected from `window.analytics`)
 
@@ -268,6 +283,7 @@ Pushes experience events to ContentSquare's data layer.
 **Use Case:** Track Ninetailed experiences in ContentSquare for behavioral analytics and heatmaps.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedContentsquarePlugin } from '@ninetailed/experience.js-plugin-contentsquare';
 
@@ -280,6 +296,7 @@ const plugin = new NinetailedContentsquarePlugin({
 Events are pushed to `window.ninetailed.plugins.contentsquare.dataLayer` array.
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 
 ---
@@ -295,6 +312,7 @@ Sends component view events to the Ninetailed Insights API for analytics and rep
 **Use Case:** Track component views for Ninetailed's built-in analytics dashboard.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedInsightsPlugin } from '@ninetailed/experience.js-plugin-insights';
 
@@ -304,12 +322,14 @@ const plugin = new NinetailedInsightsPlugin({
 ```
 
 **Features:**
+
 - Batches events (up to 25 events per batch)
 - Automatically flushes on profile changes
 - Uses beacon API when page becomes hidden
 - Requires credentials (automatically injected by SDK)
 
 **Interfaces Implemented:**
+
 - `InterestedInSeenElements`
 - `InterestedInSeenVariables`
 - `InterestedInProfileChange`
@@ -318,6 +338,7 @@ const plugin = new NinetailedInsightsPlugin({
 - `RequiresEventBuilder`
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 - `@ninetailed/experience.js` (for event builder)
 
@@ -330,6 +351,7 @@ Provides a preview UI widget for testing and debugging experiences in developmen
 **Use Case:** Enable content editors and developers to preview different experience variants, activate audiences, and test personalization.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedPreviewPlugin } from '@ninetailed/experience.js-plugin-preview';
 
@@ -351,6 +373,7 @@ const plugin = new NinetailedPreviewPlugin({
 ```
 
 **Features:**
+
 - Visual widget for previewing experiences
 - Override experience variant selection
 - Activate/deactivate audiences
@@ -359,11 +382,13 @@ const plugin = new NinetailedPreviewPlugin({
 - Window API: `window.ninetailed.plugins.preview`
 
 **Interfaces Implemented:**
+
 - `HasExperienceSelectionMiddleware`
 - `HasChangesModificationMiddleware`
 - `InterestedInProfileChange`
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 - `@ninetailed/experience.js-preview-bridge`
 
@@ -376,6 +401,7 @@ Handles privacy and consent management, controlling what data can be tracked.
 **Use Case:** Comply with GDPR, CCPA, and other privacy regulations by controlling event tracking based on user consent.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedPrivacyPlugin } from '@ninetailed/experience.js-plugin-privacy';
 
@@ -404,6 +430,7 @@ const plugin = new NinetailedPrivacyPlugin(
 ```
 
 **Features:**
+
 - Blocks events based on consent status
 - Filters event properties and traits
 - Controls profile merging
@@ -411,11 +438,13 @@ const plugin = new NinetailedPrivacyPlugin(
 - Window API: `window.ninetailed.consent(accepted: boolean)`
 
 **Event Filtering:**
+
 - Supports wildcard patterns (`*`) for property matching
 - Blocks `COMPONENT_START` events when consent not given
 - Queues blocked events (can be replayed after consent)
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 
 ---
@@ -427,6 +456,7 @@ Manages anonymous ID synchronization between server and client for SSR applicati
 **Use Case:** Maintain consistent user identification across server-side rendering and client-side hydration.
 
 **Configuration:**
+
 ```typescript
 import { NinetailedSsrPlugin } from '@ninetailed/experience.js-plugin-ssr';
 
@@ -439,15 +469,18 @@ const plugin = new NinetailedSsrPlugin({
 ```
 
 **Features:**
+
 - Reads anonymous ID from cookie on initialization
 - Writes anonymous ID to cookie on profile changes
 - Removes cookie on profile reset
 - Configurable cookie domain and expiration
 
 **Interfaces Implemented:**
+
 - `InterestedInProfileChange`
 
 **Dependencies:**
+
 - `@ninetailed/experience.js-plugin-analytics`
 - `js-cookie` (for cookie management)
 
@@ -461,28 +494,28 @@ The following diagram shows the inheritance hierarchy of all plugins:
 graph TD
     NinetailedPlugin["NinetailedPlugin<br/>(Base Class)"]
     NinetailedAnalyticsPlugin["NinetailedAnalyticsPlugin<br/>(Abstract Class)"]
-    
+
     GoogleAnalytics["GoogleAnalyticsPlugin"]
     GoogleTagManager["GoogleTagManagerPlugin"]
     Segment["SegmentPlugin"]
     ContentSquare["ContentSquarePlugin"]
-    
+
     Insights["InsightsPlugin"]
     Preview["PreviewPlugin"]
     Privacy["PrivacyPlugin"]
     SSR["SSRPlugin"]
-    
+
     NinetailedPlugin --> NinetailedAnalyticsPlugin
     NinetailedAnalyticsPlugin --> GoogleAnalytics
     NinetailedAnalyticsPlugin --> GoogleTagManager
     NinetailedAnalyticsPlugin --> Segment
     NinetailedAnalyticsPlugin --> ContentSquare
-    
+
     NinetailedPlugin --> Insights
     NinetailedPlugin --> Preview
     NinetailedPlugin --> Privacy
     NinetailedPlugin --> SSR
-    
+
     style NinetailedPlugin fill:#e1f5ff
     style NinetailedAnalyticsPlugin fill:#b3e5fc
     style GoogleAnalytics fill:#fff9c4
@@ -497,16 +530,16 @@ graph TD
 
 ### Plugin Dependencies
 
-| Plugin | Extends | Dependencies |
-|--------|---------|--------------|
-| `google-analytics` | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics` |
-| `google-tagmanager` | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics` |
-| `segment` | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics` |
-| `contentsquare` | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics` |
-| `insights` | `NinetailedPlugin` | `@ninetailed/experience.js-plugin-analytics`, `@ninetailed/experience.js` |
-| `preview` | `NinetailedPlugin` | `@ninetailed/experience.js-plugin-analytics`, `@ninetailed/experience.js-preview-bridge` |
-| `privacy` | `NinetailedPlugin` | `@ninetailed/experience.js-plugin-analytics` |
-| `ssr` | `NinetailedPlugin` | `@ninetailed/experience.js-plugin-analytics` |
+| Plugin              | Extends                     | Dependencies                                                                             |
+| ------------------- | --------------------------- | ---------------------------------------------------------------------------------------- |
+| `google-analytics`  | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics`                                             |
+| `google-tagmanager` | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics`                                             |
+| `segment`           | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics`                                             |
+| `contentsquare`     | `NinetailedAnalyticsPlugin` | `@ninetailed/experience.js-plugin-analytics`                                             |
+| `insights`          | `NinetailedPlugin`          | `@ninetailed/experience.js-plugin-analytics`, `@ninetailed/experience.js`                |
+| `preview`           | `NinetailedPlugin`          | `@ninetailed/experience.js-plugin-analytics`, `@ninetailed/experience.js-preview-bridge` |
+| `privacy`           | `NinetailedPlugin`          | `@ninetailed/experience.js-plugin-analytics`                                             |
+| `ssr`               | `NinetailedPlugin`          | `@ninetailed/experience.js-plugin-analytics`                                             |
 
 ## Building Custom Plugins
 
@@ -524,7 +557,10 @@ Decide which base class to extend:
 #### Example: Simple Analytics Plugin
 
 ```typescript
-import { NinetailedAnalyticsPlugin, Template } from '@ninetailed/experience.js-plugin-analytics';
+import {
+  NinetailedAnalyticsPlugin,
+  Template,
+} from '@ninetailed/experience.js-plugin-analytics';
 import type { SanitizedElementSeenPayload } from '@ninetailed/experience.js-plugin-analytics';
 
 export class MyCustomAnalyticsPlugin extends NinetailedAnalyticsPlugin {
@@ -542,7 +578,7 @@ export class MyCustomAnalyticsPlugin extends NinetailedAnalyticsPlugin {
     await fetch('https://api.example.com/events', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${this.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -553,7 +589,9 @@ export class MyCustomAnalyticsPlugin extends NinetailedAnalyticsPlugin {
     });
   }
 
-  protected async onTrackComponent(properties: TrackComponentProperties): Promise<void> {
+  protected async onTrackComponent(
+    properties: TrackComponentProperties
+  ): Promise<void> {
     // Optional: Implement legacy component tracking
   }
 }
@@ -563,31 +601,43 @@ export class MyCustomAnalyticsPlugin extends NinetailedAnalyticsPlugin {
 
 ```typescript
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
-import type { ElementSeenPayload, VariableSeenPayload } from '@ninetailed/experience.js-plugin-analytics';
+import type {
+  ElementSeenPayload,
+  VariableSeenPayload,
+} from '@ninetailed/experience.js-plugin-analytics';
 import type { ProfileChangedPayload } from '@ninetailed/experience.js';
 import type { InterestedInProfileChange } from '@ninetailed/experience.js';
 
-export class MyCustomPlugin extends NinetailedPlugin implements InterestedInProfileChange {
+export class MyCustomPlugin
+  extends NinetailedPlugin
+  implements InterestedInProfileChange
+{
   public readonly name = 'my-custom-plugin';
 
   private profile: Profile | null = null;
 
   protected onHasSeenElement(event: { payload: ElementSeenPayload }): void {
     const { experience, variant, audience } = event.payload;
-    
+
     if (experience && variant) {
-      console.log(`User saw experience ${experience.id} with variant ${variant.id}`);
+      console.log(
+        `User saw experience ${experience.id} with variant ${variant.id}`
+      );
       // Your custom logic here
     }
   }
 
   protected onHasSeenVariable(event: { payload: VariableSeenPayload }): void {
     const { variant, experienceId } = event.payload;
-    console.log(`Variable ${variant.id} was seen in experience ${experienceId}`);
+    console.log(
+      `Variable ${variant.id} was seen in experience ${experienceId}`
+    );
     // Your custom logic here
   }
 
-  public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({ payload }) => {
+  public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({
+    payload,
+  }) => {
     this.profile = payload.profile;
     // React to profile changes
   };
@@ -634,13 +684,16 @@ import type {
   AcceptsCredentials,
 } from '@ninetailed/experience.js';
 
-export class MyAdvancedPlugin extends NinetailedPlugin
-  implements InterestedInProfileChange, AcceptsCredentials {
-  
+export class MyAdvancedPlugin
+  extends NinetailedPlugin
+  implements InterestedInProfileChange, AcceptsCredentials
+{
   private credentials: Credentials | null = null;
 
   // React to profile changes
-  public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({ payload }) => {
+  public [PROFILE_CHANGE]: EventHandler<ProfileChangedPayload> = ({
+    payload,
+  }) => {
     // Handle profile change
   };
 
@@ -677,6 +730,7 @@ const ninetailed = new Ninetailed(
 1. **Type Safety**: Use TypeScript and leverage the provided types from `@ninetailed/experience.js-plugin-analytics`
 
 2. **Error Handling**: Always handle errors gracefully:
+
    ```typescript
    protected async onTrackExperience(properties, eventPayload) {
      try {
@@ -690,9 +744,10 @@ const ninetailed = new Ninetailed(
 3. **Deduplication**: If extending `NinetailedAnalyticsPlugin`, deduplication is handled automatically. For custom plugins, consider implementing your own deduplication logic.
 
 4. **Testing**: Test your plugin in isolation:
+
    ```typescript
    import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
-   
+
    // Use TestAnalyticsPlugin for testing
    ```
 
@@ -735,7 +790,7 @@ export class CustomAnalyticsPlugin extends NinetailedAnalyticsPlugin {
       const response = await fetch(this.options.endpoint, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.options.apiKey}`,
+          Authorization: `Bearer ${this.options.apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
