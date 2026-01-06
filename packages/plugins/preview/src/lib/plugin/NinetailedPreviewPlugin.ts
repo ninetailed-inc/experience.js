@@ -713,7 +713,7 @@ export class NinetailedPreviewPlugin
         const value =
           variantIndex === 0
             ? component.baseline.value
-            : component.variants[variantIndex - 1].value ??
+            : component.variants[variantIndex - 1]?.value ??
               component.baseline.value;
 
         const overrideKey = this.getOverrideKey(experience.id, component.key);
