@@ -208,6 +208,19 @@ export class NinetailedPreviewPlugin
         }, {}),
     };
 
+    this.experiences
+      .filter((experience) => experience.audience?.id === id)
+      .forEach((experience) => {
+        const variantIndex =
+          this.experienceVariantIndexOverwrites[experience.id] || 0;
+
+        // Keep inline variable flags in sync when forcing an audience.
+        this.applyInlineVariableOverridesForExperience(
+          experience,
+          variantIndex
+        );
+      });
+
     this.onChange();
   }
 
@@ -276,6 +289,7 @@ export class NinetailedPreviewPlugin
     this.onChange();
   }
 
+  // This is exposed to the window api but not used
   public setExperienceVariant({
     experienceId,
     variantIndex,
@@ -322,25 +336,7 @@ export class NinetailedPreviewPlugin
       [experienceId]: variantIndex,
     };
 
-    // Process all components to extract variable values
-    experience.components.forEach((component) => {
-      if (component.type === ComponentTypeEnum.InlineVariable) {
-        const key = component.key;
-        const value =
-          variantIndex === 0
-            ? component.baseline.value
-            : component.variants[variantIndex - 1]?.value ??
-              component.baseline.value;
-
-        // Set the variable value
-        this.setVariableValue({
-          experienceId,
-          key,
-          value,
-          variantIndex,
-        });
-      }
-    });
+    this.applyInlineVariableOverridesForExperience(experience, variantIndex);
 
     // Trigger change notification - this updates the middleware
     this.onChange();
@@ -698,6 +694,62 @@ export class NinetailedPreviewPlugin
    */
   private getOverrideKey(experienceId: string, key: string) {
     return `${experienceId}:${key}`;
+  }
+
+  /**
+   * Ensure inline variables for a given experience reflect the selected variant
+   * without triggering multiple onChange calls. Keeps custom flags in sync with forced variants.
+   */
+  private applyInlineVariableOverridesForExperience(
+    experience: ExperienceConfiguration,
+    variantIndex: number
+  ): void {
+    const { hasChanges, overrides } = experience.components.reduce(
+      (acc, component) => {
+        if (component.type !== ComponentTypeEnum.InlineVariable) {
+          return acc;
+        }
+
+        const value =
+          variantIndex === 0
+            ? component.baseline.value
+            : component.variants[variantIndex - 1]?.value ??
+              component.baseline.value;
+
+        const overrideKey = this.getOverrideKey(experience.id, component.key);
+        const currentOverride = acc.overrides[overrideKey];
+        const nextChange: Change = {
+          type: ChangeTypes.Variable,
+          key: component.key,
+          value,
+          meta: {
+            experienceId: experience.id,
+            variantIndex,
+          },
+        };
+
+        if (
+          currentOverride &&
+          isEqual(currentOverride.value, value) &&
+          currentOverride.meta?.variantIndex === variantIndex
+        ) {
+          return acc;
+        }
+
+        return {
+          hasChanges: true,
+          overrides: {
+            ...acc.overrides,
+            [overrideKey]: nextChange,
+          },
+        };
+      },
+      { hasChanges: false, overrides: { ...this.variableOverwrites } }
+    );
+
+    if (hasChanges) {
+      this.variableOverwrites = overrides;
+    }
   }
 
   /**
