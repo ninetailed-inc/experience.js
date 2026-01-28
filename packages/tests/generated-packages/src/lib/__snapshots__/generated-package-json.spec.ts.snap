@@ -602,11 +602,11 @@ Object {
 exports[`Generated package.json files dist/packages/utils/contentful/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
-    "@contentful/rich-text-types": "16.2.0",
+    "@contentful/rich-text-types": "17.2.5",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js-utils": "*",
-    "contentful": "^9.1.32",
+    "contentful": "^11.10.2",
     "zod": "3.23.0",
   },
   "description": "Contentful utilities for Experience.js",
@@ -633,6 +633,9 @@ Object {
     "directory": "packages/utils/contentful",
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
+  },
+  "resolutions": Object {
+    "@contentful/rich-text-types": "17.2.5",
   },
   "sideEffects": false,
   "types": "./index.cjs.d.ts",

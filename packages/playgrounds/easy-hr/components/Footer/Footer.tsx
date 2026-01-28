@@ -15,6 +15,10 @@ export const Footer: React.FC<IFooter> = ({ fields }) => {
           aria-label="Footer"
         >
           {fields.footerLinks?.map((link) => {
+            if (!link) {
+              return null;
+            }
+
             if (!link.fields.slug) {
               return (
                 <div key={link.sys.id} className="px-5 py-2">

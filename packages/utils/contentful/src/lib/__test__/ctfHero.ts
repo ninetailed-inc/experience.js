@@ -1,4 +1,4 @@
-import { Entry } from 'contentful';
+import { Entry, EntrySkeletonType } from 'contentful';
 import {
   IHero,
   IHeroFields,
@@ -9,9 +9,9 @@ import {
 export const ctfHero: IHero = {
   sys: {
     id: '',
-    type: '',
-    createdAt: '',
-    updatedAt: '',
+    type: 'Entry',
+    createdAt: '2022-09-30T12:42:51.595Z',
+    updatedAt: '2022-09-30T14:46:40.518Z',
     locale: '',
     contentType: {
       sys: {
@@ -20,6 +20,10 @@ export const ctfHero: IHero = {
         type: 'Link',
       },
     },
+    publishedVersion: 1,
+    revision: 1,
+    space: { sys: { type: 'Link', linkType: 'Space', id: '' } },
+    environment: { sys: { type: 'Link', linkType: 'Environment', id: '' } },
   },
   fields: {
     name: 'Hero',
@@ -41,6 +45,12 @@ export const ctfHero: IHero = {
             },
           },
           locale: 'en-US',
+          publishedVersion: 1,
+          revision: 1,
+          space: { sys: { type: 'Link', linkType: 'Space', id: '' } },
+          environment: {
+            sys: { type: 'Link', linkType: 'Environment', id: '' },
+          },
         },
         fields: {
           nt_name: 'are-you-cool',
@@ -82,6 +92,12 @@ export const ctfHero: IHero = {
                 },
               },
               locale: 'en-US',
+              publishedVersion: 1,
+              revision: 1,
+              space: { sys: { type: 'Link', linkType: 'Space', id: '' } },
+              environment: {
+                sys: { type: 'Link', linkType: 'Environment', id: '' },
+              },
             },
             fields: {
               nt_name: 'Is Cool',
@@ -123,7 +139,9 @@ export const ctfHero: IHero = {
             toPlainObject: function (): object {
               throw new Error('Function not implemented.');
             },
-            update: function (): Promise<Entry<INtAudienceFields>> {
+            update: function (): Promise<
+              Entry<EntrySkeletonType<INtAudienceFields>>
+            > {
               throw new Error('Function not implemented.');
             },
           },
@@ -160,6 +178,7 @@ export const ctfHero: IHero = {
                   },
                 },
                 locale: 'en-US',
+                publishedVersion: 1,
               },
               fields: {
                 entryTitle: '[Ninetailed Variant] Home Page Hero Banner',
@@ -275,7 +294,7 @@ export const ctfHero: IHero = {
                 throw new Error('Function not implemented.');
               },
               update: function (): Promise<
-                Entry<{ [fieldId: string]: unknown }>
+                Entry<EntrySkeletonType<{ [fieldId: string]: unknown }>>
               > {
                 throw new Error('Function not implemented.');
               },
@@ -285,7 +304,9 @@ export const ctfHero: IHero = {
         toPlainObject: function (): object {
           throw new Error('Function not implemented.');
         },
-        update: function (): Promise<Entry<INtExperienceFields>> {
+        update: function (): Promise<
+          Entry<EntrySkeletonType<INtExperienceFields>>
+        > {
           throw new Error('Function not implemented.');
         },
       },
@@ -297,7 +318,7 @@ export const ctfHero: IHero = {
   toPlainObject: function (): object {
     throw new Error('Function not implemented.');
   },
-  update: function (): Promise<Entry<IHeroFields>> {
+  update: function (): Promise<Entry<EntrySkeletonType<IHeroFields>>> {
     throw new Error('Function not implemented.');
   },
 };

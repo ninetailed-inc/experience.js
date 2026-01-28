@@ -47,6 +47,9 @@ export const Navigation: React.FC<INavigation> = ({ fields }) => {
           <div className="flex justify-start">
             <div className="hidden lg:flex">
               {fields.navigationLinks.map((link) => {
+                if (!link) {
+                  return null;
+                }
                 if (!link.fields.slug) {
                   return (
                     <div key={link.sys.id} className="px-5 py-2">
@@ -99,6 +102,9 @@ export const Navigation: React.FC<INavigation> = ({ fields }) => {
 
         <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
           {fields.navigationLinks.map((link) => {
+            if (!link) {
+              return null;
+            }
             if (!link.fields.slug) {
               return (
                 <div key={link.sys.id} className="px-5 py-2">

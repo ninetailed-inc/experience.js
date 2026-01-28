@@ -1,27 +1,38 @@
-import { ContentfulClientApi, createClient, Entry } from 'contentful';
-import { IPage, IPageFields } from '@/types/contentful';
 import {
-  AudienceEntryLike,
+  ContentfulClientApi,
+  createClient,
+  Entry,
+  EntrySkeletonType,
+  FieldsType,
+} from 'contentful';
+import {
+  DEFAULT_MODIFIERS,
+  INtAudienceSkeleton,
+  INtExperienceSkeleton,
+  IPage,
+  IPageSkeleton,
+} from '@/types/contentful';
+import {
   AudienceMapper,
   ExperienceEntryLike,
   ExperienceMapper,
-  ExperimentEntry,
-  isEntry,
 } from '@ninetailed/experience.js-utils-contentful';
 
 const contentfulClient = createClient({
   space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID ?? '',
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_TOKEN ?? '',
   environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT ?? 'master',
-});
+}).withoutUnresolvableLinks;
 
 const previewClient = createClient({
   space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID ?? '',
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_TOKEN ?? '',
   host: 'preview.contentful.com',
-});
+}).withoutUnresolvableLinks;
 
-const getClient = (preview: boolean): ContentfulClientApi => {
+const getClient = (
+  preview: boolean
+): ContentfulClientApi<DEFAULT_MODIFIERS> => {
   return preview ? previewClient : contentfulClient;
 };
 
@@ -32,20 +43,15 @@ interface IPageQueryParams {
   preview?: boolean;
 }
 
-const getPageQuery = (pageParams: IPageQueryParams) => {
-  return {
+export async function getPage(pageParams: IPageQueryParams): Promise<IPage> {
+  const client = getClient(!!pageParams.preview);
+  const entries = await client.getEntries<IPageSkeleton>({
     limit: 1,
     include: 10,
     'fields.slug': pageParams.slug,
-    content_type: pageParams.pageContentType,
+    content_type: 'page',
     'fields.content.sys.contentType.sys.id': pageParams.childPageContentType,
-  };
-};
-
-export async function getPage(pageParams: IPageQueryParams): Promise<IPage> {
-  const query = getPageQuery(pageParams);
-  const client = getClient(!!pageParams.preview);
-  const entries = await client.getEntries<IPageFields>(query);
+  });
   const [page] = entries.items as IPage[];
   return page;
 }
@@ -65,11 +71,13 @@ const getEntryQuery = (entryParams: IEntryQueryParams) => {
   };
 };
 
-export async function getEntry<T>(entryParams: IEntryQueryParams) {
+export async function getEntry<T extends FieldsType>(
+  entryParams: IEntryQueryParams
+) {
   const query = getEntryQuery(entryParams);
   const client = getClient(!!entryParams.preview);
-  const entries = await client.getEntries<T>(query);
-  const [entry = null] = entries.items as Entry<T>[];
+  const entries = await client.getEntries<EntrySkeletonType<T>>(query);
+  const [entry = null] = entries.items as Entry<EntrySkeletonType<T>>[];
   return entry;
 }
 
@@ -91,7 +99,7 @@ export async function getPagesOfType(
 ): Promise<IPage[]> {
   const query = getTypesOfPageQuery(pageParams);
   const client = getClient(!!pageParams.preview);
-  const entries = await client.getEntries<IPageFields>(query);
+  const entries = await client.getEntries<IPageSkeleton>(query);
   const pages = entries.items as IPage[];
 
   return pages || [];
@@ -99,19 +107,15 @@ export async function getPagesOfType(
 
 export async function getExperiments() {
   try {
-    const query = {
+    const client = getClient(false);
+    const entries = await client.getEntries<INtExperienceSkeleton>({
       content_type: 'nt_experience',
       'fields.nt_type': 'nt_experiment',
-    };
-    const client = getClient(false);
-    const entries = await client.getEntries(query);
-    const experiments = entries.items as ExperimentEntry[];
-
-    const mappedExperiments = (experiments || [])
+      include: 1,
+    });
+    return (entries.items as unknown as ExperienceEntryLike[])
       .filter(ExperienceMapper.isExperienceEntry)
       .map(ExperienceMapper.mapExperiment);
-
-    return mappedExperiments;
   } catch (error) {
     console.error(error);
     return [];
@@ -120,11 +124,11 @@ export async function getExperiments() {
 
 export const getAllExperiences = async () => {
   try {
-    const entries = await contentfulClient.getEntries({
+    const entries = await contentfulClient.getEntries<INtExperienceSkeleton>({
       content_type: 'nt_experience',
       include: 1,
     });
-    return (entries.items as ExperienceEntryLike[])
+    return (entries.items as unknown as ExperienceEntryLike[])
       .filter(ExperienceMapper.isExperienceEntry)
       .map(ExperienceMapper.mapExperience);
   } catch (error) {
@@ -135,11 +139,11 @@ export const getAllExperiences = async () => {
 
 export const getAllAudiences = async () => {
   try {
-    const entries = await contentfulClient.getEntries({
+    const entries = await contentfulClient.getEntries<INtAudienceSkeleton>({
       content_type: 'nt_audience',
       include: 1,
     });
-    return (entries.items as AudienceEntryLike[])
+    return entries.items
       .filter(AudienceMapper.isAudienceEntry)
       .map(AudienceMapper.mapAudience);
   } catch (error) {
