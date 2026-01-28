@@ -28,7 +28,7 @@ const Page = ({ page, entry }: { page: IPage; entry: ICta }) => {
     navigation,
     sections = [],
     footer,
-  } = page.fields.content.fields;
+  } = page.fields.content?.fields ?? {};
 
   return (
     <>
@@ -64,7 +64,7 @@ const Page = ({ page, entry }: { page: IPage; entry: ICta }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, preview }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const rawSlug = get(params, 'slug', []) as string[];
   const slug = rawSlug.join('/');
 

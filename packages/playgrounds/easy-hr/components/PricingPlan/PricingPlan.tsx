@@ -48,7 +48,7 @@ export const PricingPlan: React.FC<IPricingPlan> = (props) => {
             ul: 'mt-6 space-y-6',
           }}
           renderNode={{
-            [BLOCKS.LIST_ITEM]: (node, children) => {
+            [BLOCKS.LIST_ITEM]: (_node, children) => {
               return (
                 <li className="flex">
                   <CheckIcon
@@ -62,7 +62,7 @@ export const PricingPlan: React.FC<IPricingPlan> = (props) => {
           }}
         />
       </div>
-      {button.fields.slug && (
+      {button?.fields.slug && (
         <div className="mt-auto">
           <Link legacyBehavior passHref href={button.fields.slug}>
             <Button

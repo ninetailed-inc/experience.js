@@ -25,7 +25,7 @@ export const Feature: React.FC<IFeature> = ({ fields }) => {
             richTextDocument={fields.subline}
           />
           <div className="mt-5 mx-auto flex flex-col sm:flex-row md:mt-8 sm:w-full">
-            {fields.button && fields.button[0].fields.slug && (
+            {fields.button && fields.button?.[0]?.fields.slug && (
               <div>
                 <Link
                   legacyBehavior
@@ -80,7 +80,7 @@ export const Feature: React.FC<IFeature> = ({ fields }) => {
               fill="url(#ca9667ae-9f92-4be7-abcb-9e3d727f2941)"
             />
           </svg>
-          {fields.image.fields?.file.details.image && (
+          {fields.image?.fields?.file?.details.image && (
             <Image
               loader={ContentfulImageLoader}
               src={`https:${fields.image.fields.file.url}`}

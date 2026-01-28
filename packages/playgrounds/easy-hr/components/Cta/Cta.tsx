@@ -18,7 +18,7 @@ export const CTA: React.FC<ICta> = ({ fields, sys }) => {
         />
         <div className="mt-5 mx-auto flex flex-col sm:flex-row lg:w-6/12 sm:w-full items-center justify-center space-y-5 sm:space-y-0 sm:space-x-5">
           {fields.buttons?.map((button) => {
-            if (!button.fields.slug) {
+            if (!button?.fields.slug) {
               return null;
             }
             return (

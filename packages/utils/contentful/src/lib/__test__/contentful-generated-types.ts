@@ -1,102 +1,80 @@
-import { Entry } from 'contentful';
+import type { Entry, EntryFieldTypes, EntrySkeletonType } from 'contentful';
 
+/** Your custom methods (optional so real CDA entries still type-check) */
+type EntryMethods = {
+  toPlainObject?: () => object;
+  update?: () => Promise<unknown>;
+};
+
+/**
+ * Recursively adds EntryMethods to every Contentful Entry found inside `T`.
+ * - Recurse into `fields` (so linked entries get the methods too)
+ * - Recurse into arrays (for multi-reference fields)
+ * - Leave everything else alone (keeps JSON/object fields and your variants generic)
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type WithEntryMethods<T> = T extends Entry<any, any, any>
+  ? Omit<T, 'fields'> & {
+      fields: {
+        [K in keyof T['fields']]: WithEntryMethods<T['fields'][K]>;
+      };
+    } & EntryMethods
+  : T extends Array<infer U>
+  ? Array<WithEntryMethods<U>>
+  : T;
+
+/** Convenience alias for your preferred modifiers/locales */
+type CtflEntry<S extends EntrySkeletonType> = WithEntryMethods<
+  Entry<S, 'WITHOUT_UNRESOLVABLE_LINKS', string>
+>;
+
+/**
+ * ---------- NT Audience ----------
+ */
 export interface INtAudienceFields {
-  /** Name */
-  nt_name: string;
-
-  /** Description */
-  nt_description?: string | undefined;
-
-  /** Rules */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nt_rules: Record<string, any>;
-
-  /** Audience Id */
-  nt_audience_id: string;
+  nt_name: EntryFieldTypes.Symbol;
+  nt_rules: EntryFieldTypes.Object; // JSON
+  nt_audience_id: EntryFieldTypes.Symbol;
 }
 
-/** Ninetailed Audience */
+export type INtAudienceSkeleton = EntrySkeletonType<
+  INtAudienceFields,
+  'nt_audience'
+>;
+export type INtAudience = CtflEntry<INtAudienceSkeleton>;
 
-export interface INtAudience extends Entry<INtAudienceFields> {
-  sys: {
-    id: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    locale: string;
-    contentType: {
-      sys: {
-        id: 'nt_audience';
-        linkType: 'ContentType';
-        type: 'Link';
-      };
-    };
-  };
-}
-
+/**
+ * ---------- NT Experience ----------
+ */
 export interface INtExperienceFields {
-  /** Name */
-  nt_name: string;
+  nt_name: EntryFieldTypes.Symbol;
+  nt_description: EntryFieldTypes.Text;
+  nt_type: EntryFieldTypes.Symbol;
+  nt_experience_id: EntryFieldTypes.Symbol;
 
-  /** Description */
-  nt_description?: string | undefined;
+  nt_config: EntryFieldTypes.Object; // JSON
+  nt_audience: EntryFieldTypes.EntryLink<INtAudienceSkeleton>;
 
-  /** Type */
-  nt_type: 'nt_experiment' | 'nt_personalization';
-
-  /** Config */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nt_config: Record<string, any>;
-
-  /** Audience */
-  nt_audience?: INtAudience | undefined;
-
-  /** Variants */
-  nt_variants?: Entry<{ [fieldId: string]: unknown }>[] | undefined;
-
-  nt_experience_id: string;
+  nt_variants: EntryFieldTypes.Array<
+    EntryFieldTypes.EntryLink<EntrySkeletonType>
+  >;
 }
 
-/** Ninetailed Experience */
+export type INtExperienceSkeleton = EntrySkeletonType<
+  INtExperienceFields,
+  'nt_experience'
+>;
+export type INtExperience = CtflEntry<INtExperienceSkeleton>;
 
-export interface INtExperience extends Entry<INtExperienceFields> {
-  sys: {
-    id: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    locale: string;
-    contentType: {
-      sys: {
-        id: 'nt_experience';
-        linkType: 'ContentType';
-        type: 'Link';
-      };
-    };
-  };
-}
-
+/**
+ * ---------- Hero ----------
+ */
 export interface IHeroFields {
-  /** Name */
-  name: string;
-
-  /** Ninetailed */
-  nt_experiences?: INtExperience[] | undefined;
+  name: EntryFieldTypes.Symbol;
+  nt_experiences: EntryFieldTypes.Array<
+    EntryFieldTypes.EntryLink<INtExperienceSkeleton>
+  >;
 }
 
-export interface IHero extends Entry<IHeroFields> {
-  sys: {
-    id: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    locale: string;
-    contentType: {
-      sys: {
-        id: 'hero';
-        linkType: 'ContentType';
-        type: 'Link';
-      };
-    };
-  };
-}
+export type IHeroSkeleton = EntrySkeletonType<IHeroFields, 'hero'>;
+export type IHero = CtflEntry<IHeroSkeleton>;

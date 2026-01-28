@@ -19,6 +19,7 @@ import { Form } from '@/components/Form';
 import { HubspotForm } from '@/components/HubspotForm';
 
 import { ComponentContentTypes } from '@/lib/constants';
+import { EntrySkeletonType } from 'contentful';
 
 const ContentTypeMap = {
   [ComponentContentTypes.Hero]: Hero,
@@ -37,7 +38,7 @@ type BlockRendererProps = {
   block: BaselineWithExperiencesEntry | BaselineWithExperiencesEntry[];
 };
 
-type ComponentRendererProps = Contentful.Entry<unknown>;
+type ComponentRendererProps = Contentful.Entry<EntrySkeletonType>;
 
 const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
   const contentTypeId = get(props, 'sys.contentType.sys.id') as string;
