@@ -195,7 +195,7 @@
     json5 "^2.2.1"
     semver "^6.3.0"
 
-"@babel/core@^7.20.12":
+"@babel/core@^7.20.12", "@babel/core@^7.22.20":
   version "7.28.6"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.28.6.tgz#531bf883a1126e53501ba46eb3bb414047af507f"
   integrity sha512-H3mcG6ZDLTlYfaSNi0iOKkigqMFvkTKlGUYlD8GW7nNOYRrevuA46iTypPyv+06V3fEmvvazfntkBU34L0azAw==
