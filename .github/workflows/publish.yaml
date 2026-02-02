@@ -2,6 +2,7 @@ name: Publish packages
 on:
   release:
     types: [published]
+
 jobs:
   setup:
     name: Yarn install 🛠️
@@ -176,7 +177,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      id-token: write # This is required for NPM provenance on publish
+      id-token: write # This is required for NPM truste publishers & provenance generation (https://docs.npmjs.com/trusted-publishers)
       contents: read # To checkout the repo
       actions: read
     needs:
@@ -213,7 +214,6 @@ jobs:
 
       - run: doppler run --mount .env -- ./tools/bump_and_publish_sdks.sh
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TAG: ${{ github.event.release.tag_name }}
           # we run nx build in the script, so we might need some env vars
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
