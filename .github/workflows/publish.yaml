@@ -212,6 +212,12 @@ jobs:
         env:
           JOB_CONTEXT: ${{ toJson(github.event.release) }}
 
+      # for trusted publishers, we need to upgrade npm cli to 11.5.1 or later
+      # which comes only starting with node 24 using the actions/setup-node@v6 action
+      # so we currently force latest version for the npm CLI
+      - name: Upgrade npm to latest
+        run: npm install -g npm@latest
+
       - run: doppler run --mount .env -- ./tools/bump_and_publish_sdks.sh
         env:
           GITHUB_TAG: ${{ github.event.release.tag_name }}
