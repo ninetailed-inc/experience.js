@@ -187,25 +187,25 @@ jobs:
       - license-check
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Restore node_modules from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
 
       - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v2
+        uses: dopplerhq/cli-action@v3
 
       - name: Echo github event release metadatas
         run: echo "$JOB_CONTEXT"
