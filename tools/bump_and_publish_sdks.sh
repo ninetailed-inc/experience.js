@@ -64,8 +64,6 @@ function bump_and_publish () {
   # If runs from GHA pipeline, we add provenance to the package.
   # https://docs.npmjs.com/generating-provenance-statements
   if [ "${CI:-}" = "true" ]; then
-  # NPM Trusted Publishers use OIDC; ensure no classic token is used so npm uses OIDC.
-    unset NODE_AUTH_TOKEN NPM_TOKEN
     # the repository field is required to publish with provenance to NPM
     if jq -e '.repository' package.json >/dev/null; then 
       echo "[i] repository field exists on package.json"
