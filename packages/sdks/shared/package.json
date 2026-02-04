@@ -19,6 +19,9 @@
     "murmurhash-js": "1.0.0",
     "radash": "10.9.0"
   },
+  "devDependencies": {
+    "@nx/react": "17.3.2"
+  },
   "main": "./index.cjs.js",
   "module": "./index.esm.js",
   "types": "./index.cjs.d.ts",
