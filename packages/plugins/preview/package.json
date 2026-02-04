@@ -27,9 +27,6 @@
     "./package.json": "./package.json"
   },
   "sideEffects": false,
-  "devDependencies": {
-    "@nx/react": "17.3.2"
-  },
   "dependencies": {
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js": "*",
