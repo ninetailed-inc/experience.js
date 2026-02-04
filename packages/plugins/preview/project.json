@@ -21,26 +21,17 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/preview/**/*.{ts,tsx,js,jsx}",
-          "packages/plugins/preview/package.json",
-          "packages/plugins/preview/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview"],
       "options": {
-        "jestConfig": "packages/plugins/preview/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/preview/jest.config.cjs"
       }
     }
   },

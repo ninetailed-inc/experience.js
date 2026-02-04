@@ -78,10 +78,14 @@ export type EventHandlerAnalyticsInstance = Omit<
   ): DetachListeners;
 };
 
+// We disable the lint rule to avoid a breaking change, instead of renaming to INinetailedCorePlugin
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface NinetailedCorePlugin extends NinetailedAnalyticsPlugin {
   flush: (args: void) => Promise<FlushResult>;
 }
 
+// We disable the lint rule to avoid a breaking change
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class NinetailedCorePlugin
   extends NinetailedAnalyticsPlugin
   implements NinetailedCorePlugin

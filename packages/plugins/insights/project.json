@@ -12,27 +12,18 @@
         "outputPath": "dist/packages/plugins/insights",
         "main": "packages/plugins/insights/src/index.ts",
         "tsConfig": "packages/plugins/insights/tsconfig.lib.json",
-        "assets": [],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": []
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/insights/**/*.ts",
-          "packages/plugins/insights/package.json",
-          "packages/plugins/insights/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/plugins/insights/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/insights/jest.config.ts"
       }
     }
   },

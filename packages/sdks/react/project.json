@@ -22,8 +22,7 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        ]
       },
       "dependsOn": [
         {
@@ -33,21 +32,13 @@
       ]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/sdks/react/**/*.{ts,tsx,js,jsx}",
-          "packages/sdks/react/package.json",
-          "packages/sdks/react/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/react"],
       "options": {
-        "jestConfig": "packages/sdks/react/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/sdks/react/jest.config.cjs"
       }
     }
   },

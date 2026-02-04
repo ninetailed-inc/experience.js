@@ -10,3 +10,4 @@ packages/playgrounds/gatsby/public
 packages/playgrounds/gatsby/.cache
 
 CODEOWNERS
+/.nx/cache

@@ -13,7 +13,8 @@
         "tsConfig": "packages/playgrounds/node/tsconfig.app.json",
         "assets": ["packages/playgrounds/node/src/assets"],
         "compiler": "tsc",
-        "target": "node"
+        "target": "node",
+        "webpackConfig": "packages/playgrounds/node/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -41,18 +42,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/playgrounds/node/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/node"],
       "options": {
-        "jestConfig": "packages/playgrounds/node/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "packages/playgrounds/node/jest.config.js"
       }
     }
   },

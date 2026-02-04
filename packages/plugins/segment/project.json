@@ -11,27 +11,18 @@
         "outputPath": "dist/packages/plugins/segment",
         "main": "packages/plugins/segment/src/index.ts",
         "tsConfig": "packages/plugins/segment/tsconfig.lib.json",
-        "assets": ["packages/plugins/segment/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": ["packages/plugins/segment/*.md"]
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/segment/**/*.ts",
-          "packages/plugins/segment/package.json",
-          "packages/plugins/segment/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/segment"],
       "options": {
-        "jestConfig": "packages/plugins/segment/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/segment/jest.config.js"
       }
     }
   },
