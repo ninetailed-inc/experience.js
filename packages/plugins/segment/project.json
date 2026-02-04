@@ -11,7 +11,8 @@
         "outputPath": "dist/packages/plugins/segment",
         "main": "packages/plugins/segment/src/index.ts",
         "tsConfig": "packages/plugins/segment/tsconfig.lib.json",
-        "assets": ["packages/plugins/segment/*.md"]
+        "assets": ["packages/plugins/segment/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

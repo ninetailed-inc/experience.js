@@ -12,7 +12,8 @@
         "tsConfig": "packages/plugins/privacy/tsconfig.lib.json",
         "packageJson": "packages/plugins/privacy/package.json",
         "main": "packages/plugins/privacy/src/index.ts",
-        "assets": ["packages/plugins/privacy/*.md"]
+        "assets": ["packages/plugins/privacy/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
