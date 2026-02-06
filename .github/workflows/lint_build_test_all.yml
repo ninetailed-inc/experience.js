@@ -5,32 +5,26 @@ on:
 
 jobs:
   setup:
-    name: Yarn install 🛠️
+    name: pnpm install 🛠️
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
 
-      # node_module cache helps to avoid 1 minute copying from yarn cache on every job run
-      - name: node_modules cache
-        id: node-modules-cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-yarn-
-
-      - name: Yarn install
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: yarn install --prefer-offline --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
   lint:
     name: Lint 🎨
@@ -39,54 +33,55 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          # fetch-depth gives the complete git history which is needed for nx.
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
 
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
 
       - name: Check Format
-        run: yarn nx format:check --verbose
+        run: pnpm nx format:check --verbose
 
       - name: Lint 🎨
-        run: yarn nx affected --target=lint
+        run: pnpm nx affected --target=lint --skip-nx-cache
 
   tests:
     name: Tests 🧪
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs: setup
+    timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
 
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
@@ -96,32 +91,33 @@ jobs:
 
       - name: Test 🧪
         run: >
-          doppler run --mount .env -- yarn nx affected --target=test
+          doppler run --mount .env -- pnpm nx affected --target=test
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
 
   build:
     name: Build 📦
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs: setup
+    timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
 
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
@@ -131,7 +127,7 @@ jobs:
 
       - name: Build 📦
         run: >
-          doppler run --mount .env -- yarn nx affected --target=build
+          doppler run --mount .env -- pnpm nx affected --target=build
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
 
@@ -142,7 +138,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
@@ -152,26 +148,23 @@ jobs:
         with:
           filters: |
             lock:
-              - 'yarn.lock'
+              - 'pnpm-lock.yaml'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
 
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        if: steps.filter.outputs.lock == 'true'
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-yarn-${{ hashFiles('yarn.lock') }}
+      - name: Install dependencies
+        if: steps.changes.outputs.lock == 'true'
+        run: pnpm install --frozen-lockfile
 
       - name: Run License Checker
-        if: steps.filter.outputs.lock == 'true'
-        run: >
+        if: steps.changes.outputs.lock == 'true'
+        run: |
           echo "In case of error, please check ./docs/Licenses.md"
-          yarn license-checker \
-          --summary \
-          --production \
-          --relativeLicensePath \
-          --onlyAllow 'MIT;Apache-2.0;ISC;BSD-3-Clause;BSD-2-Clause;MIT*;Apache 2.0;Unlicense;:CC0-1.0;CC-BY-4.0;WTFPL;0BSD;UNLICENSED;Python-2.0;MPL-2.0;CC-BY-3.0;CC0-1.0'
+          pnpm exec license-checker --summary --production --relativeLicensePath --onlyAllow 'MIT;Apache-2.0;ISC;BSD-3-Clause;BSD-2-Clause;MIT*;Apache 2.0;Unlicense;:CC0-1.0;CC-BY-4.0;WTFPL;0BSD;UNLICENSED;Python-2.0;MPL-2.0;CC-BY-3.0;CC0-1.0'

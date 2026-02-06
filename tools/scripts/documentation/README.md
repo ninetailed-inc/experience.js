@@ -13,13 +13,13 @@ You can run this script using Node.js. Here's how:
 1. Install dependencies.
 
 ```sh
-yarn
+pnpm install
 ```
 
-2. Run the script using `npm run generate:doc`.
+2. Run the script using `pnpm run generate:doc`.
 
 ```sh
-yarn generate:doc
+pnpm generate:doc
 ```
 
 This script will do the following:
