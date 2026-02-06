@@ -271,12 +271,18 @@ importers:
       '@types/loader-utils':
         specifier: 2.0.6
         version: 2.0.6
+      '@types/lodash':
+        specifier: 4.17.23
+        version: 4.17.23
       '@types/murmurhash-js':
         specifier: 1.0.3
         version: 1.0.3
       '@types/node':
         specifier: 18.7.18
         version: 18.7.18
+      '@types/node-fetch':
+        specifier: 2.6.13
+        version: 2.6.13
       '@types/react':
         specifier: 18.2.14
         version: 18.2.14
