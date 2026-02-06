@@ -1,0 +1,222 @@
+name: Publish packages
+on:
+  release:
+    types: [published]
+
+jobs:
+  setup:
+    name: pnpm install 🛠️
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+  build:
+    name: Build 📦
+    runs-on: ubuntu-latest
+    needs: setup
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v2
+
+      - name: Build 📦
+        run: >
+          doppler run --mount .env -- pnpm nx run-many --target=build
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+
+  lint:
+    name: Lint 🎨
+    runs-on: ubuntu-latest
+    needs: setup
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+
+      - name: Check Format
+        run: pnpm nx format:check --verbose
+
+      - name: Lint 🎨
+        run: pnpm nx run-many --target=lint
+
+  tests:
+    name: Tests 🧪
+    runs-on: ubuntu-latest
+    needs: setup
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v2
+
+      - name: Test 🧪
+        run: >
+          doppler run --mount .env -- pnpm nx run-many --target=test
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+
+  license-check:
+    name: License check 📄
+    runs-on: ubuntu-latest
+    needs: setup
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            lock:
+              - 'pnpm-lock.yaml'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        if: steps.changes.outputs.lock == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Run License Checker
+        if: steps.changes.outputs.lock == 'true'
+        run: |
+          echo "In case of error, please check ./docs/Licenses.md"
+          pnpm exec license-checker --summary --production --relativeLicensePath --onlyAllow 'MIT;Apache-2.0;ISC;BSD-3-Clause;BSD-2-Clause;MIT*;Apache 2.0;Unlicense;:CC0-1.0;CC-BY-4.0;WTFPL;0BSD;UNLICENSED;Python-2.0;MPL-2.0;CC-BY-3.0;CC0-1.0'
+
+  publish:
+    name: Publish to NPM 🚀
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      id-token: write # This is required for NPM truste publishers & provenance generation (https://docs.npmjs.com/trusted-publishers)
+      contents: read # To checkout the repo
+      actions: read
+    needs:
+      - build
+      - lint
+      - tests
+      - license-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v2
+
+      - name: Echo github event release metadatas
+        run: echo "$JOB_CONTEXT"
+        env:
+          JOB_CONTEXT: ${{ toJson(github.event.release) }}
+
+      # for trusted publishers, we need to upgrade npm cli to 11.5.1 or later
+      # which comes only starting with node 24 using the actions/setup-node@v6 action
+      # so we currently force latest version for the npm CLI
+      - name: Upgrade npm to latest
+        run: npm install -g npm@latest
+
+      - run: doppler run --mount .env -- ./tools/bump_and_publish_sdks.sh
+        env:
+          GITHUB_TAG: ${{ github.event.release.tag_name }}
+          # we run nx build in the script, so we might need some env vars
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
