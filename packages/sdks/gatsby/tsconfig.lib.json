@@ -3,7 +3,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "../../dist/out-tsc",
-    "types": []
+    "types": [],
+    "baseUrl": "../../..",
+    "paths": { "gatsby-plugin-utils": ["node_modules/gatsby-plugin-utils"] }
   },
   "files": [],
   "exclude": ["**/*.spec.ts", "**/*.spec.tsx"],

@@ -53,7 +53,9 @@ type TrackerProps = {
 export const Tracker: React.FC<TrackerProps> = ({ onRouteChange }) => {
   return (
     <Location>
-      {(location) => <Executor {...location} onRouteChange={onRouteChange} />}
+      {(location: LocationContext) => (
+        <Executor {...location} onRouteChange={onRouteChange} />
+      )}
     </Location>
   );
 };

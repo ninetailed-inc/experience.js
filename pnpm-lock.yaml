@@ -27,6 +27,9 @@ importers:
       '@heroicons/react':
         specifier: 1.0.6
         version: 1.0.6(react@18.2.0)
+      '@reach/router':
+        specifier: 1.3.4
+        version: 1.3.4(react-dom@18.2.0)(react@18.2.0)
       '@reduxjs/toolkit':
         specifier: 1.8.4
         version: 1.8.4(react@18.2.0)
@@ -93,6 +96,9 @@ importers:
       gatsby-plugin-typescript:
         specifier: 4.25.0
         version: 4.25.0(gatsby@4.25.7)
+      gatsby-plugin-utils:
+        specifier: 3.19.0
+        version: 3.19.0(gatsby@4.25.7)(graphql@15.10.1)
       gatsby-source-contentful:
         specifier: 8.17.0
         version: 8.17.0(gatsby-plugin-image@2.13.0)(gatsby-plugin-sharp@4.25.0)(gatsby@4.25.7)(graphql@15.10.1)(react-dom@18.2.0)(react@18.2.0)(sharp@0.32.6)
@@ -361,9 +367,6 @@ importers:
       gatsby-plugin-root-import:
         specifier: 2.0.9
         version: 2.0.9(gatsby@4.25.7)
-      gatsby-plugin-utils:
-        specifier: 3.19.0
-        version: 3.19.0(gatsby@4.25.7)(graphql@15.10.1)
       husky:
         specifier: 8.0.3
         version: 8.0.3
@@ -4691,6 +4694,20 @@ packages:
       schema-utils: 3.3.0
       source-map: 0.7.6
       webpack: 5.89.0(@swc/core@1.2.118)
+
+  /@reach/router@1.3.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-+mtn9wjlB9NN2CNnnC/BRYtwdKBfSyyasPYraNAyvaV1occr/5NnB4CVzjEZipNHwYebQwcndGUmpFzxAUoqSA==}
+    peerDependencies:
+      react: 15.x || 16.x || 16.4.0-alpha.0911da3
+      react-dom: 15.x || 16.x || 16.4.0-alpha.0911da3
+    dependencies:
+      create-react-context: 0.3.0(prop-types@15.8.1)(react@18.2.0)
+      invariant: 2.2.4
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-lifecycles-compat: 3.0.4
+    dev: false
 
   /@reduxjs/toolkit@1.8.4(react@18.2.0):
     resolution: {integrity: sha512-IpFq1WI7sCYeLQpDCGvlcQY9wn70UpAM3cOLq78HRnVn1746RI+l3y5xcuOeVOxORaxABJh3cfJMxycD2IwH5w==}
@@ -10101,6 +10118,18 @@ packages:
       - supports-color
       - ts-node
 
+  /create-react-context@0.3.0(prop-types@15.8.1)(react@18.2.0):
+    resolution: {integrity: sha512-dNldIoSuNSvlTJ7slIKC/ZFGKexBMBrrcc+TTe1NdmROnaASuLPvqpwj9v4XS4uXZ8+YPu0sNmShX2rXI5LNsw==}
+    peerDependencies:
+      prop-types: ^15.0.0
+      react: ^0.14.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      gud: 1.0.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      warning: 4.0.3
+    dev: false
+
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 
@@ -14216,6 +14245,10 @@ packages:
   /graphql@15.10.1:
     resolution: {integrity: sha512-BL/Xd/T9baO6NFzoMpiMD7YUZ62R6viR5tp/MULVEnbYJXZA//kRNW7J0j1w/wXArgL0sCxhDfK5dczSKn3+cg==}
     engines: {node: '>= 10.x'}
+
+  /gud@1.0.0:
+    resolution: {integrity: sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==}
+    dev: false
 
   /gunzip-maybe@1.4.2:
     resolution: {integrity: sha512-4haO1M4mLO91PW57BMsDFf75UmwoRX0GkdD+Faw+Lr+r/OZrOCS0pIBwOL1xCKQqnQzbNFGgK2V2CpBUPeFNTw==}
@@ -22581,6 +22614,12 @@ packages:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
     dependencies:
       makeerror: 1.0.12
+
+  /warning@4.0.3:
+    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /watchpack@2.4.0:
     resolution: {integrity: sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg==}
