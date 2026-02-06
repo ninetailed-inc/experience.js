@@ -361,6 +361,9 @@ importers:
       gatsby-plugin-root-import:
         specifier: 2.0.9
         version: 2.0.9(gatsby@4.25.7)
+      gatsby-plugin-utils:
+        specifier: 3.19.0
+        version: 3.19.0(gatsby@4.25.7)(graphql@15.10.1)
       husky:
         specifier: 8.0.3
         version: 8.0.3
