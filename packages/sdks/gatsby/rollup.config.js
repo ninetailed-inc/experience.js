@@ -27,21 +27,30 @@ module.exports = (config) => {
     entryFileNames: createEntryFileNames(),
     chunkFileNames: '[name].js',
   }));
+
+  const baseExternal = nxConfig.external;
+  const isNinetailedPlugins = (id) =>
+    id.includes('ninetailed-plugins') &&
+    (id.includes('loaders') || id.endsWith('ninetailed-plugins.js'));
+
   return {
     ...nxConfig,
+    external(id, ...rest) {
+      if (isNinetailedPlugins(id)) return true;
+      if (typeof baseExternal === 'function') return baseExternal(id, ...rest);
+      if (Array.isArray(baseExternal)) return baseExternal.includes(id);
+      return false;
+    },
     input: {
       /**
        * Keep the main entry point given by the Nx config from the project.json
        */
       ...nxConfig.input,
       /**
-       * With the leading path ("loaders/") we define and preserve the folder structure in the output bundle
+       * loaders/ninetailed-plugins is NOT bundled as an entry; it is externalized so that
+       * the consumer's webpack can run the loader on it and replace with { plugins, options }.
+       * The loader file is copied to dist via project.json assets.
        */
-      'loaders/ninetailed-plugins': path.join(
-        __dirname,
-        'loaders',
-        'ninetailed-plugins.js'
-      ),
       /**
        * We define the gatsby config files as distinct entry points since they enclose their own dependencies and functionality and are independent of the main entry point ("index.cjs")
        */

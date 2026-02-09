@@ -8,8 +8,8 @@ require('dotenv').config({
 });
 
 const withPackageVersion = (config) => {
-  if (!process.env.NX_PACKAGE_VERSION) {
-    throw new Error('NX_PACKAGE_VERSION is not set');
+  if (!process.env.NX_PUBLIC_PACKAGE_VERSION) {
+    throw new Error('NX_PUBLIC_PACKAGE_VERSION is not set');
   }
 
   return {
@@ -17,8 +17,8 @@ const withPackageVersion = (config) => {
     plugins: [
       ...(config.plugins || []),
       replace({
-        "process.env['NX_PACKAGE_VERSION']": JSON.stringify(
-          process.env.NX_PACKAGE_VERSION
+        "process.env['NX_PUBLIC_PACKAGE_VERSION']": JSON.stringify(
+          process.env.NX_PUBLIC_PACKAGE_VERSION
         ),
         delimiters: ['', ''],
         preventAssignment: true,

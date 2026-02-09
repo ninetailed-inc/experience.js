@@ -21,6 +21,11 @@
             "glob": "packages/sdks/gatsby/README.md",
             "input": ".",
             "output": "."
+          },
+          {
+            "glob": "loaders/ninetailed-plugins.js",
+            "input": "packages/sdks/gatsby",
+            "output": "loaders"
           }
         ]
       }
