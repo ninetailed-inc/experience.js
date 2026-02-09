@@ -25,6 +25,16 @@
       }
     }
   },
+  "namedInputs": {
+    "sharedGlobals": [
+      {
+        "runtime": "node --version"
+      },
+      {
+        "runtime": "pnpm --version"
+      }
+    ]
+  },
   "extends": "@nx/workspace/presets/core.json",
   "affected": {
     "defaultBase": "main"
