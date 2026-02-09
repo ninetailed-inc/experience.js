@@ -6,6 +6,15 @@
   "license": "MIT",
   "dependencies": {
     "gatsby": "*",
-    "gatsby-plugin-image": "*"
+    "gatsby-plugin-image": "*",
+    "@gatsbyjs/reach-router": "*",
+    "gatsby-link": "*",
+    "gatsby-react-router-scroll": "*",
+    "gatsby-script": "*",
+    "loader-utils": "*",
+    "mitt": "*",
+    "shallow-compare": "*",
+    "deepmerge": "*",
+    "node-html-parser": "*"
   }
 }

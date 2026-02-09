@@ -1,7 +1,12 @@
 const path = require('node:path');
 const { workspaceRoot } = require('@nrwl/devkit');
 
-const ignoreFiles = ['package.json', 'yarn.lock', '.eslintrc.js', 'nx.json'];
+const ignoreFiles = [
+  'package.json',
+  'pnpm-lock.yaml',
+  '.eslintrc.js',
+  'nx.json',
+];
 
 module.exports = {
   '*': (stagedFiles) => {

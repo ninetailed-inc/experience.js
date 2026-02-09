@@ -13,7 +13,7 @@
             "checkMissingDependencies": true,
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
-            "ignoredDependencies": []
+            "ignoredDependencies": ["loader-utils"]
           }
         ]
       }

@@ -14,9 +14,9 @@
 After cloning the project to your machine, to install the dependencies, run:
 
 ```sh
-yarn
+pnpm
 
-yarn prepare
+pnpm run prepare
 ```
 
 To build all the packages, run:
