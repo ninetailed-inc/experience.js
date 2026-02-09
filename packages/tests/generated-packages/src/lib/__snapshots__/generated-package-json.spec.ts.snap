@@ -58,7 +58,6 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "type": "commonjs",
-  "types": "./src/index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -125,7 +124,6 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "type": "commonjs",
-  "types": "./src/index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -245,14 +243,13 @@ Object {
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
+    "analytics": "0.8.1",
     "radash": "10.9.0",
     "tslib": "2.4.1",
     "wildcard-match": "5.1.2",
   },
   "description": "Ninetailed SDK plugin for privacy",
-  "devDependencies": Object {
-    "analytics": "0.8.1",
-  },
+  "devDependencies": Object {},
   "keywords": Array [
     "privacy",
     "ninetailed",
@@ -268,7 +265,6 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "type": "commonjs",
-  "types": "./src/index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -300,7 +296,6 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "type": "commonjs",
-  "types": "./src/index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -369,7 +364,6 @@ Object {
   "main": "./index.cjs.js",
   "name": "@ninetailed/experience.js-gatsby",
   "peerDependencies": Object {
-    "@nx/react": "16.6.0",
     "gatsby": ">=2.27.4",
     "react": ">=16.8.0",
   },
@@ -515,7 +509,6 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "type": "commonjs",
-  "types": "./src/index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
