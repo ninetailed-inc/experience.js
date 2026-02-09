@@ -556,7 +556,7 @@ export class NinetailedPreviewPlugin
 
   private get pluginApi(): PreviewPluginApi {
     return {
-      version: process.env['NX_PACKAGE_VERSION'] || '0.0.0',
+      version: process.env['NX_PUBLIC_PACKAGE_VERSION'] || '0.0.0',
 
       open: this.open.bind(this),
       close: this.close.bind(this),

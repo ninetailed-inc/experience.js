@@ -38,7 +38,7 @@ function bump_and_publish () {
     exit 1
   fi
   path_after_packages=$1
-  nx_project_name=$(echo $1 | sed -E 's/\//-/g')
+  NX_PUBLIC_project_name=$(echo $1 | sed -E 's/\//-/g')
 
   echo "Bumping and publishing: $1"
 
@@ -50,7 +50,7 @@ function bump_and_publish () {
 
   # build from root of repo
   cd $PROJECT_ROOT
-  pnpm nx build $nx_project_name
+  pnpm nx build $NX_PUBLIC_project_name
 
   # update the ninetailed interdependencies in the build package.json files
   pnpm exec ts-node ./tools/scripts/update-package-json.ts $NEW_VERSION dist/packages/$path_after_packages
