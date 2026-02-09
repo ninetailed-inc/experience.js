@@ -36,9 +36,6 @@
     ]
   },
   "extends": "@nx/workspace/presets/core.json",
-  "affected": {
-    "defaultBase": "main"
-  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nx/workspace/tasks-runners/default",
@@ -73,5 +70,7 @@
         "linter": "eslint"
       }
     }
-  }
+  },
+  "useInferencePlugins": false,
+  "defaultBase": "main"
 }
