@@ -12,3 +12,4 @@ packages/playgrounds/gatsby/.cache
 CODEOWNERS
 pnpm-lock.yaml
 /.nx/cache
+.nx/workspace-data

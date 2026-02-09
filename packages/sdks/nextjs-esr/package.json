@@ -28,7 +28,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "next": "13.5.9"
+    "next": "14.2.35"
   },
   "peerDependencies": {
     "@ninetailed/experience.js-shared": "*",
