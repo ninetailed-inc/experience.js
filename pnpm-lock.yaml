@@ -220,9 +220,6 @@ importers:
       '@jest/globals':
         specifier: 30.2.0
         version: 30.2.0
-      '@nrwl/tao':
-        specifier: 18.3.5
-        version: 18.3.5(@swc/core@1.3.99)
       '@nx/cypress':
         specifier: 18.3.5
         version: 18.3.5(@swc/core@1.3.99)(@types/node@18.19.99)(cypress@13.17.0)(nx@18.3.5)(typescript@4.9.4)(verdaccio@5.33.0)
