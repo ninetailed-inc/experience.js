@@ -13,7 +13,8 @@
             "checkMissingDependencies": true,
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
-            "ignoredDependencies": ["loader-utils"]
+            "ignoredDependencies": ["loader-utils"],
+            "ignoredFiles": ["{projectRoot}/rollup.config.{js,ts,mjs,mts}"]
           }
         ]
       }

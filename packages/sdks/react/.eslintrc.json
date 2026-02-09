@@ -25,9 +25,8 @@
             "checkMissingDependencies": true,
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
-            // No need to declare test dependencies in the library's package.json
-            // as they are not used in the build target
-            "ignoredDependencies": ["@testing-library/react"]
+            "ignoredDependencies": ["@testing-library/react"],
+            "ignoredFiles": ["{projectRoot}/rollup.config.{js,ts,mjs,mts}"]
           }
         ]
       }

@@ -25,7 +25,10 @@
             "checkMissingDependencies": true,
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
-            "ignoredDependencies": ["@testing-library/dom"]
+            "ignoredDependencies": [
+              "@testing-library/dom",
+              "@segment/analytics-next"
+            ]
           }
         ]
       }

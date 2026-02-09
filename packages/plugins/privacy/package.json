@@ -16,6 +16,7 @@
     "a/b testing"
   ],
   "dependencies": {
+    "analytics": "0.8.1",
     "radash": "10.9.0",
     "wildcard-match": "5.1.2",
     "@ninetailed/experience.js": "*",
@@ -23,7 +24,5 @@
     "@ninetailed/experience.js-plugin-analytics": "*",
     "tslib": "2.4.1"
   },
-  "devDependencies": {
-    "analytics": "0.8.1"
-  }
+  "devDependencies": {}
 }
