@@ -12,7 +12,8 @@
         "tsConfig": "packages/sdks/nodejs/tsconfig.lib.json",
         "packageJson": "packages/sdks/nodejs/package.json",
         "main": "packages/sdks/nodejs/src/index.ts",
-        "assets": ["packages/sdks/nodejs/*.md"]
+        "assets": ["packages/sdks/nodejs/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

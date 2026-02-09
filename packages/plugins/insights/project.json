@@ -12,7 +12,8 @@
         "outputPath": "dist/packages/plugins/insights",
         "main": "packages/plugins/insights/src/index.ts",
         "tsConfig": "packages/plugins/insights/tsconfig.lib.json",
-        "assets": []
+        "assets": [],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

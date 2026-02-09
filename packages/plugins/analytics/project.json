@@ -13,7 +13,8 @@
         "project": "packages/plugins/analytics/package.json",
         "tsConfig": "packages/plugins/analytics/tsconfig.lib.json",
         "format": ["esm", "cjs"],
-        "assets": []
+        "assets": [],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
