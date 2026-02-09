@@ -15,8 +15,5 @@ onlyBuiltDependencies:
   - 'es5-ext'
   - 'nx'
   - 'lmdb'
-  - 'gatsby-telemetry'
-  - 'gatsby-cli'
-  - 'gatsby'
 
 ignoredBuiltDependencies: []
