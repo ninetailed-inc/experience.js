@@ -4,6 +4,14 @@
   "sourceRoot": "packages/playgrounds/next-js",
   "projectType": "application",
   "targets": {
+    "clean-cache": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/playgrounds/next-js",
+        "command": "rm -rf .next/cache",
+        "description": "Clean Next.js build cache"
+      }
+    },
     "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],

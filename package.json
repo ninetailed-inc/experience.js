@@ -4,6 +4,7 @@
   "license": "MIT",
   "packageManager": "pnpm@8.15.9",
   "scripts": {
+    "clean:cache": "nx reset && nx run-many --target=clean-cache --all",
     "nx": "nx",
     "format": "nx format:write --all",
     "format:check": "nx format:check",

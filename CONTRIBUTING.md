@@ -45,6 +45,12 @@ doppler secrets download --no-file --format=env --project=experience-js-sdks --c
 # https://nx.dev/recipes/tips-n-tricks/define-environment-variables
 ```
 
+## Clearing caches
+
+```sh
+pnpm run clean:cache
+```
+
 ## Publishing to a local registry
 
 To test if your changes will actually work once the changes are published, it can be useful to publish to a local registry.

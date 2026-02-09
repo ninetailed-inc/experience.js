@@ -4,6 +4,14 @@
   "sourceRoot": "packages/playgrounds/easy-hr",
   "projectType": "application",
   "targets": {
+    "clean-cache": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/playgrounds/easy-hr",
+        "command": "rm -rf .next/cache",
+        "description": "Clean Next.js build cache"
+      }
+    },
     "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],

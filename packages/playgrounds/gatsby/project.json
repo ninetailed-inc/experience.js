@@ -4,6 +4,14 @@
   "sourceRoot": "packages/playgrounds/gatsby/src",
   "projectType": "application",
   "targets": {
+    "clean-cache": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/playgrounds/gatsby",
+        "command": "rm -rf .cache",
+        "description": "Clean Gatsby cache and public folder"
+      }
+    },
     "build": {
       "executor": "@nx/gatsby:build",
       "options": {
