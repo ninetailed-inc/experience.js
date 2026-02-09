@@ -25,7 +25,8 @@
             "checkMissingDependencies": true,
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
-            "ignoredDependencies": []
+            "ignoredDependencies": ["@nx/react"],
+            "ignoredFiles": ["{projectRoot}/rollup.config.{js,ts,mjs,mts}"]
           }
         ]
       }

@@ -4,6 +4,14 @@
   "sourceRoot": "packages/playgrounds/gatsby/src",
   "projectType": "application",
   "targets": {
+    "clean-cache": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/playgrounds/gatsby",
+        "command": "rm -rf .cache",
+        "description": "Clean Gatsby cache and public folder"
+      }
+    },
     "build": {
       "executor": "@nx/gatsby:build",
       "options": {
@@ -29,18 +37,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/playgrounds/gatsby/**/*.{ts,tsx,js,jsx}"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/gatsby"],
       "options": {
-        "jestConfig": "packages/playgrounds/gatsby/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/playgrounds/gatsby/jest.config.ts"
       }
     }
   },

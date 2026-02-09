@@ -26,21 +26,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/sdks/nextjs-esr/**/*.{ts,tsx,js,jsx}",
-          "packages/sdks/nextjs-esr/package.json",
-          "packages/sdks/nextjs-esr/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/nextjs-esr"],
       "options": {
-        "jestConfig": "packages/sdks/nextjs-esr/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/sdks/nextjs-esr/jest.config.cjs"
       }
     }
   },

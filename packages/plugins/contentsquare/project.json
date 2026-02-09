@@ -15,22 +15,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/contentsquare/**/*.ts",
-          "packages/plugins/contentsquare/package.json",
-          "packages/plugins/contentsquare/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/contentsquare"],
       "options": {
-        "jestConfig": "packages/plugins/contentsquare/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/contentsquare/jest.config.js"
       }
     }
   },

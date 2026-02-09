@@ -15,15 +15,8 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/google-tagmanager/**/*.ts",
-          "packages/plugins/google-tagmanager/package.json",
-          "packages/plugins/google-tagmanager/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -31,8 +24,7 @@
         "{workspaceRoot}/coverage/packages/plugins/google-tagmanager"
       ],
       "options": {
-        "jestConfig": "packages/plugins/google-tagmanager/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/google-tagmanager/jest.config.js"
       }
     }
   },

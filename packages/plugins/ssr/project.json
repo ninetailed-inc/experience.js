@@ -25,21 +25,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/ssr/**/*.{ts,tsx,js,jsx}",
-          "packages/plugins/ssr/package.json",
-          "packages/plugins/ssr/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/ssr"],
       "options": {
-        "jestConfig": "packages/plugins/ssr/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/ssr/jest.config.cjs"
       }
     }
   },

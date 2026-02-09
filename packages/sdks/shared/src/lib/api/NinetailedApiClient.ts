@@ -130,7 +130,7 @@ export type UpsertManyProfilesRequestOptions = Pick<
 const DEFAULT_ENVIRONMENT = 'main';
 
 class HttpError extends Error {
-  constructor(message: string, public status: number = 500) {
+  constructor(message: string, public status = 500) {
     super(message);
     Object.setPrototypeOf(this, HttpError.prototype);
   }

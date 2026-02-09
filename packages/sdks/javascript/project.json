@@ -32,21 +32,13 @@
       ]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/sdks/javascript/**/*.{ts,tsx,js,jsx}",
-          "packages/sdks/javascript/package.json",
-          "packages/sdks/javascript/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/javascript"],
       "options": {
-        "jestConfig": "packages/sdks/javascript/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/sdks/javascript/jest.config.cjs"
       }
     }
   },

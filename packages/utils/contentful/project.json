@@ -31,22 +31,14 @@
       ]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/utils/contentful/**/*.ts",
-          "packages/utils/contentful/package.json",
-          "packages/utils/contentful/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/utils/contentful"],
       "options": {
-        "jestConfig": "packages/utils/contentful/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/utils/contentful/jest.config.cjs"
       }
     }
   },

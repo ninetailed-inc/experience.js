@@ -33,23 +33,16 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "executor": "@nx/eslint:lint",
       "options": {
-        "includeTransitiveDependencies": true,
-        "lintFilePatterns": [
-          "packages/sdks/shared/**/*.ts",
-          "packages/sdks/shared/package.json",
-          "packages/sdks/shared/project.json"
-        ]
+        "includeTransitiveDependencies": true
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/shared"],
       "options": {
-        "jestConfig": "packages/sdks/shared/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/sdks/shared/jest.config.cjs"
       }
     }
   },

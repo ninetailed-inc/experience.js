@@ -16,21 +16,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/privacy/**/*.ts",
-          "packages/plugins/privacy/package.json",
-          "packages/plugins/privacy/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/privacy"],
       "options": {
-        "jestConfig": "packages/plugins/privacy/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/privacy/jest.config.js"
       }
     }
   },

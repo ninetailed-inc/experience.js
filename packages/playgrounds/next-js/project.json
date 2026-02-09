@@ -4,6 +4,14 @@
   "sourceRoot": "packages/playgrounds/next-js",
   "projectType": "application",
   "targets": {
+    "clean-cache": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/playgrounds/next-js",
+        "command": "rm -rf .next/cache",
+        "description": "Clean Next.js build cache"
+      }
+    },
     "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
@@ -39,18 +47,12 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/next-js"],
       "options": {
-        "jestConfig": "packages/playgrounds/next-js/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "packages/playgrounds/next-js/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/playgrounds/next-js/**/*.{ts,tsx,js,jsx}"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

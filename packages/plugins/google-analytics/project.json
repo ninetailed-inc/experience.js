@@ -34,22 +34,14 @@
       ]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/plugins/google-analytics/**/*.ts",
-          "packages/plugins/google-analytics/package.json",
-          "packages/plugins/google-analytics/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugins/google-analytics"],
       "options": {
-        "jestConfig": "packages/plugins/google-analytics/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugins/google-analytics/jest.config.cjs"
       }
     }
   },

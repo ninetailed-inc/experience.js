@@ -26,21 +26,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/sdks/gatsby/**/*.{ts,tsx,js,jsx}",
-          "packages/sdks/gatsby/package.json",
-          "packages/sdks/gatsby/project.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/sdks/gatsby"],
       "options": {
-        "jestConfig": "packages/sdks/gatsby/jest.config.cjs",
-        "passWithNoTests": true
+        "jestConfig": "packages/sdks/gatsby/jest.config.cjs"
       }
     }
   },
