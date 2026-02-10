@@ -8,6 +8,10 @@
   Gatsby's default starter
 </h1>
 
+> [!WARNING]
+> Gatsby plugin is now deprecated.
+> If you need Gatsby support, please open an issue in the [new Optimization SDK suite](https://github.com/contentful/optimization) or consider forking/creating your own community version.
+
 Kick off your project with this default boilerplate. This starter ships with the main Gatsby configuration files you might need to get up and running blazing fast with the blazing fast app generator for React.
 
 _Have another more specific idea? You may want to check out our vibrant collection of [official and community-created starters](https://www.gatsbyjs.org/docs/gatsby-starters/)._
