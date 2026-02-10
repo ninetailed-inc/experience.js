@@ -13,7 +13,7 @@
 <!--Insert badges end-->
 
 > [!WARNING]
-> Gatsby plugin is now deprecated.
+> The Gatsby SDK is now deprecated.
 > If you need Gatsby support, please open an issue in the [new Optimization SDK suite](https://github.com/contentful/optimization) or consider forking/creating your own community version.
 
 ## Introduction
