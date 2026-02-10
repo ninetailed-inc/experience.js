@@ -1,5 +1,5 @@
 const path = require('node:path');
-const { workspaceRoot } = require('@nrwl/devkit');
+const { workspaceRoot } = require('@nx/devkit');
 
 const ignoreFiles = [
   'package.json',

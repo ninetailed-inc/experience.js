@@ -4,7 +4,9 @@
       "dependsOn": ["^get-package-version", "get-package-version", "^build"],
       "cache": true
     },
-    "serve": { "dependsOn": ["^get-package-version", "get-package-version"] },
+    "serve": {
+      "dependsOn": ["^get-package-version", "get-package-version"]
+    },
     "@nx/eslint:lint": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
       "cache": true
@@ -12,14 +14,25 @@
     "@nx/jest:jest": {
       "cache": true,
       "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
-      "options": { "passWithNoTests": true },
-      "configurations": { "ci": { "ci": true, "codeCoverage": true } }
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
     }
   },
   "namedInputs": {
     "sharedGlobals": [
-      { "runtime": "node --version" },
-      { "runtime": "pnpm --version" }
+      {
+        "runtime": "node --version"
+      },
+      {
+        "runtime": "pnpm --version"
+      }
     ]
   },
   "extends": "@nx/workspace/presets/core.json",
@@ -37,15 +50,23 @@
         "linter": "eslint",
         "babel": true
       },
-      "component": { "style": "css" },
+      "component": {
+        "style": "css"
+      },
       "library": {
         "style": "css",
         "unitTestRunner": "jest",
         "linter": "eslint"
       }
     },
-    "@nx/next": { "application": { "style": "css", "linter": "eslint" } }
+    "@nx/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
   },
   "useInferencePlugins": false,
-  "defaultBase": "main"
+  "defaultBase": "main",
+  "useLegacyCache": true
 }
