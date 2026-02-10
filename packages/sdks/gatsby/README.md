@@ -12,6 +12,10 @@
 
 <!--Insert badges end-->
 
+> [!WARNING]
+> Gatsby plugin support is now deprecated.
+> If you need Gatsby support, please open an issue in the [new Optimization SDK suite](https://github.com/contentful/optimization) or consider forking/creating your own community version.
+
 ## Introduction
 
 Add dynamic content personalization to Gatbsy without performance trade-offs or complex integrations.
