@@ -78,7 +78,6 @@
     "@nx/cypress": "19.8.9",
     "@nx/eslint": "19.8.9",
     "@nx/eslint-plugin": "19.8.9",
-    "@nx/gatsby": "16.1.1",
     "@nx/jest": "19.8.9",
     "@nx/js": "19.8.9",
     "@nx/next": "19.8.9",
