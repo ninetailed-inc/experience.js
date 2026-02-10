@@ -27,7 +27,7 @@ export const buildEvent = ({
     context: {
       library: {
         name: 'Ninetailed React Analytics SDK',
-        version: process.env['NX_PACKAGE_VERSION'] || '0.0.0',
+        version: process.env['NX_PUBLIC_PACKAGE_VERSION'] || '0.0.0',
       },
       userAgent: ctx.userAgent,
       campaign: buildCampaign(ctx),

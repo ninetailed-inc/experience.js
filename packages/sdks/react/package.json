@@ -32,7 +32,7 @@
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "radash": "10.9.0",
-    "react-is": "18.2.0"
+    "react-is": "18.3.1"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
