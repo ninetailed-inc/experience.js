@@ -178,7 +178,6 @@ BUMP_LIST=(
   sdks/javascript
   sdks/react
   sdks/nextjs
-  sdks/gatsby
   sdks/nodejs
   sdks/nextjs-esr
 

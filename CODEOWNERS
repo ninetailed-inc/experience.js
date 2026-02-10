@@ -12,7 +12,6 @@
 
 # SDKs
 /packages/sdks/nodejs/          @maxrawlinger
-/packages/sdks/gatsby/          @maxrawlinger
 /packages/sdks/react/           @maroun9t
 /packages/sdks/nextjs/          @maroun9t
 /packages/sdks/javascript/      @maroun9t

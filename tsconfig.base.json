@@ -18,7 +18,6 @@
     "baseUrl": ".",
     "paths": {
       "@ninetailed/experience.js": ["packages/sdks/javascript/src/index.ts"],
-      "@ninetailed/experience.js-gatsby": ["packages/sdks/gatsby/src/index.ts"],
       "@ninetailed/experience.js-next": ["packages/sdks/nextjs/src/index.ts"],
       "@ninetailed/experience.js-node": ["packages/sdks/nodejs/src/index.ts"],
       "@ninetailed/experience.js-plugin-analytics": [

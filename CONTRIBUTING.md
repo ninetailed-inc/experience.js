@@ -3,9 +3,9 @@
 ## Folder structure
 
 - `packages/`: Experience.js is a NX monorepo containing Ninetailed SDKs and plugins. You can learn more about monorepo [here](https://nx.dev/getting-started/tutorials/package-based-repo-tutorial) and the packages/ structure.
-  - `playgrounds/`: Testing projects to experiment with the SDKs and plugins with common frameworks such as gatsby, next.js, etc.
+  - `playgrounds/`: Testing projects to experiment with the SDKs and plugins with common frameworks such as next.js, etc.
   - `plugins/`: contains plugins that can be used with the SDKs such as google analytics, preiew plugins, insights, etc.
-  - `sdks/`: contains the Software Development Kits (SDKs) for js, node, and different frameworks such as React, Next, Gatsby, etc.
+  - `sdks/`: contains the Software Development Kits (SDKs) for js, node, and different frameworks such as React, Next, etc.
   - `utils/` contains utilities used by the tests, SDKs and plugins
 - `tools/`: internal tooling
 

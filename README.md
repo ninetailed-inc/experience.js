@@ -13,7 +13,7 @@
 </a>
 </p>
 
-Ninetailed's plugins and Software Development Kits (SDKs) for JavaScript, Node.js, and popular frameworks such as React, Next.js, Gatsby, etc.
+Ninetailed's plugins and Software Development Kits (SDKs) for JavaScript, Node.js, and popular frameworks such as React, Next.js, etc.
 
 ## Examples
 
