@@ -84,7 +84,7 @@ export const DefaultExperienceLoadingComponent: React.FC<
     return (
       <div
         key="hide"
-        style={{ opacity: 0, pointerEvents: 'none' }}
+        style={{ visibility: 'hidden', pointerEvents: 'none' }}
         aria-hidden="true"
       >
         <Component

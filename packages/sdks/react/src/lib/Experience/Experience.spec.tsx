@@ -37,4 +37,12 @@ describe('DefaultExperienceLoadingComponent', () => {
       (container.firstElementChild as HTMLDivElement).style.pointerEvents
     ).toBe('none');
   });
+
+  it('keeps layout while visually hiding loading baseline content', () => {
+    const { container } = renderLoadingComponent();
+
+    expect(
+      (container.firstElementChild as HTMLDivElement).style.visibility
+    ).toBe('hidden');
+  });
 });
