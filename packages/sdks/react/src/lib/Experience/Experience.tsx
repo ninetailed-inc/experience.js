@@ -82,7 +82,11 @@ export const DefaultExperienceLoadingComponent: React.FC<
 
   if (hidden) {
     return (
-      <div key="hide" style={{ opacity: 0 }} aria-hidden="true">
+      <div
+        key="hide"
+        style={{ opacity: 0, pointerEvents: 'none' }}
+        aria-hidden="true"
+      >
         <Component
           {...passthroughProps}
           {...baseline}
