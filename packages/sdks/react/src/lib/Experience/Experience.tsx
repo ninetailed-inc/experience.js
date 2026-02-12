@@ -64,10 +64,15 @@ export const DefaultExperienceLoadingComponent: React.FC<
 }) => {
   const { logger } = useNinetailed();
 
-  const [hidden, setHidden] = useState(true);
+  const [isHidden, setIsHidden] = useState(true);
+
   useEffect(() => {
+    if (!isHidden) {
+      return;
+    }
+
     const timer = setTimeout(() => {
-      setHidden(false);
+      setIsHidden(false);
       logger.error(
         new Error(
           `The experience was still in loading state after ${unhideAfterMs}ms. That happens when no events are sent to the Ninetailed API. The baseline is now shown instead.`
@@ -78,9 +83,9 @@ export const DefaultExperienceLoadingComponent: React.FC<
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [isHidden, logger, unhideAfterMs]);
 
-  if (hidden) {
+  if (isHidden) {
     return (
       <div
         key="hide"
