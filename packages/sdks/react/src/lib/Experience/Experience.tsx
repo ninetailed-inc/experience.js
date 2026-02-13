@@ -91,6 +91,7 @@ export const DefaultExperienceLoadingComponent: React.FC<
         key="hide"
         style={{ visibility: 'hidden', pointerEvents: 'none' }}
         aria-hidden="true"
+        inert
       >
         <Component
           {...passthroughProps}
