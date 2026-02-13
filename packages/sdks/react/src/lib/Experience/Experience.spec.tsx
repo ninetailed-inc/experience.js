@@ -38,6 +38,12 @@ describe('DefaultExperienceLoadingComponent', () => {
     ).toBe('none');
   });
 
+  it('marks loading baseline content as inert', () => {
+    const { container } = renderLoadingComponent();
+
+    expect(container.firstElementChild?.hasAttribute('inert')).toBe(true);
+  });
+
   it('keeps layout while visually hiding loading baseline content', () => {
     const { container } = renderLoadingComponent();
 
