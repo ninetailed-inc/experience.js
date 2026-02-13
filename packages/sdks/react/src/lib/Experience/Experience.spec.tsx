@@ -112,6 +112,58 @@ describe('DefaultExperienceLoadingComponent', () => {
         expect(logger.error).toHaveBeenCalled();
       });
     });
+
+    describe('when unmounted', () => {
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
+
+      afterEach(() => {
+        jest.useRealTimers();
+      });
+
+      it('cleans up timeout and does not log after unmount when unhideAfterMs elapsed', () => {
+        const logger = { error: jest.fn() };
+
+        const { unmount } = renderLoadingComponent({
+          unhideAfterMs: 100,
+          logger,
+        });
+
+        unmount();
+
+        act(() => {
+          jest.advanceTimersByTime(100);
+        });
+
+        expect(logger.error).not.toHaveBeenCalled();
+      });
+
+      it('cleans up timeout and does not log after unmount before unhideAfterMs elapses', () => {
+        const logger = { error: jest.fn() };
+
+        const { unmount } = renderLoadingComponent({
+          unhideAfterMs: 100,
+          logger,
+        });
+
+        act(() => {
+          // Move right up to the timeout boundary while still mounted.
+          jest.advanceTimersByTime(99);
+        });
+
+        // Unmount before the timeout callback would fire.
+        unmount();
+
+        act(() => {
+          // Advance past the remaining 1ms so the previously scheduled timeout would run if not cleared.
+          jest.advanceTimersByTime(1);
+        });
+
+        // Cleanup should prevent the delayed warning from running.
+        expect(logger.error).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when revealed', () => {
