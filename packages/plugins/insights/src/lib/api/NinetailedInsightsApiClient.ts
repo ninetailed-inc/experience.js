@@ -195,9 +195,14 @@ export class NinetailedInsightsApiClient {
   }
 
   private constructUrl(path: string) {
-    const url = new URL(path, this.url);
+    const baseUrl = new URL(this.url);
 
-    return url.toString();
+    // Remove trailing slash from base pathname and leading slash from path before concatenating
+    const basePathname = baseUrl.pathname.replace(/\/$/, '');
+    const endpointPath = path.replace(/^\//, '');
+    baseUrl.pathname = `${basePathname}/${endpointPath}`;
+
+    return baseUrl.toString();
   }
 
   private constructHeaders() {

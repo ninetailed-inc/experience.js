@@ -414,17 +414,22 @@ export class NinetailedApiClient {
   }
 
   private constructUrl(path: string, options: RequestOptions) {
-    const url = new URL(path, this.url);
+    const baseUrl = new URL(this.url);
+
+    // Remove trailing slash from base pathname and leading slash from path before concatenating
+    const basePathname = baseUrl.pathname.replace(/\/$/, '');
+    const endpointPath = path.replace(/^\//, '');
+    baseUrl.pathname = `${basePathname}/${endpointPath}`;
 
     if (options.preflight) {
-      url.searchParams.set('type', 'preflight');
+      baseUrl.searchParams.set('type', 'preflight');
     }
 
     if (options.locale) {
-      url.searchParams.set('locale', options.locale);
+      baseUrl.searchParams.set('locale', options.locale);
     }
 
-    return url.toString();
+    return baseUrl.toString();
   }
 
   private constructHeaders(options: RequestOptions) {
