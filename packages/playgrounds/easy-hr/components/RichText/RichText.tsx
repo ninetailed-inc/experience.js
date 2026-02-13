@@ -15,8 +15,8 @@ export interface RichTextProps {
 
 export const RichText: React.FC<RichTextProps> = ({
   richTextDocument,
-  classNames,
-  renderNode,
+  classNames = {},
+  renderNode = {},
   ...rest
 }) => {
   if (isRichText(richTextDocument)) {
@@ -36,10 +36,4 @@ export const RichText: React.FC<RichTextProps> = ({
     );
   }
   return null;
-};
-
-RichText.defaultProps = {
-  classNames: {},
-  renderNode: {},
-  className: '',
 };

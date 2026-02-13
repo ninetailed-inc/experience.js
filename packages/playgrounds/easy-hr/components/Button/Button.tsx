@@ -21,7 +21,7 @@ export interface ButtonProps {
 export const Button: React.FC<ButtonProps> = React.forwardRef(
   (props: ButtonProps, ref) => {
     const {
-      as: Component = 'button',
+      as: Component = 'a',
       type,
       size,
       variant,
@@ -62,8 +62,5 @@ export const Button: React.FC<ButtonProps> = React.forwardRef(
     );
   }
 );
-Button.defaultProps = {
-  as: 'a',
-};
 
 Button.displayName = 'Button';

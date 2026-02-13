@@ -1,7 +1,7 @@
 import React from 'react';
 
 type HeroProps = {
-  headline: string | JSX.Element;
+  headline: string | React.ReactElement;
 };
 
 export const Hero: React.FC<React.PropsWithChildren<HeroProps>> = ({
