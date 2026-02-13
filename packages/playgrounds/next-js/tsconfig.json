@@ -26,5 +26,8 @@
     "next-env.d.ts",
     "../../../dist/packages/playgrounds/next-js/.next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "../../../dist/packages/playgrounds/next-js/.next/types/validator.ts"
+  ]
 }
