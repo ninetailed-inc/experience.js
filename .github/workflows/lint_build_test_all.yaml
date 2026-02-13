@@ -3,6 +3,10 @@ name: Main Pipeline
 on:
   pull_request_target:
 
+concurrency: # only one active workflow per pr
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   setup:
     name: pnpm install 🛠️
