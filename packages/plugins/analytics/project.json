@@ -24,7 +24,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/plugins/analytics/jest.config.ts"
+        "jestConfig": "packages/plugins/analytics/jest.config.js"
       }
     }
   },

@@ -13,7 +13,7 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "dependsOn": ["build-all-except-playgrounds"],
       "options": {
-        "jestConfig": "packages/tests/generated-packages/jest.config.ts"
+        "jestConfig": "packages/tests/generated-packages/jest.config.js"
       }
     },
     "build-all-except-playgrounds": {

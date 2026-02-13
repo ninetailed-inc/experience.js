@@ -1,5 +1,5 @@
 const path = require('path');
-const devkit = require('@nrwl/devkit');
+const devkit = require('@nx/devkit');
 
 const replace = require('@rollup/plugin-replace');
 

@@ -12,7 +12,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/tests/javascript-integration/jest.config.ts"
+        "jestConfig": "packages/tests/javascript-integration/jest.config.js"
       }
     }
   },
