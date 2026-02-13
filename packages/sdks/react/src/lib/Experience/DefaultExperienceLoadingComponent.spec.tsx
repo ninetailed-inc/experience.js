@@ -2,7 +2,7 @@ import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import type { NinetailedInstance } from '@ninetailed/experience.js';
 
-import { DefaultExperienceLoadingComponent } from './Experience';
+import { DefaultExperienceLoadingComponent } from './DefaultExperienceLoadingComponent';
 import { NinetailedContext } from '../NinetailedContext';
 
 describe('DefaultExperienceLoadingComponent', () => {
