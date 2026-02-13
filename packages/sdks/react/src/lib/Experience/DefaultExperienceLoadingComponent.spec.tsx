@@ -109,7 +109,7 @@ describe('DefaultExperienceLoadingComponent', () => {
           screen.queryByRole('button', { name: 'CTA' })
         ).toBeInTheDocument();
 
-        expect(logger.error).toHaveBeenCalled();
+        expect(logger.error).toHaveBeenCalledTimes(1);
       });
     });
 
