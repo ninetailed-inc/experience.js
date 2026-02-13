@@ -53,6 +53,7 @@ export const DefaultExperienceLoadingComponent: React.FC<
         key="experience-loader-hidden-baseline"
         style={{ visibility: 'hidden', pointerEvents: 'none' }}
         aria-hidden="true"
+        // Prevent focus and interaction within the hidden loading subtree.
         inert
       >
         <Component
