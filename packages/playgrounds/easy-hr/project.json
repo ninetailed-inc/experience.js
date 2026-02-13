@@ -55,7 +55,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/playgrounds/easy-hr/jest.config.ts"
+        "jestConfig": "packages/playgrounds/easy-hr/jest.config.js"
       }
     },
     "lint": {
