@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Baseline,
-  ExperienceConfiguration,
-  Reference,
-} from '@ninetailed/experience.js';
+import { useEffect, useState } from 'react';
+import type { Reference } from '@ninetailed/experience.js';
 
 import { useNinetailed } from '../useNinetailed';
+import type { ExperienceBaseProps } from './types/Experience';
 
-type DefaultExperienceLoadingComponentProps = Baseline<
-  Record<string, unknown>
+type DefaultExperienceLoadingComponentProps = ExperienceBaseProps<
+  Record<string, unknown>,
+  Record<string, unknown>,
+  Record<string, unknown> & Reference
 > & {
-  experiences: ExperienceConfiguration<Record<string, unknown> & Reference>[];
-  component: React.ComponentType<Record<string, unknown>>;
-  passthroughProps?: Record<string, unknown>;
   unhideAfterMs?: number;
 };
 
-export const DefaultExperienceLoadingComponent: React.FC<
-  DefaultExperienceLoadingComponentProps
-> = ({
+export const DefaultExperienceLoadingComponent = ({
   component: Component,
   unhideAfterMs = 5000,
   passthroughProps,
   ...baseline
-}) => {
+}: DefaultExperienceLoadingComponentProps) => {
   const { logger } = useNinetailed();
   const [isHidden, setIsHidden] = useState(true);
 

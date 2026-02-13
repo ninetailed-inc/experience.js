@@ -1,54 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { isForwardRef } from 'react-is';
-import {
-  Baseline,
-  ExperienceConfiguration,
-  Reference,
-} from '@ninetailed/experience.js';
+import type { Baseline, Reference } from '@ninetailed/experience.js';
 
 import { useExperience } from './useExperience';
 import { useNinetailed } from '../useNinetailed';
 import { ComponentMarker } from './ComponentMarker';
 import { DefaultExperienceLoadingComponent } from './DefaultExperienceLoadingComponent';
-
-export type ExperienceComponent<P> = React.ComponentType<
-  Omit<P, 'id'> & {
-    ninetailed?: {
-      isPersonalized: boolean;
-      audience: { id: string };
-    };
-  }
->;
-
-export type ExperienceBaseProps<
-  P,
-  PassThroughProps extends Partial<P>,
-  Variant extends Pick<P, Exclude<keyof P, keyof PassThroughProps>> & Reference
-> = Baseline<Pick<P, Exclude<keyof P, keyof PassThroughProps>>> & {
-  experiences: ExperienceConfiguration<Variant>[];
-  component: React.ComponentType<P>;
-  passthroughProps?: PassThroughProps;
-};
-
-export type ExperienceLoadingComponent<
-  P,
-  PassThroughProps extends Partial<P>,
-  Variant extends Pick<P, Exclude<keyof P, keyof PassThroughProps>> & Reference
-> = React.ComponentType<ExperienceBaseProps<P, PassThroughProps, Variant>>;
-
-export type ExperienceProps<
-  P,
-  PassThroughProps extends Partial<P> = Partial<P>,
-  Variant extends Pick<P, Exclude<keyof P, keyof PassThroughProps>> &
-    Reference = Pick<P, Exclude<keyof P, keyof PassThroughProps>> & Reference
-> = ExperienceBaseProps<P, PassThroughProps, Variant> & {
-  experiences: ExperienceConfiguration<Variant>[];
-  component: React.ComponentType<P>;
-  loadingComponent?: ExperienceLoadingComponent<P, PassThroughProps, Variant>;
-};
-
-// Re-export to preserve existing imports from './Experience'.
-export { DefaultExperienceLoadingComponent } from './DefaultExperienceLoadingComponent';
+import type {
+  ExperienceLoadingComponent,
+  ExperienceProps,
+} from './types/Experience';
 
 export const Experience = <
   P,
@@ -207,3 +168,13 @@ export const Experience = <
     </>
   );
 };
+
+// Re-export to preserve existing imports from './Experience'.
+export type {
+  ExperienceProps,
+  ExperienceBaseProps,
+  ExperienceComponent,
+  ExperienceLoadingComponent,
+} from './types/Experience';
+
+export { DefaultExperienceLoadingComponent } from './DefaultExperienceLoadingComponent';
