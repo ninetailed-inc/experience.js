@@ -49,7 +49,8 @@ export const DefaultExperienceLoadingComponent: React.FC<
   if (isHidden) {
     return (
       <div
-        key="hide"
+        // TODO: Confirm if a key is truly needed for this rendering branch
+        key="experience-loader-hidden-baseline"
         style={{ visibility: 'hidden', pointerEvents: 'none' }}
         aria-hidden="true"
         inert
