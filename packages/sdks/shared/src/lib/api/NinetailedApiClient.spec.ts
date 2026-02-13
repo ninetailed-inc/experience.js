@@ -272,4 +272,65 @@ describe('NinetailedApiClient', () => {
       );
     });
   });
+
+  describe('URL construction', () => {
+    it('should preserve custom path segments in base URL', async () => {
+      const client = new NinetailedApiClient({
+        clientId: 'test-client',
+        environment: 'test-env',
+        url: 'https://local-service/api/ninetailed',
+      });
+
+      fetchMock.mockResponseOnce(
+        JSON.stringify(generateMock(CreateProfileResponse))
+      );
+
+      await client.createProfile({
+        events: [],
+      });
+
+      expect(fetchMock.mock.calls[0][0]).toBe(
+        'https://local-service/api/ninetailed/v2/organizations/test-client/environments/test-env/profiles'
+      );
+    });
+
+    it('should handle trailing slashes in custom base URL', async () => {
+      const client = new NinetailedApiClient({
+        clientId: 'test-client',
+        environment: 'test-env',
+        url: 'https://local-service/api/ninetailed/',
+      });
+
+      fetchMock.mockResponseOnce(
+        JSON.stringify(generateMock(CreateProfileResponse))
+      );
+
+      await client.createProfile({
+        events: [],
+      });
+
+      expect(fetchMock.mock.calls[0][0]).toBe(
+        'https://local-service/api/ninetailed/v2/organizations/test-client/environments/test-env/profiles'
+      );
+    });
+
+    it('should work with default base URL', async () => {
+      const client = new NinetailedApiClient({
+        clientId: 'test-client',
+        environment: 'test-env',
+      });
+
+      fetchMock.mockResponseOnce(
+        JSON.stringify(generateMock(CreateProfileResponse))
+      );
+
+      await client.createProfile({
+        events: [],
+      });
+
+      expect(fetchMock.mock.calls[0][0]).toBe(
+        'https://experience.ninetailed.co/v2/organizations/test-client/environments/test-env/profiles'
+      );
+    });
+  });
 });
