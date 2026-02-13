@@ -4,7 +4,7 @@ export type {
   ExperienceBaseProps,
   ExperienceComponent,
   ExperienceLoadingComponent,
-} from './Experience';
+} from './types/Experience';
 export { ESRProvider, ESRLoadingComponent } from './ESRLoadingComponent';
 
 export { useExperience } from './useExperience';
