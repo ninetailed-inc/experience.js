@@ -1,105 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { isForwardRef } from 'react-is';
-import {
-  Baseline,
-  ExperienceConfiguration,
-  Reference,
-} from '@ninetailed/experience.js';
+import type { Baseline, Reference } from '@ninetailed/experience.js';
 
 import { useExperience } from './useExperience';
 import { useNinetailed } from '../useNinetailed';
 import { ComponentMarker } from './ComponentMarker';
-
-export type ExperienceComponent<P> = React.ComponentType<
-  Omit<P, 'id'> & {
-    ninetailed?: {
-      isPersonalized: boolean;
-      audience: { id: string };
-    };
-  }
->;
-
-export type ExperienceBaseProps<
-  P,
-  PassThroughProps extends Partial<P>,
-  Variant extends Pick<P, Exclude<keyof P, keyof PassThroughProps>> & Reference
-> = Baseline<Pick<P, Exclude<keyof P, keyof PassThroughProps>>> & {
-  experiences: ExperienceConfiguration<Variant>[];
-  component: React.ComponentType<P>;
-  passthroughProps?: PassThroughProps;
-};
-
-export type ExperienceLoadingComponent<
-  P,
-  PassThroughProps extends Partial<P>,
-  Variant extends Pick<P, Exclude<keyof P, keyof PassThroughProps>> & Reference
-> = React.ComponentType<ExperienceBaseProps<P, PassThroughProps, Variant>>;
-
-export type ExperienceProps<
-  P,
-  PassThroughProps extends Partial<P> = Partial<P>,
-  Variant extends Pick<P, Exclude<keyof P, keyof PassThroughProps>> &
-    Reference = Pick<P, Exclude<keyof P, keyof PassThroughProps>> & Reference
-> = ExperienceBaseProps<P, PassThroughProps, Variant> & {
-  experiences: ExperienceConfiguration<Variant>[];
-  component: React.ComponentType<P>;
-  loadingComponent?: ExperienceLoadingComponent<P, PassThroughProps, Variant>;
-};
-
-type DefaultExperienceLoadingComponentProps = ExperienceBaseProps<
-  Record<string, unknown>,
-  Record<string, unknown>,
-  Record<string, unknown> & Reference
-> & {
-  unhideAfterMs?: number;
-};
-
-export const DefaultExperienceLoadingComponent: React.FC<
-  DefaultExperienceLoadingComponentProps
-> = ({
-  component: Component,
-  unhideAfterMs = 5000,
-  passthroughProps,
-  ...baseline
-}) => {
-  const { logger } = useNinetailed();
-
-  const [hidden, setHidden] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setHidden(false);
-      logger.error(
-        new Error(
-          `The experience was still in loading state after ${unhideAfterMs}ms. That happens when no events are sent to the Ninetailed API. The baseline is now shown instead.`
-        )
-      );
-    }, unhideAfterMs);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
-
-  if (hidden) {
-    return (
-      <div key="hide" style={{ opacity: 0 }}>
-        <Component
-          {...passthroughProps}
-          {...baseline}
-          ninetailed={{ isPersonalized: false, audience: { id: 'baseline' } }}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <Component
-      {...passthroughProps}
-      {...baseline}
-      ninetailed={{ isPersonalized: false, audience: { id: 'baseline' } }}
-    />
-  );
-};
+import { DefaultExperienceLoadingComponent } from './DefaultExperienceLoadingComponent';
+import type {
+  ExperienceLoadingComponent,
+  ExperienceProps,
+} from './types/Experience';
 
 export const Experience = <
   P,
@@ -258,3 +168,13 @@ export const Experience = <
     </>
   );
 };
+
+// Re-export to preserve existing imports from './Experience'.
+export type {
+  ExperienceProps,
+  ExperienceBaseProps,
+  ExperienceComponent,
+  ExperienceLoadingComponent,
+} from './types/Experience';
+
+export { DefaultExperienceLoadingComponent } from './DefaultExperienceLoadingComponent';
