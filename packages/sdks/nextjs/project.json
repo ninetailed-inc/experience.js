@@ -13,9 +13,16 @@
         "tsConfig": "packages/sdks/nextjs/tsconfig.lib.json",
         "project": "packages/sdks/nextjs/package.json",
         "entryFile": "packages/sdks/nextjs/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "buildLibsFromSource": false,
+        "external": [
+          "react/jsx-runtime",
+          "@ninetailed/experience.js",
+          "@ninetailed/experience.js-react",
+          "@ninetailed/experience.js-plugin-ssr"
+        ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
+        "skipTypeCheck": true,
         "format": ["cjs", "esm"],
         "assets": [
           {

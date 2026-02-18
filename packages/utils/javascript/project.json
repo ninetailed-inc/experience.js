@@ -13,6 +13,7 @@
         "tsConfig": "packages/utils/javascript/tsconfig.lib.json",
         "project": "packages/utils/javascript/package.json",
         "entryFile": "packages/utils/javascript/src/index.ts",
+        "buildLibsFromSource": false,
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "format": ["cjs", "esm"],

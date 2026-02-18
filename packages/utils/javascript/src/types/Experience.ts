@@ -1,4 +1,4 @@
-import { Reference } from '@ninetailed/experience.js';
+import { Reference } from '@ninetailed/experience.js-shared';
 import { z } from 'zod';
 import { Audience } from './Audience';
 import { Config } from './Config';

@@ -3,7 +3,16 @@
   "compilerOptions": {
     "rootDir": "../../../",
     "outDir": "../../../dist/out-tsc",
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@ninetailed/experience.js": ["dist/packages/sdks/javascript/index.d.ts"],
+      "@ninetailed/experience.js-react": [
+        "dist/packages/sdks/react/index.d.ts"
+      ],
+      "@ninetailed/experience.js-plugin-ssr": [
+        "dist/packages/plugins/ssr/index.d.ts"
+      ]
+    }
   },
   "files": [
     "../../../node_modules/@nx/react/typings/cssmodule.d.ts",
