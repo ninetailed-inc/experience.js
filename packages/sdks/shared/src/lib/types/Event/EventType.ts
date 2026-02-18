@@ -5,6 +5,7 @@ export const Screen = 'screen';
 export const Group = 'group';
 export const Alias = 'alias';
 export const Component = 'component';
+export const ComponentClick = 'component_click';
 
 export type Pageview = typeof Pageview;
 export type Track = typeof Track;
@@ -13,6 +14,7 @@ export type Screen = typeof Screen;
 export type Group = typeof Group;
 export type Alias = typeof Alias;
 export type Component = typeof Component;
+export type ComponentClick = typeof ComponentClick;
 
 export type EventType =
   | Pageview
@@ -21,4 +23,5 @@ export type EventType =
   | Screen
   | Group
   | Alias
-  | Component;
+  | Component
+  | ComponentClick;

@@ -13,6 +13,7 @@ export * from './lib/types/Event/ScreenEvent';
 export * from './lib/types/Event/GroupEvent';
 export * from './lib/types/Event/AliasEvent';
 export * from './lib/types/Event/ComponentViewEvent';
+export * from './lib/types/Event/ComponentClickEvent';
 
 export * from './lib/types/Event/Campaign';
 export * from './lib/types/Event/Page';
@@ -78,6 +79,7 @@ export * from './lib/event/build-page-event';
 export * from './lib/event/build-track-event';
 export * from './lib/event/build-identify-event';
 export * from './lib/event/build-component-view-event';
+export * from './lib/event/build-component-click-event';
 
 // utils
 export * from './lib/utils/isBrowser';

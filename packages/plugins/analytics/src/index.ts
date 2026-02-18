@@ -6,14 +6,17 @@ export {
 export type { Template } from './lib/NinetailedAnalyticsPlugin';
 
 export {
+  ElementClickedPayloadSchema,
   ElementSeenPayloadSchema,
   VariableSeenPayloadSchema,
-} from './lib/ElementSeenPayload';
+} from './lib/ElementPayload';
 export type {
+  ComponentClickEventComponentType,
   ComponentViewEventComponentType,
+  ElementClickedPayload,
   ElementSeenPayload,
   VariableSeenPayload,
-} from './lib/ElementSeenPayload';
+} from './lib/ElementPayload';
 
 export { TrackComponentPropertiesSchema } from './lib/TrackingProperties';
 export type { TrackComponentProperties } from './lib/TrackingProperties';

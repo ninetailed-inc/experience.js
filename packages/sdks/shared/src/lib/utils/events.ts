@@ -3,6 +3,7 @@ import { PageviewEvent } from '../types/Event/PageviewEvent';
 import { TrackEvent } from '../types/Event/TrackEvent';
 import { IdentifyEvent } from '../types/Event/IdentifyEvent';
 import { ComponentViewEvent } from '../types/Event/ComponentViewEvent';
+import { ComponentClickEvent } from '../types/Event/ComponentClickEvent';
 
 export const isPageViewEvent = (event: Event): event is PageviewEvent => {
   return event.type === 'page';
@@ -20,4 +21,10 @@ export const isComponentViewEvent = (
   event: Event
 ): event is ComponentViewEvent => {
   return event.type === 'component';
+};
+
+export const isComponentClickEvent = (
+  event: Event
+): event is ComponentClickEvent => {
+  return event.type === 'component_click';
 };

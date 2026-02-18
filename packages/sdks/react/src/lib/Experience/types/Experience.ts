@@ -39,4 +39,5 @@ export type ExperienceProps<
   experiences: ExperienceConfiguration<Variant>[];
   component: ComponentType<P>;
   loadingComponent?: ExperienceLoadingComponent<P, PassThroughProps, Variant>;
+  trackClicks?: boolean;
 };

@@ -4,6 +4,7 @@ import {
   IdentifyEventArgs,
   NinetailedRequestContext,
   Properties,
+  buildComponentClickEvent,
   buildComponentViewEvent,
   buildIdentifyEvent,
   buildPageEvent,
@@ -11,7 +12,10 @@ import {
 } from '@ninetailed/experience.js-shared';
 import { v4 as uuid } from 'uuid';
 import { buildClientNinetailedRequestContext } from '../NinetailedCorePlugin';
-import type { ComponentViewEventComponentType } from '@ninetailed/experience.js-plugin-analytics';
+import type {
+  ComponentClickEventComponentType,
+  ComponentViewEventComponentType,
+} from '@ninetailed/experience.js-plugin-analytics';
 
 type PageData = Partial<Omit<BuildPageEventArgs, 'ctx' | 'properties'>>;
 type TrackData = Partial<
@@ -77,6 +81,22 @@ export class EventBuilder {
     data?: ComponentData
   ) {
     return buildComponentViewEvent({
+      ...this.buildEventBase(data),
+      componentId,
+      componentType: componentType || 'Entry',
+      experienceId,
+      variantIndex: variantIndex || 0,
+    });
+  }
+
+  public componentClick(
+    componentId: string,
+    componentType: ComponentClickEventComponentType,
+    experienceId?: string,
+    variantIndex?: number,
+    data?: ComponentData
+  ) {
+    return buildComponentClickEvent({
       ...this.buildEventBase(data),
       componentId,
       componentType: componentType || 'Entry',

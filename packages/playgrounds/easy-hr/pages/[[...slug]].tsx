@@ -53,7 +53,12 @@ const Page = ({ page, entry }: { page: IPage; entry: ICta }) => {
           <BlockRenderer block={sections} />
 
           {entry && (
-            <EntryAnalytics {...entry} component={CTA} id={entry.sys.id} />
+            <EntryAnalytics
+              {...entry}
+              component={CTA}
+              id={entry.sys.id}
+              trackClicks
+            />
           )}
         </main>
 

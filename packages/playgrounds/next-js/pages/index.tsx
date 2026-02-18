@@ -179,6 +179,7 @@ export function Index() {
             id={productWithExperiment.sys.id}
             /* keyAddition="1"*/
             component={Product}
+            trackClicks
             experiences={productWithExperiment.fields.nt_experiences.map(
               (ctfExperience) => {
                 const mapped = ExperienceMapper.mapCustomExperience(
@@ -244,6 +245,7 @@ export function Index() {
             /*keyAddition="2"*/
             id={product.sys.id}
             component={Product}
+            trackClicks
             experiences={experienceMapper(
               product as unknown as BaselineWithExperiencesEntry
             )}

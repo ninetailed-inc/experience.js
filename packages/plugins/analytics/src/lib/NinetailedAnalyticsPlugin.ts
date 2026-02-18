@@ -6,7 +6,7 @@ import {
   ElementSeenPayloadSchema,
   type VariableSeenPayload,
   VariableSeenPayloadSchema,
-} from './ElementSeenPayload';
+} from './ElementPayload';
 import {
   type TrackComponentProperties,
   TrackComponentPropertiesSchema,

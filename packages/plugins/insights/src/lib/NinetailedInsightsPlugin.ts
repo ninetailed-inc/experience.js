@@ -1,11 +1,14 @@
 import { isEqual } from 'radash';
 import {
+  COMPONENT_CLICK,
+  COMPONENT_CLICK_START,
   COMPONENT,
   COMPONENT_START,
   PROFILE_CHANGE,
   PAGE_HIDDEN,
   type ProfileChangedPayload,
   type Profile,
+  type InterestedInClickedElements,
   type InterestedInSeenElements,
   type InterestedInProfileChange,
   type InterestedInHiddenPage,
@@ -16,6 +19,7 @@ import {
 
 import {
   logger,
+  type ComponentClickEvent,
   type ComponentViewEvent,
 } from '@ninetailed/experience.js-shared';
 import type {
@@ -24,9 +28,14 @@ import type {
   RequiresEventBuilder,
 } from '@ninetailed/experience.js';
 
-import type { ComponentViewEventBatch } from './types/Event/ComponentViewEventBatch';
+import type {
+  ComponentEvent,
+  ComponentEventBatch,
+} from './types/Event/ComponentEventBatch';
 import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
 import {
+  ElementClickedPayload,
+  ElementClickedPayloadSchema,
   ElementSeenPayload,
   VariableSeenPayload,
   EventHandler,
@@ -42,6 +51,7 @@ export class NinetailedInsightsPlugin
   extends NinetailedPlugin
   implements
     InterestedInSeenElements,
+    InterestedInClickedElements,
     InterestedInSeenVariables,
     InterestedInProfileChange,
     InterestedInHiddenPage,
@@ -59,9 +69,9 @@ export class NinetailedInsightsPlugin
 
   private profile?: Profile;
 
-  private events: ComponentViewEvent[] = [];
+  private events: ComponentEvent[] = [];
 
-  private eventsQueue: ComponentViewEventBatch[] = [];
+  private eventsQueue: ComponentEventBatch[] = [];
 
   private static MAX_EVENTS = 25;
 
@@ -146,6 +156,67 @@ export class NinetailedInsightsPlugin
     const { componentId, experienceId, variantIndex, componentType } = payload;
 
     const event = this.eventBuilder.component(
+      componentId,
+      componentType,
+      experienceId,
+      variantIndex
+    );
+
+    this.events.push(event);
+
+    if (this.shouldFlushEventsQueue()) {
+      if (this.profile) {
+        this.createEventsBatch(this.profile);
+      }
+
+      this.flushEventsQueue();
+    }
+  };
+
+  public override onHasClickedElement: EventHandler<ElementClickedPayload> = ({
+    payload,
+  }) => {
+    const sanitizedPayload = ElementClickedPayloadSchema.safeParse(payload);
+
+    if (!sanitizedPayload.success) {
+      logger.error(
+        'Insights Plugin: Invalid payload for has_clicked_element event',
+        sanitizedPayload.error.format()
+      );
+      return;
+    }
+
+    const { componentType, experience, variant, variantIndex } =
+      sanitizedPayload.data;
+
+    const componentId = variant.id;
+
+    if (typeof componentId === 'undefined') {
+      return;
+    }
+
+    this.instance?.dispatch({
+      type: COMPONENT_CLICK_START,
+      componentId,
+      componentType,
+      variantIndex,
+      experienceId: experience?.id,
+    });
+  };
+
+  public [COMPONENT_CLICK]: EventHandler<ComponentClickEvent> = ({
+    payload,
+  }) => {
+    if (!this.eventBuilder) {
+      logger.error(
+        'EventBuilder is not injected. Cannot build event. Skipping.'
+      );
+      return;
+    }
+
+    const { componentId, experienceId, variantIndex, componentType } = payload;
+
+    const event = this.eventBuilder.componentClick(
       componentId,
       componentType,
       experienceId,

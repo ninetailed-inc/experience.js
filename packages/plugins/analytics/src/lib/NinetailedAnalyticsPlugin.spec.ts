@@ -4,7 +4,7 @@ import { waitFor } from '@testing-library/dom';
 import {
   type ElementSeenPayload,
   ElementSeenPayloadSchema,
-} from './ElementSeenPayload';
+} from './ElementPayload';
 import { Template } from './NinetailedAnalyticsPlugin';
 import { TestAnalyticsPlugin } from '../../test';
 import { AnalyticsInstance } from './AnalyticsInstance';

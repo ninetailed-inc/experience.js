@@ -142,6 +142,7 @@ Object {
   "description": "Ninetailed SDK plugin for Ninetailed Insights",
   "devDependencies": Object {
     "@jest/globals": "29.7.0",
+    "@ninetailed/experience.js-plugin-privacy": "*",
   },
   "keywords": Array [
     "insights",
