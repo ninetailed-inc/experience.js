@@ -1,6 +1,5 @@
 import { Reference } from '@ninetailed/experience.js';
 import { ExperienceMapper } from './ExperienceMapper';
-
 const defaultExperience = {
   id: '123',
   name: 'test',
@@ -28,7 +27,6 @@ const defaultExperience = {
   },
   variants: [],
 };
-
 const defaultMappedExperience = {
   audience: { id: 'audience' },
   components: [{ baseline: { id: 'baseline' }, variants: [] }],
@@ -42,14 +40,11 @@ const defaultMappedExperience = {
   trafficAllocation: 0,
   type: 'nt_personalization',
 };
-
 describe('Experience Mapper', () => {
   it('should map experience to experience', () => {
     const mapped = ExperienceMapper.mapExperience(defaultExperience);
-
     expect(mapped).toMatchObject(defaultMappedExperience);
   });
-
   it('Should omit corrupt variants', () => {
     const mapped = ExperienceMapper.mapExperience({
       ...defaultExperience,
@@ -58,12 +53,10 @@ describe('Experience Mapper', () => {
         { id: 'variant', foo: 'bar' },
       ],
     });
-
     expect(mapped.components[0].variants).toStrictEqual([
       { id: 'variant', foo: 'bar' },
     ]);
   });
-
   it('Should map hidden variants', () => {
     const mapped = ExperienceMapper.mapExperience({
       ...defaultExperience,
@@ -78,18 +71,15 @@ describe('Experience Mapper', () => {
       },
       variants: [{ id: 'variant', foo: 'bar' }],
     });
-
     expect(mapped.components[0].variants).toStrictEqual([
       { id: 'variant', hidden: true },
     ]);
   });
-
   it('should preserve the type of the variants', () => {
     const mapped = ExperienceMapper.mapExperience({
       ...defaultExperience,
       variants: [{ id: 'variant', foo: 'bar' }],
     });
-
     const variant = mapped.components[0].variants[0];
     if (!('hidden' in variant)) {
       // Yeay! It correctly inferred the type of the property "foo" on the variant
@@ -97,7 +87,6 @@ describe('Experience Mapper', () => {
         expect(variant.foo).toBe('bar');
       }
     }
-
     expect(mapped.components[0].variants).toStrictEqual([
       { id: 'variant', foo: 'bar' },
     ]);

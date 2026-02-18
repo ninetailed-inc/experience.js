@@ -5,7 +5,6 @@ import { PropsWithChildren, ReactElement } from 'react';
 import { useProfile } from '../useProfile';
 import { NinetailedProvider } from '../NinetailedProvider';
 import { Change, ChangeTypes } from '@ninetailed/experience.js-shared';
-
 const profile: Profile = {
   id: '',
   stableId: '',
@@ -36,7 +35,6 @@ const profile: Profile = {
     averageSessionLength: 43,
   },
 };
-
 const changes: Change[] = [
   {
     key: 'key4',
@@ -45,11 +43,8 @@ const changes: Change[] = [
     meta: { experienceId: 'exp_1', variantIndex: 0 },
   },
 ];
-
 jest.mock('../useProfile');
-
 const mockUseProfile = useProfile as jest.MockedFunction<typeof useProfile>;
-
 mockUseProfile.mockReturnValue({
   loading: false,
   from: 'api',
@@ -58,7 +53,6 @@ mockUseProfile.mockReturnValue({
   profile: profile,
   error: null,
 });
-
 const ContextWrapper = ({ children }: PropsWithChildren) => {
   return <NinetailedProvider clientId={'test'}>{children}</NinetailedProvider>;
 };
@@ -66,23 +60,19 @@ const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'queries'>
 ) => render(ui, { wrapper: ContextWrapper, ...options });
-
 describe('MergeTag', () => {
   it('should render the resolved data without given fallback', () => {
     customRender(<MergeTag id="traits.firstname" />);
     expect(screen.getByText('John')).toBeInTheDocument();
   });
-
   it('should render the resolved data with given fallback', () => {
     customRender(<MergeTag id="traits.firstname" fallback="Doe" />);
     expect(screen.getByText('John')).toBeInTheDocument();
   });
-
   it('should render the fallback if the data could no be resolved', () => {
     customRender(<MergeTag id="traits.nested.bar" fallback="Doe" />);
     expect(screen.getByText('Doe')).toBeInTheDocument();
   });
-
   it('should not render anything if the data could no be resolved and no fallback is provided', () => {
     customRender(<MergeTag id="traits.nested.bar" />);
     expect(screen.queryByText('John')).toBeNull();

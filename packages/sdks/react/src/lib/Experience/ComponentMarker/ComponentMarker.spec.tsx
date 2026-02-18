@@ -1,12 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { render, screen } from '@testing-library/react';
-
 import { ComponentMarker } from './ComponentMarker';
-
 jest.mock('../../useNinetailed', () => ({
   useNinetailed: jest.fn().mockReturnValue({ logger: { debug: jest.fn() } }),
 }));
-
 /**
  *
  * Adds a class to the DOM element that sould act as the observable element.
@@ -14,20 +11,16 @@ jest.mock('../../useNinetailed', () => ({
  */
 const useObservableElement = () => {
   const observableElementRef = useRef<HTMLElement | null>(null);
-
   useEffect(() => {
     observableElementRef.current?.classList.add('found');
   }, []);
-
   return observableElementRef;
 };
-
 /**
  *
  * The DOM element with the data-testid `observable` is the one we know should be selected as the observable element.
  */
 const getObservable = () => screen.getByTestId('observable');
-
 const assertObservableIsFound = () => {
   try {
     /**
@@ -40,19 +33,15 @@ const assertObservableIsFound = () => {
     );
   }
 };
-
 describe('ComponentMarker', () => {
   it('renders a div with display: none', () => {
     const { container } = render(<ComponentMarker />);
     const div = container.children.item(0);
-
     expect(div).toHaveStyle('display: none');
   });
-
   it('should find the observable as next sibling', () => {
     const ObservableIsNextSibling = () => {
       const ref = useObservableElement();
-
       return (
         <>
           <ComponentMarker ref={ref} />
@@ -61,14 +50,11 @@ describe('ComponentMarker', () => {
       );
     };
     render(<ObservableIsNextSibling />);
-
     assertObservableIsFound();
   });
-
   it('should find the observable as next sibling that is not display: none', () => {
     const ObservableIsNextSiblingWithoutDisplayNone = () => {
       const ref = useObservableElement();
-
       return (
         <>
           <ComponentMarker ref={ref} />
@@ -77,16 +63,12 @@ describe('ComponentMarker', () => {
         </>
       );
     };
-
     render(<ObservableIsNextSiblingWithoutDisplayNone />);
-
     assertObservableIsFound();
   });
-
   it('should find the observable as next sibling of the parent', () => {
     const ObservableIsParentNextSibling = () => {
       const ref = useObservableElement();
-
       return (
         <>
           <div>
@@ -96,16 +78,12 @@ describe('ComponentMarker', () => {
         </>
       );
     };
-
     render(<ObservableIsParentNextSibling />);
-
     assertObservableIsFound();
   });
-
   it('should find the observable as next sibling of the parent that is not display: none', () => {
     const ObservableIsParentNextSiblingWithoutDisplayNone = () => {
       const ref = useObservableElement();
-
       return (
         <>
           <div>
@@ -116,9 +94,7 @@ describe('ComponentMarker', () => {
         </>
       );
     };
-
     render(<ObservableIsParentNextSiblingWithoutDisplayNone />);
-
     assertObservableIsFound();
   });
 });

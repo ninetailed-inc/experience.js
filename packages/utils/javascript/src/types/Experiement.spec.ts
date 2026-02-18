@@ -1,6 +1,5 @@
 import { Reference } from '@ninetailed/experience.js-shared';
 import { Experiment } from './Experiment';
-
 describe('Experiment Schema Validation', () => {
   it('Should default missing variants to an empty array', () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -10,10 +9,8 @@ describe('Experiment Schema Validation', () => {
       name: 'Experience without variants',
       type: 'nt_experiment',
     });
-
     expect(experiment.variants).toEqual([]);
   });
-
   it('Should default null variants to an empty array', () => {
     const experiment = Experiment.parse({
       id: 'experience-with-null-variants',
@@ -23,10 +20,8 @@ describe('Experiment Schema Validation', () => {
       // @ts-expect-error
       variants: null,
     });
-
     expect(experiment.variants).toEqual([]);
   });
-
   it('Should validate the variants array to contain only element with an id', () => {
     const experiment = Experiment.parse({
       id: 'experience-with-invalid-variants',
@@ -37,7 +32,6 @@ describe('Experiment Schema Validation', () => {
         { key: 'invalid-variant' } as unknown as Reference,
       ],
     });
-
     expect(experiment.variants).toEqual([{ id: 'valid-variant', foo: 'bar' }]);
   });
 });

@@ -1,12 +1,10 @@
 import { generateMock } from '@anatine/zod-mock';
 import { Profile } from '../../types/Profile/Profile';
 import { selectDistribution } from './selectDistribution';
-
 // this is the profile that will be in the < 50% range -> distributionRandom 0.1082723711403721
 const profileControl = { ...generateMock(Profile), stableId: '123' };
 // this is the profile that will be in the > 50% range -> distributionRandom 0.6206237130380756
 const profileVariant = { ...generateMock(Profile), stableId: '456' };
-
 const experience = {
   id: 'experience1',
   audience: {
@@ -28,7 +26,6 @@ const experience = {
   ],
   components: [],
 };
-
 describe('selectDistribution', () => {
   it('should return the distribution for a profile', () => {
     const controlDistribution = selectDistribution({

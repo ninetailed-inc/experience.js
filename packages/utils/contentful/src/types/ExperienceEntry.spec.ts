@@ -1,7 +1,6 @@
 import { ExperienceEntry, ExperienceEntryLike } from './ExperienceEntry';
 import { experienceEntryWithoutVariants } from './fixtures/experienceEntryWithoutVariants';
 import { experienceEntryWithoutLinkType } from './fixtures/experienceEntryWithoutLinkType';
-
 describe('ExperienceEntry', () => {
   it('should parse an ExperienceEntry without variants', () => {
     expect(
@@ -10,7 +9,6 @@ describe('ExperienceEntry', () => {
       ).fields.nt_variants
     ).toEqual([]);
   });
-
   it('should not accept a null value as variants', () => {
     expect(
       () =>
@@ -25,7 +23,6 @@ describe('ExperienceEntry', () => {
         }).fields.nt_variants
     ).toThrow();
   });
-
   it('should parse an ExperienceEntry without linkType', () => {
     experienceEntryWithoutLinkType.map((entry) => {
       expect(
@@ -33,7 +30,6 @@ describe('ExperienceEntry', () => {
       ).toMatchSnapshot();
     });
   });
-
   it('should not accept invalid variants', () => {
     expect(() =>
       ExperienceEntry.parse({

@@ -1,19 +1,15 @@
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
-
 import { Ninetailed } from '@ninetailed/experience.js';
 import {
   ComponentTypeEnum,
   NinetailedApiClient,
 } from '@ninetailed/experience.js-shared';
-
 import { useExperience } from './useExperience';
 import { NinetailedContext } from '../NinetailedContext';
-
 describe('useExperience', () => {
   const mockNinetailed = () => {
     const apiClient = new NinetailedApiClient({ clientId: 'test' });
-
     apiClient.upsertProfile = jest.fn().mockResolvedValue({
       profile: { id: 'test' },
       experiences: [
@@ -42,12 +38,9 @@ describe('useExperience', () => {
         },
       ],
     });
-
     const ninetailed = new Ninetailed(apiClient);
-
     return ninetailed;
   };
-
   const createNinetailedContextWrapper = (ninetailed: Ninetailed) => {
     return ({ children }: React.PropsWithChildren) => {
       return (
@@ -57,10 +50,8 @@ describe('useExperience', () => {
       );
     };
   };
-
   it('should handle when the baseline is selected as the variant', async () => {
     const ninetailed = mockNinetailed();
-
     const experience = {
       id: '3VDbqTMM6fArPlzJHGyLtu',
       type: 'nt_experiment' as const,
@@ -89,7 +80,6 @@ describe('useExperience', () => {
         },
       ],
     };
-
     const { result } = renderHook(
       () =>
         useExperience({
@@ -110,11 +100,9 @@ describe('useExperience', () => {
         wrapper: createNinetailedContextWrapper(ninetailed),
       }
     );
-
     await act(async () => {
       ninetailed.identify('test');
     });
-
     await waitFor(() => {
       expect(result.current.status).toEqual('success');
       expect(result.current.loading).toEqual(false);
@@ -128,10 +116,8 @@ describe('useExperience', () => {
       expect(result.current.audience).toEqual(experience.audience);
     });
   });
-
   it('should handle when a variant is selected', async () => {
     const ninetailed = mockNinetailed();
-
     const experience = {
       id: '2nwOWZK7NOIyuX737sFZ0A',
       type: 'nt_experiment' as const,
@@ -163,7 +149,6 @@ describe('useExperience', () => {
         },
       ],
     };
-
     const { result } = renderHook(
       () =>
         useExperience({
@@ -184,11 +169,9 @@ describe('useExperience', () => {
         wrapper: createNinetailedContextWrapper(ninetailed),
       }
     );
-
     await act(async () => {
       ninetailed.identify('test');
     });
-
     await waitFor(() => {
       expect(result.current.status).toEqual('success');
       expect(result.current.loading).toEqual(false);
@@ -204,15 +187,12 @@ describe('useExperience', () => {
       expect(result.current.audience).toEqual(experience.audience);
     });
   });
-
   it('handles circular references in an object', async () => {
     type BaselineWithCircularReference = {
       id: string;
       parent?: BaselineWithCircularReference;
     };
-
     const ninetailed = mockNinetailed();
-
     const experience = {
       id: '3m1HTWSCdvCHz3qXDaqkOm',
       type: 'nt_experiment' as const,
@@ -247,14 +227,11 @@ describe('useExperience', () => {
         },
       ],
     };
-
     const baseline: BaselineWithCircularReference = {
       id: '3HQIlpV2OtnpSbs2zRwDGi',
     };
-
     // Create a circular reference;
     baseline.parent = baseline;
-
     const { result } = renderHook(
       () =>
         useExperience({
@@ -265,11 +242,9 @@ describe('useExperience', () => {
         wrapper: createNinetailedContextWrapper(ninetailed),
       }
     );
-
     await act(async () => {
       ninetailed.identify('test');
     });
-
     await waitFor(() => {
       expect(result.current.status).toEqual('success');
       expect(result.current.loading).toEqual(false);

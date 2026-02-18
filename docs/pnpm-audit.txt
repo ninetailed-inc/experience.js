@@ -213,3 +213,9 @@
 └─────────────────────┴────────────────────────────────────────────────────────┘
 9 vulnerabilities found
 Severity: 3 low | 4 moderate | 2 high
+
+
+ WARN  deprecated next@16.0.9: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
+ WARN  deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+Downloading next@16.0.9: 30,23 MB/30,23 MB, done
+
