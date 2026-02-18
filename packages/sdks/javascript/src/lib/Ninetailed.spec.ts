@@ -469,7 +469,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+        expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
         expect(clickPlugin.onElementClickedMock).toHaveBeenCalledWith(
           expect.objectContaining({
             variant: expect.objectContaining({ id: 'variant-id' }),
@@ -504,7 +504,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+        expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -532,7 +532,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+        expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -561,7 +561,7 @@ describe('Ninetailed core class', () => {
       nonClickableChild.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should not track component clicks when the clicked element has aria-disabled="true"', () => {
@@ -590,7 +590,7 @@ describe('Ninetailed core class', () => {
       disabledClickableChild.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should not track component clicks when trackClicks is disabled', () => {
@@ -611,7 +611,7 @@ describe('Ninetailed core class', () => {
       element.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should cleanup click listeners when unobserveElement is called', () => {
@@ -636,7 +636,7 @@ describe('Ninetailed core class', () => {
       element.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should not track a component view when no experience is provided', async () => {
