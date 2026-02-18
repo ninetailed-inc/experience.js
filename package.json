@@ -136,7 +136,7 @@
     "jest-environment-node": "^29.4.1",
     "jest-fetch-mock": "3.0.3",
     "license-checker": "25.0.1",
-    "lint-staged": "15.1.0",
+    "lint-staged": "16.2.7",
     "postcss": "8.4.38",
     "prettier": "2.8.0",
     "react-refresh": "0.10.0",
