@@ -1,20 +1,10 @@
 {
-  "extends": [
-    "plugin:@nx/react-typescript",
-    "plugin:@next/next/recommended",
-    "plugin:@next/next/core-web-vitals",
-    "../../../.eslintrc.json"
-  ],
+  "extends": ["plugin:@nx/react-typescript", "../../../.eslintrc.json"],
   "ignorePatterns": ["!**/*", ".next/**/*", "next-env.d.ts"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {
-        "@next/next/no-html-link-for-pages": [
-          "error",
-          "packages/playgrounds/easy-hr/pages"
-        ]
-      }
+      "rules": {}
     },
     {
       "files": ["*.ts", "*.tsx"],
@@ -25,9 +15,7 @@
       "rules": {}
     }
   ],
-  "rules": {
-    "@next/next/no-html-link-for-pages": "off"
-  },
+  "rules": {},
   "env": {
     "jest": true
   }

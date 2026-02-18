@@ -1,20 +1,10 @@
 {
-  "extends": [
-    "plugin:@nx/react-typescript",
-    "../../../.eslintrc.json",
-    "plugin:@next/next/recommended",
-    "plugin:@next/next/core-web-vitals"
-  ],
+  "extends": ["plugin:@nx/react-typescript", "../../../.eslintrc.json"],
   "ignorePatterns": ["!**/*", ".next", "next-env.d.ts"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {
-        "@next/next/no-html-link-for-pages": [
-          "error",
-          "packages/playgrounds/next-js/pages"
-        ]
-      }
+      "rules": {}
     },
     {
       "files": ["*.ts", "*.tsx"],
