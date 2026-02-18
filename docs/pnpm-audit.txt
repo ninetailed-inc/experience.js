@@ -33,24 +33,10 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ <0.0.0                                                 │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > contentful-export@7.22.0 > bfj@8.0.0 >             │
+│ Paths               │ . > contentful-export@7.22.1 > bfj@8.0.0 >             │
 │                     │ jsonpath@1.2.1                                         │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-87r5-mp6g-5w5j      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ moderate            │ Regular Expression Denial of Service (ReDoS) in        │
-│                     │ micromatch                                             │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ micromatch                                             │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ <4.0.8                                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=4.0.8                                                │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > lint-staged@15.1.0 > micromatch@4.0.5              │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-952p-6rrq-rcjv      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ moderate            │ Koa Vulnerable to Open Redirect via Trailing           │
@@ -94,14 +80,23 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=4.17.23                                              │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > contentful-import@9.4.129 > lodash@4.17.21         │
+│ Paths               │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
+│                     │ @verdaccio/auth@8.0.0-next-8.29 >                      │
+│                     │ @verdaccio/config@8.0.0-next-8.29 > lodash@4.17.21     │
 │                     │                                                        │
-│                     │ . > contentful-typescript-codegen@3.4.0 >              │
-│                     │ lodash@4.17.21                                         │
+│                     │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
+│                     │ @verdaccio/auth@8.0.0-next-8.29 >                      │
+│                     │ @verdaccio/loaders@8.0.0-next-8.19 > lodash@4.17.21    │
 │                     │                                                        │
-│                     │ . > lodash@4.17.21                                     │
+│                     │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
+│                     │ @verdaccio/auth@8.0.0-next-8.29 >                      │
+│                     │ @verdaccio/signature@8.0.0-next-8.21 >                 │
+│                     │ @verdaccio/config@8.0.0-next-8.29 > lodash@4.17.21     │
 │                     │                                                        │
-│                     │ ... Found 505 paths, run `pnpm why lodash` for more    │
+│                     │ ... Found 467 paths, run `pnpm why lodash` for more    │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-xxjr-mmjv-4gpg      │
@@ -115,17 +110,16 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=8.18.0                                               │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > contentful-import@9.4.129 > eslint@8.57.1 >        │
+│ Paths               │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ eslint@8.57.1 > @eslint/eslintrc@2.1.4 > ajv@6.12.6    │
+│                     │                                                        │
+│                     │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ eslint@8.57.1 > ajv@6.12.6                             │
+│                     │                                                        │
+│                     │ . > @nx/eslint@21.6.9 > eslint@8.57.1 >                │
 │                     │ @eslint/eslintrc@2.1.4 > ajv@6.12.6                    │
 │                     │                                                        │
-│                     │ . > contentful-import@9.4.129 > eslint@8.57.1 >        │
-│                     │ ajv@6.12.6                                             │
-│                     │                                                        │
-│                     │ . > contentful-import@9.4.129 >                        │
-│                     │ eslint-config-standard@17.1.0 > eslint@8.57.1 >        │
-│                     │ @eslint/eslintrc@2.1.4 > ajv@6.12.6                    │
-│                     │                                                        │
-│                     │ ... Found 1304 paths, run `pnpm why ajv` for more      │
+│                     │ ... Found 935 paths, run `pnpm why ajv` for more       │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-2g4f-4pwh-qvx6      │
@@ -217,5 +211,5 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-w7fw-mjwx-w883      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
-10 vulnerabilities found
-Severity: 3 low | 5 moderate | 2 high
+9 vulnerabilities found
+Severity: 3 low | 4 moderate | 2 high
