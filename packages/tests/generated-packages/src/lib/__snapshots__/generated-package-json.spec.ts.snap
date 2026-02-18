@@ -207,7 +207,7 @@ Object {
 exports[`Generated package.json files dist/packages/plugins/preview-bridge/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
-    "@ninetailed/experience.js": "*",
+    "@ninetailed/experience.js-shared": "7.6.0-beta.1",
     "zoid": "9.0.86",
   },
   "description": "Ninetailed SDK plugin for Experience.js preview bridge",
@@ -418,7 +418,7 @@ Object {
 exports[`Generated package.json files dist/packages/sdks/nextjs-esr/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
-    "next": "15.5.12",
+    "next": "16.1.6",
   },
   "description": "Ninetailed SDK for Next.js ESR",
   "exports": Object {
@@ -569,7 +569,6 @@ exports[`Generated package.json files dist/packages/utils/contentful/package.jso
 Object {
   "dependencies": Object {
     "@contentful/rich-text-types": "17.2.5",
-    "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js-utils": "*",
     "contentful": "^11.10.2",

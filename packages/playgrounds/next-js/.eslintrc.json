@@ -5,7 +5,7 @@
     "plugin:@next/next/recommended",
     "plugin:@next/next/core-web-vitals"
   ],
-  "ignorePatterns": ["!**/*", ".next"],
+  "ignorePatterns": ["!**/*", ".next", "next-env.d.ts"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
