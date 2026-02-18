@@ -3,6 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/plugins/google-tagmanager/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
@@ -27,6 +28,5 @@
         "jestConfig": "packages/plugins/google-tagmanager/jest.config.js"
       }
     }
-  },
-  "tags": []
+  }
 }

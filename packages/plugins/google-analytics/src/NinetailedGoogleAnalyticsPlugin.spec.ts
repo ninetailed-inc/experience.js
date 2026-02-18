@@ -42,8 +42,8 @@ describe('NinetailedGoogleAnalyticsPlugin', () => {
     await ninetailed.trackHasSeenComponent(fixtures.TRACK_COMPONENT_PROPERTIES);
 
     await waitFor(() => {
-      expect(gtag).toBeCalledTimes(1);
-      expect(gtag).toBeCalledWith(
+      expect(gtag).toHaveBeenCalledTimes(1);
+      expect(gtag).toHaveBeenCalledWith(
         'event',
         'Has Seen Component - Audience:test',
         {

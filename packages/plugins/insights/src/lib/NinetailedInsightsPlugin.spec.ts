@@ -117,7 +117,7 @@ describe('NinetailedInsightsPlugin', () => {
     jest.useRealTimers();
 
     await waitFor(() => {
-      expect(insightsApiClientSendEventBatchesMock).not.toBeCalled();
+      expect(insightsApiClientSendEventBatchesMock).not.toHaveBeenCalled();
     });
   });
 
@@ -153,7 +153,7 @@ describe('NinetailedInsightsPlugin', () => {
     jest.useRealTimers();
 
     await waitFor(() => {
-      expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(1);
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -186,7 +186,7 @@ describe('NinetailedInsightsPlugin', () => {
     jest.useRealTimers();
 
     await waitFor(() => {
-      expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -223,7 +223,7 @@ describe('NinetailedInsightsPlugin', () => {
 
     await waitFor(() => {
       // Should not flush because only one unique event
-      expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
     });
   });
 });
