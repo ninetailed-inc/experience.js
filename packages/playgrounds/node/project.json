@@ -3,6 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/playgrounds/node/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -52,6 +53,5 @@
         "jestConfig": "packages/playgrounds/node/jest.config.js"
       }
     }
-  },
-  "tags": []
+  }
 }

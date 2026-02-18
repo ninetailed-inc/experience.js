@@ -113,24 +113,24 @@ describe('Ninetailed core class', () => {
     it('should be able to send a page event', async () => {
       await ninetailed.page();
 
-      expect(apiClient.upsertProfile).toBeCalledTimes(1);
+      expect(apiClient.upsertProfile).toHaveBeenCalledTimes(1);
     });
 
     it('should be able to send a identify event', async () => {
       await ninetailed.identify('test', { foo: 'bar' });
 
-      expect(apiClient.upsertProfile).toBeCalledTimes(1);
+      expect(apiClient.upsertProfile).toHaveBeenCalledTimes(1);
     });
 
     it('should be able to send a track event', async () => {
       await ninetailed.track('test');
 
-      expect(apiClient.upsertProfile).toBeCalledTimes(1);
+      expect(apiClient.upsertProfile).toHaveBeenCalledTimes(1);
     });
 
     it('should not reuse the mergeId when sending a second identify event with an empty id', async () => {
       await ninetailed.identify('test', { foo: 'bar' });
-      expect(apiClient.upsertProfile).toBeCalledWith(
+      expect(apiClient.upsertProfile).toHaveBeenCalledWith(
         expect.objectContaining({
           events: expect.arrayContaining([
             expect.objectContaining({
@@ -142,7 +142,7 @@ describe('Ninetailed core class', () => {
       );
 
       await ninetailed.identify('', { baz: 'qux' });
-      expect(apiClient.upsertProfile).toBeCalledWith(
+      expect(apiClient.upsertProfile).toHaveBeenCalledWith(
         expect.objectContaining({
           events: expect.arrayContaining([
             expect.objectContaining({
@@ -185,20 +185,20 @@ describe('Ninetailed core class', () => {
 
       // the first event is sent immediately
       await ninetailed.identify('', { foo: 'bar' });
-      expect(apiClient.upsertProfile).toBeCalledTimes(1);
+      expect(apiClient.upsertProfile).toHaveBeenCalledTimes(1);
 
       // the second event is sent after the first event was sent, because of the await
       ninetailed.identify('', { foo: 'bar' });
       ninetailed.identify('', { foo: 'bar' });
       await wait(30);
-      expect(apiClient.upsertProfile).toBeCalledTimes(2);
+      expect(apiClient.upsertProfile).toHaveBeenCalledTimes(2);
     });
 
     it('should set all Features as enabled by default', async () => {
       const { apiClient, ninetailed } = mockProfile();
 
       await ninetailed.identify('', { foo: 'bar' });
-      expect(apiClient.upsertProfile).toBeCalledWith(
+      expect(apiClient.upsertProfile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           enabledFeatures: [FEATURES.IP_ENRICHMENT, FEATURES.LOCATION],
@@ -215,21 +215,21 @@ describe('Ninetailed core class', () => {
         await ninetailed.page();
         await ninetailed.page();
 
-        expect(apiClient.upsertProfile).toBeCalledTimes(2);
+        expect(apiClient.upsertProfile).toHaveBeenCalledTimes(2);
       });
 
       it('track events', async () => {
         await ninetailed.track('test');
         await ninetailed.track('test');
 
-        expect(apiClient.upsertProfile).toBeCalledTimes(2);
+        expect(apiClient.upsertProfile).toHaveBeenCalledTimes(2);
       });
 
       it('identify events', async () => {
         await ninetailed.identify('', { foo: 'bar' });
         await ninetailed.identify('', { foo: 'bar' });
 
-        expect(apiClient.upsertProfile).toBeCalledTimes(2);
+        expect(apiClient.upsertProfile).toHaveBeenCalledTimes(2);
 
         (apiClient.upsertProfile as jest.Mock).mockReset();
 
@@ -240,7 +240,7 @@ describe('Ninetailed core class', () => {
         // await the second batch
         await ninetailed.identify('', { foo: 'bar' });
 
-        expect(apiClient.upsertProfile).toBeCalledTimes(2);
+        expect(apiClient.upsertProfile).toHaveBeenCalledTimes(2);
 
         (apiClient.upsertProfile as jest.Mock).mockReset();
 
@@ -248,7 +248,7 @@ describe('Ninetailed core class', () => {
         await ninetailed.identify('', { foo: 'bar' });
         await ninetailed.identify('', { foo: 'bar' });
 
-        expect(apiClient.upsertProfile).toBeCalledTimes(3);
+        expect(apiClient.upsertProfile).toHaveBeenCalledTimes(3);
       });
     });
   });
@@ -289,7 +289,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(1);
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
           expect.objectContaining({
             selectedVariantIndex: 1,
@@ -333,7 +333,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(2);
 
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -383,7 +383,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(2);
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(2);
 
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -433,7 +433,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(testPlugin.onTrackExperienceMock).toBeCalledTimes(1);
+        expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(1);
 
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -469,7 +469,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+        expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
         expect(clickPlugin.onElementClickedMock).toHaveBeenCalledWith(
           expect.objectContaining({
             variant: expect.objectContaining({ id: 'variant-id' }),
@@ -504,7 +504,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+        expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -532,7 +532,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+        expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -561,7 +561,7 @@ describe('Ninetailed core class', () => {
       nonClickableChild.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should not track component clicks when the clicked element has aria-disabled="true"', () => {
@@ -590,7 +590,7 @@ describe('Ninetailed core class', () => {
       disabledClickableChild.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should not track component clicks when trackClicks is disabled', () => {
@@ -611,7 +611,7 @@ describe('Ninetailed core class', () => {
       element.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should cleanup click listeners when unobserveElement is called', () => {
@@ -636,7 +636,7 @@ describe('Ninetailed core class', () => {
       element.click();
       jest.runAllTimers();
 
-      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
 
     it('should not track a component view when no experience is provided', async () => {
@@ -658,7 +658,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
+        expect(testPlugin.onTrackExperienceMock).not.toHaveBeenCalled();
       });
     });
 
@@ -687,7 +687,7 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
 
       await waitFor(() => {
-        expect(testPlugin.onTrackExperienceMock).not.toBeCalled();
+        expect(testPlugin.onTrackExperienceMock).not.toHaveBeenCalled();
       });
     });
   });

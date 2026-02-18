@@ -3,6 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/sdks/shared/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
@@ -45,6 +46,5 @@
         "jestConfig": "packages/sdks/shared/jest.config.cjs"
       }
     }
-  },
-  "tags": []
+  }
 }

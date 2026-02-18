@@ -3,6 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/playgrounds/next-js",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "clean-cache": {
       "executor": "nx:run-commands",
@@ -54,6 +55,5 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": []
+  }
 }

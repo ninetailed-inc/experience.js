@@ -8,17 +8,17 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=6.14.1                                               │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nx/cypress@20.8.4 > @nx/eslint@20.8.4 >           │
-│                     │ @nx/js@20.8.4 > verdaccio@6.2.5 >                      │
+│ Paths               │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
 │                     │ @cypress/request@3.0.9 > qs@6.14.0                     │
 │                     │                                                        │
-│                     │ . > @nx/cypress@20.8.4 > @nx/js@20.8.4 >               │
+│                     │ . > @nx/cypress@21.6.9 > @nx/js@21.6.9 >               │
 │                     │ verdaccio@6.2.5 > @cypress/request@3.0.9 > qs@6.14.0   │
 │                     │                                                        │
-│                     │ . > @nx/cypress@20.8.4 > cypress@14.5.4 >              │
+│                     │ . > @nx/cypress@21.6.9 > cypress@14.5.4 >              │
 │                     │ @cypress/request@3.0.9 > qs@6.14.0                     │
 │                     │                                                        │
-│                     │ ... Found 29 paths, run `pnpm why qs` for more         │
+│                     │ ... Found 33 paths, run `pnpm why qs` for more         │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-6rw7-vpxm-498p      │
@@ -39,50 +39,36 @@
 │ More info           │ https://github.com/advisories/GHSA-87r5-mp6g-5w5j      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ moderate            │ Regular Expression Denial of Service (ReDoS) in        │
-│                     │ micromatch                                             │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ micromatch                                             │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ <4.0.8                                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=4.0.8                                                │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > lint-staged@15.1.0 > micromatch@4.0.5              │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-952p-6rrq-rcjv      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ moderate            │ Koajs vulnerable to Cross-Site Scripting (XSS) at      │
-│                     │ ctx.redirect() function                                │
+│ moderate            │ Koa Vulnerable to Open Redirect via Trailing           │
+│                     │ Double-Slash (//) in back Redirect Logic               │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Package             │ koa                                                    │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ <2.16.1                                                │
+│ Vulnerable versions │ >=3.0.1 <3.0.3                                         │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=2.16.1                                               │
+│ Patched versions    │ >=3.0.3                                                │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 >                    │
-│                     │ @module-federation/dts-plugin@0.9.1 > koa@2.15.4       │
+│ Paths               │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
+│                     │ @module-federation/enhanced@0.18.4 >                   │
+│                     │ @module-federation/cli@0.18.4 >                        │
+│                     │ @module-federation/dts-plugin@0.18.4 > koa@3.0.1       │
 │                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 >                    │
-│                     │ @module-federation/manifest@0.9.1 >                    │
-│                     │ @module-federation/dts-plugin@0.9.1 > koa@2.15.4       │
+│                     │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
+│                     │ @module-federation/enhanced@0.18.4 >                   │
+│                     │ @module-federation/dts-plugin@0.18.4 > koa@3.0.1       │
 │                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 >                    │
-│                     │ @module-federation/rspack@0.9.1 >                      │
-│                     │ @module-federation/dts-plugin@0.9.1 > koa@2.15.4       │
+│                     │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
+│                     │ @module-federation/enhanced@0.18.4 >                   │
+│                     │ @module-federation/manifest@0.18.4 >                   │
+│                     │ @module-federation/dts-plugin@0.18.4 > koa@3.0.1       │
 │                     │                                                        │
-│                     │ ... Found 8 paths, run `pnpm why koa` for more         │
+│                     │ ... Found 10 paths, run `pnpm why koa` for more        │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-x2rg-q646-7m2v      │
+│ More info           │ https://github.com/advisories/GHSA-g8mr-fgfg-5qpc      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ moderate            │ Lodash has Prototype Pollution Vulnerability in        │
@@ -94,23 +80,23 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=4.17.23                                              │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nx/cypress@20.8.4 > @nx/eslint@20.8.4 >           │
-│                     │ @nx/js@20.8.4 > verdaccio@6.2.5 >                      │
+│ Paths               │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
 │                     │ @verdaccio/auth@8.0.0-next-8.29 >                      │
 │                     │ @verdaccio/config@8.0.0-next-8.29 > lodash@4.17.21     │
 │                     │                                                        │
-│                     │ . > @nx/cypress@20.8.4 > @nx/eslint@20.8.4 >           │
-│                     │ @nx/js@20.8.4 > verdaccio@6.2.5 >                      │
+│                     │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
 │                     │ @verdaccio/auth@8.0.0-next-8.29 >                      │
 │                     │ @verdaccio/loaders@8.0.0-next-8.19 > lodash@4.17.21    │
 │                     │                                                        │
-│                     │ . > @nx/cypress@20.8.4 > @nx/eslint@20.8.4 >           │
-│                     │ @nx/js@20.8.4 > verdaccio@6.2.5 >                      │
+│                     │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
 │                     │ @verdaccio/auth@8.0.0-next-8.29 >                      │
 │                     │ @verdaccio/signature@8.0.0-next-8.21 >                 │
 │                     │ @verdaccio/config@8.0.0-next-8.29 > lodash@4.17.21     │
 │                     │                                                        │
-│                     │ ... Found 405 paths, run `pnpm why lodash` for more    │
+│                     │ ... Found 467 paths, run `pnpm why lodash` for more    │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-xxjr-mmjv-4gpg      │
@@ -124,52 +110,19 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=8.18.0                                               │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > contentful-import@9.4.130 > eslint@8.57.1 >        │
+│ Paths               │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ eslint@8.57.1 > @eslint/eslintrc@2.1.4 > ajv@6.12.6    │
+│                     │                                                        │
+│                     │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ eslint@8.57.1 > ajv@6.12.6                             │
+│                     │                                                        │
+│                     │ . > @nx/eslint@21.6.9 > eslint@8.57.1 >                │
 │                     │ @eslint/eslintrc@2.1.4 > ajv@6.12.6                    │
 │                     │                                                        │
-│                     │ . > contentful-import@9.4.130 > eslint@8.57.1 >        │
-│                     │ ajv@6.12.6                                             │
-│                     │                                                        │
-│                     │ . > contentful-import@9.4.130 >                        │
-│                     │ eslint-config-standard@17.1.0 > eslint@8.57.1 >        │
-│                     │ @eslint/eslintrc@2.1.4 > ajv@6.12.6                    │
-│                     │                                                        │
-│                     │ ... Found 831 paths, run `pnpm why ajv` for more       │
+│                     │ ... Found 935 paths, run `pnpm why ajv` for more       │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-2g4f-4pwh-qvx6      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ low                 │ Koa Open Redirect via Referrer Header                  │
-│                     │ (User-Controlled)                                      │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ koa                                                    │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ >=2.0.0 <2.16.2                                        │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=2.16.2                                               │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 >                    │
-│                     │ @module-federation/dts-plugin@0.9.1 > koa@2.15.4       │
-│                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 >                    │
-│                     │ @module-federation/manifest@0.9.1 >                    │
-│                     │ @module-federation/dts-plugin@0.9.1 > koa@2.15.4       │
-│                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 >                    │
-│                     │ @module-federation/rspack@0.9.1 >                      │
-│                     │ @module-federation/dts-plugin@0.9.1 > koa@2.15.4       │
-│                     │                                                        │
-│                     │ ... Found 8 paths, run `pnpm why koa` for more         │
-│                     │ information                                            │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-jgmv-j7ww-jx2x      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ low                 │ webpack buildHttp: allowedUris allow-list bypass via   │
@@ -181,23 +134,23 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=5.104.1                                              │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 > webpack@5.98.0 >   │
-│                     │ terser-webpack-plugin@5.3.16 > webpack@5.98.0          │
+│ Paths               │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
+│                     │ @module-federation/enhanced@0.18.4 > webpack@5.101.3 > │
+│                     │ terser-webpack-plugin@5.3.16 > webpack@5.101.3         │
 │                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
+│                     │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
 │                     │ @module-federation/node@2.7.31 >                       │
-│                     │ @module-federation/enhanced@2.0.0 > webpack@5.98.0 >   │
-│                     │ terser-webpack-plugin@5.3.16 > webpack@5.98.0          │
+│                     │ @module-federation/enhanced@2.0.0 > webpack@5.101.3 >  │
+│                     │ terser-webpack-plugin@5.3.16 > webpack@5.101.3         │
 │                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/node@2.7.31 > webpack@5.98.0 >      │
-│                     │ terser-webpack-plugin@5.3.16 > webpack@5.98.0          │
+│                     │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
+│                     │ @module-federation/node@2.7.31 > webpack@5.101.3 >     │
+│                     │ terser-webpack-plugin@5.3.16 > webpack@5.101.3         │
 │                     │                                                        │
-│                     │ ... Found 56 paths, run `pnpm why webpack` for more    │
+│                     │ ... Found 54 paths, run `pnpm why webpack` for more    │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-8fgc-7cc6-rx7x      │
@@ -212,23 +165,23 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=5.104.0                                              │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/enhanced@0.9.1 > webpack@5.98.0 >   │
-│                     │ terser-webpack-plugin@5.3.16 > webpack@5.98.0          │
+│ Paths               │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
+│                     │ @module-federation/enhanced@0.18.4 > webpack@5.101.3 > │
+│                     │ terser-webpack-plugin@5.3.16 > webpack@5.101.3         │
 │                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
+│                     │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
 │                     │ @module-federation/node@2.7.31 >                       │
-│                     │ @module-federation/enhanced@2.0.0 > webpack@5.98.0 >   │
-│                     │ terser-webpack-plugin@5.3.16 > webpack@5.98.0          │
+│                     │ @module-federation/enhanced@2.0.0 > webpack@5.101.3 >  │
+│                     │ terser-webpack-plugin@5.3.16 > webpack@5.101.3         │
 │                     │                                                        │
-│                     │ . > @nx/next@20.8.4 > @nx/react@20.8.4 >               │
-│                     │ @nx/module-federation@20.8.4 >                         │
-│                     │ @module-federation/node@2.7.31 > webpack@5.98.0 >      │
-│                     │ terser-webpack-plugin@5.3.16 > webpack@5.98.0          │
+│                     │ . > @nx/next@21.6.9 > @nx/react@21.6.9 >               │
+│                     │ @nx/module-federation@21.6.9 >                         │
+│                     │ @module-federation/node@2.7.31 > webpack@5.101.3 >     │
+│                     │ terser-webpack-plugin@5.3.16 > webpack@5.101.3         │
 │                     │                                                        │
-│                     │ ... Found 56 paths, run `pnpm why webpack` for more    │
+│                     │ ... Found 54 paths, run `pnpm why webpack` for more    │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-38r7-794h-5758      │
@@ -243,20 +196,20 @@
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ Patched versions    │ >=6.14.2                                               │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nx/cypress@20.8.4 > @nx/eslint@20.8.4 >           │
-│                     │ @nx/js@20.8.4 > verdaccio@6.2.5 >                      │
+│ Paths               │ . > @nx/cypress@21.6.9 > @nx/eslint@21.6.9 >           │
+│                     │ @nx/js@21.6.9 > verdaccio@6.2.5 >                      │
 │                     │ @cypress/request@3.0.9 > qs@6.14.0                     │
 │                     │                                                        │
-│                     │ . > @nx/cypress@20.8.4 > @nx/js@20.8.4 >               │
+│                     │ . > @nx/cypress@21.6.9 > @nx/js@21.6.9 >               │
 │                     │ verdaccio@6.2.5 > @cypress/request@3.0.9 > qs@6.14.0   │
 │                     │                                                        │
-│                     │ . > @nx/cypress@20.8.4 > cypress@14.5.4 >              │
+│                     │ . > @nx/cypress@21.6.9 > cypress@14.5.4 >              │
 │                     │ @cypress/request@3.0.9 > qs@6.14.0                     │
 │                     │                                                        │
-│                     │ ... Found 29 paths, run `pnpm why qs` for more         │
+│                     │ ... Found 33 paths, run `pnpm why qs` for more         │
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-w7fw-mjwx-w883      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
-11 vulnerabilities found
-Severity: 4 low | 5 moderate | 2 high
+9 vulnerabilities found
+Severity: 3 low | 4 moderate | 2 high

@@ -58,15 +58,15 @@ describe('NinetailedApiClient', () => {
         client.createProfile({
           events: [],
         })
-      ).rejects.toThrowError();
+      ).rejects.toThrow();
 
       await waitFor(() => {
-        expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
-        expect(mockLogSink.onWarnMock).toBeCalledWith(
+        expect(mockLogSink.onWarnMock).toHaveBeenCalledTimes(1);
+        expect(mockLogSink.onWarnMock).toHaveBeenCalledWith(
           'Create Profile request aborted due to network issues. This request is not retryable.'
         );
 
-        expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -76,11 +76,11 @@ describe('NinetailedApiClient', () => {
         client.createProfile({
           events: [],
         })
-      ).rejects.toThrowError();
+      ).rejects.toThrow();
 
       await waitFor(() => {
-        expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
-        expect(mockLogSink.onErrorMock).toBeCalledWith(
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledTimes(1);
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledWith(
           'Create Profile request failed with error: [Error] test'
         );
       });
@@ -95,15 +95,15 @@ describe('NinetailedApiClient', () => {
           profileId: 'test',
           events: [],
         })
-      ).rejects.toThrowError();
+      ).rejects.toThrow();
 
       await waitFor(() => {
-        expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
-        expect(mockLogSink.onWarnMock).toBeCalledWith(
+        expect(mockLogSink.onWarnMock).toHaveBeenCalledTimes(1);
+        expect(mockLogSink.onWarnMock).toHaveBeenCalledWith(
           'Update Profile request aborted due to network issues. This request is not retryable.'
         );
 
-        expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -114,11 +114,11 @@ describe('NinetailedApiClient', () => {
           profileId: 'test',
           events: [],
         })
-      ).rejects.toThrowError();
+      ).rejects.toThrow();
 
       await waitFor(() => {
-        expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
-        expect(mockLogSink.onErrorMock).toBeCalledWith(
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledTimes(1);
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledWith(
           'Update Profile request failed with error: [Error] test'
         );
       });
@@ -132,15 +132,15 @@ describe('NinetailedApiClient', () => {
         client.upsertManyProfiles({
           events: [],
         })
-      ).rejects.toThrowError();
+      ).rejects.toThrow();
 
       await waitFor(() => {
-        expect(mockLogSink.onWarnMock).toBeCalledTimes(1);
-        expect(mockLogSink.onWarnMock).toBeCalledWith(
+        expect(mockLogSink.onWarnMock).toHaveBeenCalledTimes(1);
+        expect(mockLogSink.onWarnMock).toHaveBeenCalledWith(
           'Upsert Many Profiles request aborted due to network issues. This request is not retryable.'
         );
 
-        expect(mockLogSink.onErrorMock).toBeCalledTimes(0);
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -150,11 +150,11 @@ describe('NinetailedApiClient', () => {
         client.upsertManyProfiles({
           events: [],
         })
-      ).rejects.toThrowError();
+      ).rejects.toThrow();
 
       await waitFor(() => {
-        expect(mockLogSink.onErrorMock).toBeCalledTimes(1);
-        expect(mockLogSink.onErrorMock).toBeCalledWith(
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledTimes(1);
+        expect(mockLogSink.onErrorMock).toHaveBeenCalledWith(
           'Upsert Many Profiles request failed with error: [Error] test'
         );
       });

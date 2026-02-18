@@ -81,8 +81,8 @@ describe('NinetailedSegmentPlugin', () => {
       });
 
       await waitFor(() => {
-        expect(segment.track).toBeCalledTimes(1);
-        expect(segment.track).toBeCalledWith('nt_experience', {
+        expect(segment.track).toHaveBeenCalledTimes(1);
+        expect(segment.track).toHaveBeenCalledWith('nt_experience', {
           ninetailed_audience: 'test-audience',
           ninetailed_component: 'test-component',
           ninetailed_experience: 'test-experience',
@@ -104,8 +104,8 @@ describe('NinetailedSegmentPlugin', () => {
       });
 
       await waitFor(() => {
-        expect(segment.track).toBeCalledTimes(1);
-        expect(segment.track).toBeCalledWith(
+        expect(segment.track).toHaveBeenCalledTimes(1);
+        expect(segment.track).toHaveBeenCalledWith(
           'Has Seen Component - Audience:test',
           {
             audience: 'test',
@@ -148,8 +148,8 @@ describe('NinetailedSegmentPlugin', () => {
       });
 
       await waitFor(() => {
-        expect(segment.track).toBeCalledTimes(1);
-        expect(segment.track).toBeCalledWith('nt_experience', {
+        expect(segment.track).toHaveBeenCalledTimes(1);
+        expect(segment.track).toHaveBeenCalledWith('nt_experience', {
           ninetailed_audience: 'test-audience',
           ninetailed_component: 'test-component',
           ninetailed_experience: 'test-experience',
@@ -171,8 +171,8 @@ describe('NinetailedSegmentPlugin', () => {
       });
 
       await waitFor(() => {
-        expect(segment.track).toBeCalledTimes(1);
-        expect(segment.track).toBeCalledWith(
+        expect(segment.track).toHaveBeenCalledTimes(1);
+        expect(segment.track).toHaveBeenCalledWith(
           'Has Seen Component - Audience:test',
           {
             audience: 'test',
@@ -215,7 +215,7 @@ describe('NinetailedSegmentPlugin', () => {
       });
 
       await waitFor(() => {
-        expect(segment.track).not.toBeCalled();
+        expect(segment.track).not.toHaveBeenCalled();
       });
     });
 
@@ -231,7 +231,7 @@ describe('NinetailedSegmentPlugin', () => {
       });
 
       await waitFor(() => {
-        expect(segment.track).not.toBeCalled();
+        expect(segment.track).not.toHaveBeenCalled();
       });
     });
   });

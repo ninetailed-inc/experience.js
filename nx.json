@@ -36,12 +36,6 @@
     ]
   },
   "extends": "@nx/workspace/presets/core.json",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nx/workspace/tasks-runners/default",
-      "options": {}
-    }
-  },
   "generators": {
     "@nx/react": {
       "application": {
@@ -67,5 +61,8 @@
     }
   },
   "useInferencePlugins": false,
-  "defaultBase": "main"
+  "defaultBase": "main",
+  "tui": {
+    "enabled": false
+  }
 }
