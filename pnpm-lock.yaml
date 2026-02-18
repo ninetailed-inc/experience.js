@@ -40,17 +40,17 @@ importers:
         specifier: 2.3.2
         version: 2.3.2
       contentful:
-        specifier: 11.10.2
-        version: 11.10.2
+        specifier: 11.10.4
+        version: 11.10.4
       contentful-export:
-        specifier: 7.22.0
-        version: 7.22.0
+        specifier: 7.22.1
+        version: 7.22.1
       contentful-import:
-        specifier: 9.4.129
-        version: 9.4.129(eslint-plugin-import@2.31.0)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.6.0)
+        specifier: 9.4.130
+        version: 9.4.130(eslint-plugin-import@2.31.0)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.6.0)
       contentful-management:
-        specifier: 11.68.0
-        version: 11.68.0
+        specifier: 11.69.3
+        version: 11.69.3
       contentful-typescript-codegen:
         specifier: 3.4.0
         version: 3.4.0(prettier@2.8.0)(ts-node@10.9.2)
@@ -8486,6 +8486,16 @@ packages:
     transitivePeerDependencies:
       - debug
 
+  /axios@1.13.5:
+    resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
+    dependencies:
+      follow-redirects: 1.15.11(debug@4.4.3)
+      form-data: 4.0.5
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
@@ -9421,6 +9431,18 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
+  /contentful-batch-libs@10.1.4:
+    resolution: {integrity: sha512-7BuxRK39Qma6yGyZhOThmILHNwCAGkVLwYUb8oPO3THW1RtUZTVOnrmHdKejsxuhepBZnZvYiZNWqW4KKHuW4g==}
+    engines: {node: '>=18'}
+    dependencies:
+      date-fns: 2.30.0
+      figures: 3.2.0
+      https-proxy-agent: 7.0.6
+      uuid: 11.1.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /contentful-batch-libs@9.7.0:
     resolution: {integrity: sha512-nNAycOJIvo2arHbXIgsF1I8xXXJtnTooGJaHwfamFeuXbyp1q5NlNbHYGqWVR5vQjLJsuk48VExLbpa26T9C9g==}
     engines: {node: '>=18'}
@@ -9434,18 +9456,18 @@ packages:
       - supports-color
     dev: false
 
-  /contentful-export@7.22.0:
-    resolution: {integrity: sha512-BeeN46livQ7DUBjWjZUnaMe2wkPpfNQn1elWym6RYYY1STx4vh0poYZvVt5swFCxoZLVF8nw94VBaHs0CW2DYw==}
+  /contentful-export@7.22.1:
+    resolution: {integrity: sha512-UIm+HLolrpS0KGA+DXFezl+mLseYM7JJZE14kNo64E20nZqiIwgAi814MWjQTsqNhF//HsbJphK+YSmdV7VhBw==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
-      axios: 1.13.4
+      axios: 1.13.5
       bfj: 8.0.0
       bluebird: 3.7.2
       cli-table3: 0.6.5
-      contentful: 11.10.2
-      contentful-batch-libs: 9.7.0
-      contentful-management: 11.68.0
+      contentful: 11.10.4
+      contentful-batch-libs: 10.1.4
+      contentful-management: 11.69.3
       date-fns: 4.1.0
       figures: 3.2.0
       jsonwebtoken: 9.0.3
@@ -9464,8 +9486,8 @@ packages:
       - zenObservable
     dev: false
 
-  /contentful-import@9.4.129(eslint-plugin-import@2.31.0)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.6.0):
-    resolution: {integrity: sha512-EWIKNrmLAbckD2j+NRSdMzUeGUArH4+JIdgMnjvMiMCq6Afpu0onZmIyNUPprw0Agn2p6bW3S1mE2NyzQfZWLA==}
+  /contentful-import@9.4.130(eslint-plugin-import@2.31.0)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.6.0):
+    resolution: {integrity: sha512-TQBzg7ZsnctU+PmxbTNn9l1Ik+5VsNN/lf3efKTfvuxjlIrG2U5I5vjqNLOeCdM2ylBzSbjKA19MguMZnBO0FQ==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
@@ -9473,7 +9495,7 @@ packages:
       bluebird: 3.7.2
       cli-table3: 0.6.5
       contentful-batch-libs: 9.7.0
-      contentful-management: 11.68.0
+      contentful-management: 11.69.3
       date-fns: 2.30.0
       eslint: 8.57.1
       eslint-config-standard: 17.1.0(eslint-plugin-import@2.31.0)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.6.0)(eslint@8.57.1)
@@ -9481,7 +9503,7 @@ packages:
       listr: 0.14.3
       listr-update-renderer: 0.5.0(listr@0.14.3)
       listr-verbose-renderer: 0.6.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       p-queue: 6.6.2
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -9496,12 +9518,12 @@ packages:
       - zenObservable
     dev: false
 
-  /contentful-management@11.68.0:
-    resolution: {integrity: sha512-5TYJ0zsfvkGWGPQXMCmJeIrWAdhHu2W8TxOzeSSXpvFlek/+1WeOlv8EoE0Gc9KWxYG11BjM9JKn5g1bypDnkw==}
+  /contentful-management@11.69.3:
+    resolution: {integrity: sha512-t5saphS65A4QxLPuso/mjEVTA/Sbg/qAPu6lIKZS86DxE8rkmYDj+9RjLuA65C9Bz4qG67G1I9pulbdB9vhAXw==}
     engines: {node: '>=18'}
     dependencies:
       '@contentful/rich-text-types': 17.2.5
-      axios: 1.13.4
+      axios: 1.13.5
       contentful-sdk-core: 9.4.2
       fast-copy: 3.0.2
       globals: 15.15.0
@@ -9548,13 +9570,13 @@ packages:
       ts-node: 10.9.2(@swc/core@1.5.7)(@types/node@18.19.99)(typescript@4.9.4)
     dev: false
 
-  /contentful@11.10.2:
-    resolution: {integrity: sha512-D9AXzT/dntrBMRYYAp9/hHNCIcBf6/vqZEimBZrXzaeOr+kgLoilhnx/awWJJpbfB9/d1R2eXJ5l5TCFaPK7eQ==}
+  /contentful@11.10.4:
+    resolution: {integrity: sha512-UoP1P2jAhJ+S7+qVg2aAeHLv8kP8zlGnSW01ZSAkbqwi1RQtb9JQ5fElOjaYlrrjudklVGs3reCid1BQDs3i1g==}
     engines: {node: '>=18'}
     dependencies:
       '@contentful/content-source-maps': 0.11.44
       '@contentful/rich-text-types': 17.2.5
-      axios: 1.13.4
+      axios: 1.13.5
       contentful-resolve-response: 1.9.5
       contentful-sdk-core: 9.4.2
       json-stringify-safe: 5.0.1
@@ -19309,6 +19331,11 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
     dev: true
+
+  /uuid@11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
+    dev: false
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
