@@ -78,6 +78,7 @@ const BlockRenderer = ({ block }: BlockRendererProps) => {
         {...block}
         id={id}
         component={ComponentRenderer}
+        trackClicks
         experiences={experiences}
       />
     </div>

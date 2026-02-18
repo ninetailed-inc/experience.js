@@ -25,6 +25,7 @@ export const Experience = <
       PassThroughProps,
       Variant
     >,
+  trackClicks,
   passthroughProps,
   ...baseline
 }: ExperienceProps<P, PassThroughProps, Variant>) => {
@@ -74,16 +75,19 @@ export const Experience = <
     }
 
     if (componentElement) {
-      observeElement({
-        element: componentElement,
-        experience,
-        componentType: 'Entry',
-        audience,
-        variant: isVariantHidden
-          ? { ...variant, id: `${baseline.id}-hidden` }
-          : variant,
-        variantIndex,
-      });
+      observeElement(
+        {
+          element: componentElement,
+          experience,
+          componentType: 'Entry',
+          audience,
+          variant: isVariantHidden
+            ? { ...variant, id: `${baseline.id}-hidden` }
+            : variant,
+          variantIndex,
+        },
+        { trackClicks }
+      );
 
       return () => {
         if (componentElement) {
@@ -104,6 +108,7 @@ export const Experience = <
     variantIndex,
     audience,
     isVariantHidden,
+    trackClicks,
   ]);
 
   if (!hasVariants) {

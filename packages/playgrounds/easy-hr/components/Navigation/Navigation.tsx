@@ -31,16 +31,9 @@ export const Navigation: React.FC<INavigation> = ({ fields }) => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex justify-between items-center w-full py-6 border-b-2 border-gray-100 ">
           <div className="flex justify-start">
-            <Link legacyBehavior href="/">
-              <a href="/">
-                <span className="sr-only">Workflow</span>
-                <Image
-                  src={Logo as string}
-                  width={175}
-                  height={57}
-                  alt="Logo"
-                />
-              </a>
+            <Link href="/">
+              <span className="sr-only">Workflow</span>
+              <Image src={Logo as string} width={175} height={57} alt="Logo" />
             </Link>
           </div>
 
@@ -61,13 +54,11 @@ export const Navigation: React.FC<INavigation> = ({ fields }) => {
                 }
                 return (
                   <div key={link.sys.id} className="px-5 py-2">
-                    <Link legacyBehavior href={link.fields.slug}>
-                      <a
-                        className="text-base font-medium text-gray-500 hover:text-gray-900"
-                        href={link.fields.slug}
-                      >
-                        {link.fields.buttonText}
-                      </a>
+                    <Link
+                      className="text-base font-medium text-gray-500 hover:text-gray-900"
+                      href={link.fields.slug}
+                    >
+                      {link.fields.buttonText}
                     </Link>
                   </div>
                 );
@@ -116,13 +107,11 @@ export const Navigation: React.FC<INavigation> = ({ fields }) => {
             }
             return (
               <div key={link.sys.id} className="px-5 py-2">
-                <Link legacyBehavior href={link.fields.slug}>
-                  <a
-                    className="text-base font-medium text-gray-500 hover:text-gray-900"
-                    href={link.fields.slug}
-                  >
-                    {link.fields.buttonText}
-                  </a>
+                <Link
+                  className="text-base font-medium text-gray-500 hover:text-gray-900"
+                  href={link.fields.slug}
+                >
+                  {link.fields.buttonText}
                 </Link>
               </div>
             );

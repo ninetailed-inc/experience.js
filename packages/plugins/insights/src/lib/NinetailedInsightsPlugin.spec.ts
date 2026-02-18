@@ -2,6 +2,7 @@ import { waitFor } from '@testing-library/dom';
 import { NinetailedApiClient } from '@ninetailed/experience.js-shared';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 import { Ninetailed } from '@ninetailed/experience.js';
+import { NinetailedPrivacyPlugin } from '@ninetailed/experience.js-plugin-privacy';
 
 import { NinetailedInsightsPlugin } from './NinetailedInsightsPlugin';
 import { intersect } from './test-helpers/intersection-observer-test-helper';
@@ -224,6 +225,112 @@ describe('NinetailedInsightsPlugin', () => {
     await waitFor(() => {
       // Should not flush because only one unique event
       expect(insightsApiClientSendEventBatchesMock).toBeCalledTimes(0);
+    });
+  });
+
+  it('should send component click events once the queue can be flushed', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const ninetailed = setupNinetailedInstance([insightsPlugin]);
+
+    insightsPlugin.setCredentials({
+      clientId: 'test',
+      environment: 'development',
+    });
+
+    await ninetailed.identify('test');
+
+    for (let i = 0; i < 25; i++) {
+      const element = document.body.appendChild(
+        document.createElement('button')
+      );
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: `variant-id-${i + 1}` },
+          variantIndex: i,
+        },
+        { trackClicks: true }
+      );
+
+      element.click();
+    }
+
+    await waitFor(() => {
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+    });
+
+    expect(
+      insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.length
+    ).toBe(25);
+
+    expect(
+      insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events
+    ).toEqual(
+      expect.arrayContaining(
+        Array.from({ length: 25 }).map((_, i) =>
+          expect.objectContaining({
+            type: 'component_click',
+            componentId: expect.any(String),
+            variantIndex: i,
+          })
+        )
+      )
+    );
+  });
+
+  it('should not track component clicks when privacy consent is not given', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const privacyPlugin = new NinetailedPrivacyPlugin();
+    const ninetailed = setupNinetailedInstance([privacyPlugin, insightsPlugin]);
+
+    const element = document.body.appendChild(document.createElement('button'));
+    ninetailed.observeElement(
+      {
+        element,
+        variant: { id: 'variant-id-1' },
+        variantIndex: 0,
+      },
+      { trackClicks: true }
+    );
+    element.click();
+
+    await waitFor(() => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      expect(insightsPlugin.events).toHaveLength(0);
+    });
+  });
+
+  it('should track component clicks when privacy consent is given', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const privacyPlugin = new NinetailedPrivacyPlugin();
+    const ninetailed = setupNinetailedInstance([privacyPlugin, insightsPlugin]);
+
+    await ninetailed.page();
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await privacyPlugin.consent(true);
+
+    const element = document.body.appendChild(document.createElement('button'));
+    ninetailed.observeElement(
+      {
+        element,
+        variant: { id: 'variant-id-1' },
+        variantIndex: 0,
+      },
+      { trackClicks: true }
+    );
+    element.click();
+
+    await waitFor(() => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      expect(insightsPlugin.events).toHaveLength(1);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      expect(insightsPlugin.events[0].type).toBe('component_click');
     });
   });
 });

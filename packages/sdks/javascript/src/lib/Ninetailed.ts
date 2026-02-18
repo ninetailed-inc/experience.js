@@ -23,6 +23,7 @@ import {
   isTrackEvent,
   isIdentifyEvent,
   isComponentViewEvent,
+  isComponentClickEvent,
   allowVariableTypeSchema,
   circularJsonStringify,
 } from '@ninetailed/experience.js-shared';
@@ -46,8 +47,14 @@ import {
   OnChangesChangeCallback,
   TrackVariableComponentView,
 } from './types';
-import { PAGE_HIDDEN, HAS_SEEN_STICKY_COMPONENT } from './constants';
-import { ElementSeenObserver, ObserveOptions } from './ElementSeenObserver';
+import {
+  COMPONENT_CLICK_START,
+  PAGE_HIDDEN,
+  HAS_SEEN_STICKY_COMPONENT,
+} from './constants';
+import { ElementSeenObserver } from './ElementSeenObserver';
+import { ElementClickObserver } from './ElementClickObserver';
+import type { ObserveOptions } from './types/ObserveOptions';
 import { acceptsCredentials } from './guards/acceptsCredentials';
 import { isInterestedInHiddenPage } from './guards/isInterestedInHiddenPage';
 import {
@@ -63,6 +70,7 @@ import { ExperienceSelectionMiddleware } from './types/interfaces/HasExperienceS
 import { RemoveOnChangeListener } from './utils/OnChangeEmitter';
 import {
   ElementSeenPayload,
+  HAS_CLICKED_ELEMENT,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
   HAS_SEEN_VARIABLE,
@@ -158,6 +166,7 @@ export class Ninetailed implements NinetailedInstance {
   private readonly apiClient: NinetailedApiClient;
   private readonly ninetailedCorePlugin: NinetailedCorePlugin;
   private readonly elementSeenObserver: ElementSeenObserver;
+  private readonly elementClickObserver: ElementClickObserver;
   private readonly observedElements: WeakMap<Element, ObservedElementPayload[]>;
 
   private readonly clientId;
@@ -288,6 +297,9 @@ export class Ninetailed implements NinetailedInstance {
     this.elementSeenObserver = new ElementSeenObserver({
       onElementSeen: this.onElementSeen.bind(this),
     });
+    this.elementClickObserver = new ElementClickObserver({
+      onElementClick: this.onElementClicked.bind(this),
+    });
     this.componentViewTrackingThreshold = componentViewTrackingThreshold;
 
     const hasPluginsInterestedInHiddenPage = this.plugins.some(
@@ -399,6 +411,16 @@ export class Ninetailed implements NinetailedInstance {
           });
         }
 
+        if (isComponentClickEvent(event)) {
+          return this.instance.dispatch({
+            experienceId: event.experienceId,
+            componentId: event.componentId,
+            variantIndex: event.variantIndex,
+            componentType: event.componentType,
+            type: COMPONENT_CLICK_START,
+          });
+        }
+
         return Promise.resolve();
       });
       await Promise.all(promises);
@@ -482,6 +504,7 @@ export class Ninetailed implements NinetailedInstance {
 
     this.storeElementPayload(element, remainingPayload);
     this.setupElementObservation(element, options?.delay);
+    this.setupElementClickObservation(element, options?.trackClicks);
   };
 
   private logInvalidElement(element: unknown) {
@@ -534,9 +557,21 @@ export class Ninetailed implements NinetailedInstance {
     });
   }
 
+  private setupElementClickObservation(
+    element: Element,
+    trackClicks?: ObserveOptions['trackClicks']
+  ) {
+    if (!trackClicks) {
+      return;
+    }
+
+    this.elementClickObserver.observe(element);
+  }
+
   public unobserveElement = (element: Element) => {
     this.observedElements.delete(element);
     this.elementSeenObserver.unobserve(element);
+    this.elementClickObserver.unobserve(element);
   };
 
   private onElementSeen = (element: Element, delay?: number) => {
@@ -549,6 +584,20 @@ export class Ninetailed implements NinetailedInstance {
           element,
           type: HAS_SEEN_ELEMENT,
           seenFor: delay,
+        });
+      }
+    }
+  };
+
+  private onElementClicked = (element: Element) => {
+    const payloads = this.observedElements.get(element);
+
+    if (Array.isArray(payloads) && payloads.length > 0) {
+      for (const payload of payloads) {
+        this.instance.dispatch({
+          ...payload,
+          element,
+          type: HAS_CLICKED_ELEMENT,
         });
       }
     }

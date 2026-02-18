@@ -23,16 +23,15 @@ export const CTA: React.FC<ICta> = ({ fields, sys }) => {
             }
             return (
               <div key={button.sys.id} className="shadow w-full">
-                <Link legacyBehavior passHref href={button.fields.slug}>
-                  <Button
-                    as="a"
-                    type="button"
-                    variant={button.fields.variant as ButtonVariant}
-                    size="large"
-                  >
-                    {button.fields.buttonText}
-                  </Button>
-                </Link>
+                <Button
+                  as={Link}
+                  href={button.fields.slug}
+                  type="button"
+                  variant={button.fields.variant as ButtonVariant}
+                  size="large"
+                >
+                  {button.fields.buttonText}
+                </Button>
               </div>
             );
           })}

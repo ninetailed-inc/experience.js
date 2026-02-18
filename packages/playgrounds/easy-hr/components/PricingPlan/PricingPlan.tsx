@@ -64,16 +64,15 @@ export const PricingPlan: React.FC<IPricingPlan> = (props) => {
       </div>
       {button?.fields.slug && (
         <div className="mt-auto">
-          <Link legacyBehavior passHref href={button.fields.slug}>
-            <Button
-              as="a"
-              type="button"
-              variant={button.fields.variant as ButtonVariant}
-              size="large"
-            >
-              {button.fields.buttonText}
-            </Button>
-          </Link>
+          <Button
+            as={Link}
+            href={button.fields.slug}
+            type="button"
+            variant={button.fields.variant as ButtonVariant}
+            size="large"
+          >
+            {button.fields.buttonText}
+          </Button>
         </div>
       )}
     </div>

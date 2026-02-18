@@ -11,6 +11,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'loud';
 
 export interface ButtonProps {
   as?: React.ElementType;
+  href?: string;
   type: ButtonType;
   size: ButtonSize;
   variant: ButtonVariant;
