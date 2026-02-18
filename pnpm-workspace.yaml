@@ -1,19 +1,21 @@
 packages:
-  - 'packages/*'
-
-# make sure to fail pnpm install if a dependency is not in the onlyBuiltDependencies list
-# (in case a package gets compromised)
-strictDepBuilds: true
-# see https://pnpm.io/settings#onlybuiltdependencies
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - 'core-js'
-  - 'cypress'
-  - 'msgpackr-extract'
-  - 'core-js-pure'
-  - 'sharp'
-  - 'es5-ext'
-  - 'nx'
-  - 'lmdb'
+  - packages/*
 
 ignoredBuiltDependencies: []
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - core-js
+  - core-js-pure
+  - cypress
+  - es5-ext
+  - esbuild
+  - less
+  - lmdb
+  - msgpackr-extract
+  - nx
+  - sharp
+  - unrs-resolver
+
+strictDepBuilds: true
