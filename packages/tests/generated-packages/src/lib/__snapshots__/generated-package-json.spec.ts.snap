@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Generated package.json files dist/packages/plugins/analytics/package.json should match the snapshot 1`] = `
 Object {
@@ -158,7 +158,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "type": "commonjs",
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -343,7 +343,6 @@ Object {
   "types": "./index.cjs.d.ts",
   "version": "7.6.0-beta.1",
 }
-`;
 
 exports[`Generated package.json files dist/packages/sdks/javascript/package.json should match the snapshot 1`] = `
 Object {
@@ -366,7 +365,7 @@ Object {
     "type": "git",
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
-  "types": "./index.esm.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
