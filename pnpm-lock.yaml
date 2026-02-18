@@ -89,7 +89,7 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       lodash:
-        specifier: '>=4.17.23'
+        specifier: 4.17.23
         version: 4.17.23
       mitt:
         specifier: 1.2.0
@@ -18503,7 +18503,7 @@ packages:
       '@swc/core': '*'
       esbuild: '*'
       uglify-js: '*'
-      webpack: '>=5.104.0'
+      webpack: '>=5.104.1'
     peerDependenciesMeta:
       '@swc/core':
         optional: true
