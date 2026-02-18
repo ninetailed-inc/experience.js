@@ -1,5 +1,4 @@
-import { Reference } from '@ninetailed/experience.js';
-import { logger } from '@ninetailed/experience.js-shared';
+import { Reference, logger } from '@ninetailed/experience.js-shared';
 import {
   Audience,
   Experience,
