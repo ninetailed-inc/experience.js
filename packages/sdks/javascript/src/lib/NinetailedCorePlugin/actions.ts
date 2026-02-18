@@ -1,4 +1,5 @@
 import {
+  HAS_CLICKED_ELEMENT,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
   HAS_SEEN_VARIABLE,
@@ -11,7 +12,11 @@ import {
   Change,
   AllowedVariableType,
 } from '@ninetailed/experience.js-shared';
-import { HAS_SEEN_STICKY_COMPONENT, PAGE_HIDDEN } from '../constants';
+import {
+  COMPONENT_CLICK_START,
+  HAS_SEEN_STICKY_COMPONENT,
+  PAGE_HIDDEN,
+} from '../constants';
 
 type ReadyAction = {
   type: 'ready';
@@ -20,6 +25,11 @@ type ReadyAction = {
 type HasSeenElementAction = {
   type: typeof HAS_SEEN_ELEMENT;
   seenFor: number | undefined;
+  element: Element;
+};
+
+type HasClickedElementAction = {
+  type: typeof HAS_CLICKED_ELEMENT;
   element: Element;
 };
 
@@ -59,6 +69,14 @@ type ProfileHasSeenStickyComponentAction = {
   variantIndex: number | undefined;
 };
 
+type ComponentClickStartAction = {
+  type: typeof COMPONENT_CLICK_START;
+  componentId: string;
+  componentType: 'Entry' | 'Variable';
+  experienceId: string | undefined;
+  variantIndex: number | undefined;
+};
+
 type ProfileHasSeenComponentAction = {
   type: typeof HAS_SEEN_COMPONENT;
   variant: { id: string };
@@ -72,7 +90,9 @@ export type DispatchAction =
   | ProfileChangeAction
   | ProfileResetAction
   | ProfileHasSeenStickyComponentAction
+  | ComponentClickStartAction
   | HasSeenElementAction
+  | HasClickedElementAction
   | HasSeenVariableAction
   | ProfileHasSeenComponentAction
   | PageHiddenAction;

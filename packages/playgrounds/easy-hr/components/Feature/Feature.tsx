@@ -27,20 +27,15 @@ export const Feature: React.FC<IFeature> = ({ fields }) => {
           <div className="mt-5 mx-auto flex flex-col sm:flex-row md:mt-8 sm:w-full">
             {fields.button && fields.button?.[0]?.fields.slug && (
               <div>
-                <Link
-                  legacyBehavior
-                  passHref
+                <Button
+                  as={Link}
                   href={fields.button[0].fields.slug}
+                  type="button"
+                  variant={fields.button[0].fields.variant as ButtonVariant}
+                  size="large"
                 >
-                  <Button
-                    as="a"
-                    type="button"
-                    variant={fields.button[0].fields.variant as ButtonVariant}
-                    size="large"
-                  >
-                    {fields.button[0].fields.buttonText}
-                  </Button>
-                </Link>
+                  {fields.button[0].fields.buttonText}
+                </Button>
               </div>
             )}
           </div>

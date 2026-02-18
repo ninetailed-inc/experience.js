@@ -65,6 +65,7 @@ export function Index() {
             // )}
             id={product.sys.id}
             component={Product}
+            trackClicks
             experiences={experienceMapper(
               product as unknown as BaselineWithExperiencesEntry
             )}

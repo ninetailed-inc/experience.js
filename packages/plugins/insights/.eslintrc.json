@@ -26,7 +26,11 @@
             "checkObsoleteDependencies": true,
             "checkVersionMismatches": true,
             "ignoredDependencies": ["@testing-library/dom", "@jest/globals"],
-            "ignoredFiles": ["{projectRoot}/rollup.config.{js,ts,mjs,mts}"]
+            "ignoredFiles": [
+              "{projectRoot}/rollup.config.{js,ts,mjs,mts}",
+              "{projectRoot}/src/**/*.spec.ts",
+              "{projectRoot}/src/**/*.spec.tsx"
+            ]
           }
         ]
       }

@@ -69,4 +69,18 @@ describe('EntryAnalytics', () => {
     const passed = (Experience as unknown as jest.Mock).mock.calls[0][0];
     expect(passed.id).toBe('canonical-id');
   });
+
+  it('forwards the optional trackClicks prop to Experience', () => {
+    render(
+      <EntryAnalytics
+        id="entry-clicks"
+        component={Greeting}
+        {...{ name: 'Carol' }}
+        trackClicks
+      />
+    );
+
+    const passed = (Experience as unknown as jest.Mock).mock.calls[0][0];
+    expect(passed.trackClicks).toBe(true);
+  });
 });

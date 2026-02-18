@@ -32,16 +32,15 @@ export const Hero: React.FC<IHero> = ({ fields }) => {
 
                   return (
                     <div key={button.sys.id} className="shadow">
-                      <Link legacyBehavior passHref href={button.fields.slug}>
-                        <Button
-                          as="a"
-                          type="button"
-                          variant={button.fields.variant as ButtonVariant}
-                          size="large"
-                        >
-                          {button.fields.buttonText}
-                        </Button>
-                      </Link>
+                      <Button
+                        as={Link}
+                        href={button.fields.slug}
+                        type="button"
+                        variant={button.fields.variant as ButtonVariant}
+                        size="large"
+                      >
+                        {button.fields.buttonText}
+                      </Button>
                     </div>
                   );
                 })}

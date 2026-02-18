@@ -4,7 +4,7 @@ import {
   logger,
   type NinetailedApiClientOptions,
 } from '@ninetailed/experience.js-shared';
-import { type ComponentViewEventBatch } from '../types/Event/ComponentViewEventBatch';
+import { type ComponentEventBatch } from '../types/Event/ComponentEventBatch';
 
 const BASE_URL = 'https://ingest.insights.ninetailed.co';
 
@@ -166,10 +166,10 @@ export class NinetailedInsightsApiClient {
   }
 
   public async sendEventBatches(
-    batches: ComponentViewEventBatch[],
+    batches: ComponentEventBatch[],
     options: RequestOptions = {}
   ): Promise<void> {
-    const requestName = 'Send component view batches';
+    const requestName = 'Send component event batches';
 
     logger.info(`Sending ${requestName} request.`);
 

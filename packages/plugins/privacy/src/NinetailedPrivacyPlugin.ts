@@ -8,6 +8,8 @@ import {
 import {
   AnalyticsInstance,
   CONSENT,
+  COMPONENT_CLICK,
+  COMPONENT_CLICK_START,
   COMPONENT,
   COMPONENT_START,
   PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME,
@@ -87,7 +89,7 @@ export const DEFAULT_PRIVACY_CONFIG: PrivacyConfig = {
 };
 
 export const DEFAULT_ACCEPTED_CONSENT_CONFIG: PrivacyConfig = {
-  allowedEvents: ['page', 'track', 'identify', 'component'],
+  allowedEvents: ['page', 'track', 'identify', 'component', 'component_click'],
   allowedPageEventProperties: ['*'],
   allowedTrackEventProperties: ['*'],
   allowedTrackEvents: ['*'],
@@ -309,6 +311,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
   );
 
   public [COMPONENT_START] = this.handleEventStart(COMPONENT);
+  public [COMPONENT_CLICK_START] = this.handleEventStart(COMPONENT_CLICK);
 
   public methods = {
     consent: this.consent.bind(this),

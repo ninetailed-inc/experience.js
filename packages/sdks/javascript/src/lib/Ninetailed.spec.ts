@@ -3,7 +3,11 @@ import {
   FEATURES,
   NinetailedApiClient,
 } from '@ninetailed/experience.js-shared';
-import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
+import {
+  ElementClickedPayload,
+  EventHandler,
+  NinetailedPlugin,
+} from '@ninetailed/experience.js-plugin-analytics';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
 
 import { Ninetailed } from './Ninetailed';
@@ -62,6 +66,17 @@ const generateExperience = () => ({
   },
   variants: [{ id: 'laudantium' }, { id: 'minus' }, { id: 'dolorum' }],
 });
+
+class TestElementClickPlugin extends NinetailedPlugin {
+  public name = 'ninetailed:test-click';
+
+  public onElementClickedMock = jest.fn();
+
+  protected override onHasClickedElement: EventHandler<ElementClickedPayload> =
+    ({ payload }) => {
+      this.onElementClickedMock(payload);
+    };
+}
 
 describe('Ninetailed core class', () => {
   let ninetailed: Ninetailed;
@@ -428,6 +443,200 @@ describe('Ninetailed core class', () => {
           expect.any(Object)
         );
       });
+    });
+
+    it('should track component clicks when trackClicks is enabled and the observed element is clickable', async () => {
+      const element = document.body.appendChild(
+        document.createElement('button')
+      );
+      const clickPlugin = new TestElementClickPlugin();
+      const { ninetailed } = mockProfile([clickPlugin]);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackClicks: true }
+      );
+
+      element.click();
+      jest.runAllTimers();
+
+      await waitFor(() => {
+        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+        expect(clickPlugin.onElementClickedMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            variant: expect.objectContaining({ id: 'variant-id' }),
+            variantIndex: 1,
+          })
+        );
+      });
+    });
+
+    it('should track component clicks when a clickable child of the observed element is clicked', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const clickableChild = element.appendChild(
+        document.createElement('button')
+      );
+      const clickPlugin = new TestElementClickPlugin();
+      const { ninetailed } = mockProfile([clickPlugin]);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackClicks: true }
+      );
+
+      clickableChild.click();
+      jest.runAllTimers();
+
+      await waitFor(() => {
+        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+      });
+    });
+
+    it('should track component clicks when a clicked child has data-nt-clickable="true"', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const clickableChild = element.appendChild(document.createElement('div'));
+      clickableChild.setAttribute('data-nt-clickable', 'true');
+      const clickPlugin = new TestElementClickPlugin();
+      const { ninetailed } = mockProfile([clickPlugin]);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackClicks: true }
+      );
+
+      clickableChild.click();
+      jest.runAllTimers();
+
+      await waitFor(() => {
+        expect(clickPlugin.onElementClickedMock).toBeCalledTimes(1);
+      });
+    });
+
+    it('should not track component clicks when a non-clickable area is clicked even if the observed element contains clickable descendants', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      element.appendChild(document.createElement('button'));
+      const nonClickableChild = element.appendChild(
+        document.createElement('span')
+      );
+      const clickPlugin = new TestElementClickPlugin();
+      const { ninetailed } = mockProfile([clickPlugin]);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackClicks: true }
+      );
+
+      nonClickableChild.click();
+      jest.runAllTimers();
+
+      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+    });
+
+    it('should not track component clicks when the clicked element has aria-disabled="true"', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const disabledClickableChild = element.appendChild(
+        document.createElement('div')
+      );
+      disabledClickableChild.setAttribute('role', 'button');
+      disabledClickableChild.setAttribute('aria-disabled', 'true');
+      const clickPlugin = new TestElementClickPlugin();
+      const { ninetailed } = mockProfile([clickPlugin]);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackClicks: true }
+      );
+
+      disabledClickableChild.click();
+      jest.runAllTimers();
+
+      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+    });
+
+    it('should not track component clicks when trackClicks is disabled', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const clickPlugin = new TestElementClickPlugin();
+      const { ninetailed } = mockProfile([clickPlugin]);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+        componentType: 'Entry',
+      });
+
+      element.click();
+      jest.runAllTimers();
+
+      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
+    });
+
+    it('should cleanup click listeners when unobserveElement is called', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const clickPlugin = new TestElementClickPlugin();
+      const { ninetailed } = mockProfile([clickPlugin]);
+
+      const experience = generateExperience();
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackClicks: true }
+      );
+
+      ninetailed.unobserveElement(element);
+      element.click();
+      jest.runAllTimers();
+
+      expect(clickPlugin.onElementClickedMock).toBeCalledTimes(0);
     });
 
     it('should not track a component view when no experience is provided', async () => {

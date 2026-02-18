@@ -1,10 +1,10 @@
+import type { ObserveOptions } from './types/ObserveOptions';
+
 export type ElementSeenObserverOptions = {
   onElementSeen: (element: Element, delay?: number) => void;
 };
 
-export type ObserveOptions = {
-  delay?: number;
-};
+export type { ObserveOptions } from './types/ObserveOptions';
 
 export class ElementSeenObserver {
   private _intersectionObserver?: IntersectionObserver;

@@ -5,6 +5,7 @@ import type { ScreenEvent } from './ScreenEvent';
 import type { GroupEvent } from './GroupEvent';
 import type { AliasEvent } from './AliasEvent';
 import type { ComponentViewEvent } from './ComponentViewEvent';
+import type { ComponentClickEvent } from './ComponentClickEvent';
 
 export type Event =
   | PageviewEvent
@@ -13,4 +14,5 @@ export type Event =
   | ScreenEvent
   | GroupEvent
   | AliasEvent
-  | ComponentViewEvent;
+  | ComponentViewEvent
+  | ComponentClickEvent;
