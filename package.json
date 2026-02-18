@@ -133,7 +133,7 @@
     "husky": "8.0.3",
     "jest": "30.0.5",
     "jest-environment-jsdom": "30.0.5",
-    "jest-environment-node": "^29.4.1",
+    "jest-environment-node": "30.0.5",
     "jest-fetch-mock": "3.0.3",
     "license-checker": "25.0.1",
     "lint-staged": "15.5.2",
