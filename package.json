@@ -2,7 +2,7 @@
   "name": "@ninetailed/root",
   "version": "0.0.0",
   "license": "MIT",
-  "packageManager": "pnpm@8.15.9",
+  "packageManager": "pnpm@10.30.0",
   "scripts": {
     "clean:cache": "nx reset && nx run-many --target=clean-cache --all",
     "nx": "nx",
@@ -135,6 +135,7 @@
     "jest-environment-jsdom": "30.0.5",
     "jest-environment-node": "30.0.5",
     "jest-fetch-mock": "3.0.3",
+    "jest-util": "30.0.5",
     "license-checker": "25.0.1",
     "lint-staged": "15.5.2",
     "postcss": "8.4.38",
@@ -151,8 +152,7 @@
     "url-loader": "4.1.1",
     "verdaccio": "6.2.5",
     "webpack": "5.101.3",
-    "webpack-merge": "5.8.0",
-    "jest-util": "30.0.5"
+    "webpack-merge": "5.8.0"
   },
   "resolutions": {
     "@types/react": "19.2.14",
