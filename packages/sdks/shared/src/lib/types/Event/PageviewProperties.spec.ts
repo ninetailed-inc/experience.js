@@ -1,5 +1,4 @@
 import { PageviewProperties } from './PageviewProperties';
-
 describe('PageviewProperties', () => {
   it('should allow additional keys', () => {
     const { success } = PageviewProperties.safeParse({
@@ -22,7 +21,6 @@ describe('PageviewProperties', () => {
         f: null,
       },
     });
-
     expect(success).toBe(true);
   });
 });

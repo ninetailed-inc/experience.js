@@ -10,7 +10,6 @@ import { TestAnalyticsPlugin } from '../../test';
 import { AnalyticsInstance } from './AnalyticsInstance';
 import { HAS_SEEN_COMPONENT, HAS_SEEN_ELEMENT } from './constants';
 import { TrackComponentPropertiesSchema } from './TrackingProperties';
-
 const setup = (template: Template = {}) => {
   const testAnalyticsPlugin = new TestAnalyticsPlugin(
     template,
@@ -20,21 +19,16 @@ const setup = (template: Template = {}) => {
   const analytics = Analytics({
     plugins: [testAnalyticsPlugin],
   }) as AnalyticsInstance;
-
   return { analytics, testAnalyticsPlugin };
 };
-
 describe('NinetailedAnalyticsPlugin', () => {
   let analytics: AnalyticsInstance;
   let testAnalyticsPlugin: TestAnalyticsPlugin;
-
   beforeEach(() => {
     ({ analytics, testAnalyticsPlugin } = setup());
   });
-
   const generateHasSeenElementMock = (): ElementSeenPayload => {
     const mock = generateMock(ElementSeenPayloadSchema);
-
     return {
       ...mock,
       componentType: 'Entry',
@@ -47,7 +41,6 @@ describe('NinetailedAnalyticsPlugin', () => {
       },
     };
   };
-
   describe('trackExperience', () => {
     it(`should receive the has_seen_element event`, async () => {
       const data = {
@@ -55,12 +48,10 @@ describe('NinetailedAnalyticsPlugin', () => {
         element: document.createElement('div'),
         variantIndex: 1,
       };
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...data,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           1
@@ -78,17 +69,12 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
-
     it(`should call onTrackExperience multiple times when the same element is seen with different payloads`, async () => {
       // Emulates the same element being seen two times but with different payloads.
       // For example, an element is seen first as part of one experience, then reenters the viewport as part of another experience.
-
       const element = document.createElement('div');
-
       const basePayload = generateHasSeenElementMock();
-
       // payload1 and payload2 differ only by experience
-
       const payload1: ElementSeenPayload = {
         ...basePayload,
         element,
@@ -98,7 +84,6 @@ describe('NinetailedAnalyticsPlugin', () => {
           type: 'nt_experiment',
         },
       };
-
       const payload2: ElementSeenPayload = {
         ...basePayload,
         element,
@@ -108,22 +93,18 @@ describe('NinetailedAnalyticsPlugin', () => {
           type: 'nt_experiment',
         },
       };
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...payload1,
       });
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...payload2,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           2
         );
-
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
           {
             experience: payload1.experience,
@@ -135,7 +116,6 @@ describe('NinetailedAnalyticsPlugin', () => {
           },
           {}
         );
-
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
           {
             experience: payload2.experience,
@@ -149,37 +129,29 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
-
     it('should not call onTrackExperience multiple times when the same element is seen with the same payload', async () => {
       const element = document.createElement('div');
-
       const basePayload = generateHasSeenElementMock();
-
       const payload1 = {
         ...basePayload,
         element,
       };
-
       const payload2 = {
         ...basePayload,
         element,
       };
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...payload1,
       });
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...payload2,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           1
         );
-
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
           {
             experience: payload1.experience,
@@ -193,13 +165,11 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
-
     it('should not receive the has_seen_element event if the payload is wrong', async () => {
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         foo: 'bar',
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           0
@@ -207,16 +177,13 @@ describe('NinetailedAnalyticsPlugin', () => {
       });
     });
   });
-
   describe('trackComponent', () => {
     it(`should receive the has_seen_component event`, async () => {
       const data = generateMock(TrackComponentPropertiesSchema);
-
       await analytics.dispatch({
         type: HAS_SEEN_COMPONENT,
         ...data,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(
           1
@@ -226,7 +193,6 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
-
     it('should not receive the has_seen_component event if the payload is wrong', async () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -234,7 +200,6 @@ describe('NinetailedAnalyticsPlugin', () => {
         type: HAS_SEEN_COMPONENT,
         foo: 'bar',
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(
           0
@@ -242,7 +207,6 @@ describe('NinetailedAnalyticsPlugin', () => {
       });
     });
   });
-
   describe('template options', () => {
     it('should use the template options', async () => {
       ({ analytics, testAnalyticsPlugin } = setup({
@@ -253,12 +217,10 @@ describe('NinetailedAnalyticsPlugin', () => {
         element: document.createElement('div'),
         variantIndex: 1,
       };
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...data,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           1
@@ -278,7 +240,6 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
-
     it('should not throw if data is not defined', async () => {
       ({ analytics, testAnalyticsPlugin } = setup({
         ninetailed_experience_name: '{{experience.a.b}}',
@@ -287,12 +248,10 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...generateHasSeenElementMock(),
         variantIndex: 1,
       };
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...data,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           1
@@ -312,7 +271,6 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
-
     it('should generate dynamic keys', async () => {
       ({ analytics, testAnalyticsPlugin } = setup({
         '{{experience.id}}': 'bar',
@@ -321,12 +279,10 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...generateHasSeenElementMock(),
         variantIndex: 1,
       };
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...data,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           1
@@ -346,7 +302,6 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
-
     it('should generate dynamic values', async () => {
       ({ analytics, testAnalyticsPlugin } = setup({
         foo: '{{experience.id}}',
@@ -355,12 +310,10 @@ describe('NinetailedAnalyticsPlugin', () => {
         ...generateHasSeenElementMock(),
         variantIndex: 1,
       };
-
       await analytics.dispatch({
         type: HAS_SEEN_ELEMENT,
         ...data,
       });
-
       await waitFor(() => {
         expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
           1

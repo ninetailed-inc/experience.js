@@ -1,17 +1,13 @@
 import { Profile } from '@ninetailed/experience.js';
 import { generateSelectors, selectValueFromProfile } from './helpers';
-
 describe('MergeTag helpers', () => {
   describe('generateSelectors', () => {
     it('should create all combinations for deep paths', () => {
       expect(generateSelectors('a_b_c')).toEqual(['a_b_c', 'a.b_c', 'a.b.c']);
     });
-
     it('should keep sub paths with dot notation', () => {
       expect(generateSelectors('a.b_c')).toEqual(['a.b_c', 'a.b.c']);
-
       expect(generateSelectors('a.b_c.d')).toEqual(['a.b_c.d', 'a.b.c.d']);
-
       expect(generateSelectors('a_b_c.d')).toEqual([
         'a_b_c.d',
         'a.b_c.d',
@@ -19,7 +15,6 @@ describe('MergeTag helpers', () => {
       ]);
     });
   });
-
   describe('selectValueFromProfile', () => {
     const profile: Profile = {
       id: '',
@@ -51,11 +46,9 @@ describe('MergeTag helpers', () => {
         averageSessionLength: 43,
       },
     };
-
     it('should return undefined if no value is found', () => {
       expect(selectValueFromProfile(profile, 'a.b.c')).toBeNull();
     });
-
     it('should return the value if found', () => {
       expect(selectValueFromProfile(profile, 'traits.firstname')).toEqual(
         'John'

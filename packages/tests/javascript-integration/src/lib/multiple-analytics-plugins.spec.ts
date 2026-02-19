@@ -1,31 +1,24 @@
 import { waitFor } from '@testing-library/dom';
 import { Ninetailed } from '@ninetailed/experience.js';
-
 import { NinetailedGoogleTagmanagerPlugin } from '@ninetailed/experience.js-plugin-google-tagmanager';
 import { NinetailedInsightsPlugin } from '@ninetailed/experience.js-plugin-insights';
 import { NinetailedSegmentPlugin } from '@ninetailed/experience.js-plugin-segment';
-
 const setup = () => {
   const gtmPlugin = new NinetailedGoogleTagmanagerPlugin();
   const insightsPlugin = new NinetailedInsightsPlugin();
   const segmentPlugin = new NinetailedSegmentPlugin();
-
   const ninetailed = new Ninetailed(
     { clientId: 'test' },
     { plugins: [gtmPlugin, insightsPlugin, segmentPlugin] }
   );
-
   return { ninetailed, gtmPlugin, insightsPlugin, segmentPlugin };
 };
-
 describe('A Ninetailed setup with multiple analytics plugins', () => {
   let ninetailed: Ninetailed;
   let insightsPlugin: NinetailedInsightsPlugin;
-
   beforeEach(() => {
     ({ ninetailed, insightsPlugin } = setup());
   });
-
   describe('Sending component views directly', () => {
     it('should send a component view event to all analytics plugins', async () => {
       await ninetailed.trackComponentView({
@@ -35,12 +28,10 @@ describe('A Ninetailed setup with multiple analytics plugins', () => {
         element: document.createElement('div'),
         variantIndex: 1,
       });
-
       await waitFor(() => {
         // check if GTM was called e2e
         expect(window.dataLayer).toHaveLength(1);
         expect(window.dataLayer && window.dataLayer[0]).toMatchSnapshot();
-
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const eventsQueue = insightsPlugin.events;
