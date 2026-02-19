@@ -139,6 +139,7 @@
     "jest-environment-node": "30.0.5",
     "jest-fetch-mock": "3.0.3",
     "jest-util": "30.0.5",
+    "jsonc-eslint-parser": "3.0.0",
     "license-checker": "25.0.1",
     "lint-staged": "15.5.2",
     "postcss": "8.4.38",

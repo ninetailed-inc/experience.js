@@ -361,6 +361,9 @@ importers:
       jest-util:
         specifier: 30.0.5
         version: 30.0.5
+      jsonc-eslint-parser:
+        specifier: 3.0.0
+        version: 3.0.0
       license-checker:
         specifier: 25.0.1
         version: 25.0.1
@@ -7761,6 +7764,10 @@ packages:
   jsonc-eslint-parser@2.4.2:
     resolution: {integrity: sha512-1e4qoRgnn448pRuMvKGsFFymUCquZV0mpGgOyIKNgD3JVDTsVJyRBGH/Fm0tBb8WsWGgmB1mDe6/yJMQM37DUA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  jsonc-eslint-parser@3.0.0:
+    resolution: {integrity: sha512-LqaIdUCuMcNRjlusHwscrnCsF8wzmRWM/VoTqKwn6agerfJ0LCTOnUJmbiZirc02+b1n+pl+FJfVXDOLDa12+Q==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
@@ -20446,6 +20453,12 @@ snapshots:
       acorn: 8.15.0
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
+      semver: 7.7.4
+
+  jsonc-eslint-parser@3.0.0:
+    dependencies:
+      acorn: 8.15.0
+      eslint-visitor-keys: 5.0.0
       semver: 7.7.4
 
   jsonc-parser@3.2.0: {}
