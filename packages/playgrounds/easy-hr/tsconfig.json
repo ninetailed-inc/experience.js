@@ -10,55 +10,66 @@
     "isolatedModules": true,
     "incremental": true,
     "types": ["jest", "node"],
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/components/*": ["packages/playgrounds/easy-hr/components/*"],
-      "@/lib/*": ["packages/playgrounds/easy-hr/lib/*"],
-      "@/styles/*": ["packages/playgrounds/easy-hr/styles/*"],
-      "@/types/*": ["packages/playgrounds/easy-hr/types/*"],
-      "@/public/*": ["packages/playgrounds/easy-hr/public/*"],
-      "@ninetailed/experience.js": ["packages/sdks/javascript/src/index.ts"],
-      "@ninetailed/experience.js-next": ["packages/sdks/nextjs/src/index.ts"],
-      "@ninetailed/experience.js-node": ["packages/sdks/nodejs/src/index.ts"],
+      "@/components/*": ["../../../packages/playgrounds/easy-hr/components/*"],
+      "@/lib/*": ["../../../packages/playgrounds/easy-hr/lib/*"],
+      "@/styles/*": ["../../../packages/playgrounds/easy-hr/styles/*"],
+      "@/types/*": ["../../../packages/playgrounds/easy-hr/types/*"],
+      "@/public/*": ["../../../packages/playgrounds/easy-hr/public/*"],
+      "@ninetailed/experience.js": [
+        "../../../packages/sdks/javascript/src/index.ts"
+      ],
+      "@ninetailed/experience.js-next": [
+        "../../../packages/sdks/nextjs/src/index.ts"
+      ],
+      "@ninetailed/experience.js-node": [
+        "../../../packages/sdks/nodejs/src/index.ts"
+      ],
       "@ninetailed/experience.js-plugin-analytics": [
-        "packages/plugins/analytics/src/index.ts"
+        "../../../packages/plugins/analytics/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-analytics/test": [
-        "packages/plugins/analytics/test/index.ts"
+        "../../../packages/plugins/analytics/test/index.ts"
       ],
       "@ninetailed/experience.js-plugin-contentsquare": [
-        "packages/plugins/contentsquare/src/index.ts"
+        "../../../packages/plugins/contentsquare/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-google-analytics": [
-        "packages/plugins/google-analytics/src/index.ts"
+        "../../../packages/plugins/google-analytics/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-google-tagmanager": [
-        "packages/plugins/google-tagmanager/src/index.ts"
+        "../../../packages/plugins/google-tagmanager/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-preview": [
-        "packages/plugins/preview/src/index.ts"
+        "../../../packages/plugins/preview/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-privacy": [
-        "packages/plugins/privacy/src/index.ts"
+        "../../../packages/plugins/privacy/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-segment": [
-        "packages/plugins/segment/src/index.ts"
+        "../../../packages/plugins/segment/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-ssr": [
-        "packages/plugins/ssr/src/index.ts"
+        "../../../packages/plugins/ssr/src/index.ts"
       ],
       "@ninetailed/experience.js-preview-bridge": [
-        "packages/plugins/preview-bridge/src/index.ts"
+        "../../../packages/plugins/preview-bridge/src/index.ts"
       ],
-      "@ninetailed/experience.js-react": ["packages/sdks/react/src/index.ts"],
-      "@ninetailed/experience.js-shared": ["packages/sdks/shared/src/index.ts"],
+      "@ninetailed/experience.js-react": [
+        "../../../packages/sdks/react/src/index.ts"
+      ],
+      "@ninetailed/experience.js-shared": [
+        "../../../packages/sdks/shared/src/index.ts"
+      ],
       "@ninetailed/experience.js-utils": [
-        "packages/utils/javascript/src/index.ts"
+        "../../../packages/utils/javascript/src/index.ts"
       ],
       "@ninetailed/experience.js-utils-contentful": [
-        "packages/utils/contentful/src/index.ts"
+        "../../../packages/utils/contentful/src/index.ts"
       ],
       "@ninetailed/experience.js-plugin-insights": [
-        "packages/plugins/insights/src/index.ts"
+        "../../../packages/plugins/insights/src/index.ts"
       ]
     }
   },
