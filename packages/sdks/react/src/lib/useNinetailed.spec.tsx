@@ -3,7 +3,6 @@ import { renderHook } from '@testing-library/react';
 import { useNinetailed } from './useNinetailed';
 import { NinetailedContext } from './NinetailedContext';
 import { Ninetailed } from '@ninetailed/experience.js';
-
 describe('useNinetailed', () => {
   beforeEach(() => {
     jest.spyOn(console, 'error').mockImplementation(() => {
@@ -12,14 +11,11 @@ describe('useNinetailed', () => {
       // when exceptions are thrown
     });
   });
-
   afterEach(() => {
     jest.restoreAllMocks();
   });
-
   it('should return the passed ninetailed instance', () => {
     const ninetailed = new Ninetailed({ clientId: 'test' });
-
     const contextWrapper = ({ children }: React.PropsWithChildren) => {
       return (
         <NinetailedContext.Provider value={ninetailed}>
@@ -27,15 +23,12 @@ describe('useNinetailed', () => {
         </NinetailedContext.Provider>
       );
     };
-
     const { result } = renderHook(() => useNinetailed(), {
       wrapper: contextWrapper,
     });
-
     expect(result.current).toBeInstanceOf(Ninetailed);
     expect(result.current).toEqual(ninetailed);
   });
-
   it('should throw an error if ninetailed context is not provided', () => {
     try {
       renderHook(() => useNinetailed());
@@ -47,7 +40,6 @@ describe('useNinetailed', () => {
       );
     }
   });
-
   it('should throw an error if ninetailed instance is undefined', () => {
     const contextWrapper = ({ children }: React.PropsWithChildren) => {
       return (
@@ -56,7 +48,6 @@ describe('useNinetailed', () => {
         </NinetailedContext.Provider>
       );
     };
-
     try {
       renderHook(() => useNinetailed(), {
         wrapper: contextWrapper,

@@ -1,5 +1,4 @@
 import { generateMock } from '@anatine/zod-mock';
-
 import {
   pickExperimentTraits,
   selectActiveExperiments,
@@ -7,9 +6,7 @@ import {
 import { ExperienceConfiguration } from '../../types/ExperienceDefinition';
 import { Profile } from '../../types/Profile/Profile';
 import { EXPERIENCE_TRAIT_PREFIX } from './constants';
-
 const profile = { ...generateMock(Profile), audiences: ['audience1'] };
-
 const experiences: ExperienceConfiguration[] = [
   {
     id: 'experience1',
@@ -32,11 +29,9 @@ const experiences: ExperienceConfiguration[] = [
     components: [],
   },
 ];
-
 const experimentTraits = {
   [`${EXPERIENCE_TRAIT_PREFIX}${experiences[0].id}`]: true,
 };
-
 describe('selectActiveExperiments', () => {
   describe('pickExperimentTraits', () => {
     it('should return the active experiments for a profile', () => {
@@ -44,17 +39,14 @@ describe('selectActiveExperiments', () => {
         ...profile,
         traits: { ...profile.traits, ...experimentTraits },
       });
-
       expect(result).toEqual(experimentTraits);
     });
   });
-
   it('should return the active experiments for a profile', () => {
     const result = selectActiveExperiments(experiences, {
       ...profile,
       traits: { ...profile.traits, ...experimentTraits },
     });
-
     expect(result).toEqual([experiences[0]]);
   });
 });

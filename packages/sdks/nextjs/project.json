@@ -13,6 +13,7 @@
         "tsConfig": "packages/sdks/nextjs/tsconfig.lib.json",
         "project": "packages/sdks/nextjs/package.json",
         "entryFile": "packages/sdks/nextjs/src/index.ts",
+        "buildLibsFromSource": false,
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",

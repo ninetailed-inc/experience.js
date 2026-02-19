@@ -1,7 +1,6 @@
 {
   "name": "@ninetailed/experience.js-plugin-insights",
   "version": "7.6.0-beta.1",
-  "type": "commonjs",
   "description": "Ninetailed SDK plugin for Ninetailed Insights",
   "license": "MIT",
   "repository": {

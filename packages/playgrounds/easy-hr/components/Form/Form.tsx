@@ -15,13 +15,7 @@ export const Form: React.FC = () => {
 
   const onSubmit = (values: Traits) => {
     if (profile) {
-      identify(profile.id, values)
-        .then((_) => {
-          return _;
-        })
-        .catch((e: Error) => {
-          return e;
-        });
+      void identify(profile.id, values).catch((e: Error) => e);
       setShowForm(false);
     } else {
       console.warn('Submitting form data failed. Profile could not be loaded');
