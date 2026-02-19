@@ -7,17 +7,23 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/plugins/google-tagmanager",
         "main": "packages/plugins/google-tagmanager/src/index.ts",
         "tsConfig": "packages/plugins/google-tagmanager/tsconfig.lib.json",
-        "assets": ["packages/plugins/google-tagmanager/*.md"]
+        "assets": [
+          "packages/plugins/google-tagmanager/*.md"
+        ]
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "outputs": [
+        "{options.outputFile}"
+      ]
     },
     "test": {
       "executor": "@nx/jest:jest",

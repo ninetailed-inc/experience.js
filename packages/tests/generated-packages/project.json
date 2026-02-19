@@ -7,12 +7,18 @@
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "outputs": [
+        "{options.outputFile}"
+      ]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "dependsOn": ["build-all-except-playgrounds"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "dependsOn": [
+        "build-all-except-playgrounds"
+      ],
       "options": {
         "jestConfig": "packages/tests/generated-packages/jest.config.js"
       }

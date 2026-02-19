@@ -15,7 +15,9 @@
     },
     "build": {
       "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/packages/playgrounds/next-js"
@@ -46,14 +48,18 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/next-js"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/playgrounds/next-js"
+      ],
       "options": {
         "jestConfig": "packages/playgrounds/next-js/jest.config.js"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "outputs": [
+        "{options.outputFile}"
+      ]
     }
   }
 }

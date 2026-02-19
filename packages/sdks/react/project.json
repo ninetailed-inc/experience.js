@@ -7,16 +7,24 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/sdks/react",
         "tsConfig": "packages/sdks/react/tsconfig.lib.json",
         "project": "packages/sdks/react/package.json",
         "entryFile": "packages/sdks/react/src/index.ts",
-        "external": ["react/jsx-runtime", "@ninetailed/experience-api-types"],
+        "external": [
+          "react/jsx-runtime",
+          "@ninetailed/experience-api-types"
+        ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
-        "format": ["cjs", "esm"],
+        "format": [
+          "cjs",
+          "esm"
+        ],
         "assets": [
           {
             "glob": "packages/sdks/react/README.md",
@@ -37,7 +45,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/sdks/react"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/sdks/react"
+      ],
       "options": {
         "jestConfig": "packages/sdks/react/jest.config.cjs"
       }

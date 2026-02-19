@@ -7,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/sdks/shared",
         "tsConfig": "packages/sdks/shared/tsconfig.lib.json",
@@ -16,7 +18,10 @@
         "external": [],
         "rollupConfig": "packages/sdks/shared/rollup.config.cjs",
         "compiler": "babel",
-        "format": ["cjs", "esm"],
+        "format": [
+          "cjs",
+          "esm"
+        ],
         "assets": [
           {
             "glob": "packages/sdks/shared/README.md",
@@ -29,7 +34,9 @@
     "get-package-version": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["./get-package-version.sh"],
+        "commands": [
+          "./get-package-version.sh"
+        ],
         "cwd": "packages/sdks/shared"
       }
     },
@@ -41,7 +48,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/sdks/shared"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/sdks/shared"
+      ],
       "options": {
         "jestConfig": "packages/sdks/shared/jest.config.cjs"
       }

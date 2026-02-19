@@ -7,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/utils/javascript",
         "tsConfig": "packages/utils/javascript/tsconfig.lib.json",
@@ -15,7 +17,10 @@
         "entryFile": "packages/utils/javascript/src/index.ts",
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "format": ["cjs", "esm"],
+        "format": [
+          "cjs",
+          "esm"
+        ],
         "assets": [
           {
             "glob": "packages/utils/javascript/README.md",
@@ -33,11 +38,15 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "outputs": [
+        "{options.outputFile}"
+      ]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/utils/javascript"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/utils/javascript"
+      ],
       "options": {
         "jestConfig": "packages/utils/javascript/jest.config.cjs"
       }

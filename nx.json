@@ -1,19 +1,34 @@
 {
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^get-package-version", "get-package-version", "^build"],
+      "dependsOn": [
+        "^get-package-version",
+        "get-package-version",
+        "^build"
+      ],
       "cache": true
     },
     "serve": {
-      "dependsOn": ["^get-package-version", "get-package-version"]
+      "dependsOn": [
+        "^get-package-version",
+        "get-package-version"
+      ]
     },
     "@nx/eslint:lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/eslint.config.mjs"
+      ],
       "cache": true
     },
     "@nx/jest:jest": {
       "cache": true,
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/jest.preset.js"
+      ],
       "options": {
         "passWithNoTests": true
       },
