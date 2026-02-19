@@ -1,4 +1,5 @@
-import Analytics from 'analytics';
+// Use named import for to avoid CJS/ESM interop issues
+import { Analytics } from 'analytics';
 import {
   Locale,
   Traits,
