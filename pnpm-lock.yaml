@@ -145,6 +145,9 @@ importers:
       '@babel/core':
         specifier: ^7.14.5
         version: 7.29.0
+      '@babel/preset-env':
+        specifier: 7.29.0
+        version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: 7.14.5
         version: 7.14.5(@babel/core@7.29.0)

@@ -2,7 +2,22 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@ninetailed/experience.js": ["dist/packages/sdks/javascript/index.d.ts"],
+      "@ninetailed/experience.js-plugin-analytics": [
+        "dist/packages/plugins/analytics/index.d.ts"
+      ],
+      "@ninetailed/experience.js-plugin-ssr": [
+        "dist/packages/plugins/ssr/index.d.ts"
+      ],
+      "@ninetailed/experience.js-react": [
+        "dist/packages/sdks/react/index.d.ts"
+      ],
+      "@ninetailed/experience.js-shared": [
+        "dist/packages/sdks/shared/index.d.ts"
+      ]
+    }
   },
   "files": [
     "../../../node_modules/@nx/react/typings/cssmodule.d.ts",

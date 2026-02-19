@@ -2,7 +2,7 @@ import {
   ExperienceConfiguration,
   ExperienceType,
   Reference,
-} from '@ninetailed/experience.js';
+} from '@ninetailed/experience.js-shared';
 import { logger } from '@ninetailed/experience.js-shared';
 
 import { Experiment } from '../types/Experiment';

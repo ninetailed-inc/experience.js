@@ -1,4 +1,4 @@
-import { ExperienceConfiguration } from '@ninetailed/experience.js';
+import type { ExperienceConfiguration } from '@ninetailed/experience.js-shared';
 
 export type ExposedAudienceDefinition = {
   id: string;

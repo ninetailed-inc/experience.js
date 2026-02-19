@@ -1,10 +1,9 @@
 const path = require('path');
-const devkit = require('@nx/devkit');
 
 const replace = require('@rollup/plugin-replace');
 
 require('dotenv').config({
-  path: path.join(devkit.workspaceRoot, '.env.local'),
+  path: path.join(__dirname, '.env.local'),
 });
 
 const withPackageVersion = (config) => {

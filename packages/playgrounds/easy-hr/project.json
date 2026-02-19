@@ -18,7 +18,8 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/packages/playgrounds/easy-hr"
+        "outputPath": "dist/packages/playgrounds/easy-hr",
+        "webpack": true
       },
       "configurations": {
         "development": {
