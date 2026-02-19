@@ -27,6 +27,11 @@
           "codeCoverage": true
         }
       }
+    },
+    "@nx/next:build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^default"]
     }
   },
   "namedInputs": {
