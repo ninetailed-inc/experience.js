@@ -7,6 +7,6 @@ import { z } from 'zod';
  * as the inferred type changed to {} & { [k: string]: unknown; }
  * It was {} before, so we do the type cast to get it back to {}.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export const EntryFields = z.object({}).passthrough() as z.ZodObject<{}>;
 export type EntryFields = z.infer<typeof EntryFields>;

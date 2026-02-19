@@ -43,9 +43,12 @@ Object {
 exports[`Generated package.json files dist/packages/plugins/contentsquare/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
+    "@eslint/eslintrc": "^2.1.1",
+    "@eslint/js": "~9.39.2",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
+    "jsonc-eslint-parser": "3.0.0",
     "tslib": "2.4.1",
   },
   "description": "Ninetailed SDK plugin for Contentsquare",
@@ -104,9 +107,12 @@ Object {
 exports[`Generated package.json files dist/packages/plugins/google-tagmanager/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
+    "@eslint/eslintrc": "^2.1.1",
+    "@eslint/js": "~9.39.2",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
+    "jsonc-eslint-parser": "3.0.0",
     "tslib": "2.4.1",
   },
   "description": "Ninetailed SDK plugin for Google Tag Manager",
@@ -244,10 +250,13 @@ Object {
 exports[`Generated package.json files dist/packages/plugins/privacy/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
+    "@eslint/eslintrc": "^2.1.1",
+    "@eslint/js": "~9.39.2",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
     "analytics": "0.8.1",
+    "jsonc-eslint-parser": "3.0.0",
     "radash": "10.9.0",
     "tslib": "2.4.1",
     "wildcard-match": "5.1.2",
@@ -277,9 +286,12 @@ Object {
 exports[`Generated package.json files dist/packages/plugins/segment/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
+    "@eslint/eslintrc": "^2.1.1",
+    "@eslint/js": "~9.39.2",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
+    "jsonc-eslint-parser": "3.0.0",
     "tslib": "2.4.1",
   },
   "description": "Ninetailed SDK plugin for Segment",
@@ -458,8 +470,11 @@ Object {
 exports[`Generated package.json files dist/packages/sdks/nodejs/package.json should match the snapshot 1`] = `
 Object {
   "dependencies": Object {
+    "@eslint/eslintrc": "^2.1.1",
+    "@eslint/js": "~9.39.2",
     "@ninetailed/experience.js-shared": "*",
     "jest-fetch-mock": "3.0.3",
+    "jsonc-eslint-parser": "3.0.0",
     "node-fetch": "2",
     "uuid": "9.0.0",
   },

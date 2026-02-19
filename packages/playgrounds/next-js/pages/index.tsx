@@ -32,7 +32,7 @@ const personalizationVariants = [
       </>
     ),
     audience: {
-      id: '4IBSwLRvM1gdBidtnsh4h' || '',
+      id: '4IBSwLRvM1gdBidtnsh4h',
       name: 'Audience 1',
     },
   },
@@ -46,7 +46,7 @@ const personalizationVariants = [
       </>
     ),
     audience: {
-      id: '51AL1dMNXkvx1BkQd3wPR1' || '',
+      id: '51AL1dMNXkvx1BkQd3wPR1',
       name: 'Audience 2',
     },
   },
