@@ -7,18 +7,13 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/google-analytics",
         "tsConfig": "packages/plugins/google-analytics/tsconfig.lib.json",
         "project": "packages/plugins/google-analytics/package.json",
         "main": "packages/plugins/google-analytics/src/index.ts",
-        "format": [
-          "cjs",
-          "esm"
-        ],
+        "format": ["cjs", "esm"],
         "assets": [
           {
             "glob": "packages/plugins/google-analytics/README.md",
@@ -31,9 +26,7 @@
     "bundle": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "echo bundling experience.js-plugin-google-analytics"
-        ]
+        "commands": ["echo bundling experience.js-plugin-google-analytics"]
       },
       "dependsOn": [
         {
@@ -43,15 +36,11 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ]
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/packages/plugins/google-analytics"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/google-analytics"],
       "options": {
         "jestConfig": "packages/plugins/google-analytics/jest.config.cjs"
       }

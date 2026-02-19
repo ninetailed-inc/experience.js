@@ -7,23 +7,16 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/sdks/nextjs",
         "tsConfig": "packages/sdks/nextjs/tsconfig.lib.json",
         "project": "packages/sdks/nextjs/package.json",
         "entryFile": "packages/sdks/nextjs/src/index.ts",
-        "external": [
-          "react/jsx-runtime"
-        ],
+        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
-        "format": [
-          "cjs",
-          "esm"
-        ],
+        "format": ["cjs", "esm"],
         "assets": [
           {
             "glob": "packages/sdks/nextjs/README.md",
@@ -44,9 +37,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/packages/sdks/nextjs"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdks/nextjs"],
       "options": {
         "jestConfig": "packages/sdks/nextjs/jest.config.cjs"
       }

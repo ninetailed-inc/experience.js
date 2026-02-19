@@ -7,9 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/ssr",
         "tsConfig": "packages/plugins/ssr/tsconfig.lib.json",
@@ -17,10 +15,7 @@
         "entryFile": "packages/plugins/ssr/src/index.ts",
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "format": [
-          "cjs",
-          "esm"
-        ],
+        "format": ["cjs", "esm"],
         "assets": [
           {
             "glob": "packages/plugins/ssr/README.md",
@@ -35,9 +30,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/packages/plugins/ssr"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/ssr"],
       "options": {
         "jestConfig": "packages/plugins/ssr/jest.config.cjs"
       }

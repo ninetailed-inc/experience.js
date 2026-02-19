@@ -7,9 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/preview",
         "tsConfig": "packages/plugins/preview/tsconfig.lib.json",
@@ -17,10 +15,7 @@
         "entryFile": "packages/plugins/preview/src/index.ts",
         "external": [],
         "rollupConfig": "packages/plugins/preview/rollup.config.cjs",
-        "format": [
-          "cjs",
-          "esm"
-        ],
+        "format": ["cjs", "esm"],
         "assets": [
           {
             "glob": "packages/plugins/preview/README.md",
@@ -35,9 +30,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/packages/plugins/preview"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview"],
       "options": {
         "jestConfig": "packages/plugins/preview/jest.config.cjs"
       }

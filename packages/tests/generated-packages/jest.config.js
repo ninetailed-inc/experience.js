@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'tests-generated-packages',
   preset: '../../../jest.preset.js',

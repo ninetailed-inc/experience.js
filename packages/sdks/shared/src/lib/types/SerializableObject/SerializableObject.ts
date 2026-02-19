@@ -14,7 +14,7 @@ export const SerializableValue: z.ZodType<SerializableValue> = z.lazy(() =>
     z.number(),
     z.boolean(),
     z.null(),
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+
     SerializableObject,
     z.array(SerializableValue),
   ])

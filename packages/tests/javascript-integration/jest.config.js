@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'tests-javascript-integration',
   preset: '../../../jest.preset.js',

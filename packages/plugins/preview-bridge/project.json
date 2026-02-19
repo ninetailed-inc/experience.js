@@ -7,9 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/preview-bridge",
         "tsConfig": "packages/plugins/preview-bridge/tsconfig.lib.json",
@@ -17,10 +15,7 @@
         "entryFile": "packages/plugins/preview-bridge/src/index.ts",
         "external": [],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "format": [
-          "cjs",
-          "esm"
-        ],
+        "format": ["cjs", "esm"],
         "assets": [
           {
             "glob": "packages/plugins/preview-bridge/README.md",
@@ -32,15 +27,11 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ]
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/packages/plugins/preview-bridge"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/preview-bridge"],
       "options": {
         "jestConfig": "packages/plugins/preview-bridge/jest.config.cjs"
       }

@@ -7,16 +7,12 @@
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/playgrounds/node",
         "main": "packages/playgrounds/node/src/main.ts",
         "tsConfig": "packages/playgrounds/node/tsconfig.app.json",
-        "assets": [
-          "packages/playgrounds/node/src/assets"
-        ],
+        "assets": ["packages/playgrounds/node/src/assets"],
         "compiler": "tsc",
         "target": "node",
         "webpackConfig": "packages/playgrounds/node/webpack.config.js"
@@ -48,15 +44,11 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ]
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/packages/playgrounds/node"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/packages/playgrounds/node"],
       "options": {
         "jestConfig": "packages/playgrounds/node/jest.config.js"
       }

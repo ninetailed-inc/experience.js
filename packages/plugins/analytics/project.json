@@ -7,32 +7,23 @@
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/analytics",
         "main": "packages/plugins/analytics/src/index.ts",
         "project": "packages/plugins/analytics/package.json",
         "tsConfig": "packages/plugins/analytics/tsconfig.lib.json",
-        "format": [
-          "esm",
-          "cjs"
-        ],
+        "format": ["esm", "cjs"],
         "assets": []
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ]
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/plugins/analytics/jest.config.js"
       }

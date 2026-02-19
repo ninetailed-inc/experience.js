@@ -7,29 +7,21 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/contentsquare",
         "main": "packages/plugins/contentsquare/src/index.ts",
         "tsConfig": "packages/plugins/contentsquare/tsconfig.lib.json",
-        "assets": [
-          "packages/plugins/contentsquare/*.md"
-        ]
+        "assets": ["packages/plugins/contentsquare/*.md"]
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ]
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/packages/plugins/contentsquare"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/packages/plugins/contentsquare"],
       "options": {
         "jestConfig": "packages/plugins/contentsquare/jest.config.js"
       }

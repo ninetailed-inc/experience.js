@@ -1,4 +1,3 @@
-/* eslint-disable */
 module.exports = {
   displayName: 'plugins-insights',
   preset: '../../../jest.preset.js',
