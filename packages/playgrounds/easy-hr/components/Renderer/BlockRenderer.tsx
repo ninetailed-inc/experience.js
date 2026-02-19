@@ -4,6 +4,7 @@ import { get } from 'radash';
 import { Experience } from '@ninetailed/experience.js-next';
 import {
   BaselineWithExperiencesEntry,
+  ExperienceEntryLike,
   ExperienceMapper,
 } from '@ninetailed/experience.js-utils-contentful';
 
@@ -68,7 +69,9 @@ const BlockRenderer = ({ block }: BlockRendererProps) => {
   const contentTypeId = get(block, 'sys.contentType.sys.id') as string;
   const { id } = block.sys;
 
-  const experiences = (block.fields.nt_experiences || [])
+  const experiences = (
+    (block.fields.nt_experiences || []) as ExperienceEntryLike[]
+  )
     .filter((experience) => ExperienceMapper.isExperienceEntry(experience))
     .map((experience) => ExperienceMapper.mapExperience(experience));
 
