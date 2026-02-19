@@ -9,3 +9,4 @@ CODEOWNERS
 pnpm-lock.yaml
 /.nx/cache
 .nx/workspace-data
+next-env.d.ts
