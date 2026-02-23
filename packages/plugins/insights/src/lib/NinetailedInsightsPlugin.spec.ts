@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/dom';
 import { NinetailedApiClient } from '@ninetailed/experience.js-shared';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
-import { COMPONENT_HOVER, Ninetailed } from '@ninetailed/experience.js';
+import { Ninetailed } from '@ninetailed/experience.js';
 import { NinetailedPrivacyPlugin } from '@ninetailed/experience.js-plugin-privacy';
 import { NinetailedInsightsPlugin } from './NinetailedInsightsPlugin';
 import { intersect } from './test-helpers/intersection-observer-test-helper';
@@ -251,14 +251,14 @@ describe('NinetailedInsightsPlugin', () => {
     });
     const hoverEvents =
       insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.filter(
-        (event: { type?: string }) => event.type === COMPONENT_HOVER
+        (event: { type?: string }) => event.type === 'component_hover'
       );
     expect(hoverEvents).toHaveLength(25);
     expect(hoverEvents).toEqual(
       expect.arrayContaining(
         Array.from({ length: 25 }).map((_, i) =>
           expect.objectContaining({
-            type: COMPONENT_HOVER,
+            type: 'component_hover',
             componentId: expect.any(String),
             variantIndex: i,
             hoverDurationMs: expect.any(Number),
@@ -305,8 +305,8 @@ describe('NinetailedInsightsPlugin', () => {
       Record<string, unknown>,
       Record<string, unknown>
     ];
-    expect(firstHoverEvent['type']).toBe(COMPONENT_HOVER);
-    expect(secondHoverEvent['type']).toBe(COMPONENT_HOVER);
+    expect(firstHoverEvent['type']).toBe('component_hover');
+    expect(secondHoverEvent['type']).toBe('component_hover');
     expect(firstHoverEvent['componentHoverId']).toEqual(expect.any(String));
     expect(secondHoverEvent['componentHoverId']).toEqual(expect.any(String));
     expect(firstHoverEvent['componentHoverId']).not.toBe(
@@ -358,14 +358,14 @@ describe('NinetailedInsightsPlugin', () => {
     expect(insightsPlugin.events).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          type: COMPONENT_HOVER,
+          type: 'component_hover',
           componentId: expect.any(String),
           variantIndex: 1,
           hoverDurationMs: expect.any(Number),
           componentHoverId: expect.any(String),
         }),
         expect.objectContaining({
-          type: COMPONENT_HOVER,
+          type: 'component_hover',
           componentId: expect.any(String),
           variantIndex: 2,
           hoverDurationMs: expect.any(Number),
@@ -456,7 +456,7 @@ describe('NinetailedInsightsPlugin', () => {
       expect.arrayContaining([
         expect.objectContaining({ type: 'component_click' }),
         expect.objectContaining({
-          type: COMPONENT_HOVER,
+          type: 'component_hover',
           hoverDurationMs: expect.any(Number),
           componentHoverId: expect.any(String),
         }),
