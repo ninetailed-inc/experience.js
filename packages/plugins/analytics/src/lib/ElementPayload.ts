@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export type ComponentViewEventComponentType = 'Entry' | 'Variable';
 export type ComponentClickEventComponentType = 'Entry' | 'Variable';
+export type ComponentHoverEventComponentType = 'Entry' | 'Variable';
 
 // Base schema with shared properties
 const BaseElementPayloadSchema = z.object({
@@ -57,6 +58,17 @@ export const ElementClickedPayloadSchema = BaseElementInteractionPayloadSchema;
 
 export type ElementClickedPayload = Omit<
   z.input<typeof ElementClickedPayloadSchema>,
+  'element'
+> & { element: Element };
+
+export const ElementHoveredPayloadSchema =
+  BaseElementInteractionPayloadSchema.extend({
+    hoverDurationMs: z.number(),
+    componentHoverId: z.string(),
+  });
+
+export type ElementHoveredPayload = Omit<
+  z.input<typeof ElementHoveredPayloadSchema>,
   'element'
 > & { element: Element };
 

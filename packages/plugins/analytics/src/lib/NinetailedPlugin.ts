@@ -3,11 +3,13 @@ import { AnalyticsInstance } from './AnalyticsInstance';
 import { HasComponentViewTrackingThreshold } from './types/interfaces/HasComponentViewTrackingThreshold';
 import {
   ElementClickedPayload,
+  ElementHoveredPayload,
   ElementSeenPayload,
   VariableSeenPayload,
 } from './ElementPayload';
 import {
   HAS_CLICKED_ELEMENT,
+  HAS_HOVERED_ELEMENT,
   HAS_SEEN_ELEMENT,
   HAS_SEEN_VARIABLE,
 } from './constants';
@@ -84,6 +86,12 @@ export abstract class NinetailedPlugin
     this.onHasClickedElement(event);
   };
 
+  public [HAS_HOVERED_ELEMENT]: EventHandler<ElementHoveredPayload> = (
+    event
+  ) => {
+    this.onHasHoveredElement(event);
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   protected onHasSeenElement: EventHandler<ElementSeenPayload> = () => {};
 
@@ -92,6 +100,9 @@ export abstract class NinetailedPlugin
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   protected onHasClickedElement: EventHandler<ElementClickedPayload> = () => {};
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected onHasHoveredElement: EventHandler<ElementHoveredPayload> = () => {};
 
   public setComponentViewTrackingThreshold = (threshold: number) => {
     this.componentViewTrackingThreshold = threshold;
