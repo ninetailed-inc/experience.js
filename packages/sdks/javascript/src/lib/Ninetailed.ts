@@ -628,7 +628,7 @@ export class Ninetailed implements NinetailedInstance {
     const payloads = this.observedElements.get(element);
 
     if (Array.isArray(payloads) && payloads.length > 0) {
-      const componentHoverId = this.createComponentHoverId();
+      const componentHoverId = crypto.randomUUID();
 
       for (const payload of payloads) {
         this.instance.dispatch({
@@ -641,17 +641,6 @@ export class Ninetailed implements NinetailedInstance {
       }
     }
   };
-
-  private createComponentHoverId() {
-    if (
-      typeof crypto !== 'undefined' &&
-      typeof crypto.randomUUID === 'function'
-    ) {
-      return crypto.randomUUID();
-    }
-
-    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  }
 
   public reset = async () => {
     await this.waitUntilInitialized();
