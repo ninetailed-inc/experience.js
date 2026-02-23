@@ -69,9 +69,6 @@ class TestElementClickPlugin extends NinetailedPlugin {
     };
 }
 
-const HOVER_BELOW_THRESHOLD_MS = 1;
-const HOVER_ABOVE_THRESHOLD_MS = 10_000;
-
 class TestElementHoverPlugin extends NinetailedPlugin {
   public name = 'ninetailed:test-hover';
   public onElementHoveredMock = jest.fn();
@@ -545,7 +542,7 @@ describe('Ninetailed core class', () => {
         componentType: 'Entry',
       });
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
@@ -566,7 +563,7 @@ describe('Ninetailed core class', () => {
         { trackHovers: false }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
@@ -587,7 +584,7 @@ describe('Ninetailed core class', () => {
         { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {
@@ -618,7 +615,7 @@ describe('Ninetailed core class', () => {
         { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_BELOW_THRESHOLD_MS);
+      jest.advanceTimersByTime(1);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
@@ -640,7 +637,7 @@ describe('Ninetailed core class', () => {
       );
       ninetailed.unobserveElement(element);
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
@@ -661,10 +658,10 @@ describe('Ninetailed core class', () => {
         { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {
@@ -702,10 +699,10 @@ describe('Ninetailed core class', () => {
         { trackHovers: true }
       );
       elementOne.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       elementOne.dispatchEvent(new MouseEvent('mouseleave'));
       elementTwo.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       elementTwo.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {
@@ -744,7 +741,7 @@ describe('Ninetailed core class', () => {
       );
       element.click();
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {

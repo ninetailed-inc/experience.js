@@ -7,16 +7,6 @@ import { NinetailedInsightsPlugin } from './NinetailedInsightsPlugin';
 import { intersect } from './test-helpers/intersection-observer-test-helper';
 const insightsApiClientSendEventBatchesMock = jest.fn().mockResolvedValue({});
 
-const HOVER_ABOVE_THRESHOLD_MS = 10_000;
-
-const getHoverEventsFromFirstBatch = () => {
-  const firstBatch = insightsApiClientSendEventBatchesMock.mock.calls[0][0][0];
-
-  return firstBatch.events.filter(
-    (event: { type?: string }) => event.type === COMPONENT_HOVER
-  );
-};
-
 jest.mock('./api/NinetailedInsightsApiClient', () => {
   return {
     NinetailedInsightsApiClient: class NinetailedInsightsApiClient {
@@ -251,7 +241,7 @@ describe('NinetailedInsightsPlugin', () => {
         { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+      jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
     }
     jest.runAllTimers();
@@ -259,7 +249,10 @@ describe('NinetailedInsightsPlugin', () => {
     await waitFor(() => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
     });
-    const hoverEvents = getHoverEventsFromFirstBatch();
+    const hoverEvents =
+      insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.filter(
+        (event: { type?: string }) => event.type === COMPONENT_HOVER
+      );
     expect(hoverEvents).toHaveLength(25);
     expect(hoverEvents).toEqual(
       expect.arrayContaining(
@@ -294,10 +287,10 @@ describe('NinetailedInsightsPlugin', () => {
       { trackHovers: true }
     );
     element.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+    jest.advanceTimersByTime(10_000);
     element.dispatchEvent(new MouseEvent('mouseleave'));
     element.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+    jest.advanceTimersByTime(10_000);
     element.dispatchEvent(new MouseEvent('mouseleave'));
     jest.runAllTimers();
     jest.useRealTimers();
@@ -348,10 +341,10 @@ describe('NinetailedInsightsPlugin', () => {
       { trackHovers: true }
     );
     elementOne.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+    jest.advanceTimersByTime(10_000);
     elementOne.dispatchEvent(new MouseEvent('mouseleave'));
     elementTwo.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+    jest.advanceTimersByTime(10_000);
     elementTwo.dispatchEvent(new MouseEvent('mouseleave'));
     jest.runAllTimers();
     jest.useRealTimers();
@@ -448,7 +441,7 @@ describe('NinetailedInsightsPlugin', () => {
     );
     element.click();
     element.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
+    jest.advanceTimersByTime(10_000);
     element.dispatchEvent(new MouseEvent('mouseleave'));
     jest.runAllTimers();
     jest.useRealTimers();
