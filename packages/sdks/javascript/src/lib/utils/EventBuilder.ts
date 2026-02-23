@@ -4,6 +4,7 @@ import {
   IdentifyEventArgs,
   NinetailedRequestContext,
   Properties,
+  buildComponentHoverEvent,
   buildComponentClickEvent,
   buildComponentViewEvent,
   buildIdentifyEvent,
@@ -14,6 +15,7 @@ import { v4 as uuid } from 'uuid';
 import { buildClientNinetailedRequestContext } from '../NinetailedCorePlugin';
 import type {
   ComponentClickEventComponentType,
+  ComponentHoverEventComponentType,
   ComponentViewEventComponentType,
 } from '@ninetailed/experience.js-plugin-analytics';
 
@@ -100,6 +102,26 @@ export class EventBuilder {
       ...this.buildEventBase(data),
       componentId,
       componentType: componentType || 'Entry',
+      experienceId,
+      variantIndex: variantIndex || 0,
+    });
+  }
+
+  public componentHover(
+    componentId: string,
+    componentType: ComponentHoverEventComponentType,
+    hoverDurationMs: number,
+    componentHoverId: string,
+    experienceId?: string,
+    variantIndex?: number,
+    data?: ComponentData
+  ) {
+    return buildComponentHoverEvent({
+      ...this.buildEventBase(data),
+      componentId,
+      componentType: componentType || 'Entry',
+      componentHoverId,
+      hoverDurationMs,
       experienceId,
       variantIndex: variantIndex || 0,
     });
