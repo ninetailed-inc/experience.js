@@ -117,6 +117,7 @@ type Options = {
   onLog?: OnLogHandler;
   onError?: OnErrorHandler;
   componentViewTrackingThreshold?: number;
+  minimumHoverDurationMs?: number;
   onInitProfileId?: OnInitProfileId;
   buildClientContext?: () => NinetailedRequestContext;
   storageImpl?: Storage;
@@ -197,6 +198,7 @@ export class Ninetailed implements NinetailedInstance {
       buildClientContext,
       onInitProfileId,
       componentViewTrackingThreshold = 2000,
+      minimumHoverDurationMs = 2000,
       storageImpl,
       useSDKEvaluation = false,
     }: Options = {}
@@ -306,7 +308,7 @@ export class Ninetailed implements NinetailedInstance {
     });
     this.elementHoverObserver = new ElementHoverObserver({
       onElementHover: this.onElementHovered.bind(this),
-      minimumHoverDurationMs: componentViewTrackingThreshold,
+      minimumHoverDurationMs,
     });
     this.componentViewTrackingThreshold = componentViewTrackingThreshold;
 
