@@ -2,6 +2,8 @@ import { isEqual } from 'radash';
 import {
   COMPONENT_CLICK,
   COMPONENT_CLICK_START,
+  COMPONENT_HOVER,
+  COMPONENT_HOVER_START,
   COMPONENT,
   COMPONENT_START,
   PROFILE_CHANGE,
@@ -20,6 +22,7 @@ import {
 import {
   logger,
   type ComponentClickEvent,
+  type ComponentHoverEvent,
   type ComponentViewEvent,
 } from '@ninetailed/experience.js-shared';
 import type {
@@ -36,6 +39,8 @@ import { NinetailedInsightsApiClient } from './api/NinetailedInsightsApiClient';
 import {
   ElementClickedPayload,
   ElementClickedPayloadSchema,
+  ElementHoveredPayload,
+  ElementHoveredPayloadSchema,
   ElementSeenPayload,
   VariableSeenPayload,
   EventHandler,
@@ -219,6 +224,84 @@ export class NinetailedInsightsPlugin
     const event = this.eventBuilder.componentClick(
       componentId,
       componentType,
+      experienceId,
+      variantIndex
+    );
+
+    this.events.push(event);
+
+    if (this.shouldFlushEventsQueue()) {
+      if (this.profile) {
+        this.createEventsBatch(this.profile);
+      }
+
+      this.flushEventsQueue();
+    }
+  };
+
+  public override onHasHoveredElement: EventHandler<ElementHoveredPayload> = ({
+    payload,
+  }) => {
+    const sanitizedPayload = ElementHoveredPayloadSchema.safeParse(payload);
+
+    if (!sanitizedPayload.success) {
+      logger.error(
+        'Insights Plugin: Invalid payload for has_hovered_element event',
+        sanitizedPayload.error.format()
+      );
+      return;
+    }
+
+    const {
+      componentType,
+      experience,
+      variant,
+      variantIndex,
+      hoverDurationMs,
+      componentHoverId,
+    } = sanitizedPayload.data;
+
+    const componentId = variant.id;
+
+    if (typeof componentId === 'undefined') {
+      return;
+    }
+
+    this.instance?.dispatch({
+      type: COMPONENT_HOVER_START,
+      componentId,
+      componentType,
+      variantIndex,
+      experienceId: experience?.id,
+      hoverDurationMs,
+      componentHoverId,
+    });
+  };
+
+  public [COMPONENT_HOVER]: EventHandler<ComponentHoverEvent> = ({
+    payload,
+  }) => {
+    if (!this.eventBuilder) {
+      logger.error(
+        'EventBuilder is not injected. Cannot build event. Skipping.'
+      );
+      return;
+    }
+
+    const {
+      componentId,
+      experienceId,
+      variantIndex,
+      componentType,
+      hoverDurationMs,
+      componentHoverId,
+    } = payload;
+
+    const event = this.eventBuilder.componentHover(
+      componentId,
+      componentType,
+      hoverDurationMs,
+      componentHoverId,
       experienceId,
       variantIndex
     );
