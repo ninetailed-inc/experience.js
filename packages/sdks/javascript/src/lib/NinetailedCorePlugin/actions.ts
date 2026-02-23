@@ -1,5 +1,6 @@
 import {
   HAS_CLICKED_ELEMENT,
+  HAS_HOVERED_ELEMENT,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
   HAS_SEEN_VARIABLE,
@@ -31,6 +32,13 @@ type HasSeenElementAction = {
 type HasClickedElementAction = {
   type: typeof HAS_CLICKED_ELEMENT;
   element: Element;
+};
+
+type HasHoveredElementAction = {
+  type: typeof HAS_HOVERED_ELEMENT;
+  element: Element;
+  hoverDurationMs: number;
+  componentHoverId: string;
 };
 
 type HasSeenVariableAction = {
@@ -93,6 +101,7 @@ export type DispatchAction =
   | ComponentClickStartAction
   | HasSeenElementAction
   | HasClickedElementAction
+  | HasHoveredElementAction
   | HasSeenVariableAction
   | ProfileHasSeenComponentAction
   | PageHiddenAction;
