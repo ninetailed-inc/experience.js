@@ -5,12 +5,12 @@ import {
 } from '@ninetailed/experience.js-shared';
 import {
   ElementClickedPayload,
+  ElementHoveredPayload,
   EventHandler,
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
 import { Ninetailed } from './Ninetailed';
-import { COMPONENT_HOVER, COMPONENT_HOVER_START } from './constants';
 import {
   getObserverOf,
   intersect,
@@ -69,52 +69,17 @@ class TestElementClickPlugin extends NinetailedPlugin {
     };
 }
 
-const HAS_HOVERED_ELEMENT = 'has_hovered_element';
-const HAS_HOVERED_ELEMENT_START = 'has_hovered_elementStart';
-const HAS_HOVERED_ELEMENT_START_UNDERSCORE = 'has_hovered_element_start';
-const HAS_HOVER_ELEMENT = 'has_hover_element';
-const COMPONENT_HOVER_START_UNDERSCORE = 'component_hover_start';
-
-const HOVER_EVENT_TYPES = [
-  HAS_HOVERED_ELEMENT,
-  HAS_HOVERED_ELEMENT_START,
-  HAS_HOVERED_ELEMENT_START_UNDERSCORE,
-  HAS_HOVER_ELEMENT,
-  COMPONENT_HOVER_START,
-  COMPONENT_HOVER_START_UNDERSCORE,
-  COMPONENT_HOVER,
-];
-
 const HOVER_BELOW_THRESHOLD_MS = 1;
 const HOVER_ABOVE_THRESHOLD_MS = 10_000;
-
-type HoverPayload = {
-  variant?: { id?: string };
-  variantIndex?: number;
-  hoverDurationMs?: number;
-  componentHoverId?: string;
-};
 
 class TestElementHoverPlugin extends NinetailedPlugin {
   public name = 'ninetailed:test-hover';
   public onElementHoveredMock = jest.fn();
-
-  constructor() {
-    super();
-
-    const onElementHovered: EventHandler<HoverPayload> = ({ payload }) => {
+  protected override onHasHoveredElement: EventHandler<ElementHoveredPayload> =
+    ({ payload }) => {
       this.onElementHoveredMock(payload);
     };
-
-    HOVER_EVENT_TYPES.forEach((eventType) => {
-      (this as unknown as Record<string, EventHandler<HoverPayload>>)[
-        eventType
-      ] = onElementHovered;
-    });
-  }
 }
-
-type ObserveElementOptions = Parameters<Ninetailed['observeElement']>[1];
 
 describe('Ninetailed core class', () => {
   let ninetailed: Ninetailed;
@@ -598,7 +563,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackHovers: false } as ObserveElementOptions
+        { trackHovers: false }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
       jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
@@ -619,7 +584,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackHovers: true } as ObserveElementOptions
+        { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
       jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
@@ -650,7 +615,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackHovers: true } as ObserveElementOptions
+        { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
       jest.advanceTimersByTime(HOVER_BELOW_THRESHOLD_MS);
@@ -671,7 +636,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackHovers: true } as ObserveElementOptions
+        { trackHovers: true }
       );
       ninetailed.unobserveElement(element);
       element.dispatchEvent(new MouseEvent('mouseenter'));
@@ -693,7 +658,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackHovers: true } as ObserveElementOptions
+        { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
       jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
@@ -724,7 +689,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackHovers: true } as ObserveElementOptions
+        { trackHovers: true }
       );
       ninetailed.observeElement(
         {
@@ -734,7 +699,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackHovers: true } as ObserveElementOptions
+        { trackHovers: true }
       );
       elementOne.dispatchEvent(new MouseEvent('mouseenter'));
       jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
@@ -775,7 +740,7 @@ describe('Ninetailed core class', () => {
           experience,
           componentType: 'Entry',
         },
-        { trackClicks: true, trackHovers: true } as ObserveElementOptions
+        { trackClicks: true, trackHovers: true }
       );
       element.click();
       element.dispatchEvent(new MouseEvent('mouseenter'));

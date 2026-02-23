@@ -7,9 +7,6 @@ import { NinetailedInsightsPlugin } from './NinetailedInsightsPlugin';
 import { intersect } from './test-helpers/intersection-observer-test-helper';
 const insightsApiClientSendEventBatchesMock = jest.fn().mockResolvedValue({});
 
-type ObserveElementOptions = Parameters<Ninetailed['observeElement']>[1];
-
-const HOVER_BELOW_THRESHOLD_MS = 1;
 const HOVER_ABOVE_THRESHOLD_MS = 10_000;
 
 const getHoverEventsFromFirstBatch = () => {
@@ -234,61 +231,6 @@ describe('NinetailedInsightsPlugin', () => {
       )
     );
   });
-  it('should not track component hovers when trackHovers is omitted', async () => {
-    const insightsPlugin = new NinetailedInsightsPlugin();
-    const ninetailed = setupNinetailedInstance([insightsPlugin]);
-    insightsPlugin.setCredentials({
-      clientId: 'test',
-      environment: 'development',
-    });
-    await ninetailed.identify('test');
-    jest.useFakeTimers();
-    const element = document.body.appendChild(document.createElement('div'));
-    ninetailed.observeElement({
-      element,
-      variant: { id: 'variant-id-1' },
-      variantIndex: 0,
-    });
-    element.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
-    element.dispatchEvent(new MouseEvent('mouseleave'));
-    jest.runAllTimers();
-    jest.useRealTimers();
-    await waitFor(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      expect(insightsPlugin.events).toHaveLength(0);
-    });
-  });
-  it('should not track component hovers when hover duration is below threshold', async () => {
-    const insightsPlugin = new NinetailedInsightsPlugin();
-    const ninetailed = setupNinetailedInstance([insightsPlugin]);
-    insightsPlugin.setCredentials({
-      clientId: 'test',
-      environment: 'development',
-    });
-    await ninetailed.identify('test');
-    jest.useFakeTimers();
-    const element = document.body.appendChild(document.createElement('div'));
-    ninetailed.observeElement(
-      {
-        element,
-        variant: { id: 'variant-id-1' },
-        variantIndex: 0,
-      },
-      { trackHovers: true } as ObserveElementOptions
-    );
-    element.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(HOVER_BELOW_THRESHOLD_MS);
-    element.dispatchEvent(new MouseEvent('mouseleave'));
-    jest.runAllTimers();
-    jest.useRealTimers();
-    await waitFor(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      expect(insightsPlugin.events).toHaveLength(0);
-    });
-  });
   it('should send component hover events through the insights batching pipeline', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const ninetailed = setupNinetailedInstance([insightsPlugin]);
@@ -306,7 +248,7 @@ describe('NinetailedInsightsPlugin', () => {
           variant: { id: `variant-id-${i + 1}` },
           variantIndex: i,
         },
-        { trackHovers: true } as ObserveElementOptions
+        { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
       jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
@@ -349,7 +291,7 @@ describe('NinetailedInsightsPlugin', () => {
         variant: { id: 'variant-id-1' },
         variantIndex: 0,
       },
-      { trackHovers: true } as ObserveElementOptions
+      { trackHovers: true }
     );
     element.dispatchEvent(new MouseEvent('mouseenter'));
     jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
@@ -395,7 +337,7 @@ describe('NinetailedInsightsPlugin', () => {
         variant: { id: 'variant-id-1' },
         variantIndex: 1,
       },
-      { trackHovers: true } as ObserveElementOptions
+      { trackHovers: true }
     );
     ninetailed.observeElement(
       {
@@ -403,7 +345,7 @@ describe('NinetailedInsightsPlugin', () => {
         variant: { id: 'variant-id-2' },
         variantIndex: 2,
       },
-      { trackHovers: true } as ObserveElementOptions
+      { trackHovers: true }
     );
     elementOne.dispatchEvent(new MouseEvent('mouseenter'));
     jest.advanceTimersByTime(HOVER_ABOVE_THRESHOLD_MS);
@@ -502,7 +444,7 @@ describe('NinetailedInsightsPlugin', () => {
         variant: { id: 'variant-id-1' },
         variantIndex: 0,
       },
-      { trackClicks: true, trackHovers: true } as ObserveElementOptions
+      { trackClicks: true, trackHovers: true }
     );
     element.click();
     element.dispatchEvent(new MouseEvent('mouseenter'));
