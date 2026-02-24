@@ -1,6 +1,18 @@
 export type ElementHoverObserverOptions = {
-  onElementHover: (element: Element, hoverDurationMs: number) => void;
+  onElementHover: (
+    element: Element,
+    hoverDurationMs: number,
+    componentHoverId: string
+  ) => void;
   minimumHoverDurationMs?: number;
+  heartbeatIntervalMs?: number;
+  minimumHeartbeatIncrementMs?: number;
+};
+
+type ElementHoverSession = {
+  componentHoverId: string;
+  hoverStartTimestamp: number;
+  lastReportedMs: number;
 };
 
 export class ElementHoverObserver {
@@ -11,14 +23,21 @@ export class ElementHoverObserver {
       mouseleave: EventListener;
     }
   >;
-  private _hoverStarts: WeakMap<Element, number>;
+  private _activeHoverSessions: Map<Element, ElementHoverSession>;
+  private _heartbeatTimer: number | null;
 
   private readonly minimumHoverDurationMs: number;
+  private readonly heartbeatIntervalMs: number;
+  private readonly minimumHeartbeatIncrementMs: number;
 
   constructor(private _options: ElementHoverObserverOptions) {
     this._elementHandlers = new WeakMap();
-    this._hoverStarts = new WeakMap();
+    this._activeHoverSessions = new Map();
+    this._heartbeatTimer = null;
     this.minimumHoverDurationMs = _options.minimumHoverDurationMs ?? 2000;
+    this.heartbeatIntervalMs = _options.heartbeatIntervalMs ?? 2000;
+    this.minimumHeartbeatIncrementMs =
+      _options.minimumHeartbeatIncrementMs ?? 1000;
   }
 
   public observe(element: Element) {
@@ -27,24 +46,21 @@ export class ElementHoverObserver {
     }
 
     const onMouseEnter = () => {
-      this._hoverStarts.set(element, Date.now());
+      if (this._activeHoverSessions.has(element)) {
+        return;
+      }
+
+      this._activeHoverSessions.set(element, {
+        componentHoverId: this.createComponentHoverId(),
+        hoverStartTimestamp: Date.now(),
+        lastReportedMs: 0,
+      });
+
+      this.startHeartbeatIfNeeded();
     };
 
     const onMouseLeave = () => {
-      const hoverStartTimestamp = this._hoverStarts.get(element);
-      this._hoverStarts.delete(element);
-
-      if (typeof hoverStartTimestamp !== 'number') {
-        return;
-      }
-
-      const hoverDurationMs = Date.now() - hoverStartTimestamp;
-
-      if (hoverDurationMs < this.minimumHoverDurationMs) {
-        return;
-      }
-
-      this._options.onElementHover(element, hoverDurationMs);
+      this.endHoverSession(element, true);
     };
 
     element.addEventListener('mouseenter', onMouseEnter);
@@ -67,6 +83,89 @@ export class ElementHoverObserver {
     element.removeEventListener('mouseleave', handlers.mouseleave);
 
     this._elementHandlers.delete(element);
-    this._hoverStarts.delete(element);
+    this.endHoverSession(element, false);
+  }
+
+  public flushActiveHovers() {
+    const now = Date.now();
+
+    this._activeHoverSessions.forEach((hoverSession, element) => {
+      this.emitHoverIfNeeded(element, hoverSession, now);
+    });
+
+    this._activeHoverSessions.clear();
+    this.stopHeartbeatIfIdle();
+  }
+
+  private startHeartbeatIfNeeded() {
+    if (this._heartbeatTimer !== null || this._activeHoverSessions.size === 0) {
+      return;
+    }
+
+    this._heartbeatTimer = window.setInterval(() => {
+      const now = Date.now();
+
+      this._activeHoverSessions.forEach((hoverSession, element) => {
+        this.emitHoverIfNeeded(element, hoverSession, now);
+      });
+    }, this.heartbeatIntervalMs);
+  }
+
+  private stopHeartbeatIfIdle() {
+    if (this._activeHoverSessions.size > 0 || this._heartbeatTimer === null) {
+      return;
+    }
+
+    window.clearInterval(this._heartbeatTimer);
+    this._heartbeatTimer = null;
+  }
+
+  private endHoverSession(element: Element, emitFinalHeartbeat: boolean) {
+    const hoverSession = this._activeHoverSessions.get(element);
+
+    if (!hoverSession) {
+      this.stopHeartbeatIfIdle();
+      return;
+    }
+
+    if (emitFinalHeartbeat) {
+      this.emitHoverIfNeeded(element, hoverSession, Date.now());
+    }
+
+    this._activeHoverSessions.delete(element);
+    this.stopHeartbeatIfIdle();
+  }
+
+  private emitHoverIfNeeded(
+    element: Element,
+    hoverSession: ElementHoverSession,
+    now: number
+  ) {
+    const hoverDurationMs = now - hoverSession.hoverStartTimestamp;
+
+    if (hoverDurationMs < this.minimumHoverDurationMs) {
+      return;
+    }
+
+    const durationDelta = hoverDurationMs - hoverSession.lastReportedMs;
+
+    if (durationDelta < this.minimumHeartbeatIncrementMs) {
+      return;
+    }
+
+    this._options.onElementHover(
+      element,
+      hoverDurationMs,
+      hoverSession.componentHoverId
+    );
+    hoverSession.lastReportedMs = hoverDurationMs;
+  }
+
+  private createComponentHoverId() {
+    if (typeof crypto === 'object' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 }

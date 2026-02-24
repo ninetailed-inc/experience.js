@@ -588,8 +588,21 @@ describe('Ninetailed core class', () => {
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {
-        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(1);
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(0);
       });
+
+      const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementHoveredPayload[];
+
+      expect(
+        new Set(hoverPayloads.map((payload) => payload.componentHoverId)).size
+      ).toBe(1);
+      expect(
+        hoverPayloads[hoverPayloads.length - 1]?.hoverDurationMs ?? 0
+      ).toBeGreaterThanOrEqual(10_000);
       expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledWith(
         expect.objectContaining({
           variant: expect.objectContaining({ id: 'variant-id' }),
@@ -665,8 +678,17 @@ describe('Ninetailed core class', () => {
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {
-        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(2);
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(1);
       });
+
+      const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementHoveredPayload[];
+      expect(
+        new Set(hoverPayloads.map((payload) => payload.componentHoverId)).size
+      ).toBe(2);
     });
     it('should track component hovers independently for multiple observed elements', async () => {
       const elementOne = document.body.appendChild(
@@ -706,8 +728,18 @@ describe('Ninetailed core class', () => {
       elementTwo.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {
-        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(2);
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(1);
       });
+
+      const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementHoveredPayload[];
+      const variantIds = new Set(
+        hoverPayloads.map((payload) => payload.variant.id)
+      );
+      expect(variantIds).toEqual(new Set(['variant-id-1', 'variant-id-2']));
       expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledWith(
         expect.objectContaining({
           variant: expect.objectContaining({ id: 'variant-id-1' }),
@@ -745,7 +777,9 @@ describe('Ninetailed core class', () => {
       element.dispatchEvent(new MouseEvent('mouseleave'));
       jest.runAllTimers();
       await waitFor(() => {
-        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(1);
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(0);
       });
       expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
     });

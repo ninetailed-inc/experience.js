@@ -626,12 +626,14 @@ export class Ninetailed implements NinetailedInstance {
     }
   };
 
-  private onElementHovered = (element: Element, hoverDurationMs: number) => {
+  private onElementHovered = (
+    element: Element,
+    hoverDurationMs: number,
+    componentHoverId: string
+  ) => {
     const payloads = this.observedElements.get(element);
 
     if (Array.isArray(payloads) && payloads.length > 0) {
-      const componentHoverId = crypto.randomUUID();
-
       for (const payload of payloads) {
         this.instance.dispatch({
           ...payload,
@@ -1128,6 +1130,7 @@ export class Ninetailed implements NinetailedInstance {
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
+        this.elementHoverObserver.flushActiveHovers();
         this.instance.dispatch({ type: PAGE_HIDDEN });
       }
     });
