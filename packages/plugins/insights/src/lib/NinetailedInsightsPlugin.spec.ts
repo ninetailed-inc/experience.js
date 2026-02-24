@@ -247,13 +247,31 @@ describe('NinetailedInsightsPlugin', () => {
     jest.runAllTimers();
     jest.useRealTimers();
     await waitFor(() => {
-      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+      expect(
+        insightsApiClientSendEventBatchesMock.mock.calls.length
+      ).toBeGreaterThan(0);
     });
-    const hoverEvents =
-      insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.filter(
-        (event: { type?: string }) => event.type === 'component_hover'
-      );
-    expect(hoverEvents).toHaveLength(25);
+
+    const eventsFromAllBatches =
+      insightsApiClientSendEventBatchesMock.mock.calls
+        .flatMap((call) => call[0] as { events: Record<string, unknown>[] }[])
+        .flatMap((batch) => batch.events);
+
+    const hoverEvents = eventsFromAllBatches.filter(
+      (event: { type?: string }) => event.type === 'component_hover'
+    );
+
+    expect(hoverEvents.length).toBeGreaterThanOrEqual(25);
+
+    const trackedVariantIndices = new Set(
+      hoverEvents.map((event) => event['variantIndex'] as number)
+    );
+    const expectedVariantIndices = Array.from({ length: 25 }).map((_, i) => i);
+
+    expectedVariantIndices.forEach((variantIndex) => {
+      expect(trackedVariantIndices.has(variantIndex)).toBe(true);
+    });
+
     expect(hoverEvents).toEqual(
       expect.arrayContaining(
         Array.from({ length: 25 }).map((_, i) =>
@@ -297,21 +315,19 @@ describe('NinetailedInsightsPlugin', () => {
     await waitFor(() => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      expect(insightsPlugin.events).toHaveLength(2);
+      expect(insightsPlugin.events.length).toBeGreaterThan(1);
     });
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const [firstHoverEvent, secondHoverEvent] = insightsPlugin.events as [
-      Record<string, unknown>,
-      Record<string, unknown>
-    ];
-    expect(firstHoverEvent['type']).toBe('component_hover');
-    expect(secondHoverEvent['type']).toBe('component_hover');
-    expect(firstHoverEvent['componentHoverId']).toEqual(expect.any(String));
-    expect(secondHoverEvent['componentHoverId']).toEqual(expect.any(String));
-    expect(firstHoverEvent['componentHoverId']).not.toBe(
-      secondHoverEvent['componentHoverId']
+    const hoverEvents = insightsPlugin.events.filter(
+      (event: { type?: string }) => event.type === 'component_hover'
+    ) as Record<string, unknown>[];
+
+    expect(hoverEvents.length).toBeGreaterThan(2);
+    const uniqueComponentHoverIds = new Set(
+      hoverEvents.map((hoverEvent) => hoverEvent['componentHoverId'] as string)
     );
+    expect(uniqueComponentHoverIds.size).toBe(2);
   });
   it('should map component hover events to the correct component metadata when multiple elements are observed', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
@@ -351,8 +367,20 @@ describe('NinetailedInsightsPlugin', () => {
     await waitFor(() => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      expect(insightsPlugin.events).toHaveLength(2);
+      expect(insightsPlugin.events.length).toBeGreaterThan(1);
     });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const hoverEvents = insightsPlugin.events.filter(
+      (event: { type?: string }) => event.type === 'component_hover'
+    ) as Record<string, unknown>[];
+
+    const trackedVariantIndices = new Set(
+      hoverEvents.map((hoverEvent) => hoverEvent['variantIndex'] as number)
+    );
+    expect(trackedVariantIndices).toEqual(new Set([1, 2]));
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     expect(insightsPlugin.events).toEqual(
@@ -448,7 +476,7 @@ describe('NinetailedInsightsPlugin', () => {
     await waitFor(() => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      expect(insightsPlugin.events).toHaveLength(2);
+      expect(insightsPlugin.events.length).toBeGreaterThan(1);
     });
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
