@@ -221,186 +221,193 @@ describe('NinetailedInsightsPlugin', () => {
       )
     );
   });
-  it('should send component hover events through the insights batching pipeline', async () => {
-    const insightsPlugin = new NinetailedInsightsPlugin();
-    const ninetailed = setupNinetailedInstance([insightsPlugin]);
-    insightsPlugin.setCredentials({
-      clientId: 'test',
-      environment: 'development',
+  describe('hover tracking', () => {
+    let insightsPlugin: NinetailedInsightsPlugin;
+    let ninetailed: Ninetailed;
+
+    beforeEach(async () => {
+      insightsPlugin = new NinetailedInsightsPlugin();
+      ninetailed = setupNinetailedInstance([insightsPlugin]);
+      insightsPlugin.setCredentials({
+        clientId: 'test',
+        environment: 'development',
+      });
+      await ninetailed.identify('test');
+      jest.useFakeTimers();
     });
-    await ninetailed.identify('test');
-    jest.useFakeTimers();
-    for (let i = 0; i < 25; i++) {
+
+    afterEach(() => {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+    });
+
+    it('should send component hover events through the insights batching pipeline', async () => {
+      for (let i = 0; i < 25; i++) {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: `variant-id-${i + 1}` },
+            variantIndex: i,
+          },
+          { trackHovers: true }
+        );
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+      }
+      jest.runAllTimers();
+      jest.useRealTimers();
+      await waitFor(() => {
+        expect(
+          insightsApiClientSendEventBatchesMock.mock.calls.length
+        ).toBeGreaterThan(0);
+      });
+
+      const eventsFromAllBatches =
+        insightsApiClientSendEventBatchesMock.mock.calls
+          .flatMap((call) => call[0] as { events: Record<string, unknown>[] }[])
+          .flatMap((batch) => batch.events);
+
+      const hoverEvents = eventsFromAllBatches.filter(
+        (event: { type?: string }) => event.type === 'component_hover'
+      );
+
+      expect(hoverEvents.length).toBeGreaterThanOrEqual(25);
+
+      const trackedVariantIndices = new Set(
+        hoverEvents.map((event) => event['variantIndex'] as number)
+      );
+      const expectedVariantIndices = Array.from({ length: 25 }).map(
+        (_, i) => i
+      );
+
+      expectedVariantIndices.forEach((variantIndex) => {
+        expect(trackedVariantIndices.has(variantIndex)).toBe(true);
+      });
+
+      expect(hoverEvents).toEqual(
+        expect.arrayContaining(
+          Array.from({ length: 25 }).map((_, i) =>
+            expect.objectContaining({
+              type: 'component_hover',
+              componentId: expect.any(String),
+              variantIndex: i,
+              hoverDurationMs: expect.any(Number),
+              componentHoverId: expect.any(String),
+            })
+          )
+        )
+      );
+    });
+    it('should generate a unique componentHoverId for each hover interaction', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       ninetailed.observeElement(
         {
           element,
-          variant: { id: `variant-id-${i + 1}` },
-          variantIndex: i,
+          variant: { id: 'variant-id-1' },
+          variantIndex: 0,
         },
         { trackHovers: true }
       );
       element.dispatchEvent(new MouseEvent('mouseenter'));
       jest.advanceTimersByTime(10_000);
       element.dispatchEvent(new MouseEvent('mouseleave'));
-    }
-    jest.runAllTimers();
-    jest.useRealTimers();
-    await waitFor(() => {
-      expect(
-        insightsApiClientSendEventBatchesMock.mock.calls.length
-      ).toBeGreaterThan(0);
+      element.dispatchEvent(new MouseEvent('mouseenter'));
+      jest.advanceTimersByTime(10_000);
+      element.dispatchEvent(new MouseEvent('mouseleave'));
+      jest.runAllTimers();
+      jest.useRealTimers();
+      await waitFor(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        expect(insightsPlugin.events.length).toBeGreaterThan(1);
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const hoverEvents = insightsPlugin.events.filter(
+        (event: { type?: string }) => event.type === 'component_hover'
+      ) as Record<string, unknown>[];
+
+      expect(hoverEvents.length).toBeGreaterThan(2);
+      const uniqueComponentHoverIds = new Set(
+        hoverEvents.map(
+          (hoverEvent) => hoverEvent['componentHoverId'] as string
+        )
+      );
+      expect(uniqueComponentHoverIds.size).toBe(2);
     });
+    it('should map component hover events to the correct component metadata when multiple elements are observed', async () => {
+      const elementOne = document.body.appendChild(
+        document.createElement('div')
+      );
+      const elementTwo = document.body.appendChild(
+        document.createElement('div')
+      );
+      ninetailed.observeElement(
+        {
+          element: elementOne,
+          variant: { id: 'variant-id-1' },
+          variantIndex: 1,
+        },
+        { trackHovers: true }
+      );
+      ninetailed.observeElement(
+        {
+          element: elementTwo,
+          variant: { id: 'variant-id-2' },
+          variantIndex: 2,
+        },
+        { trackHovers: true }
+      );
+      elementOne.dispatchEvent(new MouseEvent('mouseenter'));
+      jest.advanceTimersByTime(10_000);
+      elementOne.dispatchEvent(new MouseEvent('mouseleave'));
+      elementTwo.dispatchEvent(new MouseEvent('mouseenter'));
+      jest.advanceTimersByTime(10_000);
+      elementTwo.dispatchEvent(new MouseEvent('mouseleave'));
+      jest.runAllTimers();
+      jest.useRealTimers();
+      await waitFor(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        expect(insightsPlugin.events.length).toBeGreaterThan(1);
+      });
 
-    const eventsFromAllBatches =
-      insightsApiClientSendEventBatchesMock.mock.calls
-        .flatMap((call) => call[0] as { events: Record<string, unknown>[] }[])
-        .flatMap((batch) => batch.events);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const hoverEvents = insightsPlugin.events.filter(
+        (event: { type?: string }) => event.type === 'component_hover'
+      ) as Record<string, unknown>[];
 
-    const hoverEvents = eventsFromAllBatches.filter(
-      (event: { type?: string }) => event.type === 'component_hover'
-    );
+      const trackedVariantIndices = new Set(
+        hoverEvents.map((hoverEvent) => hoverEvent['variantIndex'] as number)
+      );
+      expect(trackedVariantIndices).toEqual(new Set([1, 2]));
 
-    expect(hoverEvents.length).toBeGreaterThanOrEqual(25);
-
-    const trackedVariantIndices = new Set(
-      hoverEvents.map((event) => event['variantIndex'] as number)
-    );
-    const expectedVariantIndices = Array.from({ length: 25 }).map((_, i) => i);
-
-    expectedVariantIndices.forEach((variantIndex) => {
-      expect(trackedVariantIndices.has(variantIndex)).toBe(true);
-    });
-
-    expect(hoverEvents).toEqual(
-      expect.arrayContaining(
-        Array.from({ length: 25 }).map((_, i) =>
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      expect(insightsPlugin.events).toEqual(
+        expect.arrayContaining([
           expect.objectContaining({
             type: 'component_hover',
             componentId: expect.any(String),
-            variantIndex: i,
+            variantIndex: 1,
             hoverDurationMs: expect.any(Number),
             componentHoverId: expect.any(String),
-          })
-        )
-      )
-    );
-  });
-  it('should generate a unique componentHoverId for each hover interaction', async () => {
-    const insightsPlugin = new NinetailedInsightsPlugin();
-    const ninetailed = setupNinetailedInstance([insightsPlugin]);
-    insightsPlugin.setCredentials({
-      clientId: 'test',
-      environment: 'development',
+          }),
+          expect.objectContaining({
+            type: 'component_hover',
+            componentId: expect.any(String),
+            variantIndex: 2,
+            hoverDurationMs: expect.any(Number),
+            componentHoverId: expect.any(String),
+          }),
+        ])
+      );
     });
-    await ninetailed.identify('test');
-    jest.useFakeTimers();
-    const element = document.body.appendChild(document.createElement('div'));
-    ninetailed.observeElement(
-      {
-        element,
-        variant: { id: 'variant-id-1' },
-        variantIndex: 0,
-      },
-      { trackHovers: true }
-    );
-    element.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(10_000);
-    element.dispatchEvent(new MouseEvent('mouseleave'));
-    element.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(10_000);
-    element.dispatchEvent(new MouseEvent('mouseleave'));
-    jest.runAllTimers();
-    jest.useRealTimers();
-    await waitFor(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      expect(insightsPlugin.events.length).toBeGreaterThan(1);
-    });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const hoverEvents = insightsPlugin.events.filter(
-      (event: { type?: string }) => event.type === 'component_hover'
-    ) as Record<string, unknown>[];
-
-    expect(hoverEvents.length).toBeGreaterThan(2);
-    const uniqueComponentHoverIds = new Set(
-      hoverEvents.map((hoverEvent) => hoverEvent['componentHoverId'] as string)
-    );
-    expect(uniqueComponentHoverIds.size).toBe(2);
-  });
-  it('should map component hover events to the correct component metadata when multiple elements are observed', async () => {
-    const insightsPlugin = new NinetailedInsightsPlugin();
-    const ninetailed = setupNinetailedInstance([insightsPlugin]);
-    insightsPlugin.setCredentials({
-      clientId: 'test',
-      environment: 'development',
-    });
-    await ninetailed.identify('test');
-    jest.useFakeTimers();
-    const elementOne = document.body.appendChild(document.createElement('div'));
-    const elementTwo = document.body.appendChild(document.createElement('div'));
-    ninetailed.observeElement(
-      {
-        element: elementOne,
-        variant: { id: 'variant-id-1' },
-        variantIndex: 1,
-      },
-      { trackHovers: true }
-    );
-    ninetailed.observeElement(
-      {
-        element: elementTwo,
-        variant: { id: 'variant-id-2' },
-        variantIndex: 2,
-      },
-      { trackHovers: true }
-    );
-    elementOne.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(10_000);
-    elementOne.dispatchEvent(new MouseEvent('mouseleave'));
-    elementTwo.dispatchEvent(new MouseEvent('mouseenter'));
-    jest.advanceTimersByTime(10_000);
-    elementTwo.dispatchEvent(new MouseEvent('mouseleave'));
-    jest.runAllTimers();
-    jest.useRealTimers();
-    await waitFor(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      expect(insightsPlugin.events.length).toBeGreaterThan(1);
-    });
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const hoverEvents = insightsPlugin.events.filter(
-      (event: { type?: string }) => event.type === 'component_hover'
-    ) as Record<string, unknown>[];
-
-    const trackedVariantIndices = new Set(
-      hoverEvents.map((hoverEvent) => hoverEvent['variantIndex'] as number)
-    );
-    expect(trackedVariantIndices).toEqual(new Set([1, 2]));
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    expect(insightsPlugin.events).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          type: 'component_hover',
-          componentId: expect.any(String),
-          variantIndex: 1,
-          hoverDurationMs: expect.any(Number),
-          componentHoverId: expect.any(String),
-        }),
-        expect.objectContaining({
-          type: 'component_hover',
-          componentId: expect.any(String),
-          variantIndex: 2,
-          hoverDurationMs: expect.any(Number),
-          componentHoverId: expect.any(String),
-        }),
-      ])
-    );
   });
   it('should not track component clicks when privacy consent is not given', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
