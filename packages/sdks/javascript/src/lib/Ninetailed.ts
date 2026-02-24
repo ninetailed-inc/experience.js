@@ -597,7 +597,12 @@ export class Ninetailed implements NinetailedInstance {
     this.elementHoverObserver.unobserve(element);
   };
 
-  private onElementSeen = (element: Element, delay?: number) => {
+  private onElementSeen = (
+    element: Element,
+    delay: number,
+    viewDurationMs: number,
+    componentViewId: string
+  ) => {
     const payloads = this.observedElements.get(element);
 
     if (Array.isArray(payloads) && payloads.length > 0) {
@@ -607,6 +612,8 @@ export class Ninetailed implements NinetailedInstance {
           element,
           type: HAS_SEEN_ELEMENT,
           seenFor: delay,
+          viewDurationMs,
+          componentViewId,
         });
       }
     }
@@ -1130,6 +1137,7 @@ export class Ninetailed implements NinetailedInstance {
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
+        this.elementSeenObserver.flushActiveViews();
         this.elementHoverObserver.flushActiveHovers();
         this.instance.dispatch({ type: PAGE_HIDDEN });
       }

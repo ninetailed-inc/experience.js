@@ -48,6 +48,8 @@ const BaseElementInteractionPayloadSchema = BaseElementPayloadSchema.extend({
 export const ElementSeenPayloadSchema =
   BaseElementInteractionPayloadSchema.extend({
     seenFor: z.number().optional().default(0),
+    viewDurationMs: z.number().optional(),
+    componentViewId: z.string().optional(),
   });
 
 export type ElementSeenPayload = Omit<

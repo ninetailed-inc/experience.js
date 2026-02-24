@@ -26,6 +26,8 @@ type ReadyAction = {
 type HasSeenElementAction = {
   type: typeof HAS_SEEN_ELEMENT;
   seenFor: number | undefined;
+  viewDurationMs?: number;
+  componentViewId?: string;
   element: Element;
 };
 
