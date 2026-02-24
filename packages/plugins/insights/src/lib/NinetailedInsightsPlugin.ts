@@ -65,7 +65,7 @@ export class NinetailedInsightsPlugin
 {
   public override name = 'ninetailed:insights';
 
-  private seenElements = new WeakMap<Element, ObservedElementPayload[]>();
+  private seenElements = new WeakMap<Element, Map<string, number>>();
 
   private seenVariables = new Map<
     string,
@@ -111,7 +111,14 @@ export class NinetailedInsightsPlugin
     }
 
     const { element, ...elementPayload } = sanitizedPayload.data;
-    const { componentType, experience, variant, variantIndex } = elementPayload;
+    const {
+      componentType,
+      experience,
+      variant,
+      variantIndex,
+      viewDurationMs,
+      componentViewId,
+    } = elementPayload;
 
     const componentId = variant.id;
 
@@ -119,18 +126,21 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const seenElementPayloads = this.seenElements.get(element) || [];
+    const dedupeKey = this.buildSeenElementDedupeKey(elementPayload);
+    const latestSeenDurationsBySession =
+      this.seenElements.get(element) || new Map<string, number>();
+    const latestSeenDurationMs = latestSeenDurationsBySession.get(dedupeKey);
+    const currentSeenDurationMs = viewDurationMs ?? 0;
 
-    const isElementAlreadySeenWithPayload = seenElementPayloads.some(
-      (seenElementPayload) =>
-        isEqual<ObservedElementPayload>(seenElementPayload, elementPayload)
-    );
-
-    if (isElementAlreadySeenWithPayload) {
+    if (
+      typeof latestSeenDurationMs === 'number' &&
+      currentSeenDurationMs <= latestSeenDurationMs
+    ) {
       return;
     }
 
-    this.seenElements.set(element, [...seenElementPayloads, elementPayload]);
+    latestSeenDurationsBySession.set(dedupeKey, currentSeenDurationMs);
+    this.seenElements.set(element, latestSeenDurationsBySession);
 
     /**
      * Intentionally sending a COMPONENT_START event instead of COMPONENT.
@@ -147,6 +157,8 @@ export class NinetailedInsightsPlugin
       componentType,
       variantIndex,
       experienceId: experience?.id,
+      viewDurationMs,
+      componentViewId,
     });
   };
 
@@ -158,13 +170,22 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const { componentId, experienceId, variantIndex, componentType } = payload;
+    const {
+      componentId,
+      experienceId,
+      variantIndex,
+      componentType,
+      viewDurationMs,
+      componentViewId,
+    } = payload;
 
     const event = this.eventBuilder.component(
       componentId,
       componentType,
       experienceId,
-      variantIndex
+      variantIndex,
+      viewDurationMs,
+      componentViewId
     );
 
     this.events.push(event);
@@ -379,7 +400,7 @@ export class NinetailedInsightsPlugin
 
     this.profile = profile ?? undefined;
 
-    this.seenElements = new WeakMap<Element, ElementSeenPayload[]>();
+    this.seenElements = new WeakMap<Element, Map<string, number>>();
   };
 
   public [PAGE_HIDDEN] = () => {
@@ -437,5 +458,11 @@ export class NinetailedInsightsPlugin
 
   public setEventBuilder(eventBuilder: EventBuilder) {
     this.eventBuilder = eventBuilder;
+  }
+
+  private buildSeenElementDedupeKey(payload: ObservedElementPayload) {
+    const { viewDurationMs: _, ...payloadWithoutViewDuration } = payload;
+
+    return JSON.stringify(payloadWithoutViewDuration);
   }
 }
