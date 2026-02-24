@@ -15,6 +15,13 @@ type ElementHoverSession = {
   lastReportedMs: number;
 };
 
+type EmitHoverIfNeededParams = {
+  element: Element;
+  hoverSession: ElementHoverSession;
+  now: number;
+  forceReport: boolean;
+};
+
 export class ElementHoverObserver {
   private _elementHandlers: WeakMap<
     Element,
@@ -51,7 +58,7 @@ export class ElementHoverObserver {
       }
 
       this._activeHoverSessions.set(element, {
-        componentHoverId: this.createComponentHoverId(),
+        componentHoverId: crypto.randomUUID(),
         hoverStartTimestamp: Date.now(),
         lastReportedMs: 0,
       });
@@ -90,7 +97,12 @@ export class ElementHoverObserver {
     const now = Date.now();
 
     this._activeHoverSessions.forEach((hoverSession, element) => {
-      this.emitHoverIfNeeded(element, hoverSession, now, true);
+      this.emitHoverIfNeeded({
+        element,
+        hoverSession,
+        now,
+        forceReport: true,
+      });
     });
 
     this._activeHoverSessions.clear();
@@ -106,7 +118,12 @@ export class ElementHoverObserver {
       const now = Date.now();
 
       this._activeHoverSessions.forEach((hoverSession, element) => {
-        this.emitHoverIfNeeded(element, hoverSession, now, false);
+        this.emitHoverIfNeeded({
+          element,
+          hoverSession,
+          now,
+          forceReport: false,
+        });
       });
     }, this.heartbeatIntervalMs);
   }
@@ -129,19 +146,24 @@ export class ElementHoverObserver {
     }
 
     if (emitFinalHeartbeat) {
-      this.emitHoverIfNeeded(element, hoverSession, Date.now(), true);
+      this.emitHoverIfNeeded({
+        element,
+        hoverSession,
+        now: Date.now(),
+        forceReport: true,
+      });
     }
 
     this._activeHoverSessions.delete(element);
     this.stopHeartbeatIfIdle();
   }
 
-  private emitHoverIfNeeded(
-    element: Element,
-    hoverSession: ElementHoverSession,
-    now: number,
-    forceReport: boolean
-  ) {
+  private emitHoverIfNeeded({
+    element,
+    hoverSession,
+    now,
+    forceReport,
+  }: EmitHoverIfNeededParams) {
     const hoverDurationMs = now - hoverSession.hoverStartTimestamp;
 
     if (hoverDurationMs < this.minimumHoverDurationMs) {
@@ -164,13 +186,5 @@ export class ElementHoverObserver {
       hoverSession.componentHoverId
     );
     hoverSession.lastReportedMs = hoverDurationMs;
-  }
-
-  private createComponentHoverId() {
-    if (typeof crypto === 'object' && typeof crypto.randomUUID === 'function') {
-      return crypto.randomUUID();
-    }
-
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 }
