@@ -6,6 +6,7 @@ import {
 import {
   ElementClickedPayload,
   ElementHoveredPayload,
+  ElementSeenPayload,
   EventHandler,
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
@@ -76,6 +77,16 @@ class TestElementHoverPlugin extends NinetailedPlugin {
     ({ payload }) => {
       this.onElementHoveredMock(payload);
     };
+}
+
+class TestElementSeenPlugin extends NinetailedPlugin {
+  public name = 'ninetailed:test-seen';
+  public onElementSeenMock = jest.fn();
+  protected override onHasSeenElement: EventHandler<ElementSeenPayload> = ({
+    payload,
+  }) => {
+    this.onElementSeenMock(payload);
+  };
 }
 
 describe('Ninetailed core class', () => {
@@ -218,7 +229,7 @@ describe('Ninetailed core class', () => {
   });
   describe('Observing elements and triggering component views', () => {
     beforeEach(() => {
-      // We use fake timers bcause our ElementSeenObserver relies on setTimeout
+      // We use fake timers because observers rely on time-based callbacks.
       jest.useFakeTimers();
     });
     afterEach(() => {
@@ -241,8 +252,8 @@ describe('Ninetailed core class', () => {
       });
       // Simulate the intersection of the element with the viewport
       intersect(element, true);
-      // Advance the timers to trigger the callback inside ElementSeenObserver
-      jest.runAllTimers();
+      // Advance to the first heartbeat where all default thresholds are eligible.
+      jest.advanceTimersByTime(2_100);
       await waitFor(() => {
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(1);
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
@@ -278,7 +289,7 @@ describe('Ninetailed core class', () => {
       });
       intersect(element1, true);
       intersect(element2, true);
-      jest.runAllTimers();
+      jest.advanceTimersByTime(2_100);
       await waitFor(() => {
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(2);
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
@@ -318,7 +329,7 @@ describe('Ninetailed core class', () => {
         componentType: 'Entry',
       });
       intersect(element, true);
-      jest.runAllTimers();
+      jest.advanceTimersByTime(2_100);
       await waitFor(() => {
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(2);
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
@@ -358,7 +369,7 @@ describe('Ninetailed core class', () => {
         componentType: 'Entry',
       });
       intersect(element, true);
-      jest.runAllTimers();
+      jest.advanceTimersByTime(2_100);
       await waitFor(() => {
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(1);
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledWith(
@@ -367,6 +378,80 @@ describe('Ninetailed core class', () => {
             selectedVariant: { id: 'variant-1-id' },
           }),
           expect.any(Object)
+        );
+      });
+    });
+    it('should keep componentViewId stable and report cumulative viewDurationMs across re-entries', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const seenPlugin = new TestElementSeenPlugin();
+      const { ninetailed } = mockProfile([seenPlugin]);
+      getObserverOf(element);
+      const experience = generateExperience();
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+        componentType: 'Entry',
+      });
+
+      intersect(element, true);
+      jest.advanceTimersByTime(2_100);
+      intersect(element, false);
+      jest.advanceTimersByTime(250);
+      intersect(element, true);
+      jest.advanceTimersByTime(2_100);
+
+      await waitFor(() => {
+        expect(seenPlugin.onElementSeenMock.mock.calls.length).toBeGreaterThan(
+          1
+        );
+      });
+
+      const payloads = seenPlugin.onElementSeenMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementSeenPayload[];
+      const uniqueComponentViewIds = new Set(
+        payloads.map((payload) => payload.componentViewId)
+      );
+      const durations = payloads.map((payload) => payload.viewDurationMs ?? 0);
+
+      expect(uniqueComponentViewIds.size).toBe(1);
+      expect(durations[durations.length - 1]).toBeGreaterThan(durations[0]);
+    });
+    it('should switch to a slower heartbeat cadence after long views', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const seenPlugin = new TestElementSeenPlugin();
+      const { ninetailed } = mockProfile([seenPlugin]);
+      getObserverOf(element);
+      const experience = generateExperience();
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+        componentType: 'Entry',
+      });
+
+      intersect(element, true);
+      jest.advanceTimersByTime(10_500);
+      await waitFor(() => {
+        expect(seenPlugin.onElementSeenMock.mock.calls.length).toBeGreaterThan(
+          0
+        );
+      });
+      const callsBeforeSlowCadence =
+        seenPlugin.onElementSeenMock.mock.calls.length;
+
+      jest.advanceTimersByTime(9_000);
+      expect(seenPlugin.onElementSeenMock.mock.calls.length).toBe(
+        callsBeforeSlowCadence
+      );
+
+      jest.advanceTimersByTime(1_500);
+      await waitFor(() => {
+        expect(seenPlugin.onElementSeenMock.mock.calls.length).toBeGreaterThan(
+          callsBeforeSlowCadence
         );
       });
     });
@@ -892,7 +977,7 @@ describe('Ninetailed core class', () => {
         componentType: 'Entry',
       });
       intersect(element, true);
-      jest.runAllTimers();
+      jest.advanceTimersByTime(2_100);
       await waitFor(() => {
         expect(testPlugin.onTrackExperienceMock).not.toHaveBeenCalled();
       });
