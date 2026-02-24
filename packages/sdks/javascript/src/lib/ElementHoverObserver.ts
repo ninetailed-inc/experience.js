@@ -4,7 +4,7 @@ export type ElementHoverObserverOptions = {
     hoverDurationMs: number,
     componentHoverId: string
   ) => void;
-  minimumHoverDurationMs?: number;
+  componentHoverTrackingThreshold?: number;
   heartbeatIntervalMs?: number;
   minimumHeartbeatIncrementMs?: number;
 };
@@ -33,7 +33,7 @@ export class ElementHoverObserver {
   private _activeHoverSessions: Map<Element, ElementHoverSession>;
   private _heartbeatTimer: number | null;
 
-  private readonly minimumHoverDurationMs: number;
+  private readonly componentHoverTrackingThreshold: number;
   private readonly heartbeatIntervalMs: number;
   private readonly minimumHeartbeatIncrementMs: number;
 
@@ -41,7 +41,8 @@ export class ElementHoverObserver {
     this._elementHandlers = new WeakMap();
     this._activeHoverSessions = new Map();
     this._heartbeatTimer = null;
-    this.minimumHoverDurationMs = _options.minimumHoverDurationMs ?? 2000;
+    this.componentHoverTrackingThreshold =
+      _options.componentHoverTrackingThreshold ?? 2000;
     this.heartbeatIntervalMs = _options.heartbeatIntervalMs ?? 2000;
     this.minimumHeartbeatIncrementMs =
       _options.minimumHeartbeatIncrementMs ?? 1000;
@@ -166,7 +167,7 @@ export class ElementHoverObserver {
   }: EmitHoverIfNeededParams) {
     const hoverDurationMs = now - hoverSession.hoverStartTimestamp;
 
-    if (hoverDurationMs < this.minimumHoverDurationMs) {
+    if (hoverDurationMs < this.componentHoverTrackingThreshold) {
       return;
     }
 

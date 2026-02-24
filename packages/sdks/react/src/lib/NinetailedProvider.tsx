@@ -26,7 +26,7 @@ export type NinetailedProviderInstantiationProps = {
   onLog?: OnLogHandler;
   onError?: OnErrorHandler;
   componentViewTrackingThreshold?: number;
-  minimumHoverDurationMs?: number;
+  componentHoverTrackingThreshold?: number;
   buildClientContext?: () => NinetailedRequestContext;
   onInitProfileId?: OnInitProfileId;
   storageImpl?: Storage;
@@ -59,7 +59,7 @@ export const NinetailedProvider = (
       buildClientContext,
       onInitProfileId,
       componentViewTrackingThreshold,
-      minimumHoverDurationMs,
+      componentHoverTrackingThreshold,
       storageImpl,
       useSDKEvaluation,
     } = props;
@@ -76,7 +76,7 @@ export const NinetailedProvider = (
         buildClientContext,
         onInitProfileId,
         componentViewTrackingThreshold,
-        minimumHoverDurationMs,
+        componentHoverTrackingThreshold,
         storageImpl,
         useSDKEvaluation,
       }
