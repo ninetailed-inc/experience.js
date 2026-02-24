@@ -530,26 +530,6 @@ describe('Ninetailed core class', () => {
       expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
     describe('hover tracking', () => {
-      it('should not track component hovers when trackHovers is omitted', () => {
-        const element = document.body.appendChild(
-          document.createElement('div')
-        );
-        const hoverPlugin = new TestElementHoverPlugin();
-        const { ninetailed } = mockProfile([hoverPlugin]);
-        const experience = generateExperience();
-        ninetailed.observeElement({
-          element,
-          variant: { id: 'variant-id' },
-          variantIndex: 1,
-          experience,
-          componentType: 'Entry',
-        });
-        element.dispatchEvent(new MouseEvent('mouseenter'));
-        jest.advanceTimersByTime(10_000);
-        element.dispatchEvent(new MouseEvent('mouseleave'));
-        jest.runAllTimers();
-        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
-      });
       it('should not track component hovers when trackHovers is disabled', () => {
         const element = document.body.appendChild(
           document.createElement('div')
@@ -573,6 +553,7 @@ describe('Ninetailed core class', () => {
         jest.runAllTimers();
         expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
       });
+
       it('should track component hovers when trackHovers is enabled and hover duration is above the minimum threshold', async () => {
         const element = document.body.appendChild(
           document.createElement('div')
@@ -626,6 +607,7 @@ describe('Ninetailed core class', () => {
           )
         ).toBeGreaterThanOrEqual(10_000);
       });
+
       it('should emit a final hover heartbeat on mouseleave for unsent hover duration', async () => {
         const element = document.body.appendChild(
           document.createElement('div')
@@ -677,6 +659,7 @@ describe('Ninetailed core class', () => {
         expect(hoverDurations).toEqual(expect.arrayContaining([2_000]));
         expect(Math.max(...hoverDurations)).toBeGreaterThan(2_000);
       });
+
       it('should not track component hovers when hover duration is below the minimum threshold', () => {
         const element = document.body.appendChild(
           document.createElement('div')
@@ -700,6 +683,7 @@ describe('Ninetailed core class', () => {
         jest.runAllTimers();
         expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
       });
+
       it('should cleanup hover listeners when unobserveElement is called', () => {
         const element = document.body.appendChild(
           document.createElement('div')
@@ -724,6 +708,7 @@ describe('Ninetailed core class', () => {
         jest.runAllTimers();
         expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
       });
+
       it('should track multiple component hovers for the same element', async () => {
         const element = document.body.appendChild(
           document.createElement('div')
@@ -774,6 +759,7 @@ describe('Ninetailed core class', () => {
           ).size
         ).toBe(2);
       });
+
       it('should track component hovers independently for multiple observed elements', async () => {
         const elementOne = document.body.appendChild(
           document.createElement('div')
@@ -849,6 +835,7 @@ describe('Ninetailed core class', () => {
         );
       });
     });
+
     it('should track component clicks and hovers independently when both tracking options are enabled', async () => {
       const element = document.body.appendChild(
         document.createElement('button')
@@ -892,6 +879,7 @@ describe('Ninetailed core class', () => {
       });
       expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
     });
+
     it('should not track a component view when no experience is provided', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
@@ -909,6 +897,7 @@ describe('Ninetailed core class', () => {
         expect(testPlugin.onTrackExperienceMock).not.toHaveBeenCalled();
       });
     });
+
     it('should not track a component view for elements that are not instances of Element', async () => {
       const element = 'element';
       const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());

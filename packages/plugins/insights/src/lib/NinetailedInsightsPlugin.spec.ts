@@ -221,6 +221,7 @@ describe('NinetailedInsightsPlugin', () => {
       )
     );
   });
+
   describe('hover tracking', () => {
     let insightsPlugin: NinetailedInsightsPlugin;
     let ninetailed: Ninetailed;
@@ -300,6 +301,7 @@ describe('NinetailedInsightsPlugin', () => {
         );
       });
     });
+
     it('should generate a unique componentHoverId for each hover interaction', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       ninetailed.observeElement(
@@ -343,6 +345,7 @@ describe('NinetailedInsightsPlugin', () => {
       );
       expect(uniqueComponentHoverIds.size).toBe(2);
     });
+
     it('should map component hover events to the correct component metadata when multiple elements are observed', async () => {
       const elementOne = document.body.appendChild(
         document.createElement('div')
@@ -416,6 +419,7 @@ describe('NinetailedInsightsPlugin', () => {
       );
     });
   });
+
   it('should not track component clicks when privacy consent is not given', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const privacyPlugin = new NinetailedPrivacyPlugin();
