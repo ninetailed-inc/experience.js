@@ -1,9 +1,6 @@
 import { Object } from 'ts-toolbelt';
 
-import type {
-  ComponentClickEvent,
-  ComponentClickEventComponentType,
-} from '../types/Event/ComponentClickEvent';
+import type { ComponentClickEvent } from '../types/Event/ComponentClickEvent';
 import { type BuildEventArgs, buildEvent } from './build-event';
 
 export type BuildComponentClickEventData = Object.Omit<
@@ -11,7 +8,7 @@ export type BuildComponentClickEventData = Object.Omit<
     BuildEventArgs,
     {
       componentId: string;
-      componentType: ComponentClickEventComponentType;
+      componentType: 'Entry';
       experienceId?: string;
       variantIndex?: number;
     },

@@ -14,8 +14,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import { buildClientNinetailedRequestContext } from '../NinetailedCorePlugin';
 import type {
-  ComponentClickEventComponentType,
-  ComponentHoverEventComponentType,
+  ComponentInteractionEventComponentType,
   ComponentViewEventComponentType,
 } from '@ninetailed/experience.js-plugin-analytics';
 
@@ -93,7 +92,7 @@ export class EventBuilder {
 
   public componentClick(
     componentId: string,
-    componentType: ComponentClickEventComponentType,
+    componentType: ComponentInteractionEventComponentType,
     experienceId?: string,
     variantIndex?: number,
     data?: ComponentData
@@ -109,7 +108,7 @@ export class EventBuilder {
 
   public componentHover(
     componentId: string,
-    componentType: ComponentHoverEventComponentType,
+    componentType: ComponentInteractionEventComponentType,
     hoverDurationMs: number,
     componentHoverId: string,
     experienceId?: string,

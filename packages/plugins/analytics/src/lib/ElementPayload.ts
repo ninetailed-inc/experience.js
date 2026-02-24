@@ -1,9 +1,10 @@
 import { allowVariableTypeSchema } from '@ninetailed/experience.js-shared';
 import { z } from 'zod';
 
-export type ComponentViewEventComponentType = 'Entry' | 'Variable';
-export type ComponentClickEventComponentType = 'Entry' | 'Variable';
-export type ComponentHoverEventComponentType = 'Entry' | 'Variable';
+export type ComponentInteractionEventComponentType = 'Entry';
+export type ComponentViewEventComponentType =
+  | ComponentInteractionEventComponentType
+  | 'Variable';
 
 // Base schema with shared properties
 const BaseElementPayloadSchema = z.object({

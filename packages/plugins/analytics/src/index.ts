@@ -12,8 +12,7 @@ export {
   VariableSeenPayloadSchema,
 } from './lib/ElementPayload';
 export type {
-  ComponentClickEventComponentType,
-  ComponentHoverEventComponentType,
+  ComponentInteractionEventComponentType,
   ComponentViewEventComponentType,
   ElementClickedPayload,
   ElementHoveredPayload,

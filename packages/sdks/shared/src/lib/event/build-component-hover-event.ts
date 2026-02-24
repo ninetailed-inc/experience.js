@@ -1,9 +1,6 @@
 import { Object } from 'ts-toolbelt';
 
-import type {
-  ComponentHoverEvent,
-  ComponentHoverEventComponentType,
-} from '../types/Event/ComponentHoverEvent';
+import type { ComponentHoverEvent } from '../types/Event/ComponentHoverEvent';
 import { type BuildEventArgs, buildEvent } from './build-event';
 
 export type BuildComponentHoverEventData = Object.Omit<
@@ -11,7 +8,7 @@ export type BuildComponentHoverEventData = Object.Omit<
     BuildEventArgs,
     {
       componentId: string;
-      componentType: ComponentHoverEventComponentType;
+      componentType: 'Entry';
       componentHoverId: string;
       hoverDurationMs: number;
       experienceId?: string;
