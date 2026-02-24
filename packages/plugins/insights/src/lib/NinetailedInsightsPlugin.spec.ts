@@ -288,19 +288,17 @@ describe('NinetailedInsightsPlugin', () => {
         expect(trackedVariantIndices.has(variantIndex)).toBe(true);
       });
 
-      expect(hoverEvents).toEqual(
-        expect.arrayContaining(
-          Array.from({ length: 25 }).map((_, i) =>
-            expect.objectContaining({
-              type: 'component_hover',
-              componentId: expect.any(String),
-              variantIndex: i,
-              hoverDurationMs: expect.any(Number),
-              componentHoverId: expect.any(String),
-            })
-          )
-        )
-      );
+      hoverEvents.forEach((hoverEvent) => {
+        expect(hoverEvent).toEqual(
+          expect.objectContaining({
+            type: 'component_hover',
+            componentId: expect.any(String),
+            variantIndex: expect.any(Number),
+            hoverDurationMs: expect.any(Number),
+            componentHoverId: expect.any(String),
+          })
+        );
+      });
     });
     it('should generate a unique componentHoverId for each hover interaction', async () => {
       const element = document.body.appendChild(document.createElement('div'));
@@ -321,15 +319,21 @@ describe('NinetailedInsightsPlugin', () => {
       jest.runAllTimers();
       jest.useRealTimers();
       await waitFor(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        expect(insightsPlugin.events.length).toBeGreaterThan(1);
+        const pluginEvents = (
+          insightsPlugin as unknown as { events: Record<string, unknown>[] }
+        ).events;
+        const hoverEvents = pluginEvents.filter(
+          (event: { type?: string }) => event.type === 'component_hover'
+        );
+
+        expect(hoverEvents.length).toBeGreaterThan(2);
       });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const hoverEvents = insightsPlugin.events.filter(
+      const pluginEvents = (
+        insightsPlugin as unknown as { events: Record<string, unknown>[] }
+      ).events;
+      const hoverEvents = pluginEvents.filter(
         (event: { type?: string }) => event.type === 'component_hover'
-      ) as Record<string, unknown>[];
+      );
 
       expect(hoverEvents.length).toBeGreaterThan(2);
       const uniqueComponentHoverIds = new Set(
@@ -371,39 +375,42 @@ describe('NinetailedInsightsPlugin', () => {
       jest.runAllTimers();
       jest.useRealTimers();
       await waitFor(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        expect(insightsPlugin.events.length).toBeGreaterThan(1);
-      });
+        const pluginEvents = (
+          insightsPlugin as unknown as { events: Record<string, unknown>[] }
+        ).events;
+        const hoverEvents = pluginEvents.filter(
+          (event: { type?: string }) => event.type === 'component_hover'
+        );
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const hoverEvents = insightsPlugin.events.filter(
+        expect(hoverEvents.length).toBeGreaterThan(1);
+      });
+      const pluginEvents = (
+        insightsPlugin as unknown as { events: Record<string, unknown>[] }
+      ).events;
+      const hoverEvents = pluginEvents.filter(
         (event: { type?: string }) => event.type === 'component_hover'
-      ) as Record<string, unknown>[];
+      );
 
       const trackedVariantIndices = new Set(
         hoverEvents.map((hoverEvent) => hoverEvent['variantIndex'] as number)
       );
       expect(trackedVariantIndices).toEqual(new Set([1, 2]));
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      expect(insightsPlugin.events).toEqual(
+      const requiredEventShape = {
+        type: 'component_hover',
+        componentId: expect.any(String),
+        hoverDurationMs: expect.any(Number),
+        componentHoverId: expect.any(String),
+      };
+      expect(hoverEvents).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: 'component_hover',
-            componentId: expect.any(String),
+            ...requiredEventShape,
             variantIndex: 1,
-            hoverDurationMs: expect.any(Number),
-            componentHoverId: expect.any(String),
           }),
           expect.objectContaining({
-            type: 'component_hover',
-            componentId: expect.any(String),
+            ...requiredEventShape,
             variantIndex: 2,
-            hoverDurationMs: expect.any(Number),
-            componentHoverId: expect.any(String),
           }),
         ])
       );
