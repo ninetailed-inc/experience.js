@@ -90,7 +90,7 @@ export class ElementHoverObserver {
     const now = Date.now();
 
     this._activeHoverSessions.forEach((hoverSession, element) => {
-      this.emitHoverIfNeeded(element, hoverSession, now);
+      this.emitHoverIfNeeded(element, hoverSession, now, true);
     });
 
     this._activeHoverSessions.clear();
@@ -106,7 +106,7 @@ export class ElementHoverObserver {
       const now = Date.now();
 
       this._activeHoverSessions.forEach((hoverSession, element) => {
-        this.emitHoverIfNeeded(element, hoverSession, now);
+        this.emitHoverIfNeeded(element, hoverSession, now, false);
       });
     }, this.heartbeatIntervalMs);
   }
@@ -129,7 +129,7 @@ export class ElementHoverObserver {
     }
 
     if (emitFinalHeartbeat) {
-      this.emitHoverIfNeeded(element, hoverSession, Date.now());
+      this.emitHoverIfNeeded(element, hoverSession, Date.now(), true);
     }
 
     this._activeHoverSessions.delete(element);
@@ -139,7 +139,8 @@ export class ElementHoverObserver {
   private emitHoverIfNeeded(
     element: Element,
     hoverSession: ElementHoverSession,
-    now: number
+    now: number,
+    forceReport: boolean
   ) {
     const hoverDurationMs = now - hoverSession.hoverStartTimestamp;
 
@@ -149,7 +150,11 @@ export class ElementHoverObserver {
 
     const durationDelta = hoverDurationMs - hoverSession.lastReportedMs;
 
-    if (durationDelta < this.minimumHeartbeatIncrementMs) {
+    if (durationDelta <= 0) {
+      return;
+    }
+
+    if (!forceReport && durationDelta < this.minimumHeartbeatIncrementMs) {
       return;
     }
 

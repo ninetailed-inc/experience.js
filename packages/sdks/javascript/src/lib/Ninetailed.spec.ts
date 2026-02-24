@@ -612,6 +612,41 @@ describe('Ninetailed core class', () => {
         })
       );
     });
+    it('should emit a final hover heartbeat on mouseleave for unsent hover duration', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const hoverPlugin = new TestElementHoverPlugin();
+      const { ninetailed } = mockProfile([hoverPlugin]);
+      const experience = generateExperience();
+
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackHovers: true }
+      );
+
+      element.dispatchEvent(new MouseEvent('mouseenter'));
+      jest.advanceTimersByTime(2_500);
+      element.dispatchEvent(new MouseEvent('mouseleave'));
+      jest.runAllTimers();
+
+      await waitFor(() => {
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(1);
+      });
+
+      const hoverDurations = hoverPlugin.onElementHoveredMock.mock.calls.map(
+        ([payload]) => (payload as ElementHoveredPayload).hoverDurationMs
+      );
+
+      expect(hoverDurations).toEqual(expect.arrayContaining([2_000]));
+      expect(Math.max(...hoverDurations)).toBeGreaterThan(2_000);
+    });
     it('should not track component hovers when hover duration is below the minimum threshold', () => {
       const element = document.body.appendChild(document.createElement('div'));
       const hoverPlugin = new TestElementHoverPlugin();
