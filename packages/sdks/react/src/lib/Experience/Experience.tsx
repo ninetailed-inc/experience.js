@@ -26,6 +26,7 @@ export const Experience = <
       Variant
     >,
   trackClicks,
+  trackHovers,
   passthroughProps,
   ...baseline
 }: ExperienceProps<P, PassThroughProps, Variant>) => {
@@ -86,7 +87,7 @@ export const Experience = <
             : variant,
           variantIndex,
         },
-        { trackClicks }
+        { trackClicks, trackHovers }
       );
 
       return () => {
@@ -109,6 +110,7 @@ export const Experience = <
     audience,
     isVariantHidden,
     trackClicks,
+    trackHovers,
   ]);
 
   if (!hasVariants) {

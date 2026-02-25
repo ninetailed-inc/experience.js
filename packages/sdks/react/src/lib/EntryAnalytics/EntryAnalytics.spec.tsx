@@ -74,4 +74,17 @@ describe('EntryAnalytics', () => {
     const passed = (Experience as unknown as jest.Mock).mock.calls[0][0];
     expect(passed.trackClicks).toBe(true);
   });
+
+  it('forwards the optional trackHovers prop to Experience', () => {
+    render(
+      <EntryAnalytics
+        id="entry-hovers"
+        component={Greeting}
+        {...{ name: 'Mark' }}
+        trackHovers
+      />
+    );
+    const passed = (Experience as unknown as jest.Mock).mock.calls[0][0];
+    expect(passed.trackHovers).toBe(true);
+  });
 });
