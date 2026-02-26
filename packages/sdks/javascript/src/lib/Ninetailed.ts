@@ -55,6 +55,7 @@ import {
 } from './constants';
 import { ElementSeenObserver } from './ElementSeenObserver';
 import { ElementClickObserver } from './ElementClickObserver';
+import { ElementHoverObserver } from './ElementHoverObserver';
 import type { ObserveOptions } from './types/ObserveOptions';
 import { acceptsCredentials } from './guards/acceptsCredentials';
 import { isInterestedInHiddenPage } from './guards/isInterestedInHiddenPage';
@@ -72,6 +73,7 @@ import { RemoveOnChangeListener } from './utils/OnChangeEmitter';
 import {
   ElementSeenPayload,
   HAS_CLICKED_ELEMENT,
+  HAS_HOVERED_ELEMENT,
   HAS_SEEN_COMPONENT,
   HAS_SEEN_ELEMENT,
   HAS_SEEN_VARIABLE,
@@ -115,6 +117,7 @@ type Options = {
   onLog?: OnLogHandler;
   onError?: OnErrorHandler;
   componentViewTrackingThreshold?: number;
+  componentHoverTrackingThreshold?: number;
   onInitProfileId?: OnInitProfileId;
   buildClientContext?: () => NinetailedRequestContext;
   storageImpl?: Storage;
@@ -168,6 +171,7 @@ export class Ninetailed implements NinetailedInstance {
   private readonly ninetailedCorePlugin: NinetailedCorePlugin;
   private readonly elementSeenObserver: ElementSeenObserver;
   private readonly elementClickObserver: ElementClickObserver;
+  private readonly elementHoverObserver: ElementHoverObserver;
   private readonly observedElements: WeakMap<Element, ObservedElementPayload[]>;
 
   private readonly clientId;
@@ -194,6 +198,7 @@ export class Ninetailed implements NinetailedInstance {
       buildClientContext,
       onInitProfileId,
       componentViewTrackingThreshold = 2000,
+      componentHoverTrackingThreshold = 2000,
       storageImpl,
       useSDKEvaluation = false,
     }: Options = {}
@@ -300,6 +305,10 @@ export class Ninetailed implements NinetailedInstance {
     });
     this.elementClickObserver = new ElementClickObserver({
       onElementClick: this.onElementClicked.bind(this),
+    });
+    this.elementHoverObserver = new ElementHoverObserver({
+      onElementHover: this.onElementHovered.bind(this),
+      componentHoverTrackingThreshold,
     });
     this.componentViewTrackingThreshold = componentViewTrackingThreshold;
 
@@ -506,6 +515,7 @@ export class Ninetailed implements NinetailedInstance {
     this.storeElementPayload(element, remainingPayload);
     this.setupElementObservation(element, options?.delay);
     this.setupElementClickObservation(element, options?.trackClicks);
+    this.setupElementHoverObservation(element, options?.trackHovers);
   };
 
   private logInvalidElement(element: unknown) {
@@ -569,10 +579,22 @@ export class Ninetailed implements NinetailedInstance {
     this.elementClickObserver.observe(element);
   }
 
+  private setupElementHoverObservation(
+    element: Element,
+    trackHovers?: ObserveOptions['trackHovers']
+  ) {
+    if (!trackHovers) {
+      return;
+    }
+
+    this.elementHoverObserver.observe(element);
+  }
+
   public unobserveElement = (element: Element) => {
     this.observedElements.delete(element);
     this.elementSeenObserver.unobserve(element);
     this.elementClickObserver.unobserve(element);
+    this.elementHoverObserver.unobserve(element);
   };
 
   private onElementSeen = (element: Element, delay?: number) => {
@@ -599,6 +621,26 @@ export class Ninetailed implements NinetailedInstance {
           ...payload,
           element,
           type: HAS_CLICKED_ELEMENT,
+        });
+      }
+    }
+  };
+
+  private onElementHovered = (
+    element: Element,
+    hoverDurationMs: number,
+    componentHoverId: string
+  ) => {
+    const payloads = this.observedElements.get(element);
+
+    if (Array.isArray(payloads) && payloads.length > 0) {
+      for (const payload of payloads) {
+        this.instance.dispatch({
+          ...payload,
+          element,
+          type: HAS_HOVERED_ELEMENT,
+          hoverDurationMs,
+          componentHoverId,
         });
       }
     }
@@ -1088,6 +1130,7 @@ export class Ninetailed implements NinetailedInstance {
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
+        this.elementHoverObserver.flushActiveHovers();
         this.instance.dispatch({ type: PAGE_HIDDEN });
       }
     });

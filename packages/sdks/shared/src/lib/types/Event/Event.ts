@@ -6,6 +6,7 @@ import type { GroupEvent } from './GroupEvent';
 import type { AliasEvent } from './AliasEvent';
 import type { ComponentViewEvent } from './ComponentViewEvent';
 import type { ComponentClickEvent } from './ComponentClickEvent';
+import type { ComponentHoverEvent } from './ComponentHoverEvent';
 
 export type Event =
   | PageviewEvent
@@ -15,4 +16,5 @@ export type Event =
   | GroupEvent
   | AliasEvent
   | ComponentViewEvent
-  | ComponentClickEvent;
+  | ComponentClickEvent
+  | ComponentHoverEvent;

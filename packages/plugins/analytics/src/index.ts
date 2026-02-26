@@ -7,13 +7,15 @@ export type { Template } from './lib/NinetailedAnalyticsPlugin';
 
 export {
   ElementClickedPayloadSchema,
+  ElementHoveredPayloadSchema,
   ElementSeenPayloadSchema,
   VariableSeenPayloadSchema,
 } from './lib/ElementPayload';
 export type {
-  ComponentClickEventComponentType,
+  ComponentInteractionEventComponentType,
   ComponentViewEventComponentType,
   ElementClickedPayload,
+  ElementHoveredPayload,
   ElementSeenPayload,
   VariableSeenPayload,
 } from './lib/ElementPayload';

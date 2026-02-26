@@ -40,4 +40,5 @@ export type ExperienceProps<
   component: ComponentType<P>;
   loadingComponent?: ExperienceLoadingComponent<P, PassThroughProps, Variant>;
   trackClicks?: boolean;
+  trackHovers?: boolean;
 };

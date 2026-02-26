@@ -5,6 +5,7 @@ import {
 } from '@ninetailed/experience.js-shared';
 import {
   ElementClickedPayload,
+  ElementHoveredPayload,
   EventHandler,
   NinetailedPlugin,
 } from '@ninetailed/experience.js-plugin-analytics';
@@ -67,6 +68,16 @@ class TestElementClickPlugin extends NinetailedPlugin {
       this.onElementClickedMock(payload);
     };
 }
+
+class TestElementHoverPlugin extends NinetailedPlugin {
+  public name = 'ninetailed:test-hover';
+  public onElementHoveredMock = jest.fn();
+  protected override onHasHoveredElement: EventHandler<ElementHoveredPayload> =
+    ({ payload }) => {
+      this.onElementHoveredMock(payload);
+    };
+}
+
 describe('Ninetailed core class', () => {
   let ninetailed: Ninetailed;
   let apiClient: NinetailedApiClient;
@@ -518,6 +529,357 @@ describe('Ninetailed core class', () => {
       jest.runAllTimers();
       expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(0);
     });
+    describe('hover tracking', () => {
+      it('should not track component hovers when trackHovers is disabled', () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: false }
+        );
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('should track component hovers when trackHovers is enabled and hover duration is above the minimum threshold', async () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+        await waitFor(() => {
+          expect(
+            hoverPlugin.onElementHoveredMock.mock.calls.length
+          ).toBeGreaterThan(0);
+        });
+
+        const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+          ([payload]) => payload
+        ) as ElementHoveredPayload[];
+
+        expect(hoverPayloads.length).toBeGreaterThan(0);
+        hoverPayloads.forEach((hoverPayload) => {
+          expect(hoverPayload).toEqual(
+            expect.objectContaining({
+              variant: expect.objectContaining({ id: 'variant-id' }),
+              variantIndex: 1,
+              hoverDurationMs: expect.any(Number),
+              componentHoverId: expect.any(String),
+            })
+          );
+        });
+        expect(
+          new Set(
+            hoverPayloads.map((hoverPayload) => hoverPayload.componentHoverId)
+          ).size
+        ).toBe(1);
+        expect(
+          Math.max(
+            ...hoverPayloads.map((hoverPayload) => hoverPayload.hoverDurationMs)
+          )
+        ).toBeGreaterThanOrEqual(10_000);
+      });
+
+      it('should emit a final hover heartbeat on mouseleave for unsent hover duration', async () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(2_500);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+
+        await waitFor(() => {
+          expect(
+            hoverPlugin.onElementHoveredMock.mock.calls.length
+          ).toBeGreaterThan(1);
+        });
+
+        const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+          ([payload]) => payload as ElementHoveredPayload
+        );
+        hoverPayloads.forEach((hoverPayload) => {
+          expect(hoverPayload).toEqual(
+            expect.objectContaining({
+              variant: expect.objectContaining({ id: 'variant-id' }),
+              variantIndex: 1,
+              hoverDurationMs: expect.any(Number),
+              componentHoverId: expect.any(String),
+            })
+          );
+        });
+
+        const hoverDurations = hoverPayloads.map(
+          (hoverPayload) => hoverPayload.hoverDurationMs
+        );
+
+        expect(hoverDurations).toEqual(expect.arrayContaining([2_000]));
+        expect(Math.max(...hoverDurations)).toBeGreaterThan(2_000);
+      });
+
+      it('should not track component hovers when hover duration is below the minimum threshold', () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(1);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('should cleanup hover listeners when unobserveElement is called', () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+        ninetailed.unobserveElement(element);
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+        expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('should track multiple component hovers for the same element', async () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        element.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+        await waitFor(() => {
+          expect(
+            hoverPlugin.onElementHoveredMock.mock.calls.length
+          ).toBeGreaterThan(1);
+        });
+
+        const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+          ([payload]) => payload
+        ) as ElementHoveredPayload[];
+        expect(hoverPayloads.length).toBeGreaterThan(1);
+        hoverPayloads.forEach((hoverPayload) => {
+          expect(hoverPayload).toEqual(
+            expect.objectContaining({
+              variant: expect.objectContaining({ id: 'variant-id' }),
+              variantIndex: 1,
+              hoverDurationMs: expect.any(Number),
+              componentHoverId: expect.any(String),
+            })
+          );
+        });
+        expect(
+          new Set(
+            hoverPayloads.map((hoverPayload) => hoverPayload.componentHoverId)
+          ).size
+        ).toBe(2);
+      });
+
+      it('should track component hovers independently for multiple observed elements', async () => {
+        const elementOne = document.body.appendChild(
+          document.createElement('div')
+        );
+        const elementTwo = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element: elementOne,
+            variant: { id: 'variant-id-1' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+        ninetailed.observeElement(
+          {
+            element: elementTwo,
+            variant: { id: 'variant-id-2' },
+            variantIndex: 2,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+        elementOne.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        elementOne.dispatchEvent(new MouseEvent('mouseleave'));
+        elementTwo.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(10_000);
+        elementTwo.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+        await waitFor(() => {
+          expect(
+            hoverPlugin.onElementHoveredMock.mock.calls.length
+          ).toBeGreaterThan(1);
+        });
+
+        const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+          ([payload]) => payload
+        ) as ElementHoveredPayload[];
+        expect(hoverPayloads.length).toBeGreaterThan(1);
+        hoverPayloads.forEach((hoverPayload) => {
+          expect(hoverPayload).toEqual(
+            expect.objectContaining({
+              variant: expect.objectContaining({ id: expect.any(String) }),
+              variantIndex: expect.any(Number),
+              hoverDurationMs: expect.any(Number),
+              componentHoverId: expect.any(String),
+            })
+          );
+        });
+        const variantIds = new Set(
+          hoverPayloads.map((payload) => payload.variant.id)
+        );
+        expect(variantIds).toEqual(new Set(['variant-id-1', 'variant-id-2']));
+        expect(hoverPayloads).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              variant: expect.objectContaining({ id: 'variant-id-1' }),
+              variantIndex: 1,
+            }),
+            expect.objectContaining({
+              variant: expect.objectContaining({ id: 'variant-id-2' }),
+              variantIndex: 2,
+            }),
+          ])
+        );
+      });
+    });
+
+    it('should track component clicks and hovers independently when both tracking options are enabled', async () => {
+      const element = document.body.appendChild(
+        document.createElement('button')
+      );
+      const clickPlugin = new TestElementClickPlugin();
+      const hoverPlugin = new TestElementHoverPlugin();
+      const { ninetailed } = mockProfile([clickPlugin, hoverPlugin]);
+      const experience = generateExperience();
+      ninetailed.observeElement(
+        {
+          element,
+          variant: { id: 'variant-id' },
+          variantIndex: 1,
+          experience,
+          componentType: 'Entry',
+        },
+        { trackClicks: true, trackHovers: true }
+      );
+      element.click();
+      element.dispatchEvent(new MouseEvent('mouseenter'));
+      jest.advanceTimersByTime(10_000);
+      element.dispatchEvent(new MouseEvent('mouseleave'));
+      jest.runAllTimers();
+      await waitFor(() => {
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(0);
+      });
+      const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementHoveredPayload[];
+      hoverPayloads.forEach((hoverPayload) => {
+        expect(hoverPayload).toEqual(
+          expect.objectContaining({
+            variant: expect.objectContaining({ id: 'variant-id' }),
+            variantIndex: 1,
+            hoverDurationMs: expect.any(Number),
+            componentHoverId: expect.any(String),
+          })
+        );
+      });
+      expect(clickPlugin.onElementClickedMock).toHaveBeenCalledTimes(1);
+    });
+
     it('should not track a component view when no experience is provided', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
@@ -535,6 +897,7 @@ describe('Ninetailed core class', () => {
         expect(testPlugin.onTrackExperienceMock).not.toHaveBeenCalled();
       });
     });
+
     it('should not track a component view for elements that are not instances of Element', async () => {
       const element = 'element';
       const testPlugin = new TestAnalyticsPlugin({}, jest.fn(), jest.fn());
