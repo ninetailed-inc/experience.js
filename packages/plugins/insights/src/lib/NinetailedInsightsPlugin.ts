@@ -461,8 +461,12 @@ export class NinetailedInsightsPlugin
   }
 
   private buildSeenElementDedupeKey(payload: ObservedElementPayload) {
-    const { viewDurationMs: _, ...payloadWithoutViewDuration } = payload;
-
-    return JSON.stringify(payloadWithoutViewDuration);
+    return [
+      payload.componentViewId ?? 'no-component-view-id',
+      payload.seenFor ?? 0,
+      payload.variant.id,
+      payload.variantIndex,
+      payload.experience?.id ?? 'no-experience-id',
+    ].join(':');
   }
 }
