@@ -79,6 +79,8 @@ export class EventBuilder {
     componentType: ComponentViewEventComponentType,
     experienceId?: string,
     variantIndex?: number,
+    viewDurationMs?: number,
+    componentViewId?: string,
     data?: ComponentData
   ) {
     return buildComponentViewEvent({
@@ -87,6 +89,8 @@ export class EventBuilder {
       componentType: componentType || 'Entry',
       experienceId,
       variantIndex: variantIndex || 0,
+      viewDurationMs,
+      componentViewId,
     });
   }
 
