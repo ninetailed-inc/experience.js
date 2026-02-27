@@ -52,6 +52,10 @@ type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
 
 type VariableSeenPayloadWithoutVariable = Omit<VariableSeenPayload, 'variable'>;
 
+type ElementDedupeKey = string;
+type SeenDurationMs = number;
+type SeenElementDurationsByDedupeKey = Map<ElementDedupeKey, SeenDurationMs>;
+
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin
   implements
@@ -65,7 +69,10 @@ export class NinetailedInsightsPlugin
 {
   public override name = 'ninetailed:insights';
 
-  private seenElements = new WeakMap<Element, Map<string, number>>();
+  private seenElements = new WeakMap<
+    Element,
+    SeenElementDurationsByDedupeKey
+  >();
 
   private seenVariables = new Map<
     string,
