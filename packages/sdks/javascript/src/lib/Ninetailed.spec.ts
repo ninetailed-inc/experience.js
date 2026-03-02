@@ -381,7 +381,7 @@ describe('Ninetailed core class', () => {
         );
       });
     });
-    it('should keep componentViewId stable and report cumulative viewDurationMs across re-entries', async () => {
+    it('should generate a new componentViewId and reset viewDurationMs across re-entries', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const seenPlugin = new TestElementSeenPlugin();
       const { ninetailed } = mockProfile([seenPlugin]);
@@ -416,8 +416,8 @@ describe('Ninetailed core class', () => {
       );
       const durations = payloads.map((payload) => payload.viewDurationMs ?? 0);
 
-      expect(uniqueComponentViewIds.size).toBe(1);
-      expect(durations[durations.length - 1]).toBeGreaterThan(durations[0]);
+      expect(uniqueComponentViewIds.size).toBe(2);
+      expect(Math.max(...durations)).toBeLessThan(4_000);
     });
     it('should switch to a slower heartbeat cadence after long views', async () => {
       const element = document.body.appendChild(document.createElement('div'));

@@ -226,7 +226,7 @@ describe('NinetailedInsightsPlugin', () => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
     });
   });
-  it('should keep componentViewId stable and increase viewDurationMs across view heartbeats', async () => {
+  it('should generate a new componentViewId and reset viewDurationMs across re-entries', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const ninetailed = setupNinetailedInstance([insightsPlugin]);
     insightsPlugin.setCredentials({
@@ -275,8 +275,8 @@ describe('NinetailedInsightsPlugin', () => {
       (event) => event['viewDurationMs'] as number
     );
 
-    expect(componentViewIds.size).toBe(1);
-    expect(durations[durations.length - 1]).toBeGreaterThan(durations[0]);
+    expect(componentViewIds.size).toBe(2);
+    expect(Math.max(...durations)).toBeLessThan(4_000);
   });
   it('should flush component view heartbeats with sendBeacon on page hide', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();

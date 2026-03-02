@@ -73,6 +73,16 @@ export class ElementSeenObserver {
 
       if (isIntersecting) {
         if (viewState.enterTimestamp === null) {
+          const hasPreviousViewSession =
+            viewState.accumulatedVisibleDurationMs > 0 ||
+            viewState.lastReportedDurationByDelay.size > 0;
+
+          if (hasPreviousViewSession) {
+            viewState.componentViewId = crypto.randomUUID();
+            viewState.accumulatedVisibleDurationMs = 0;
+            viewState.lastReportedDurationByDelay.clear();
+          }
+
           viewState.enterTimestamp = now;
           this.startHeartbeatIfNeeded();
         }
