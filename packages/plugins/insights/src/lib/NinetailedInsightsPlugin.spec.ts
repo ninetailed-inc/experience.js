@@ -99,7 +99,8 @@ describe('NinetailedInsightsPlugin', () => {
       expect(insightsApiClientSendEventBatchesMock).not.toHaveBeenCalled();
     });
   });
-  it('should dedupe the same element by componentViewId even when payloads differ', async () => {
+  // This is a rare case and would only happen if a profile changes while the user is on the same page and the component would change e.g. from baseline to variant 1
+  it('should track the same element with different payloads', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const ninetailed = setupNinetailedInstance([insightsPlugin]);
     insightsPlugin.setCredentials({
@@ -120,23 +121,58 @@ describe('NinetailedInsightsPlugin', () => {
       });
     }
     intersect(element, true);
-    jest.advanceTimersByTime(2_100);
-    jest.useRealTimers();
 
+    // Run a bounded number of heartbeats to avoid an unbounded timer loop.
+    for (let i = 0; i < 25; i++) {
+      jest.runOnlyPendingTimers();
+    }
+    intersect(element, false);
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
     await waitFor(() => {
-      const pluginEvents = (
-        insightsPlugin as unknown as { events: Record<string, unknown>[] }
-      ).events;
-      expect(pluginEvents).toHaveLength(1);
-      expect(pluginEvents[0]).toEqual(
-        expect.objectContaining({
-          type: 'component',
-          componentId: expect.any(String),
-        })
-      );
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+    });
+  });
+  it('should dedupe onHasSeenElement by componentViewId even when payloads differ', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const dispatchMock = jest.fn();
+    await insightsPlugin.initialize({
+      instance: { dispatch: dispatchMock } as unknown as never,
     });
 
-    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
+    const basePayload = {
+      meta: { rid: 'rid-1', ts: new Date().toISOString() },
+      _: { originalAction: 'has_seen_element' },
+      element: document.createElement('div'),
+      variant: { id: 'variant-id-1' },
+      variantIndex: 0,
+      seenFor: 2000,
+      componentViewId: 'component-view-id-1',
+      viewDurationMs: 2000,
+    };
+
+    insightsPlugin.onHasSeenElement({
+      payload: basePayload,
+      instance: {} as never,
+      abort: jest.fn(),
+    });
+
+    insightsPlugin.onHasSeenElement({
+      payload: {
+        ...basePayload,
+        variant: { id: 'variant-id-2' },
+        variantIndex: 1,
+      },
+      instance: {} as never,
+      abort: jest.fn(),
+    });
+
+    expect(dispatchMock).toHaveBeenCalledTimes(1);
+    expect(dispatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        componentViewId: 'component-view-id-1',
+      })
+    );
   });
   it('should not track the same element with the same payload', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
