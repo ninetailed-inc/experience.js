@@ -48,13 +48,13 @@ import {
   ElementSeenPayloadSchema,
 } from '@ninetailed/experience.js-plugin-analytics';
 
-type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
-
 type VariableSeenPayloadWithoutVariable = Omit<VariableSeenPayload, 'variable'>;
-
-type ElementDedupeKey = string;
+type ComponentViewDedupeKey = string;
 type SeenDurationMs = number;
-type SeenElementDurationsByDedupeKey = Map<ElementDedupeKey, SeenDurationMs>;
+type SeenElementDurationsByComponentViewId = Map<
+  ComponentViewDedupeKey,
+  SeenDurationMs
+>;
 
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin
@@ -71,7 +71,7 @@ export class NinetailedInsightsPlugin
 
   private seenElements = new WeakMap<
     Element,
-    SeenElementDurationsByDedupeKey
+    SeenElementDurationsByComponentViewId
   >();
 
   private seenVariables = new Map<
@@ -117,15 +117,15 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const { element, ...elementPayload } = sanitizedPayload.data;
     const {
+      element,
       componentType,
       experience,
       variant,
       variantIndex,
       viewDurationMs,
       componentViewId,
-    } = elementPayload;
+    } = sanitizedPayload.data;
 
     const componentId = variant.id;
 
@@ -133,10 +133,11 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const dedupeKey = this.buildSeenElementDedupeKey(elementPayload);
-    const latestSeenDurationsBySession =
+    const dedupeKey = componentViewId ?? 'no-component-view-id';
+    const latestSeenDurationsByComponentViewId =
       this.seenElements.get(element) || new Map<string, number>();
-    const latestSeenDurationMs = latestSeenDurationsBySession.get(dedupeKey);
+    const latestSeenDurationMs =
+      latestSeenDurationsByComponentViewId.get(dedupeKey);
     const currentSeenDurationMs = viewDurationMs ?? 0;
 
     if (
@@ -146,8 +147,8 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    latestSeenDurationsBySession.set(dedupeKey, currentSeenDurationMs);
-    this.seenElements.set(element, latestSeenDurationsBySession);
+    latestSeenDurationsByComponentViewId.set(dedupeKey, currentSeenDurationMs);
+    this.seenElements.set(element, latestSeenDurationsByComponentViewId);
 
     /**
      * Intentionally sending a COMPONENT_START event instead of COMPONENT.
@@ -465,15 +466,5 @@ export class NinetailedInsightsPlugin
 
   public setEventBuilder(eventBuilder: EventBuilder) {
     this.eventBuilder = eventBuilder;
-  }
-
-  private buildSeenElementDedupeKey(payload: ObservedElementPayload) {
-    return [
-      payload.componentViewId ?? 'no-component-view-id',
-      payload.seenFor ?? 0,
-      payload.variant.id,
-      payload.variantIndex,
-      payload.experience?.id ?? 'no-experience-id',
-    ].join(':');
   }
 }

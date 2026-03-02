@@ -99,8 +99,7 @@ describe('NinetailedInsightsPlugin', () => {
       expect(insightsApiClientSendEventBatchesMock).not.toHaveBeenCalled();
     });
   });
-  // This is a rare case and would only happen if a profile changes while the user is on the same page and the component would change e.g. from baseline to variant 1
-  it('should track the same element with different payloads', async () => {
+  it('should dedupe the same element by componentViewId even when payloads differ', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const ninetailed = setupNinetailedInstance([insightsPlugin]);
     insightsPlugin.setCredentials({
@@ -123,9 +122,21 @@ describe('NinetailedInsightsPlugin', () => {
     intersect(element, true);
     jest.advanceTimersByTime(2_100);
     jest.useRealTimers();
+
     await waitFor(() => {
-      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+      const pluginEvents = (
+        insightsPlugin as unknown as { events: Record<string, unknown>[] }
+      ).events;
+      expect(pluginEvents).toHaveLength(1);
+      expect(pluginEvents[0]).toEqual(
+        expect.objectContaining({
+          type: 'component',
+          componentId: expect.any(String),
+        })
+      );
     });
+
+    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
   });
   it('should not track the same element with the same payload', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
