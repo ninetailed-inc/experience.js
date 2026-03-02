@@ -408,7 +408,10 @@ export class NinetailedInsightsPlugin
 
     this.profile = profile ?? undefined;
 
-    this.seenElements = new WeakMap<Element, Map<string, number>>();
+    this.seenElements = new WeakMap<
+      Element,
+      SeenElementDurationsByComponentViewId
+    >();
   };
 
   public [PAGE_HIDDEN] = () => {
