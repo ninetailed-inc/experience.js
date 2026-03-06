@@ -52,4 +52,22 @@ describe('Generated package.json files', () => {
       expect(isTypeCommonJS && hasModuleField).toBeFalsy();
     }
   );
+  it('all emitted package type paths should resolve to real files', () => {
+    packageJsonPaths.forEach((packageJsonPath) => {
+      const json = parsePackageJson(packageJsonPath);
+      const typePaths = new Set(
+        [json.types, json.exports?.['.']?.types].filter(
+          (value): value is string => typeof value === 'string'
+        )
+      );
+
+      typePaths.forEach((typePath) => {
+        const resolvedTypePath = path.resolve(
+          path.dirname(packageJsonPath),
+          typePath
+        );
+        expect(fs.existsSync(resolvedTypePath)).toBeTruthy();
+      });
+    });
+  });
 });
