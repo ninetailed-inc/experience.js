@@ -15,7 +15,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -35,7 +35,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -79,7 +79,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -99,7 +99,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -185,7 +185,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -205,7 +205,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -222,7 +222,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -242,7 +242,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -333,7 +333,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -353,7 +353,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -398,7 +398,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -422,7 +422,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -438,7 +438,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -462,7 +462,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -514,7 +514,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -537,7 +537,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -561,7 +561,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -575,7 +575,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -595,7 +595,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -618,7 +618,7 @@ Object {
     "@contentful/rich-text-types": "17.2.5",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
@@ -636,7 +636,7 @@ Object {
       "default": "./index.esm.js",
       "import": "./index.esm.js",
       "require": "./index.cjs.js",
-      "types": "./index.cjs.d.ts",
+      "types": "./index.d.ts",
     },
     "./package.json": "./package.json",
   },
@@ -650,7 +650,7 @@ Object {
     "url": "https://github.com/ninetailed-inc/experience.js.git",
   },
   "sideEffects": false,
-  "types": "./index.cjs.d.ts",
+  "types": "./index.d.ts",
   "version": "7.6.0-beta.1",
 }
 `;
