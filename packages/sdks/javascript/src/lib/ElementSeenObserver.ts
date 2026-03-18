@@ -5,7 +5,7 @@ export type ElementSeenObserverOptions = {
     element: Element,
     delay: number,
     viewDurationMs: number,
-    componentViewId: string
+    viewId: string
   ) => void;
   heartbeatIntervalMs?: number;
   extendedHeartbeatIntervalMs?: number;
@@ -16,7 +16,7 @@ export type ElementSeenObserverOptions = {
 export type { ObserveOptions } from './types/ObserveOptions';
 
 type ElementViewState = {
-  componentViewId: string;
+  viewId: string;
   delays: Set<number>;
   enterTimestamp: number | null;
   accumulatedVisibleDurationMs: number;
@@ -78,7 +78,7 @@ export class ElementSeenObserver {
             viewState.lastReportedDurationByDelay.size > 0;
 
           if (hasPreviousViewSession) {
-            viewState.componentViewId = crypto.randomUUID();
+            viewState.viewId = crypto.randomUUID();
             viewState.accumulatedVisibleDurationMs = 0;
             viewState.lastReportedDurationByDelay.clear();
           }
@@ -99,7 +99,7 @@ export class ElementSeenObserver {
 
     if (!viewState) {
       this._elementViewState.set(element, {
-        componentViewId: crypto.randomUUID(),
+        viewId: crypto.randomUUID(),
         delays: new Set([delay]),
         enterTimestamp: null,
         accumulatedVisibleDurationMs: 0,
@@ -297,7 +297,7 @@ export class ElementSeenObserver {
         element,
         delay,
         viewDurationMs,
-        viewState.componentViewId
+        viewState.viewId
       );
       viewState.lastReportedDurationByDelay.set(delay, viewDurationMs);
     });

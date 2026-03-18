@@ -9,7 +9,7 @@ export type BuildComponentHoverEventData = Object.Omit<
     {
       componentId: string;
       componentType: 'Entry';
-      componentHoverId: string;
+      hoverId: string;
       hoverDurationMs: number;
       experienceId?: string;
       variantIndex?: number;
@@ -26,7 +26,7 @@ export const buildComponentHoverEvent = (
     ...buildEvent({ ...data, type: 'component_hover' }),
     componentType: data.componentType,
     componentId: data.componentId,
-    componentHoverId: data.componentHoverId,
+    hoverId: data.hoverId,
     hoverDurationMs: data.hoverDurationMs,
     experienceId: data.experienceId,
     variantIndex: data.variantIndex,

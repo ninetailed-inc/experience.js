@@ -49,12 +49,9 @@ import {
 } from '@ninetailed/experience.js-plugin-analytics';
 
 type VariableSeenPayloadWithoutVariable = Omit<VariableSeenPayload, 'variable'>;
-type ComponentViewDedupeKey = string;
+type ViewDedupeKey = string;
 type SeenDurationMs = number;
-type SeenElementDurationsByComponentViewId = Map<
-  ComponentViewDedupeKey,
-  SeenDurationMs
->;
+type SeenElementDurationsByViewId = Map<ViewDedupeKey, SeenDurationMs>;
 
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin
@@ -69,10 +66,7 @@ export class NinetailedInsightsPlugin
 {
   public override name = 'ninetailed:insights';
 
-  private seenElements = new WeakMap<
-    Element,
-    SeenElementDurationsByComponentViewId
-  >();
+  private seenElements = new WeakMap<Element, SeenElementDurationsByViewId>();
 
   private seenVariables = new Map<
     string,
@@ -124,7 +118,7 @@ export class NinetailedInsightsPlugin
       variant,
       variantIndex,
       viewDurationMs,
-      componentViewId,
+      viewId,
     } = sanitizedPayload.data;
 
     const componentId = variant.id;
@@ -133,11 +127,10 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const dedupeKey = componentViewId ?? 'no-component-view-id';
-    const latestSeenDurationsByComponentViewId =
+    const dedupeKey = viewId ?? 'no-view-id';
+    const latestSeenDurationsByViewId =
       this.seenElements.get(element) || new Map<string, number>();
-    const latestSeenDurationMs =
-      latestSeenDurationsByComponentViewId.get(dedupeKey);
+    const latestSeenDurationMs = latestSeenDurationsByViewId.get(dedupeKey);
     const currentSeenDurationMs = viewDurationMs ?? 0;
 
     if (
@@ -147,8 +140,8 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    latestSeenDurationsByComponentViewId.set(dedupeKey, currentSeenDurationMs);
-    this.seenElements.set(element, latestSeenDurationsByComponentViewId);
+    latestSeenDurationsByViewId.set(dedupeKey, currentSeenDurationMs);
+    this.seenElements.set(element, latestSeenDurationsByViewId);
 
     /**
      * Intentionally sending a COMPONENT_START event instead of COMPONENT.
@@ -166,7 +159,7 @@ export class NinetailedInsightsPlugin
       variantIndex,
       experienceId: experience?.id,
       viewDurationMs,
-      componentViewId,
+      viewId,
     });
   };
 
@@ -184,7 +177,7 @@ export class NinetailedInsightsPlugin
       variantIndex,
       componentType,
       viewDurationMs,
-      componentViewId,
+      viewId,
     } = payload;
 
     const event = this.eventBuilder.component(
@@ -193,7 +186,7 @@ export class NinetailedInsightsPlugin
       experienceId,
       variantIndex,
       viewDurationMs,
-      componentViewId
+      viewId
     );
 
     this.events.push(event);
@@ -287,7 +280,7 @@ export class NinetailedInsightsPlugin
       variant,
       variantIndex,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
     } = sanitizedPayload.data;
 
     const componentId = variant.id;
@@ -303,7 +296,7 @@ export class NinetailedInsightsPlugin
       variantIndex,
       experienceId: experience?.id,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
     });
   };
 
@@ -323,14 +316,14 @@ export class NinetailedInsightsPlugin
       variantIndex,
       componentType,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
     } = payload;
 
     const event = this.eventBuilder.componentHover(
       componentId,
       componentType,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
       experienceId,
       variantIndex
     );
@@ -408,10 +401,7 @@ export class NinetailedInsightsPlugin
 
     this.profile = profile ?? undefined;
 
-    this.seenElements = new WeakMap<
-      Element,
-      SeenElementDurationsByComponentViewId
-    >();
+    this.seenElements = new WeakMap<Element, SeenElementDurationsByViewId>();
   };
 
   public [PAGE_HIDDEN] = () => {

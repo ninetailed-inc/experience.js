@@ -7,7 +7,7 @@ export type ComponentHoverEvent = Object.Merge<
     type: 'component_hover';
     componentType: 'Entry';
     componentId: string;
-    componentHoverId: string;
+    hoverId: string;
     hoverDurationMs: number;
     experienceId?: string;
     variantIndex?: number;

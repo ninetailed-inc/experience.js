@@ -15,7 +15,7 @@ export type BuildComponentViewEventData = Object.Omit<
       experienceId?: string;
       variantIndex?: number;
       viewDurationMs?: number;
-      componentViewId?: string;
+      viewId?: string;
     },
     'deep'
   >,
@@ -32,6 +32,6 @@ export const buildComponentViewEvent = (
     experienceId: data.experienceId,
     variantIndex: data.variantIndex,
     viewDurationMs: data.viewDurationMs,
-    componentViewId: data.componentViewId,
+    viewId: data.viewId,
   };
 };

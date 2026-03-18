@@ -381,7 +381,7 @@ describe('Ninetailed core class', () => {
         );
       });
     });
-    it('should generate a new componentViewId and reset viewDurationMs across re-entries', async () => {
+    it('should generate a new viewId and reset viewDurationMs across re-entries', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const seenPlugin = new TestElementSeenPlugin();
       const { ninetailed } = mockProfile([seenPlugin]);
@@ -411,12 +411,10 @@ describe('Ninetailed core class', () => {
       const payloads = seenPlugin.onElementSeenMock.mock.calls.map(
         ([payload]) => payload
       ) as ElementSeenPayload[];
-      const uniqueComponentViewIds = new Set(
-        payloads.map((payload) => payload.componentViewId)
-      );
+      const uniqueViewIds = new Set(payloads.map((payload) => payload.viewId));
       const durations = payloads.map((payload) => payload.viewDurationMs ?? 0);
 
-      expect(uniqueComponentViewIds.size).toBe(2);
+      expect(uniqueViewIds.size).toBe(2);
       expect(Math.max(...durations)).toBeLessThan(4_000);
     });
     it('should switch to a slower heartbeat cadence after long views', async () => {
@@ -677,14 +675,13 @@ describe('Ninetailed core class', () => {
               variant: expect.objectContaining({ id: 'variant-id' }),
               variantIndex: 1,
               hoverDurationMs: expect.any(Number),
-              componentHoverId: expect.any(String),
+              hoverId: expect.any(String),
             })
           );
         });
         expect(
-          new Set(
-            hoverPayloads.map((hoverPayload) => hoverPayload.componentHoverId)
-          ).size
+          new Set(hoverPayloads.map((hoverPayload) => hoverPayload.hoverId))
+            .size
         ).toBe(1);
         expect(
           Math.max(
@@ -732,7 +729,7 @@ describe('Ninetailed core class', () => {
               variant: expect.objectContaining({ id: 'variant-id' }),
               variantIndex: 1,
               hoverDurationMs: expect.any(Number),
-              componentHoverId: expect.any(String),
+              hoverId: expect.any(String),
             })
           );
         });
@@ -834,14 +831,13 @@ describe('Ninetailed core class', () => {
               variant: expect.objectContaining({ id: 'variant-id' }),
               variantIndex: 1,
               hoverDurationMs: expect.any(Number),
-              componentHoverId: expect.any(String),
+              hoverId: expect.any(String),
             })
           );
         });
         expect(
-          new Set(
-            hoverPayloads.map((hoverPayload) => hoverPayload.componentHoverId)
-          ).size
+          new Set(hoverPayloads.map((hoverPayload) => hoverPayload.hoverId))
+            .size
         ).toBe(2);
       });
 
@@ -898,7 +894,7 @@ describe('Ninetailed core class', () => {
               variant: expect.objectContaining({ id: expect.any(String) }),
               variantIndex: expect.any(Number),
               hoverDurationMs: expect.any(Number),
-              componentHoverId: expect.any(String),
+              hoverId: expect.any(String),
             })
           );
         });
@@ -958,7 +954,7 @@ describe('Ninetailed core class', () => {
             variant: expect.objectContaining({ id: 'variant-id' }),
             variantIndex: 1,
             hoverDurationMs: expect.any(Number),
-            componentHoverId: expect.any(String),
+            hoverId: expect.any(String),
           })
         );
       });

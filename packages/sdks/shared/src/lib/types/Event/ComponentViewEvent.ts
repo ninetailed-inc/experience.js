@@ -13,6 +13,6 @@ export type ComponentViewEvent = Object.Merge<
     experienceId?: string;
     variantIndex?: number;
     viewDurationMs?: number;
-    componentViewId?: string;
+    viewId?: string;
   }
 >;

@@ -49,7 +49,7 @@ export const ElementSeenPayloadSchema =
   BaseElementInteractionPayloadSchema.extend({
     seenFor: z.number().optional().default(0),
     viewDurationMs: z.number().optional(),
-    componentViewId: z.string().optional(),
+    viewId: z.string().optional(),
   });
 
 export type ElementSeenPayload = Omit<
@@ -67,7 +67,7 @@ export type ElementClickedPayload = Omit<
 export const ElementHoveredPayloadSchema =
   BaseElementInteractionPayloadSchema.extend({
     hoverDurationMs: z.number(),
-    componentHoverId: z.string(),
+    hoverId: z.string(),
   });
 
 export type ElementHoveredPayload = Omit<

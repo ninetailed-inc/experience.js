@@ -27,7 +27,7 @@ type HasSeenElementAction = {
   type: typeof HAS_SEEN_ELEMENT;
   seenFor: number | undefined;
   viewDurationMs?: number;
-  componentViewId?: string;
+  viewId?: string;
   element: Element;
 };
 
@@ -40,7 +40,7 @@ type HasHoveredElementAction = {
   type: typeof HAS_HOVERED_ELEMENT;
   element: Element;
   hoverDurationMs: number;
-  componentHoverId: string;
+  hoverId: string;
 };
 
 type HasSeenVariableAction = {

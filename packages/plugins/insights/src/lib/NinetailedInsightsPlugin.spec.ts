@@ -133,7 +133,7 @@ describe('NinetailedInsightsPlugin', () => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
     });
   });
-  it('should dedupe onHasSeenElement by componentViewId even when payloads differ', async () => {
+  it('should dedupe onHasSeenElement by viewId even when payloads differ', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const dispatchMock = jest.fn();
     await insightsPlugin.initialize({
@@ -147,7 +147,7 @@ describe('NinetailedInsightsPlugin', () => {
       variant: { id: 'variant-id-1' },
       variantIndex: 0,
       seenFor: 2000,
-      componentViewId: 'component-view-id-1',
+      viewId: 'view-id-1',
       viewDurationMs: 2000,
     };
 
@@ -170,7 +170,7 @@ describe('NinetailedInsightsPlugin', () => {
     expect(dispatchMock).toHaveBeenCalledTimes(1);
     expect(dispatchMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        componentViewId: 'component-view-id-1',
+        viewId: 'view-id-1',
       })
     );
   });
@@ -226,7 +226,7 @@ describe('NinetailedInsightsPlugin', () => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
     });
   });
-  it('should generate a new componentViewId and reset viewDurationMs across re-entries', async () => {
+  it('should generate a new viewId and reset viewDurationMs across re-entries', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const ninetailed = setupNinetailedInstance([insightsPlugin]);
     insightsPlugin.setCredentials({
@@ -268,14 +268,14 @@ describe('NinetailedInsightsPlugin', () => {
     const componentEvents = pluginEvents.filter(
       (event: { type?: string }) => event.type === 'component'
     );
-    const componentViewIds = new Set(
-      componentEvents.map((event) => event['componentViewId'] as string)
+    const viewIds = new Set(
+      componentEvents.map((event) => event['viewId'] as string)
     );
     const durations = componentEvents.map(
       (event) => event['viewDurationMs'] as number
     );
 
-    expect(componentViewIds.size).toBe(2);
+    expect(viewIds.size).toBe(2);
     expect(Math.max(...durations)).toBeLessThan(4_000);
   });
   it('should flush component view heartbeats with sendBeacon on page hide', async () => {
@@ -330,7 +330,7 @@ describe('NinetailedInsightsPlugin', () => {
       expect.arrayContaining([
         expect.objectContaining({
           type: 'component',
-          componentViewId: expect.any(String),
+          viewId: expect.any(String),
           viewDurationMs: expect.any(Number),
         }),
       ])
@@ -457,13 +457,13 @@ describe('NinetailedInsightsPlugin', () => {
             componentId: expect.any(String),
             variantIndex: expect.any(Number),
             hoverDurationMs: expect.any(Number),
-            componentHoverId: expect.any(String),
+            hoverId: expect.any(String),
           })
         );
       });
     });
 
-    it('should generate a unique componentHoverId for each hover interaction', async () => {
+    it('should generate a unique hoverId for each hover interaction', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       ninetailed.observeElement(
         {
@@ -499,12 +499,10 @@ describe('NinetailedInsightsPlugin', () => {
       );
 
       expect(hoverEvents.length).toBeGreaterThan(2);
-      const uniqueComponentHoverIds = new Set(
-        hoverEvents.map(
-          (hoverEvent) => hoverEvent['componentHoverId'] as string
-        )
+      const uniqueHoverIds = new Set(
+        hoverEvents.map((hoverEvent) => hoverEvent['hoverId'] as string)
       );
-      expect(uniqueComponentHoverIds.size).toBe(2);
+      expect(uniqueHoverIds.size).toBe(2);
     });
 
     it('should map component hover events to the correct component metadata when multiple elements are observed', async () => {
@@ -564,7 +562,7 @@ describe('NinetailedInsightsPlugin', () => {
         type: 'component_hover',
         componentId: expect.any(String),
         hoverDurationMs: expect.any(Number),
-        componentHoverId: expect.any(String),
+        hoverId: expect.any(String),
       };
       expect(hoverEvents).toEqual(
         expect.arrayContaining([
@@ -665,7 +663,7 @@ describe('NinetailedInsightsPlugin', () => {
         expect.objectContaining({
           type: 'component_hover',
           hoverDurationMs: expect.any(Number),
-          componentHoverId: expect.any(String),
+          hoverId: expect.any(String),
         }),
       ])
     );

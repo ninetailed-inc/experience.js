@@ -601,7 +601,7 @@ export class Ninetailed implements NinetailedInstance {
     element: Element,
     delay: number,
     viewDurationMs: number,
-    componentViewId: string
+    viewId: string
   ) => {
     const payloads = this.observedElements.get(element);
 
@@ -613,7 +613,7 @@ export class Ninetailed implements NinetailedInstance {
           type: HAS_SEEN_ELEMENT,
           seenFor: delay,
           viewDurationMs,
-          componentViewId,
+          viewId,
         });
       }
     }
@@ -636,7 +636,7 @@ export class Ninetailed implements NinetailedInstance {
   private onElementHovered = (
     element: Element,
     hoverDurationMs: number,
-    componentHoverId: string
+    hoverId: string
   ) => {
     const payloads = this.observedElements.get(element);
 
@@ -647,7 +647,7 @@ export class Ninetailed implements NinetailedInstance {
           element,
           type: HAS_HOVERED_ELEMENT,
           hoverDurationMs,
-          componentHoverId,
+          hoverId,
         });
       }
     }
