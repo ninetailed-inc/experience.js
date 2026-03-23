@@ -115,7 +115,7 @@ describe('NinetailedInsightsPlugin', () => {
       variantIndex: 0,
     });
     intersect(element, true);
-    jest.runAllTimers();
+    jest.advanceTimersByTime(2_100);
     jest.useRealTimers();
     expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
     await ninetailed.identify('test-2');
