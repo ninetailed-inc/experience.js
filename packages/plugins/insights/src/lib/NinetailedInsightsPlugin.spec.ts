@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/dom';
 import { NinetailedApiClient } from '@ninetailed/experience.js-shared';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
-import { Ninetailed } from '@ninetailed/experience.js';
+import { Ninetailed, PAGE_HIDDEN } from '@ninetailed/experience.js';
 import { NinetailedPrivacyPlugin } from '@ninetailed/experience.js-plugin-privacy';
 import { NinetailedInsightsPlugin } from './NinetailedInsightsPlugin';
 import { intersect } from './test-helpers/intersection-observer-test-helper';
@@ -97,6 +97,70 @@ describe('NinetailedInsightsPlugin', () => {
     jest.useRealTimers();
     await waitFor(() => {
       expect(insightsApiClientSendEventBatchesMock).not.toHaveBeenCalled();
+    });
+  });
+  it('should flush queued events on profile changes', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const ninetailed = setupNinetailedInstance([insightsPlugin]);
+    insightsPlugin.setCredentials({
+      clientId: 'test',
+      environment: 'development',
+    });
+    await ninetailed.identify('test');
+    jest.useFakeTimers();
+    const element = document.body.appendChild(document.createElement('div'));
+    ninetailed.observeElement({
+      element,
+      variant: { id: 'variant-id-1' },
+      variantIndex: 0,
+    });
+    intersect(element, true);
+    jest.runAllTimers();
+    jest.useRealTimers();
+    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
+    await ninetailed.identify('test-2');
+    await waitFor(() => {
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+      expect(
+        insightsApiClientSendEventBatchesMock.mock.calls[0][0][0].events.length
+      ).toBe(1);
+    });
+  });
+  it('should flush queued batches on page hidden even without an active profile', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    insightsPlugin.setCredentials({
+      clientId: 'test',
+      environment: 'development',
+    });
+
+    const pluginState = insightsPlugin as unknown as {
+      profile?: unknown;
+      eventsQueue: { profile: Record<string, unknown>; events: unknown[] }[];
+      [PAGE_HIDDEN]: () => void;
+    };
+
+    pluginState.eventsQueue = [
+      {
+        profile: { id: 'p-a12b3c4d5e6f7g8h9i0j' },
+        events: [{ type: 'component', componentId: 'variant-id-1' }],
+      },
+    ];
+    pluginState.profile = undefined;
+
+    pluginState[PAGE_HIDDEN]();
+
+    await waitFor(() => {
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
+      expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            events: expect.arrayContaining([
+              expect.objectContaining({ type: 'component' }),
+            ]),
+          }),
+        ]),
+        expect.objectContaining({ useBeacon: true })
+      );
     });
   });
   // This is a rare case and would only happen if a profile changes while the user is on the same page and the component would change e.g. from baseline to variant 1
