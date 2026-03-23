@@ -11,6 +11,7 @@ import {
 } from '@ninetailed/experience.js-plugin-analytics';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
 import { Ninetailed } from './Ninetailed';
+import { PAGE_HIDDEN } from './constants';
 import {
   getObserverOf,
   intersect,
@@ -78,6 +79,14 @@ class TestElementHoverPlugin extends NinetailedPlugin {
     };
 }
 
+class TestPageHiddenPlugin extends NinetailedPlugin {
+  public name = 'ninetailed:test-page-hidden';
+  public onPageHiddenMock = jest.fn();
+  public [PAGE_HIDDEN] = () => {
+    this.onPageHiddenMock();
+  };
+}
+
 describe('Ninetailed core class', () => {
   let ninetailed: Ninetailed;
   let apiClient: NinetailedApiClient;
@@ -97,6 +106,15 @@ describe('Ninetailed core class', () => {
         new NinetailedApiClient({ clientId: 'test' })
       );
       expect(instance).toBeInstanceOf(Ninetailed);
+    });
+    it('should dispatch page hidden events on pagehide and beforeunload', async () => {
+      const pageHiddenPlugin = new TestPageHiddenPlugin();
+      mockProfile([pageHiddenPlugin]);
+      window.dispatchEvent(new Event('pagehide'));
+      window.dispatchEvent(new Event('beforeunload'));
+      await waitFor(() => {
+        expect(pageHiddenPlugin.onPageHiddenMock).toHaveBeenCalledTimes(2);
+      });
     });
   });
   describe('Sending of events', () => {
