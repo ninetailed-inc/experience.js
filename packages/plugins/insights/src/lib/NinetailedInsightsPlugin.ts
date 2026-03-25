@@ -375,6 +375,7 @@ export class NinetailedInsightsPlugin
 
     if (previousProfile) {
       this.createEventsBatch(previousProfile);
+      this.flushEventsQueue();
     }
 
     this.profile = profile ?? undefined;
@@ -383,11 +384,9 @@ export class NinetailedInsightsPlugin
   };
 
   public [PAGE_HIDDEN] = () => {
-    if (!this.profile) {
-      return;
+    if (this.profile) {
+      this.createEventsBatch(this.profile);
     }
-
-    this.createEventsBatch(this.profile);
 
     this.flushEventsQueue(true);
   };
@@ -410,7 +409,7 @@ export class NinetailedInsightsPlugin
   private shouldFlushEventsQueue(): boolean {
     return (
       this.eventsQueue.map(({ events }) => events).flat().length +
-        this.events.length ===
+        this.events.length >=
       NinetailedInsightsPlugin.MAX_EVENTS
     );
   }

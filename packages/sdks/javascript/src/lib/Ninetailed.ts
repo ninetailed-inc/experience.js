@@ -1124,15 +1124,22 @@ export class Ninetailed implements NinetailedInstance {
   }
 
   private onVisibilityChange = () => {
-    if (typeof document === 'undefined') {
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
       return;
     }
 
+    const dispatchPageHidden = () => {
+      this.elementHoverObserver.flushActiveHovers();
+      this.instance.dispatch({ type: PAGE_HIDDEN });
+    };
+
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        this.elementHoverObserver.flushActiveHovers();
-        this.instance.dispatch({ type: PAGE_HIDDEN });
+        dispatchPageHidden();
       }
     });
+
+    window.addEventListener('pagehide', dispatchPageHidden);
+    window.addEventListener('beforeunload', dispatchPageHidden);
   };
 }
