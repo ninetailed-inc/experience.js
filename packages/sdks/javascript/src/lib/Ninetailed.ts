@@ -121,6 +121,9 @@ type Options = {
   onInitProfileId?: OnInitProfileId;
   buildClientContext?: () => NinetailedRequestContext;
   storageImpl?: Storage;
+  /**
+   * @deprecated This option is deprecated and will be removed in a future major version.
+   */
   useSDKEvaluation?: boolean;
 };
 
@@ -181,7 +184,9 @@ export class Ninetailed implements NinetailedInstance {
   public readonly logger: Logger;
 
   private readonly componentViewTrackingThreshold: number;
-
+  /**
+   * @deprecated This option is deprecated and will be removed in a future major version.
+   */
   private readonly useSDKEvaluation: boolean;
 
   public readonly eventBuilder: EventBuilder;
@@ -214,6 +219,12 @@ export class Ninetailed implements NinetailedInstance {
     this.logger = logger;
 
     this.useSDKEvaluation = useSDKEvaluation;
+
+    if (useSDKEvaluation) {
+      logger.warn(
+        "You are using the 'useSDKEvaluation' option. This feature is deprecated and will be removed in a future major release."
+      );
+    }
 
     if (ninetailedApiClientInstanceOrOptions instanceof NinetailedApiClient) {
       this.apiClient = ninetailedApiClientInstanceOrOptions;
