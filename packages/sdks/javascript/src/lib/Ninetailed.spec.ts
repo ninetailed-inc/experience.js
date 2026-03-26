@@ -2,6 +2,7 @@ import { waitFor } from '@testing-library/dom';
 import {
   FEATURES,
   NinetailedApiClient,
+  logger,
 } from '@ninetailed/experience.js-shared';
 import {
   ElementClickedPayload,
@@ -100,6 +101,43 @@ describe('Ninetailed core class', () => {
         clientId: 'test',
       });
       expect(instance).toBeInstanceOf(Ninetailed);
+    });
+    it('should warn when useSDKEvaluation is enabled', () => {
+      const warnSpy = jest
+        .spyOn(logger, 'warn')
+        .mockImplementation(() => undefined);
+
+      new Ninetailed(
+        {
+          clientId: 'test',
+        },
+        {
+          useSDKEvaluation: true,
+        }
+      );
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        "You are using the 'useSDKEvaluation' option. This feature is deprecated and will be removed in a future major release."
+      );
+    });
+    it('should not warn when useSDKEvaluation is disabled', () => {
+      const warnSpy = jest
+        .spyOn(logger, 'warn')
+        .mockImplementation(() => undefined);
+
+      new Ninetailed({
+        clientId: 'test',
+      });
+      new Ninetailed(
+        {
+          clientId: 'test',
+        },
+        {
+          useSDKEvaluation: false,
+        }
+      );
+
+      expect(warnSpy).not.toHaveBeenCalled();
     });
     it('should be able to create a new instance with a outside instantiated NinetailedApiClient', () => {
       const instance = new Ninetailed(
