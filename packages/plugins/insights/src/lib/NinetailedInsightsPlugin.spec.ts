@@ -53,7 +53,7 @@ describe('NinetailedInsightsPlugin', () => {
       });
       intersect(element, true);
     }
-    jest.runAllTimers();
+    jest.advanceTimersByTime(2_100);
     jest.useRealTimers();
     await waitFor(() => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
@@ -93,7 +93,7 @@ describe('NinetailedInsightsPlugin', () => {
       });
       intersect(element, true);
     }
-    jest.runAllTimers();
+    jest.advanceTimersByTime(2_100);
     jest.useRealTimers();
     await waitFor(() => {
       expect(insightsApiClientSendEventBatchesMock).not.toHaveBeenCalled();
@@ -115,7 +115,7 @@ describe('NinetailedInsightsPlugin', () => {
       variantIndex: 0,
     });
     intersect(element, true);
-    jest.runAllTimers();
+    jest.advanceTimersByTime(2_100);
     jest.useRealTimers();
     expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
     await ninetailed.identify('test-2');
@@ -185,11 +185,58 @@ describe('NinetailedInsightsPlugin', () => {
       });
     }
     intersect(element, true);
-    jest.runAllTimers();
+
+    // Run a bounded number of heartbeats to avoid an unbounded timer loop.
+    for (let i = 0; i < 25; i++) {
+      jest.runOnlyPendingTimers();
+    }
+    intersect(element, false);
+    jest.runOnlyPendingTimers();
     jest.useRealTimers();
     await waitFor(() => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
     });
+  });
+  it('should dedupe onHasSeenElement by viewId even when payloads differ', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const dispatchMock = jest.fn();
+    await insightsPlugin.initialize({
+      instance: { dispatch: dispatchMock } as unknown as never,
+    });
+
+    const basePayload = {
+      meta: { rid: 'rid-1', ts: new Date().toISOString() },
+      _: { originalAction: 'has_seen_element' },
+      element: document.createElement('div'),
+      variant: { id: 'variant-id-1' },
+      variantIndex: 0,
+      seenFor: 2000,
+      viewId: 'view-id-1',
+      viewDurationMs: 2000,
+    };
+
+    insightsPlugin.onHasSeenElement({
+      payload: basePayload,
+      instance: {} as never,
+      abort: jest.fn(),
+    });
+
+    insightsPlugin.onHasSeenElement({
+      payload: {
+        ...basePayload,
+        variant: { id: 'variant-id-2' },
+        variantIndex: 1,
+      },
+      instance: {} as never,
+      abort: jest.fn(),
+    });
+
+    expect(dispatchMock).toHaveBeenCalledTimes(1);
+    expect(dispatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        viewId: 'view-id-1',
+      })
+    );
   });
   it('should not track the same element with the same payload', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
@@ -209,7 +256,7 @@ describe('NinetailedInsightsPlugin', () => {
       });
     }
     intersect(element, true);
-    jest.runAllTimers();
+    jest.advanceTimersByTime(2_100);
     jest.useRealTimers();
     await waitFor(() => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
@@ -236,11 +283,125 @@ describe('NinetailedInsightsPlugin', () => {
     // Intersect twice to simulate multiple views
     intersect(element, true);
     intersect(element, true);
-    jest.runAllTimers();
+    jest.advanceTimersByTime(2_100);
     jest.useRealTimers();
     await waitFor(() => {
       // Should not flush because only one unique event
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
+    });
+  });
+  it('should generate a new viewId and reset viewDurationMs across re-entries', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const ninetailed = setupNinetailedInstance([insightsPlugin]);
+    insightsPlugin.setCredentials({
+      clientId: 'test',
+      environment: 'development',
+    });
+    await ninetailed.identify('test');
+    jest.useFakeTimers();
+    const element = document.body.appendChild(document.createElement('div'));
+    ninetailed.observeElement({
+      element,
+      variant: { id: 'variant-id-1' },
+      variantIndex: 0,
+    });
+
+    intersect(element, true);
+    jest.advanceTimersByTime(2_100);
+    intersect(element, false);
+    jest.advanceTimersByTime(250);
+    intersect(element, true);
+    jest.advanceTimersByTime(2_100);
+    intersect(element, false);
+    jest.useRealTimers();
+
+    await waitFor(() => {
+      const pluginEvents = (
+        insightsPlugin as unknown as { events: Record<string, unknown>[] }
+      ).events;
+      const componentEvents = pluginEvents.filter(
+        (event: { type?: string }) => event.type === 'component'
+      );
+
+      expect(componentEvents.length).toBeGreaterThan(1);
+    });
+
+    const pluginEvents = (
+      insightsPlugin as unknown as { events: Record<string, unknown>[] }
+    ).events;
+    const componentEvents = pluginEvents.filter(
+      (event: { type?: string }) => event.type === 'component'
+    );
+    const viewIds = new Set(
+      componentEvents.map((event) => event['viewId'] as string)
+    );
+    const durations = componentEvents.map(
+      (event) => event['viewDurationMs'] as number
+    );
+
+    expect(viewIds.size).toBe(2);
+    expect(Math.max(...durations)).toBeLessThan(4_000);
+  });
+  it('should flush component view heartbeats with sendBeacon on page hide', async () => {
+    const insightsPlugin = new NinetailedInsightsPlugin();
+    const ninetailed = setupNinetailedInstance([insightsPlugin]);
+    insightsPlugin.setCredentials({
+      clientId: 'test',
+      environment: 'development',
+    });
+    await ninetailed.identify('test');
+    jest.useFakeTimers();
+    const element = document.body.appendChild(document.createElement('div'));
+    ninetailed.observeElement({
+      element,
+      variant: { id: 'variant-id-1' },
+      variantIndex: 0,
+    });
+
+    intersect(element, true);
+    jest.advanceTimersByTime(2_100);
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      value: 'hidden',
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+    jest.useRealTimers();
+
+    await waitFor(() => {
+      const beaconCalls = insightsApiClientSendEventBatchesMock.mock.calls
+        .filter(([, options]) => options?.useBeacon === true)
+        .filter(
+          ([batches]) =>
+            (batches as { events: Record<string, unknown>[] }[]).length > 0
+        );
+
+      expect(beaconCalls.length).toBeGreaterThan(0);
+    });
+
+    const beaconCalls = insightsApiClientSendEventBatchesMock.mock.calls.filter(
+      ([, options]) => options?.useBeacon === true
+    );
+    const lastBeaconCall = beaconCalls[beaconCalls.length - 1];
+
+    expect(lastBeaconCall[1]).toEqual(
+      expect.objectContaining({
+        useBeacon: true,
+      })
+    );
+    expect(
+      (lastBeaconCall[0][0] as { events: Record<string, unknown>[] }).events
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: 'component',
+          viewId: expect.any(String),
+          viewDurationMs: expect.any(Number),
+        }),
+      ])
+    );
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      value: 'visible',
     });
   });
   it('should send component click events once the queue can be flushed', async () => {
@@ -360,13 +521,13 @@ describe('NinetailedInsightsPlugin', () => {
             componentId: expect.any(String),
             variantIndex: expect.any(Number),
             hoverDurationMs: expect.any(Number),
-            componentHoverId: expect.any(String),
+            hoverId: expect.any(String),
           })
         );
       });
     });
 
-    it('should generate a unique componentHoverId for each hover interaction', async () => {
+    it('should generate a unique hoverId for each hover interaction', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       ninetailed.observeElement(
         {
@@ -402,12 +563,10 @@ describe('NinetailedInsightsPlugin', () => {
       );
 
       expect(hoverEvents.length).toBeGreaterThan(2);
-      const uniqueComponentHoverIds = new Set(
-        hoverEvents.map(
-          (hoverEvent) => hoverEvent['componentHoverId'] as string
-        )
+      const uniqueHoverIds = new Set(
+        hoverEvents.map((hoverEvent) => hoverEvent['hoverId'] as string)
       );
-      expect(uniqueComponentHoverIds.size).toBe(2);
+      expect(uniqueHoverIds.size).toBe(2);
     });
 
     it('should map component hover events to the correct component metadata when multiple elements are observed', async () => {
@@ -467,7 +626,7 @@ describe('NinetailedInsightsPlugin', () => {
         type: 'component_hover',
         componentId: expect.any(String),
         hoverDurationMs: expect.any(Number),
-        componentHoverId: expect.any(String),
+        hoverId: expect.any(String),
       };
       expect(hoverEvents).toEqual(
         expect.arrayContaining([
@@ -568,7 +727,7 @@ describe('NinetailedInsightsPlugin', () => {
         expect.objectContaining({
           type: 'component_hover',
           hoverDurationMs: expect.any(Number),
-          componentHoverId: expect.any(String),
+          hoverId: expect.any(String),
         }),
       ])
     );
