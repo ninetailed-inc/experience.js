@@ -48,9 +48,10 @@ import {
   ElementSeenPayloadSchema,
 } from '@ninetailed/experience.js-plugin-analytics';
 
-type ObservedElementPayload = Omit<ElementSeenPayload, 'element'>;
-
 type VariableSeenPayloadWithoutVariable = Omit<VariableSeenPayload, 'variable'>;
+type ViewDedupeKey = string;
+type SeenDurationMs = number;
+type SeenElementDurationsByViewId = Map<ViewDedupeKey, SeenDurationMs>;
 
 export class NinetailedInsightsPlugin
   extends NinetailedPlugin
@@ -65,7 +66,7 @@ export class NinetailedInsightsPlugin
 {
   public override name = 'ninetailed:insights';
 
-  private seenElements = new WeakMap<Element, ObservedElementPayload[]>();
+  private seenElements = new WeakMap<Element, SeenElementDurationsByViewId>();
 
   private seenVariables = new Map<
     string,
@@ -110,8 +111,15 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const { element, ...elementPayload } = sanitizedPayload.data;
-    const { componentType, experience, variant, variantIndex } = elementPayload;
+    const {
+      element,
+      componentType,
+      experience,
+      variant,
+      variantIndex,
+      viewDurationMs,
+      viewId,
+    } = sanitizedPayload.data;
 
     const componentId = variant.id;
 
@@ -119,18 +127,21 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const seenElementPayloads = this.seenElements.get(element) || [];
+    const dedupeKey = viewId ?? 'no-view-id';
+    const latestSeenDurationsByViewId =
+      this.seenElements.get(element) || new Map<string, number>();
+    const latestSeenDurationMs = latestSeenDurationsByViewId.get(dedupeKey);
+    const currentSeenDurationMs = viewDurationMs ?? 0;
 
-    const isElementAlreadySeenWithPayload = seenElementPayloads.some(
-      (seenElementPayload) =>
-        isEqual<ObservedElementPayload>(seenElementPayload, elementPayload)
-    );
-
-    if (isElementAlreadySeenWithPayload) {
+    if (
+      typeof latestSeenDurationMs === 'number' &&
+      currentSeenDurationMs <= latestSeenDurationMs
+    ) {
       return;
     }
 
-    this.seenElements.set(element, [...seenElementPayloads, elementPayload]);
+    latestSeenDurationsByViewId.set(dedupeKey, currentSeenDurationMs);
+    this.seenElements.set(element, latestSeenDurationsByViewId);
 
     /**
      * Intentionally sending a COMPONENT_START event instead of COMPONENT.
@@ -147,6 +158,8 @@ export class NinetailedInsightsPlugin
       componentType,
       variantIndex,
       experienceId: experience?.id,
+      viewDurationMs,
+      viewId,
     });
   };
 
@@ -158,13 +171,22 @@ export class NinetailedInsightsPlugin
       return;
     }
 
-    const { componentId, experienceId, variantIndex, componentType } = payload;
+    const {
+      componentId,
+      experienceId,
+      variantIndex,
+      componentType,
+      viewDurationMs,
+      viewId,
+    } = payload;
 
     const event = this.eventBuilder.component(
       componentId,
       componentType,
       experienceId,
-      variantIndex
+      variantIndex,
+      viewDurationMs,
+      viewId
     );
 
     this.events.push(event);
@@ -258,7 +280,7 @@ export class NinetailedInsightsPlugin
       variant,
       variantIndex,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
     } = sanitizedPayload.data;
 
     const componentId = variant.id;
@@ -274,7 +296,7 @@ export class NinetailedInsightsPlugin
       variantIndex,
       experienceId: experience?.id,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
     });
   };
 
@@ -294,14 +316,14 @@ export class NinetailedInsightsPlugin
       variantIndex,
       componentType,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
     } = payload;
 
     const event = this.eventBuilder.componentHover(
       componentId,
       componentType,
       hoverDurationMs,
-      componentHoverId,
+      hoverId,
       experienceId,
       variantIndex
     );
@@ -380,7 +402,7 @@ export class NinetailedInsightsPlugin
 
     this.profile = profile ?? undefined;
 
-    this.seenElements = new WeakMap<Element, ElementSeenPayload[]>();
+    this.seenElements = new WeakMap<Element, SeenElementDurationsByViewId>();
   };
 
   public [PAGE_HIDDEN] = () => {

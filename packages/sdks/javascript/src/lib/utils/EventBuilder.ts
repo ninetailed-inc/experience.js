@@ -79,6 +79,8 @@ export class EventBuilder {
     componentType: ComponentViewEventComponentType,
     experienceId?: string,
     variantIndex?: number,
+    viewDurationMs?: number,
+    viewId?: string,
     data?: ComponentData
   ) {
     return buildComponentViewEvent({
@@ -87,6 +89,8 @@ export class EventBuilder {
       componentType: componentType || 'Entry',
       experienceId,
       variantIndex: variantIndex || 0,
+      viewDurationMs,
+      viewId,
     });
   }
 
@@ -110,7 +114,7 @@ export class EventBuilder {
     componentId: string,
     componentType: ComponentInteractionEventComponentType,
     hoverDurationMs: number,
-    componentHoverId: string,
+    hoverId: string,
     experienceId?: string,
     variantIndex?: number,
     data?: ComponentData
@@ -119,7 +123,7 @@ export class EventBuilder {
       ...this.buildEventBase(data),
       componentId,
       componentType: componentType || 'Entry',
-      componentHoverId,
+      hoverId,
       hoverDurationMs,
       experienceId,
       variantIndex: variantIndex || 0,

@@ -2,7 +2,7 @@ export type ElementHoverObserverOptions = {
   onElementHover: (
     element: Element,
     hoverDurationMs: number,
-    componentHoverId: string
+    hoverId: string
   ) => void;
   componentHoverTrackingThreshold?: number;
   heartbeatIntervalMs?: number;
@@ -10,7 +10,7 @@ export type ElementHoverObserverOptions = {
 };
 
 type ElementHoverSession = {
-  componentHoverId: string;
+  hoverId: string;
   hoverStartTimestamp: number;
   lastReportedMs: number;
 };
@@ -59,7 +59,7 @@ export class ElementHoverObserver {
       }
 
       this._activeHoverSessions.set(element, {
-        componentHoverId: crypto.randomUUID(),
+        hoverId: crypto.randomUUID(),
         hoverStartTimestamp: Date.now(),
         lastReportedMs: 0,
       });
@@ -184,7 +184,7 @@ export class ElementHoverObserver {
     this._options.onElementHover(
       element,
       hoverDurationMs,
-      hoverSession.componentHoverId
+      hoverSession.hoverId
     );
     hoverSession.lastReportedMs = hoverDurationMs;
   }
