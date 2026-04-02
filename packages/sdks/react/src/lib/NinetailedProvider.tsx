@@ -30,7 +30,9 @@ export type NinetailedProviderInstantiationProps = {
   buildClientContext?: () => NinetailedRequestContext;
   onInitProfileId?: OnInitProfileId;
   storageImpl?: Storage;
-
+  /**
+   * @deprecated This option is deprecated and will be removed in a future major version.
+   */
   useSDKEvaluation?: boolean;
 };
 
