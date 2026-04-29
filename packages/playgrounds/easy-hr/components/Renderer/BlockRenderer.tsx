@@ -1,6 +1,5 @@
 import React from 'react';
 import * as Contentful from 'contentful';
-import { get } from 'radash';
 import { Experience } from '@ninetailed/experience.js-next';
 import {
   BaselineWithExperiencesEntry,
@@ -42,7 +41,7 @@ type BlockRendererProps = {
 type ComponentRendererProps = Contentful.Entry<EntrySkeletonType>;
 
 const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
-  const contentTypeId = get(props, 'sys.contentType.sys.id') as string;
+  const contentTypeId = props.sys.contentType.sys.id;
   const Component = ContentTypeMap[contentTypeId];
 
   if (!Component) {
@@ -66,7 +65,15 @@ const BlockRenderer = ({ block }: BlockRendererProps) => {
     );
   }
 
-  const contentTypeId = get(block, 'sys.contentType.sys.id') as string;
+  const contentTypeId = block.sys?.contentType?.sys?.id;
+
+  if (!contentTypeId) {
+    console.warn(
+      `Entry with id ${block.sys.id} does not have a content type and can not be rendered`
+    );
+    return null;
+  }
+
   const { id } = block.sys;
 
   const experiences = (
