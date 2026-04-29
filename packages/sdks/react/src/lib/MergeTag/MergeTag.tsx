@@ -17,6 +17,8 @@ export const MergeTag = ({
     return null;
   }
 
+  // Uses truthy fallback behavior: falsy resolved values (e.g. 0, false, '')
+  // are treated the same as unresolved values and will trigger the fallback if provided.
   const value = selectValueFromProfile(profile, id) || fallback;
 
   return value ? <>{value}</> : null;

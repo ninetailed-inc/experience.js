@@ -88,6 +88,7 @@ export * from './lib/utils/isBrowser';
 export * from './lib/utils/pipe';
 export * from './lib/utils/unionBy';
 export * from './lib/utils/pickBy';
+export * from './lib/utils/getByPath';
 export * from './lib/utils/template';
 export * from './lib/utils/events';
 export * from './lib/utils/circularJsonStringify/circularJsonStringify';

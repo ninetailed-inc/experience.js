@@ -1,5 +1,4 @@
-import { Profile } from '@ninetailed/experience.js-shared';
-import { get } from 'radash';
+import { getByPath, Profile } from '@ninetailed/experience.js-shared';
 
 export const generateSelectors = (id: string) => {
   return id.split('_').map((path, index, paths) => {
@@ -12,11 +11,16 @@ export const generateSelectors = (id: string) => {
 
 export const selectValueFromProfile = (profile: Profile, id: string) => {
   const selectors = generateSelectors(id);
-  const matchingSelector = selectors.find((selector) => get(profile, selector));
+  // Selectors are matched by truthiness.
+  // Existing falsy values (e.g. 0, false, '') are treated as unresolved.
+  // It is currently unclear whether this is desired behavior or an accidental one.
+  const matchingSelector = selectors.find((selector) =>
+    getByPath(profile, selector)
+  );
 
   if (!matchingSelector) {
     return null;
   }
 
-  return get(profile, matchingSelector);
+  return getByPath(profile, matchingSelector);
 };

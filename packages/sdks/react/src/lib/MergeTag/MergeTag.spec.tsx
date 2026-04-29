@@ -18,6 +18,9 @@ const profile: Profile = {
       baz_qux: 'quux',
     },
     non_nested: 123,
+    empty: '',
+    disabled: false,
+    visits: 0,
   },
   location: {},
   session: {
@@ -76,5 +79,44 @@ describe('MergeTag', () => {
   it('should not render anything if the data could no be resolved and no fallback is provided', () => {
     customRender(<MergeTag id="traits.nested.bar" />);
     expect(screen.queryByText('John')).toBeNull();
+  });
+
+  it('should resolve underscore-based selector variants', () => {
+    customRender(<MergeTag id="traits_nested.baz_qux" fallback="fallback" />);
+    expect(screen.getByText('quux')).toBeInTheDocument();
+  });
+
+  it('should resolve deep nested selector variants', () => {
+    customRender(<MergeTag id="traits_nested.baz.qux" fallback="fallback" />);
+    expect(screen.getByText('grml')).toBeInTheDocument();
+  });
+
+  describe('fallback behavior when selector matches falsy values', () => {
+    // Reference: selectValueFromProfile in ./helpers.ts
+
+    it('should render fallback when value is not found', () => {
+      customRender(<MergeTag id="traits.unknown" fallback="Not found" />);
+      expect(screen.getByText('Not found')).toBeInTheDocument();
+    });
+
+    it('should render nothing when value is not found and no fallback is provided', () => {
+      const { container } = customRender(<MergeTag id="traits.unknown" />);
+      expect(container).toBeEmptyDOMElement();
+    });
+
+    it('should render fallback for empty string values', () => {
+      customRender(<MergeTag id="traits.empty" fallback="fallback" />);
+      expect(screen.getByText('fallback')).toBeInTheDocument();
+    });
+
+    it('should render fallback for false values', () => {
+      customRender(<MergeTag id="traits.disabled" fallback="fallback" />);
+      expect(screen.getByText('fallback')).toBeInTheDocument();
+    });
+
+    it('should render fallback for zero values', () => {
+      customRender(<MergeTag id="traits.visits" fallback="fallback" />);
+      expect(screen.getByText('fallback')).toBeInTheDocument();
+    });
   });
 });
