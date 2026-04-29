@@ -2,11 +2,11 @@ import {
   AllowedVariableType,
   Change,
   ChangeTypes,
+  isPlainDeepEqual,
 } from '@ninetailed/experience.js-shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNinetailed } from './useNinetailed';
 import { ChangesState } from '@ninetailed/experience.js';
-import { isEqual } from 'radash';
 
 export type FlagResult<T> =
   | { status: 'loading'; value: T; error: null }
@@ -40,7 +40,7 @@ export function useFlagWithManualTracking<T extends AllowedVariableType>(
   // Reset if inputs change
   useEffect(() => {
     if (
-      !isEqual(defaultValueRef.current, defaultValue) ||
+      !isPlainDeepEqual(defaultValueRef.current, defaultValue) ||
       flagKeyRef.current !== flagKey
     ) {
       defaultValueRef.current = defaultValue;
@@ -61,7 +61,7 @@ export function useFlagWithManualTracking<T extends AllowedVariableType>(
     const unsubscribe = ninetailed.onChangesChange((changesState) => {
       if (
         lastProcessedState.current &&
-        isEqual(lastProcessedState.current, changesState)
+        isPlainDeepEqual(lastProcessedState.current, changesState)
       ) {
         return;
       }
