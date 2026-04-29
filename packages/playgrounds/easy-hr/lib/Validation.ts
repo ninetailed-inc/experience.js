@@ -2,22 +2,16 @@ import {
   AnySchema as YupSchema,
   ValidationError as YupValidationError,
 } from 'yup';
-import { get, set } from 'radash';
 
 export interface ValidationError {
-  [key: string]: ValidationError | string;
+  [key: string]: string;
 }
 
-function normalizeValidationError(err: YupValidationError): ValidationError {
-  return err.inner.reduce((errors, innerError) => {
+function normalizeValidationError(error: YupValidationError): ValidationError {
+  return error.inner.reduce<ValidationError>((errors, innerError) => {
     const { path, message } = innerError;
-    const el = message;
-    if (path && Object.prototype.hasOwnProperty.call(errors, path)) {
-      const prev = get(errors, path) as string[];
-      prev.push(el);
-      set(errors, path, prev);
-    } else {
-      set(errors, path as string, [el]);
+    if (path) {
+      errors[path] = message;
     }
     return errors;
   }, {});
