@@ -31,7 +31,6 @@
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-preview-bridge": "*",
-    "@ninetailed/experience.js-plugin-analytics": "*",
-    "radash": "10.9.0"
+    "@ninetailed/experience.js-plugin-analytics": "*"
   }
 }

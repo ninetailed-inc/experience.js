@@ -1,5 +1,6 @@
 import {
   logger,
+  isPlainDeepEqual,
   Profile,
   Change,
   Reference,
@@ -34,7 +35,6 @@ import {
 } from '@ninetailed/experience.js-plugin-analytics';
 
 import { WidgetContainer, WidgetContainerOptions } from './WidgetContainer';
-import { isEqual } from 'radash';
 
 export const NINETAILED_PREVIEW_EVENTS = {
   previewAudiences: 'previewAudiences',
@@ -425,7 +425,7 @@ export class NinetailedPreviewPlugin
     const overrideKey = `${experienceId}:${key}`;
 
     // Only create new object if actually changing
-    if (isEqual(this.variableOverwrites[overrideKey]?.value, value)) {
+    if (isPlainDeepEqual(this.variableOverwrites[overrideKey]?.value, value)) {
       return; // No change needed
     }
 
@@ -730,7 +730,7 @@ export class NinetailedPreviewPlugin
 
         if (
           currentOverride &&
-          isEqual(currentOverride.value, value) &&
+          isPlainDeepEqual(currentOverride.value, value) &&
           currentOverride.meta?.variantIndex === variantIndex
         ) {
           return acc;
