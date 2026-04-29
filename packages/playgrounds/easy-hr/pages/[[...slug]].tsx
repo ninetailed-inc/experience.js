@@ -68,7 +68,8 @@ const Page = ({ page, entry }: { page: IPage; entry: ICta }) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const rawSlug = Array.isArray(params?.slug) ? params.slug : [];
+  const slugParam = params?.slug;
+  const rawSlug = Array.isArray(slugParam) ? slugParam : [];
   const slug = rawSlug.join('/');
 
   const [page, entry, experiments, experiences, audiences] = await Promise.all([
