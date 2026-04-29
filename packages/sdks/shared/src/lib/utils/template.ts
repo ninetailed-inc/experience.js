@@ -1,4 +1,4 @@
-import { get } from 'radash';
+import { getByPath } from './getByPath';
 
 /**
  *
@@ -11,6 +11,9 @@ export const template = (
   regex = /\{\{(.+?)\}\}/g
 ) => {
   return Array.from(str.matchAll(regex)).reduce((acc, match) => {
-    return acc.replace(match[0], get(data, match[1].trim()) ?? 'undefined');
+    return acc.replace(
+      match[0],
+      getByPath(data, match[1].trim()) ?? 'undefined'
+    );
   }, str);
 };

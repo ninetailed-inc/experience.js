@@ -137,4 +137,37 @@ describe('template', () => {
 
     expect(template(str, data)).toEqual('hello undefined');
   });
+
+  it('should block access to prototype path segments', () => {
+    const str = 'hello {{user.__proto__.name}}';
+    const data = {
+      user: {
+        name: 'world',
+      },
+    };
+
+    expect(template(str, data)).toEqual('hello undefined');
+  });
+
+  it('should block access to constructor path segments', () => {
+    const str = 'hello {{user.constructor.name}}';
+    const data = {
+      user: {
+        name: 'world',
+      },
+    };
+
+    expect(template(str, data)).toEqual('hello undefined');
+  });
+
+  it('should block access to prototype path segments directly', () => {
+    const str = 'hello {{user.prototype.name}}';
+    const data = {
+      user: {
+        name: 'world',
+      },
+    };
+
+    expect(template(str, data)).toEqual('hello undefined');
+  });
 });
