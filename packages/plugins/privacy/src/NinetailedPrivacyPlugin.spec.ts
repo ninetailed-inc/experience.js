@@ -4,7 +4,7 @@ import {
   PLUGIN_NAME as NINETAILED_CORE_PLUGIN_NAME,
   SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js';
-import { FEATURES } from '@ninetailed/experience.js-shared';
+import { FEATURES, logger } from '@ninetailed/experience.js-shared';
 import {
   DEFAULT_ACCEPTED_CONSENT_CONFIG,
   DEFAULT_PRIVACY_CONFIG,
@@ -154,6 +154,165 @@ describe('NinetailedPrivacyPlugin', () => {
             features: [FEATURES.IP_ENRICHMENT],
           }),
         })
+      );
+    });
+  });
+
+  describe('property/trait filtering logs', () => {
+    let infoSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => {
+        return;
+      });
+    });
+
+    afterEach(() => {
+      infoSpy.mockRestore();
+    });
+
+    it('should log when page properties are removed', async () => {
+      const { analytics } = await setup({
+        allowedEvents: ['page'],
+        allowedPageEventProperties: ['allowed.*'],
+      });
+
+      await analytics.page({
+        allowed: { key: 'value' },
+        blocked: { key: 'value' },
+      });
+
+      expect(infoSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Some properties were removed from the page event'
+        ),
+        expect.any(Object)
+      );
+    });
+
+    it('should not log when no page properties are removed', async () => {
+      const { analytics } = await setup({
+        allowedEvents: ['page'],
+        allowedPageEventProperties: ['*'],
+      });
+
+      await analytics.page({
+        allowed: { key: 'value' },
+      });
+
+      expect(infoSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Some properties were removed from the page event'
+        ),
+        expect.any(Object)
+      );
+    });
+
+    it('should log when track properties are removed', async () => {
+      const { analytics } = await setup({
+        allowedEvents: ['track'],
+        allowedTrackEvents: ['*'],
+        allowedTrackEventProperties: ['allowed.*'],
+      });
+
+      await analytics.track('test_event', {
+        allowed: { key: 'value' },
+        blocked: { key: 'value' },
+      });
+
+      expect(infoSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Some properties were removed from the track event'
+        ),
+        expect.any(Object)
+      );
+    });
+
+    it('should not log when no track properties are removed', async () => {
+      const { analytics } = await setup({
+        allowedEvents: ['track'],
+        allowedTrackEvents: ['*'],
+        allowedTrackEventProperties: ['*'],
+      });
+
+      await analytics.track('test_event', {
+        allowed: { key: 'value' },
+      });
+
+      expect(infoSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Some properties were removed from the track event'
+        ),
+        expect.any(Object)
+      );
+    });
+
+    it('should log when identify traits are removed', async () => {
+      const { privacyPlugin } = await setup({
+        allowedEvents: ['identify'],
+        allowedTraits: ['allowed*'],
+      });
+
+      const identifyHandler = (
+        privacyPlugin as unknown as Record<string, unknown>
+      )[`identify:${NINETAILED_CORE_PLUGIN_NAME}`] as ({
+        payload,
+        abort,
+      }: {
+        payload: unknown;
+        abort: () => void;
+      }) => void;
+
+      identifyHandler({
+        payload: {
+          traits: {
+            allowed: { key: 'value' },
+            blocked: { key: 'value' },
+          },
+          userId: '',
+        },
+        abort: jest.fn(),
+      });
+
+      expect(infoSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Some traits were removed from the identify event'
+        ),
+        expect.any(Object)
+      );
+    });
+
+    it('should not log when no identify traits are removed', async () => {
+      const { privacyPlugin } = await setup({
+        allowedEvents: ['identify'],
+        allowedTraits: ['*'],
+      });
+
+      const identifyHandler = (
+        privacyPlugin as unknown as Record<string, unknown>
+      )[`identify:${NINETAILED_CORE_PLUGIN_NAME}`] as ({
+        payload,
+        abort,
+      }: {
+        payload: unknown;
+        abort: () => void;
+      }) => void;
+
+      identifyHandler({
+        payload: {
+          traits: {
+            allowed: { key: 'value' },
+          },
+          userId: '',
+        },
+        abort: jest.fn(),
+      });
+
+      expect(infoSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Some traits were removed from the identify event'
+        ),
+        expect.any(Object)
       );
     });
   });
