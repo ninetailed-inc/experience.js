@@ -67,5 +67,62 @@ describe('MergeTag helpers', () => {
       );
       expect(selectValueFromProfile(profile, 'traits.non_nested')).toEqual(123);
     });
+
+    describe('current truthy selector matching in selectValueFromProfile', () => {
+      // Reference: selectValueFromProfile in ./helpers.ts
+      const profileWithFalsyValues: Profile = {
+        ...profile,
+        traits: {
+          ...profile.traits,
+          empty: '',
+          disabled: false,
+          visits: 0,
+        },
+      };
+
+      it('should return null for empty string values', () => {
+        expect(
+          selectValueFromProfile(profileWithFalsyValues, 'traits.empty')
+        ).toBeNull();
+      });
+
+      it('should return null for false values', () => {
+        expect(
+          selectValueFromProfile(profileWithFalsyValues, 'traits.disabled')
+        ).toBeNull();
+      });
+
+      it('should return null for zero values', () => {
+        expect(
+          selectValueFromProfile(profileWithFalsyValues, 'traits.visits')
+        ).toBeNull();
+      });
+
+      it('should prefer selectors earlier in generated selector order', () => {
+        const profileWithConflictingValues = {
+          ...profile,
+          traits_nested: {
+            baz_qux: 'flat-priority',
+          },
+          traits: {
+            ...profile.traits,
+            nested: {
+              foo: 'bar',
+              baz_qux: 'quux',
+              baz: {
+                qux: 'deep-second',
+              },
+            },
+          },
+        } as unknown as Profile;
+
+        expect(
+          selectValueFromProfile(
+            profileWithConflictingValues,
+            'traits_nested.baz_qux'
+          )
+        ).toEqual('flat-priority');
+      });
+    });
   });
 });

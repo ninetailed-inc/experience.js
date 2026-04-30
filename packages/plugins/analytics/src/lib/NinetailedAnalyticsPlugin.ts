@@ -1,5 +1,8 @@
-import { isEqual } from 'radash';
-import { logger, template } from '@ninetailed/experience.js-shared';
+import {
+  isPlainDeepEqual,
+  logger,
+  template,
+} from '@ninetailed/experience.js-shared';
 
 import {
   type ElementSeenPayload,
@@ -144,7 +147,7 @@ export abstract class NinetailedAnalyticsPlugin<
 
     const isElementAlreadySeenWithPayload = elementPayloads.some(
       (elementPayload) => {
-        return isEqual<SanitizedElementSeenPayload>(
+        return isPlainDeepEqual(
           elementPayload,
           sanitizedTrackExperienceProperties
         );
@@ -205,7 +208,7 @@ export abstract class NinetailedAnalyticsPlugin<
 
     const isVariableAlreadySeenWithPayload = variablePayloads.some(
       (variablePayload) => {
-        return isEqual<SanitizedVariableSeenPayload>(
+        return isPlainDeepEqual(
           variablePayload,
           sanitizedTrackVariableProperties
         );

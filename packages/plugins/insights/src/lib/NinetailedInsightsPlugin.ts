@@ -1,4 +1,3 @@
-import { isEqual } from 'radash';
 import {
   COMPONENT_CLICK,
   COMPONENT_CLICK_START,
@@ -20,6 +19,7 @@ import {
 } from '@ninetailed/experience.js';
 
 import {
+  isPlainDeepEqual,
   logger,
   type ComponentClickEvent,
   type ComponentHoverEvent,
@@ -357,7 +357,10 @@ export class NinetailedInsightsPlugin
 
     const isVariableAlreadySeenWithPayload = variablePayloads.some(
       (variablePayload) => {
-        return isEqual(variablePayload, variablePayloadWithoutVariable);
+        return isPlainDeepEqual(
+          variablePayload,
+          variablePayloadWithoutVariable
+        );
       }
     );
 

@@ -16,8 +16,7 @@
     "ts-toolbelt": "9.6.0",
     "zod": "3.23.0",
     "i18n-iso-countries": "7.5.0",
-    "murmurhash-js": "1.0.0",
-    "radash": "10.9.0"
+    "murmurhash-js": "1.0.0"
   },
   "main": "./index.cjs.js",
   "module": "./index.esm.js",

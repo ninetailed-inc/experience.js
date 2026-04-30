@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProfileState } from '@ninetailed/experience.js';
-import { logger } from '@ninetailed/experience.js-shared';
-import { isEqual } from 'radash';
+import { isPlainDeepEqual, logger } from '@ninetailed/experience.js-shared';
 import { useNinetailed } from './useNinetailed';
 
 type UseProfileHookResult = Omit<ProfileState, 'experiences'> & {
@@ -43,7 +42,7 @@ export const useProfile = (): UseProfileHookResult => {
     const unsubscribe = ninetailed.onProfileChange((changedProfileState) => {
       // Skip update if the profile hasn't actually changed
       // Here we compare the entire profile including experiences and changes
-      if (isEqual(changedProfileState, profileStateRef.current)) {
+      if (isPlainDeepEqual(changedProfileState, profileStateRef.current)) {
         logger.debug('Profile State Did Not Change', changedProfileState);
         return;
       }

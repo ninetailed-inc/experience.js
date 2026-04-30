@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { NextSeo } from 'next-seo';
-import { get } from 'radash';
-
 import { BlockRenderer } from '@/components/Renderer';
 import {
   getPagesOfType,
@@ -70,7 +68,8 @@ const Page = ({ page, entry }: { page: IPage; entry: ICta }) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const rawSlug = get(params, 'slug', []) as string[];
+  const slugParam = params?.slug;
+  const rawSlug = Array.isArray(slugParam) ? slugParam : [];
   const slug = rawSlug.join('/');
 
   const [page, entry, experiments, experiences, audiences] = await Promise.all([

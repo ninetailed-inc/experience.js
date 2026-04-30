@@ -2,6 +2,7 @@ import {
   EventType,
   Feature,
   FEATURES,
+  isPlainDeepEqual,
   logger,
   pickBy,
 } from '@ninetailed/experience.js-shared';
@@ -18,7 +19,6 @@ import {
   SET_ENABLED_FEATURES,
 } from '@ninetailed/experience.js';
 import wildCardMatch from 'wildcard-match';
-import { isEqual } from 'radash';
 import { NinetailedPlugin } from '@ninetailed/experience.js-plugin-analytics';
 
 declare global {
@@ -249,7 +249,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
       this.getConfig().allowedPageEventProperties
     );
 
-    if (!isEqual(payload.properties, properties)) {
+    if (!isPlainDeepEqual(payload.properties, properties)) {
       logger.info(
         '[Ninetailed Privacy Plugin] Some properties were removed from the page event, as they are not allowed to send by your configuration. The following properties were kept:',
         properties
@@ -281,7 +281,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
         this.getConfig().allowedTrackEventProperties
       );
 
-      if (!isEqual(payload.properties, properties)) {
+      if (!isPlainDeepEqual(payload.properties, properties)) {
         logger.info(
           '[Ninetailed Privacy Plugin] Some properties were removed from the track event, as they are not allowed to send by your configuration. The following properties were kept:',
           properties
@@ -300,7 +300,7 @@ export class NinetailedPrivacyPlugin extends NinetailedPlugin {
         payload.traits,
         this.getConfig().allowedTraits
       );
-      if (!isEqual(payload.traits, traits)) {
+      if (!isPlainDeepEqual(payload.traits, traits)) {
         logger.info(
           '[Ninetailed Privacy Plugin] Some traits were removed from the identify event, as they are not allowed to send by your configuration. The following traits were kept:',
           traits
