@@ -6,7 +6,7 @@ import { absoluteUrl } from './absolute-url';
 const getLocale = (req: NextRequest): string => {
   try {
     return req.nextUrl.locale;
-  } catch (error) {
+  } catch {
     return req.nextUrl.defaultLocale || '';
   }
 };
