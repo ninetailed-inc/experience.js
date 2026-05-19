@@ -8,7 +8,6 @@ overrides:
   '@types/react': 19.2.14
   '@contentful/rich-text-types': 17.2.5
   minimatch@7: 7.4.8
-  vite@7: 7.3.2
   underscore: 1.13.8
 
 importers:
@@ -2413,14 +2412,14 @@ packages:
   '@nx/vite@22.7.2':
     resolution: {integrity: sha512-EsFOp00f3/eFL4GirRBuHktFj/Bm7VL7kvMFru73bCqqQZsdFSGZT8puwYm77NBZB0if5cxkaynysiEmNpVCpw==}
     peerDependencies:
-      vite: 7.3.2
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
       vitest: ^1.3.1 || ^2.0.0 || ^3.0.0 || ^4.0.0
 
   '@nx/vitest@22.7.2':
     resolution: {integrity: sha512-i3Tl3tgxi8Gr6DGodvbZSF9cJE2Uno5/HOQENn5DfWnXa1KDyBR4+w4lZhf2T3TCeTOFghZd1pESWVCDfgCjvA==}
     peerDependencies:
       '@nx/eslint': 22.7.2
-      vite: 7.3.2
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
       vitest: ^1.0.0 || ^2.0.0 || ^3.0.0 || ^4.0.0
     peerDependenciesMeta:
       '@nx/eslint':
@@ -4351,7 +4350,7 @@ packages:
     resolution: {integrity: sha512-46ryTE9RZO/rfDd7pEqFl7etuyzekzEhUbTW3BvmeO/BcCMEgq59BKhek3dXDWgAj4oMK6OZi+vRr1wPW6qjEQ==}
     peerDependencies:
       msw: ^2.4.9
-      vite: 7.3.2
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0-0
     peerDependenciesMeta:
       msw:
         optional: true

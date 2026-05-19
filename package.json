@@ -169,7 +169,6 @@
   "pnpm": {
     "overrides": {
       "minimatch@7": "7.4.8",
-      "vite@7": "7.3.2",
       "underscore": "1.13.8"
     }
   },
