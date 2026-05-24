@@ -5,7 +5,7 @@
   "description": "Ninetailed SDK for Node.js",
   "dependencies": {
     "node-fetch": "2",
-    "uuid": "9.0.0",
+    "uuid": "14.0.0",
     "@ninetailed/experience.js-shared": "*",
     "jest-fetch-mock": "3.0.3",
     "@eslint/eslintrc": "^2.1.1",
