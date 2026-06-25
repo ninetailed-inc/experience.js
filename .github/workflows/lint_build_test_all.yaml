@@ -104,6 +104,12 @@ jobs:
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
 
+      - name: Generated package snapshots 🧪
+        run: >
+          doppler run --mount .env -- pnpm nx run tests-generated-packages:test
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+
   build:
     name: Build 📦
     runs-on: ubuntu-latest
