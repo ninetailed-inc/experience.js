@@ -8,6 +8,37 @@ describe('Node.js client', () => {
       environment: process.env.NINETAILED_ENVIRONMENT,
     });
   });
+  it('Should use a custom fetch implementation when provided', async () => {
+    const fetchImpl = jest.fn(async () => {
+      return {
+        ok: false,
+        status: 418,
+        statusText: "I'm a teapot",
+        headers: {
+          get: jest.fn(() => null),
+        },
+      } as unknown as Response;
+    });
+
+    client = new NinetailedAPIClient({
+      clientId: 'client-id',
+      environment: 'main',
+      url: 'https://example.com',
+      fetchImpl,
+    });
+
+    await expect(client.getProfile('profile-id')).rejects.toThrow(
+      'Get Profile request failed with status'
+    );
+
+    expect(fetchImpl).toHaveBeenCalledWith(
+      'https://example.com/v2/organizations/client-id/environments/main/profiles/profile-id',
+      expect.objectContaining({
+        method: 'GET',
+        timeout: 3000,
+      })
+    );
+  });
   it('Should send identify event and return a profile promise', async () => {
     fetchMock.dontMock();
     const response = client.sendIdentifyEvent('testUser', {
