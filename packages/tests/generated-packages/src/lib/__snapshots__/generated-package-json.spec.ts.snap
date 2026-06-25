@@ -474,6 +474,9 @@ Object {
     "uuid": "9.0.0",
   },
   "description": "Ninetailed SDK for Node.js",
+  "engines": Object {
+    "node": ">=20",
+  },
   "keywords": Array [
     "nodejs",
     "ninetailed",
