@@ -471,7 +471,6 @@ Object {
     "@ninetailed/experience.js-shared": "*",
     "jest-fetch-mock": "3.0.3",
     "jsonc-eslint-parser": "3.0.0",
-    "node-fetch": "2",
     "uuid": "9.0.0",
   },
   "description": "Ninetailed SDK for Node.js",
