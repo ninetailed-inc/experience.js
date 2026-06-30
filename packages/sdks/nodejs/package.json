@@ -1,6 +1,6 @@
 {
   "name": "@ninetailed/experience.js-node",
-  "version": "9.9.9-dry-run",
+  "version": "7.6.0-beta.1",
   "type": "commonjs",
   "description": "Ninetailed SDK for Node.js",
   "engines": {
