@@ -72,6 +72,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      actions: read # required by nrwl/nx-set-shas to query the Actions API
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
