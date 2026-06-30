@@ -4,12 +4,11 @@
   "type": "commonjs",
   "description": "Ninetailed SDK for Node.js",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "dependencies": {
     "uuid": "9.0.0",
     "@ninetailed/experience.js-shared": "*",
-    "jest-fetch-mock": "3.0.3",
     "@eslint/eslintrc": "^2.1.1",
     "@eslint/js": "~9.39.2",
     "jsonc-eslint-parser": "3.0.0"
