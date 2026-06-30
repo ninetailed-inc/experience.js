@@ -21,9 +21,9 @@
 # set -o pipefail to exit on pipe fails
 set -euo pipefail
 
-# Add NPM --dry-run flag if DRY_RUN is set to trie
+# Add --dry-run flag if DRY_RUN is set to true
 if [ "${DRY_RUN:-}" = "true" ]; then
-  echo "[i] Running in DRY_RUN mode (NPM publish will be run with --dry-run)"
+  echo "[i] Running in DRY_RUN mode (pnpm publish will be run with --dry-run)"
   DRY_RUN_FLAG="--dry-run"
 else
   DRY_RUN_FLAG=""
@@ -68,15 +68,15 @@ function bump_and_publish () {
     if jq -e '.repository' package.json >/dev/null; then 
       echo "[i] repository field exists on package.json"
       echo "[🚀] Running in CI mode, adding provenance to the package."
-      npm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG 
+      pnpm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG --no-git-checks
     else 
       echo "[!] repository field is missing on package.json"
       echo "[🚀] Running in CI mode, skipping provenance to the package (missing fields)"
-      npm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG 
+      pnpm publish $DRY_RUN_FLAG --provenance --access public --tag $RELEASE_TAG --no-git-checks
     fi
   else
     echo "[🚀] Running in CLI mode, no provenance added to the package."
-    npm publish $DRY_RUN_FLAG --access public --tag $RELEASE_TAG
+    pnpm publish $DRY_RUN_FLAG --access public --tag $RELEASE_TAG --no-git-checks
   fi
 }
 
@@ -157,7 +157,7 @@ else
 
   # bump up one package to get new version string
   cd packages/sdks/shared
-  npm version $BUMP_FLAGS > /dev/null
+  pnpm version $BUMP_FLAGS > /dev/null
   NEW_VERSION=$(cat package.json | jq -r '.["version"]')
   # we will revisit javascript and treat it the same
 

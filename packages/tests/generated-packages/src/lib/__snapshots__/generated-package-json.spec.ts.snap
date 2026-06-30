@@ -475,7 +475,7 @@ Object {
   },
   "description": "Ninetailed SDK for Node.js",
   "engines": Object {
-    "node": ">=20",
+    "node": ">=24",
   },
   "keywords": Array [
     "nodejs",

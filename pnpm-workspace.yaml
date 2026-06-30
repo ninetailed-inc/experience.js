@@ -1,21 +1,22 @@
 packages:
   - packages/*
 
-ignoredBuiltDependencies: []
-
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@swc/core'
-  - core-js
-  - core-js-pure
-  - cypress
-  - es5-ext
-  - esbuild
-  - less
-  - lmdb
-  - msgpackr-extract
-  - nx
-  - sharp
-  - unrs-resolver
-
 strictDepBuilds: true
+
+approvedBuilds:
+  - '@parcel/watcher@2.5.6'
+  - '@swc/core@1.15.8'
+  - core-js@3.36.1
+  - core-js-pure@3.49.0
+  - cypress@15.9.0
+  - esbuild@0.27.7
+  - less@4.5.1
+  - nx@22.7.2
+  - sharp@0.34.5
+  - unrs-resolver@1.12.2
+
+overrides:
+  minimatch@7: 7.4.8
+  underscore: 1.13.8
+  '@types/react': 19.2.14
+  '@contentful/rich-text-types': 17.2.5

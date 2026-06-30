@@ -1,10 +1,10 @@
 {
   "name": "@ninetailed/experience.js-node",
-  "version": "7.6.0-beta.1",
+  "version": "9.9.9-dry-run",
   "type": "commonjs",
   "description": "Ninetailed SDK for Node.js",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "dependencies": {
     "uuid": "9.0.0",
