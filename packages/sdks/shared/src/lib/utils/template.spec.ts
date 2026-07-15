@@ -170,4 +170,19 @@ describe('template', () => {
 
     expect(template(str, data)).toEqual('hello undefined');
   });
+
+  it('should complete in linear time on a crafted ReDoS input (no closing braces)', () => {
+    // A string that starts {{ but never closes is a canonical ReDoS probe.
+    // With the old `.+?` regex this could cause catastrophic backtracking in
+    // some engines. With [^}]+ the engine fails fast at the first `{` in the
+    // value since `{` is allowed but `}` is not, so no match is attempted.
+    const malicious = '{{' + 'a'.repeat(50_000);
+    const start = Date.now();
+    const result = template(malicious, {});
+    const elapsed = Date.now() - start;
+    // Must finish well under 1 second; catastrophic backtracking would stall.
+    expect(elapsed).toBeLessThan(1000);
+    // No placeholder found, so the string is returned unchanged.
+    expect(result).toEqual(malicious);
+  });
 });
