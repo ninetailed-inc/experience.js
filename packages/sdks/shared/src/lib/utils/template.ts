@@ -10,7 +10,7 @@ import { getByPath } from './getByPath';
  * Using a negated character class `[^}]+` instead of a lazy quantifier
  * ensures O(n) matching and prevents ReDoS on crafted inputs (CWE-1333).
  */
-const TEMPLATE_REGEX = /\{\{([^}]+)\}\}/g;
+const TEMPLATE_REGEX = /\{\{([^{}]+)\}\}/g;
 
 export const template = (str: string, data: Record<string, unknown>) => {
   return Array.from(str.matchAll(TEMPLATE_REGEX)).reduce((acc, match) => {

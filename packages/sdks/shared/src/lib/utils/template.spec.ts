@@ -172,17 +172,22 @@ describe('template', () => {
   });
 
   it('should complete in linear time on a crafted ReDoS input (no closing braces)', () => {
-    // A string that starts {{ but never closes is a canonical ReDoS probe.
-    // With the old `.+?` regex this could cause catastrophic backtracking in
-    // some engines. With [^}]+ the engine fails fast at the first `{` in the
-    // value since `{` is allowed but `}` is not, so no match is attempted.
-    const malicious = '{{' + 'a'.repeat(50_000);
-    const start = Date.now();
-    const result = template(malicious, {});
-    const elapsed = Date.now() - start;
-    // Must finish well under 1 second; catastrophic backtracking would stall.
-    expect(elapsed).toBeLessThan(1000);
-    // No placeholder found, so the string is returned unchanged.
-    expect(result).toEqual(malicious);
+    // Probe 1: `{{aaa...` — opening {{ never closed.
+    // With the old `.+?` regex this triggers quadratic backtracking in V8.
+    const probe1 = '{{' + 'a'.repeat(50_000);
+    const start1 = Date.now();
+    const result1 = template(probe1, {});
+    expect(Date.now() - start1).toBeLessThan(1000);
+    expect(result1).toEqual(probe1);
+
+    // Probe 2: repetitions of `{{|` — the pattern CodeQL uses to detect
+    // polynomial regex complexity when `{` is not excluded from the class.
+    // With [^}]+ this caused backtracking; [^{}]+ fails immediately at each
+    // inner `{` making the overall scan O(n).
+    const probe2 = '{{|'.repeat(20_000);
+    const start2 = Date.now();
+    const result2 = template(probe2, {});
+    expect(Date.now() - start2).toBeLessThan(1000);
+    expect(result2).toEqual(probe2);
   });
 });
