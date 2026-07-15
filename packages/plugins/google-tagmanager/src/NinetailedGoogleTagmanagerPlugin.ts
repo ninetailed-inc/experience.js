@@ -19,10 +19,6 @@ type NinetailedGoogleTagmanagerPluginOptions = {
   template?: Template;
 };
 
-const TEMPLATE_OPTIONS = {
-  interpolate: /{{([\s\S]+?)}}/g,
-};
-
 export class NinetailedGoogleTagmanagerPlugin extends NinetailedAnalyticsPlugin {
   public name = 'ninetailed:googleTagmanager';
 
@@ -60,8 +56,7 @@ export class NinetailedGoogleTagmanagerPlugin extends NinetailedAnalyticsPlugin 
 
     const action = template(
       this.options.actionTemplate || 'Has Seen Experience',
-      { component: variant, audience },
-      TEMPLATE_OPTIONS.interpolate
+      { component: variant, audience }
     );
     const label = template(
       this.options.labelTemplate ||
@@ -70,8 +65,7 @@ export class NinetailedGoogleTagmanagerPlugin extends NinetailedAnalyticsPlugin 
         component: variant,
         audience,
         baselineOrVariant: isPersonalized ? 'Variant' : 'Baseline',
-      },
-      TEMPLATE_OPTIONS.interpolate
+      }
     );
 
     window.dataLayer?.push({
