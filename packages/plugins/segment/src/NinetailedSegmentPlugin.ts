@@ -29,10 +29,6 @@ type NinetailedSegmentPluginOptions = {
   analytics?: AnalyticsBrowserLike;
 };
 
-const TEMPLATE_OPTIONS = {
-  interpolate: /{{([\s\S]+?)}}/g,
-};
-
 export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
   public name = 'ninetailed:segment';
 
@@ -99,8 +95,7 @@ export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
     const event = template(
       this.options.eventNameTemplate ||
         'Has Seen Component - Audience:{{ audience.id }}',
-      { variant, audience, isPersonalized },
-      TEMPLATE_OPTIONS.interpolate
+      { variant, audience, isPersonalized }
     );
     const categoryProperty = template(
       this.options.categoryPropertyTemplate || 'Ninetailed',
@@ -109,8 +104,7 @@ export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
         component: variant,
         audience,
         isPersonalized,
-      },
-      TEMPLATE_OPTIONS.interpolate
+      }
     );
     const componentProperty = template(
       this.options.componentPropertyTemplate || '{{ component.id }}',
@@ -119,8 +113,7 @@ export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
         component: variant,
         audience,
         isPersonalized,
-      },
-      TEMPLATE_OPTIONS.interpolate
+      }
     );
     const audienceProperty = template(
       this.options.audiencePropertyTemplate || '{{ audience.id }}',
@@ -129,8 +122,7 @@ export class NinetailedSegmentPlugin extends NinetailedAnalyticsPlugin {
         component: variant,
         audience,
         isPersonalized,
-      },
-      TEMPLATE_OPTIONS.interpolate
+      }
     );
 
     analytics.track(event, {

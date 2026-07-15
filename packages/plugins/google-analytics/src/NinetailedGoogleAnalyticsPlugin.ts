@@ -9,10 +9,6 @@ type NinetailedGoogleAnalyticsPluginOptions = {
   labelTemplate?: string;
 };
 
-const TEMPLATE_OPTIONS = {
-  interpolate: /{{([\s\S]+?)}}/g,
-};
-
 const isGoogleAnalyticsInitialized = () => {
   return (
     typeof window === 'object' &&
@@ -45,8 +41,7 @@ export class NinetailedGoogleAnalyticsPlugin extends NinetailedAnalyticsPlugin {
     const action = template(
       this.options.actionTemplate ||
         'Has Seen Component - Audience:{{ audience.id }}',
-      { component: variant, audience },
-      TEMPLATE_OPTIONS.interpolate
+      { component: variant, audience }
     );
 
     const label = template(
@@ -56,8 +51,7 @@ export class NinetailedGoogleAnalyticsPlugin extends NinetailedAnalyticsPlugin {
         component: variant,
         audience,
         baselineOrVariant: isPersonalized ? 'Variant' : 'Baseline',
-      },
-      TEMPLATE_OPTIONS.interpolate
+      }
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
