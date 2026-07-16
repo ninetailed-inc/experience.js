@@ -19,10 +19,6 @@ import { HAS_SEEN_COMPONENT } from './constants';
 
 export type Template = Record<string, string>;
 
-const TEMPLATE_OPTIONS = {
-  interpolate: /{{([\s\S]+?)}}/g,
-};
-
 /**
  * This type is only used for the `onTrackExperience` method that is implemented in subclasses of `NinetailedAnalyticsPlugin`.
  */
@@ -78,7 +74,7 @@ export abstract class NinetailedAnalyticsPlugin<
       (acc, [keyTemplate, valueTemplate]) => {
         const key = () => {
           try {
-            return template(keyTemplate, data, TEMPLATE_OPTIONS.interpolate);
+            return template(keyTemplate, data);
           } catch (error) {
             logger.error(
               `Your Ninetailed Analytics Plugin's template is invalid. They key template ${keyTemplate} could not find the path in the specified experience.`
@@ -89,7 +85,7 @@ export abstract class NinetailedAnalyticsPlugin<
 
         const value = () => {
           try {
-            return template(valueTemplate, data, TEMPLATE_OPTIONS.interpolate);
+            return template(valueTemplate, data);
           } catch (error) {
             logger.error(
               `Your Ninetailed Analytics Plugin's template is invalid. They value template ${valueTemplate} could not find the path in the specified experience.`

@@ -24,10 +24,6 @@ type NinetailedContentsquarePluginOptions = {
   actionTemplate?: string;
 };
 
-const TEMPLATE_OPTIONS = {
-  interpolate: /{{([\s\S]+?)}}/g,
-};
-
 export class NinetailedContentsquarePlugin extends NinetailedAnalyticsPlugin {
   public name = 'ninetailed:contentsquare';
 
@@ -54,11 +50,10 @@ export class NinetailedContentsquarePlugin extends NinetailedAnalyticsPlugin {
     const { experience, audience, selectedVariant, selectedVariantIndex } =
       properties;
 
-    const action = template(
-      this.options.actionTemplate || 'nt_experience',
-      { variant: selectedVariant, experience },
-      TEMPLATE_OPTIONS.interpolate
-    );
+    const action = template(this.options.actionTemplate || 'nt_experience', {
+      variant: selectedVariant,
+      experience,
+    });
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -81,8 +76,7 @@ export class NinetailedContentsquarePlugin extends NinetailedAnalyticsPlugin {
     const action = template(
       this.options.actionTemplate ||
         'Has Seen Component - Audience:{{ audience.id }}',
-      { component: variant, audience },
-      TEMPLATE_OPTIONS.interpolate
+      { component: variant, audience }
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

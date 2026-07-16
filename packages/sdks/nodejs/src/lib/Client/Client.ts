@@ -3,7 +3,6 @@ import type { Properties } from '@ninetailed/experience.js-shared';
 import {
   buildIdentifyEvent,
   buildTrackEvent,
-  FetchImpl,
   IdentifyEvent,
   NinetailedApiClient as BaseNinetailedAPIClient,
   NinetailedApiClientOptions,
@@ -12,7 +11,6 @@ import {
   Traits,
   UpsertManyProfilesRequestOptions,
 } from '@ninetailed/experience.js-shared';
-import fetch from 'node-fetch';
 
 type SendEventOptions = {
   anonymousId?: string;
@@ -21,7 +19,7 @@ type SendEventOptions = {
 
 export class NinetailedAPIClient extends BaseNinetailedAPIClient {
   constructor(options: NinetailedApiClientOptions) {
-    super({ ...options, fetchImpl: fetch as unknown as FetchImpl });
+    super(options);
   }
 
   public createIdentifyEvent(
