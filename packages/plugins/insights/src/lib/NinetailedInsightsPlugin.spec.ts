@@ -185,14 +185,12 @@ describe('NinetailedInsightsPlugin', () => {
       });
     }
     intersect(element, true);
-
-    // Run a bounded number of heartbeats to avoid an unbounded timer loop.
-    for (let i = 0; i < 25; i++) {
-      jest.runOnlyPendingTimers();
-    }
+    jest.advanceTimersByTime(2_100);
     intersect(element, false);
-    jest.runOnlyPendingTimers();
     jest.useRealTimers();
+
+    expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(0);
+    await ninetailed.identify('test-2');
     await waitFor(() => {
       expect(insightsApiClientSendEventBatchesMock).toHaveBeenCalledTimes(1);
     });

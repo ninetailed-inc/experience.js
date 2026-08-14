@@ -473,7 +473,7 @@ describe('Ninetailed core class', () => {
       expect(uniqueViewIds.size).toBe(2);
       expect(Math.max(...durations)).toBeLessThan(4_000);
     });
-    it('should switch to a slower heartbeat cadence after long views', async () => {
+    it('should emit exactly a start and an end event for a single view session', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const seenPlugin = new TestElementSeenPlugin();
       const { ninetailed } = mockProfile([seenPlugin]);
@@ -488,26 +488,74 @@ describe('Ninetailed core class', () => {
       });
 
       intersect(element, true);
-      jest.advanceTimersByTime(10_500);
-      await waitFor(() => {
-        expect(seenPlugin.onElementSeenMock.mock.calls.length).toBeGreaterThan(
-          0
-        );
-      });
-      const callsBeforeSlowCadence =
-        seenPlugin.onElementSeenMock.mock.calls.length;
+      jest.advanceTimersByTime(2_100);
+      // No further events should be emitted while the view stays active,
+      // since there is no more periodic heartbeat polling.
+      jest.advanceTimersByTime(60_000);
+      intersect(element, false);
+      jest.runAllTimers();
 
-      jest.advanceTimersByTime(9_000);
-      expect(seenPlugin.onElementSeenMock.mock.calls.length).toBe(
-        callsBeforeSlowCadence
-      );
-
-      jest.advanceTimersByTime(1_500);
       await waitFor(() => {
-        expect(seenPlugin.onElementSeenMock.mock.calls.length).toBeGreaterThan(
-          callsBeforeSlowCadence
-        );
+        expect(seenPlugin.onElementSeenMock).toHaveBeenCalledTimes(2);
       });
+
+      const payloads = seenPlugin.onElementSeenMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementSeenPayload[];
+
+      expect(payloads[0].viewDurationMs).toBe(0);
+      expect(payloads[1].viewDurationMs).toBeGreaterThanOrEqual(62_100);
+      expect(payloads[0].viewId).toBe(payloads[1].viewId);
+    });
+    it('should not emit a view end event when the element never met the view threshold', () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const seenPlugin = new TestElementSeenPlugin();
+      const { ninetailed } = mockProfile([seenPlugin]);
+      getObserverOf(element);
+      const experience = generateExperience();
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+        componentType: 'Entry',
+      });
+
+      intersect(element, true);
+      jest.advanceTimersByTime(250);
+      intersect(element, false);
+      jest.runAllTimers();
+
+      expect(seenPlugin.onElementSeenMock).toHaveBeenCalledTimes(0);
+    });
+    it('should emit a view end event when unobserveElement is called mid-session', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const seenPlugin = new TestElementSeenPlugin();
+      const { ninetailed } = mockProfile([seenPlugin]);
+      getObserverOf(element);
+      const experience = generateExperience();
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+        componentType: 'Entry',
+      });
+
+      intersect(element, true);
+      jest.advanceTimersByTime(2_100);
+      ninetailed.unobserveElement(element);
+      jest.runAllTimers();
+
+      await waitFor(() => {
+        expect(seenPlugin.onElementSeenMock).toHaveBeenCalledTimes(2);
+      });
+
+      const payloads = seenPlugin.onElementSeenMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementSeenPayload[];
+
+      expect(payloads[1].viewDurationMs).toBeGreaterThanOrEqual(2_100);
     });
     it('should track component clicks when trackClicks is enabled and the observed element is clickable', async () => {
       const element = document.body.appendChild(
@@ -746,7 +794,7 @@ describe('Ninetailed core class', () => {
         ).toBeGreaterThanOrEqual(10_000);
       });
 
-      it('should emit a final hover heartbeat on mouseleave for unsent hover duration', async () => {
+      it('should emit exactly a start and an end event for a single hover session', async () => {
         const element = document.body.appendChild(
           document.createElement('div')
         );
@@ -771,9 +819,7 @@ describe('Ninetailed core class', () => {
         jest.runAllTimers();
 
         await waitFor(() => {
-          expect(
-            hoverPlugin.onElementHoveredMock.mock.calls.length
-          ).toBeGreaterThan(1);
+          expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(2);
         });
 
         const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
@@ -790,12 +836,9 @@ describe('Ninetailed core class', () => {
           );
         });
 
-        const hoverDurations = hoverPayloads.map(
-          (hoverPayload) => hoverPayload.hoverDurationMs
-        );
-
-        expect(hoverDurations).toEqual(expect.arrayContaining([2_000]));
-        expect(Math.max(...hoverDurations)).toBeGreaterThan(2_000);
+        expect(hoverPayloads[0].hoverDurationMs).toBe(0);
+        expect(hoverPayloads[1].hoverDurationMs).toBeGreaterThanOrEqual(2_500);
+        expect(hoverPayloads[0].hoverId).toBe(hoverPayloads[1].hoverId);
       });
 
       it('should not track component hovers when hover duration is below the minimum threshold', () => {
