@@ -577,6 +577,15 @@ describe('Ninetailed core class', () => {
       ) as ElementSeenPayload[];
 
       expect(payloads[1].viewDurationMs).toBeGreaterThanOrEqual(2_100);
+      // unobserveElement must unobserve before deleting stored payloads, so
+      // the synchronous end event it triggers can still find them.
+      expect(payloads[1]).toEqual(
+        expect.objectContaining({
+          variant: expect.objectContaining({ id: 'variant-id' }),
+          variantIndex: 1,
+          experience: expect.objectContaining({ id: experience.id }),
+        })
+      );
     });
     it('should track component clicks when trackClicks is enabled and the observed element is clickable', async () => {
       const element = document.body.appendChild(
@@ -1034,6 +1043,96 @@ describe('Ninetailed core class', () => {
             }),
           ])
         );
+      });
+
+      it('should resume hover tracking when re-observed while the pointer is still over the element', async () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        jest
+          .spyOn(element, 'matches')
+          .mockImplementation((selector) => selector === ':hover');
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        const observe = () =>
+          ninetailed.observeElement(
+            {
+              element,
+              variant: { id: 'variant-id' },
+              variantIndex: 1,
+              experience,
+              componentType: 'Entry',
+            },
+            { trackHovers: true }
+          );
+
+        observe();
+        // Simulate a React re-render that unobserves and re-observes the
+        // same element while the pointer never left it, so mouseenter never
+        // re-fires.
+        ninetailed.unobserveElement(element);
+        observe();
+
+        jest.advanceTimersByTime(2_500);
+        await jest.runAllTimersAsync();
+
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(0);
+      });
+
+      it('should resume an active hover session after the tab returns to the foreground', async () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(2_500);
+
+        // The tab hides while the pointer is still over the element: the
+        // session ends (emitting an end event), but mouseleave never fires.
+        jest
+          .spyOn(element, 'matches')
+          .mockImplementation((selector) => selector === ':hover');
+        Object.defineProperty(document, 'visibilityState', {
+          configurable: true,
+          value: 'hidden',
+        });
+        document.dispatchEvent(new Event('visibilitychange'));
+
+        Object.defineProperty(document, 'visibilityState', {
+          configurable: true,
+          value: 'visible',
+        });
+        document.dispatchEvent(new Event('visibilitychange'));
+
+        jest.advanceTimersByTime(2_500);
+        await jest.runAllTimersAsync();
+
+        const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+          ([payload]) => payload as ElementHoveredPayload
+        );
+        const hoverIds = new Set(
+          hoverPayloads.map((payload) => payload.hoverId)
+        );
+
+        // One start+end pair for the session ended on hide, and a second,
+        // distinct hoverId for the session resumed on foreground.
+        expect(hoverIds.size).toBe(2);
       });
     });
 

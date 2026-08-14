@@ -15,7 +15,7 @@ type ElementHoverSession = {
 };
 
 export class ElementHoverObserver {
-  private _elementHandlers: WeakMap<
+  private _elementHandlers: Map<
     Element,
     {
       mouseenter: EventListener;
@@ -27,7 +27,7 @@ export class ElementHoverObserver {
   private readonly componentHoverTrackingThreshold: number;
 
   constructor(private _options: ElementHoverObserverOptions) {
-    this._elementHandlers = new WeakMap();
+    this._elementHandlers = new Map();
     this._activeHoverSessions = new Map();
     this.componentHoverTrackingThreshold =
       _options.componentHoverTrackingThreshold ?? 2000;
@@ -57,6 +57,13 @@ export class ElementHoverObserver {
       mouseenter: onMouseEnter,
       mouseleave: onMouseLeave,
     });
+
+    // The pointer may already be over the element when we start observing it
+    // (e.g. a React re-render unobserves and re-observes the same element
+    // while the cursor hasn't moved), in which case mouseenter never fires.
+    if (element.matches(':hover')) {
+      this.startSession(element);
+    }
   }
 
   public unobserve(element: Element) {
@@ -82,6 +89,23 @@ export class ElementHoverObserver {
 
     Array.from(this._activeHoverSessions.keys()).forEach((element) => {
       this.endSession(element, now);
+    });
+  }
+
+  /**
+   * Restarts a hover session for elements the pointer is still over after a
+   * tab returns to the foreground. Ending sessions on tab hide doesn't fire
+   * mouseleave, so mouseenter won't fire again until the pointer actually
+   * leaves and re-enters. Produces a fresh hoverId.
+   */
+  public resumeActiveSessions() {
+    this._elementHandlers.forEach((_handlers, element) => {
+      if (
+        !this._activeHoverSessions.has(element) &&
+        element.matches(':hover')
+      ) {
+        this.startSession(element);
+      }
     });
   }
 
