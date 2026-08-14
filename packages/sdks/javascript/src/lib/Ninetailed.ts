@@ -1180,9 +1180,17 @@ export class Ninetailed implements NinetailedInstance {
       }
 
       this.elementSeenObserver.resumeActiveSessions();
+      this.elementHoverObserver.resumeActiveSessions();
     });
 
     window.addEventListener('pagehide', dispatchPageHidden);
-    window.addEventListener('beforeunload', dispatchPageHidden);
+
+    // Registering a beforeunload listener makes browsers (notably Firefox)
+    // treat the page as bfcache-ineligible, hurting back/forward navigation
+    // performance. Only pay that cost when a plugin actually needs the
+    // PAGE_HIDDEN dispatch beforeunload provides as a pagehide fallback.
+    if (hasPluginsInterestedInHiddenPage) {
+      window.addEventListener('beforeunload', dispatchPageHidden);
+    }
   };
 }

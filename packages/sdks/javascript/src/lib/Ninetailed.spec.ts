@@ -165,6 +165,27 @@ describe('Ninetailed core class', () => {
         expect(pageHiddenPlugin.onPageHiddenMock).toHaveBeenCalledTimes(2);
       });
     });
+    it('should not register a beforeunload listener when no plugin is interested in page hidden events', () => {
+      const windowAddEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const documentAddEventListenerSpy = jest.spyOn(
+        document,
+        'addEventListener'
+      );
+
+      mockProfile([]);
+
+      const registeredWindowEventTypes =
+        windowAddEventListenerSpy.mock.calls.map(([eventType]) => eventType);
+      const registeredDocumentEventTypes =
+        documentAddEventListenerSpy.mock.calls.map(([eventType]) => eventType);
+
+      expect(registeredDocumentEventTypes).toContain('visibilitychange');
+      expect(registeredWindowEventTypes).toContain('pagehide');
+      expect(registeredWindowEventTypes).not.toContain('beforeunload');
+
+      windowAddEventListenerSpy.mockRestore();
+      documentAddEventListenerSpy.mockRestore();
+    });
   });
   describe('Sending of events', () => {
     beforeEach(() => {
