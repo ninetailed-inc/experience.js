@@ -507,7 +507,7 @@ describe('Ninetailed core class', () => {
       expect(payloads[1].viewDurationMs).toBeGreaterThanOrEqual(62_100);
       expect(payloads[0].viewId).toBe(payloads[1].viewId);
     });
-    it('should not emit a view end event when the element never met the view threshold', () => {
+    it('should not emit a view end event when the element never met the view threshold', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const seenPlugin = new TestElementSeenPlugin();
       const { ninetailed } = mockProfile([seenPlugin]);
@@ -524,7 +524,7 @@ describe('Ninetailed core class', () => {
       intersect(element, true);
       jest.advanceTimersByTime(250);
       intersect(element, false);
-      jest.runAllTimers();
+      await jest.runAllTimersAsync();
 
       expect(seenPlugin.onElementSeenMock).toHaveBeenCalledTimes(0);
     });
@@ -841,7 +841,7 @@ describe('Ninetailed core class', () => {
         expect(hoverPayloads[0].hoverId).toBe(hoverPayloads[1].hoverId);
       });
 
-      it('should not track component hovers when hover duration is below the minimum threshold', () => {
+      it('should not track component hovers when hover duration is below the minimum threshold', async () => {
         const element = document.body.appendChild(
           document.createElement('div')
         );
@@ -861,7 +861,7 @@ describe('Ninetailed core class', () => {
         element.dispatchEvent(new MouseEvent('mouseenter'));
         jest.advanceTimersByTime(1);
         element.dispatchEvent(new MouseEvent('mouseleave'));
-        jest.runAllTimers();
+        await jest.runAllTimersAsync();
         expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
       });
 
