@@ -340,7 +340,7 @@ describe('NinetailedInsightsPlugin', () => {
     expect(viewIds.size).toBe(2);
     expect(Math.max(...durations)).toBeLessThan(4_000);
   });
-  it('should flush component view heartbeats with sendBeacon on page hide', async () => {
+  it('should flush the ended component view session with sendBeacon on page hide', async () => {
     const insightsPlugin = new NinetailedInsightsPlugin();
     const ninetailed = setupNinetailedInstance([insightsPlugin]);
     insightsPlugin.setCredentials({
@@ -363,6 +363,11 @@ describe('NinetailedInsightsPlugin', () => {
       value: 'hidden',
     });
     document.dispatchEvent(new Event('visibilitychange'));
+    // The visibilitychange handler defers its PAGE_HIDDEN dispatch by a
+    // setTimeout(0) tick so the async view-session-end dispatch chain can
+    // settle first; flush that pending fake timer before switching modes,
+    // otherwise it's abandoned and never fires.
+    jest.runOnlyPendingTimers();
     jest.useRealTimers();
 
     await waitFor(() => {

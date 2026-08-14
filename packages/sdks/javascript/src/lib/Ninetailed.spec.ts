@@ -308,7 +308,7 @@ describe('Ninetailed core class', () => {
       });
       // Simulate the intersection of the element with the viewport
       intersect(element, true);
-      // Advance to the first heartbeat where all default thresholds are eligible.
+      // Advance past the default view-tracking threshold so the start event fires.
       jest.advanceTimersByTime(2_100);
       await waitFor(() => {
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(1);
@@ -489,8 +489,8 @@ describe('Ninetailed core class', () => {
 
       intersect(element, true);
       jest.advanceTimersByTime(2_100);
-      // No further events should be emitted while the view stays active,
-      // since there is no more periodic heartbeat polling.
+      // No further events should be emitted while the view stays active;
+      // only the start event fires until the session actually ends.
       jest.advanceTimersByTime(60_000);
       intersect(element, false);
       jest.runAllTimers();
