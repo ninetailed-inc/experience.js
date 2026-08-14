@@ -323,13 +323,7 @@ export class Ninetailed implements NinetailedInstance {
     });
     this.componentViewTrackingThreshold = componentViewTrackingThreshold;
 
-    const hasPluginsInterestedInHiddenPage = this.plugins.some(
-      isInterestedInHiddenPage
-    );
-
-    if (hasPluginsInterestedInHiddenPage) {
-      this.onVisibilityChange();
-    }
+    this.onVisibilityChange();
 
     this.registerWindowHandlers();
   }
@@ -602,10 +596,13 @@ export class Ninetailed implements NinetailedInstance {
   }
 
   public unobserveElement = (element: Element) => {
-    this.observedElements.delete(element);
+    // Unobserve before deleting stored payloads: unobserving a view/hover
+    // session in progress synchronously dispatches a final end event, which
+    // looks up the element's payloads to build its dispatch.
     this.elementSeenObserver.unobserve(element);
     this.elementClickObserver.unobserve(element);
     this.elementHoverObserver.unobserve(element);
+    this.observedElements.delete(element);
   };
 
   private onElementSeen = (
@@ -1146,19 +1143,54 @@ export class Ninetailed implements NinetailedInstance {
       return;
     }
 
+    const hasPluginsInterestedInHiddenPage = this.plugins.some(
+      isInterestedInHiddenPage
+    );
+
+    const endActiveViewAndHoverSessions = () => {
+      this.elementSeenObserver.endActiveSessions();
+      this.elementHoverObserver.endActiveSessions();
+    };
+
     const dispatchPageHidden = () => {
-      this.elementSeenObserver.flushActiveViews();
-      this.elementHoverObserver.flushActiveHovers();
-      this.instance.dispatch({ type: PAGE_HIDDEN });
+      endActiveViewAndHoverSessions();
+
+      if (hasPluginsInterestedInHiddenPage) {
+        this.instance.dispatch({ type: PAGE_HIDDEN });
+      }
     };
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        dispatchPageHidden();
+        endActiveViewAndHoverSessions();
+
+        if (hasPluginsInterestedInHiddenPage) {
+          // Ending active sessions dispatches their final view/hover events,
+          // which plugins process through an async (microtask-based) chain
+          // before queueing them. The tab staying open means we can afford
+          // to wait a tick for that chain to settle so PAGE_HIDDEN's flush
+          // doesn't ship a beacon that's missing those final events. This
+          // deferral is unsafe on pagehide/beforeunload (the page may be
+          // torn down before a timer fires), so those stay synchronous.
+          setTimeout(() => {
+            this.instance.dispatch({ type: PAGE_HIDDEN });
+          }, 0);
+        }
+        return;
       }
+
+      this.elementSeenObserver.resumeActiveSessions();
+      this.elementHoverObserver.resumeActiveSessions();
     });
 
     window.addEventListener('pagehide', dispatchPageHidden);
-    window.addEventListener('beforeunload', dispatchPageHidden);
+
+    // Registering a beforeunload listener makes browsers (notably Firefox)
+    // treat the page as bfcache-ineligible, hurting back/forward navigation
+    // performance. Only pay that cost when a plugin actually needs the
+    // PAGE_HIDDEN dispatch beforeunload provides as a pagehide fallback.
+    if (hasPluginsInterestedInHiddenPage) {
+      window.addEventListener('beforeunload', dispatchPageHidden);
+    }
   };
 }

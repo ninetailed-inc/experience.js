@@ -7,51 +7,25 @@ export type ElementSeenObserverOptions = {
     viewDurationMs: number,
     viewId: string
   ) => void;
-  heartbeatIntervalMs?: number;
-  extendedHeartbeatIntervalMs?: number;
-  extendedHeartbeatThresholdMs?: number;
-  minimumHeartbeatIncrementMs?: number;
 };
 
 export type { ObserveOptions } from './types/ObserveOptions';
 
 type ElementViewState = {
-  viewId: string;
   delays: Set<number>;
-  enterTimestamp: number | null;
-  accumulatedVisibleDurationMs: number;
-  lastReportedDurationByDelay: Map<number, number>;
-};
-
-type EmitViewIfNeededParams = {
-  element: Element;
-  viewState: ElementViewState;
-  now: number;
-  forceReport: boolean;
+  isIntersecting: boolean;
+  viewId: string | null;
+  sessionStartTimestamp: number | null;
+  startedDelays: Set<number>;
+  pendingStartTimers: Map<number, number>;
 };
 
 export class ElementSeenObserver {
   private _intersectionObserver?: IntersectionObserver;
   private _elementViewState: Map<Element, ElementViewState>;
-  private _heartbeatTimer: number | null;
-  private _scheduledHeartbeatIntervalMs: number | null;
-
-  private readonly heartbeatIntervalMs: number;
-  private readonly extendedHeartbeatIntervalMs: number;
-  private readonly extendedHeartbeatThresholdMs: number;
-  private readonly minimumHeartbeatIncrementMs: number;
 
   constructor(private _options: ElementSeenObserverOptions) {
     this._elementViewState = new Map();
-    this._heartbeatTimer = null;
-    this._scheduledHeartbeatIntervalMs = null;
-    this.heartbeatIntervalMs = _options.heartbeatIntervalMs ?? 2000;
-    this.extendedHeartbeatIntervalMs =
-      _options.extendedHeartbeatIntervalMs ?? 10000;
-    this.extendedHeartbeatThresholdMs =
-      _options.extendedHeartbeatThresholdMs ?? 10000;
-    this.minimumHeartbeatIncrementMs =
-      _options.minimumHeartbeatIncrementMs ?? 1000;
 
     if (typeof IntersectionObserver !== 'undefined') {
       this._intersectionObserver = new IntersectionObserver(
@@ -71,25 +45,16 @@ export class ElementSeenObserver {
         return;
       }
 
+      viewState.isIntersecting = isIntersecting;
+
       if (isIntersecting) {
-        if (viewState.enterTimestamp === null) {
-          const hasPreviousViewSession =
-            viewState.accumulatedVisibleDurationMs > 0 ||
-            viewState.lastReportedDurationByDelay.size > 0;
-
-          if (hasPreviousViewSession) {
-            viewState.viewId = crypto.randomUUID();
-            viewState.accumulatedVisibleDurationMs = 0;
-            viewState.lastReportedDurationByDelay.clear();
-          }
-
-          viewState.enterTimestamp = now;
-          this.startHeartbeatIfNeeded();
+        if (viewState.sessionStartTimestamp === null) {
+          this.startSession(target, viewState, now);
         }
         return;
       }
 
-      this.stopTrackingVisibleTime(target, true, now);
+      this.endSession(target, viewState, now);
     });
   }
 
@@ -99,207 +64,148 @@ export class ElementSeenObserver {
 
     if (!viewState) {
       this._elementViewState.set(element, {
-        viewId: crypto.randomUUID(),
         delays: new Set([delay]),
-        enterTimestamp: null,
-        accumulatedVisibleDurationMs: 0,
-        lastReportedDurationByDelay: new Map(),
+        isIntersecting: false,
+        viewId: null,
+        sessionStartTimestamp: null,
+        startedDelays: new Set(),
+        pendingStartTimers: new Map(),
       });
-    } else {
+    } else if (!viewState.delays.has(delay)) {
       viewState.delays.add(delay);
+
+      if (viewState.viewId !== null) {
+        this.scheduleDelayStart(element, viewState, delay, viewState.viewId);
+      }
     }
 
     this._intersectionObserver?.observe(element);
   }
 
   public unobserve(element: Element) {
-    this.stopTrackingVisibleTime(element, true, Date.now());
+    const viewState = this._elementViewState.get(element);
+
+    if (viewState) {
+      this.endSession(element, viewState, Date.now());
+    }
+
     this._elementViewState.delete(element);
     this._intersectionObserver?.unobserve(element);
-    this.stopHeartbeatIfIdle();
   }
 
-  public flushActiveViews() {
+  /**
+   * Ends every active view session immediately (e.g. on tab hide) so a final
+   * view event is emitted rather than left dangling.
+   */
+  public endActiveSessions() {
     const now = Date.now();
 
     this._elementViewState.forEach((viewState, element) => {
-      if (viewState.enterTimestamp === null) {
-        return;
+      if (viewState.sessionStartTimestamp !== null) {
+        this.endSession(element, viewState, now);
       }
-
-      this.emitViewIfNeeded({
-        element,
-        viewState,
-        now,
-        forceReport: true,
-      });
     });
   }
 
-  private runHeartbeat = () => {
-    this._heartbeatTimer = null;
-    this._scheduledHeartbeatIntervalMs = null;
-
+  /**
+   * Restarts a view session for elements that are still intersecting after
+   * a tab returns to the foreground. Produces a fresh viewId.
+   */
+  public resumeActiveSessions() {
     const now = Date.now();
 
     this._elementViewState.forEach((viewState, element) => {
-      if (viewState.enterTimestamp === null) {
-        return;
+      if (
+        viewState.isIntersecting &&
+        viewState.sessionStartTimestamp === null
+      ) {
+        this.startSession(element, viewState, now);
       }
-
-      this.emitViewIfNeeded({
-        element,
-        viewState,
-        now,
-        forceReport: false,
-      });
     });
+  }
 
-    this.startHeartbeatIfNeeded();
-  };
+  private startSession(
+    element: Element,
+    viewState: ElementViewState,
+    now: number
+  ) {
+    const viewId = crypto.randomUUID();
+    viewState.viewId = viewId;
+    viewState.sessionStartTimestamp = now;
+    viewState.startedDelays = new Set();
+    viewState.pendingStartTimers = new Map();
 
-  private startHeartbeatIfNeeded() {
-    if (this.getActiveViewCount() === 0) {
-      this.stopHeartbeatIfIdle();
+    viewState.delays.forEach((delay) => {
+      this.scheduleDelayStart(element, viewState, delay, viewId);
+    });
+  }
+
+  private scheduleDelayStart(
+    element: Element,
+    viewState: ElementViewState,
+    delay: number,
+    viewId: string
+  ) {
+    if (viewState.sessionStartTimestamp === null) {
       return;
     }
 
-    const now = Date.now();
-    const heartbeatIntervalMs = this.getHeartbeatIntervalMs(now);
+    const elapsed = Date.now() - viewState.sessionStartTimestamp;
+    const remaining = delay - elapsed;
 
+    if (remaining <= 0) {
+      this.emitStart(element, viewState, delay, viewId);
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      viewState.pendingStartTimers.delete(delay);
+      this.emitStart(element, viewState, delay, viewId);
+    }, remaining);
+
+    viewState.pendingStartTimers.set(delay, timerId);
+  }
+
+  private emitStart(
+    element: Element,
+    viewState: ElementViewState,
+    delay: number,
+    viewId: string
+  ) {
     if (
-      this._heartbeatTimer !== null &&
-      this._scheduledHeartbeatIntervalMs === heartbeatIntervalMs
+      viewState.sessionStartTimestamp === null ||
+      viewState.startedDelays.has(delay)
     ) {
       return;
     }
 
-    if (this._heartbeatTimer !== null) {
-      window.clearTimeout(this._heartbeatTimer);
-    }
-
-    this._scheduledHeartbeatIntervalMs = heartbeatIntervalMs;
-    this._heartbeatTimer = window.setTimeout(
-      this.runHeartbeat,
-      heartbeatIntervalMs
-    );
+    viewState.startedDelays.add(delay);
+    this._options.onElementSeen(element, delay, 0, viewId);
   }
 
-  private stopHeartbeatIfIdle() {
-    if (this.getActiveViewCount() > 0 || this._heartbeatTimer === null) {
-      return;
-    }
-
-    window.clearTimeout(this._heartbeatTimer);
-    this._heartbeatTimer = null;
-    this._scheduledHeartbeatIntervalMs = null;
-  }
-
-  private getActiveViewCount() {
-    let activeViewCount = 0;
-
-    this._elementViewState.forEach((viewState) => {
-      if (viewState.enterTimestamp !== null) {
-        activeViewCount += 1;
-      }
-    });
-
-    return activeViewCount;
-  }
-
-  private getHeartbeatIntervalMs(now: number) {
-    let hasFreshView = false;
-
-    this._elementViewState.forEach((viewState) => {
-      if (viewState.enterTimestamp === null) {
-        return;
-      }
-
-      const viewDurationMs = this.getViewDurationMs(viewState, now);
-      if (viewDurationMs < this.extendedHeartbeatThresholdMs) {
-        hasFreshView = true;
-      }
-    });
-
-    return hasFreshView
-      ? this.heartbeatIntervalMs
-      : this.extendedHeartbeatIntervalMs;
-  }
-
-  private stopTrackingVisibleTime(
+  private endSession(
     element: Element,
-    emitFinalHeartbeat: boolean,
+    viewState: ElementViewState,
     now: number
   ) {
-    const viewState = this._elementViewState.get(element);
-
-    if (!viewState) {
-      this.stopHeartbeatIfIdle();
-      return;
-    }
-
-    if (viewState.enterTimestamp === null) {
-      this.stopHeartbeatIfIdle();
-      return;
-    }
-
-    viewState.accumulatedVisibleDurationMs += now - viewState.enterTimestamp;
-    viewState.enterTimestamp = null;
-
-    if (emitFinalHeartbeat) {
-      this.emitViewIfNeeded({
-        element,
-        viewState,
-        now,
-        forceReport: true,
-      });
-    }
-
-    this.stopHeartbeatIfIdle();
-  }
-
-  private getViewDurationMs(viewState: ElementViewState, now: number) {
-    if (viewState.enterTimestamp === null) {
-      return viewState.accumulatedVisibleDurationMs;
-    }
-
-    return (
-      viewState.accumulatedVisibleDurationMs + (now - viewState.enterTimestamp)
-    );
-  }
-
-  private emitViewIfNeeded({
-    element,
-    viewState,
-    now,
-    forceReport,
-  }: EmitViewIfNeededParams) {
-    const viewDurationMs = this.getViewDurationMs(viewState, now);
-
-    viewState.delays.forEach((delay) => {
-      if (viewDurationMs < delay) {
-        return;
-      }
-
-      const lastReportedDurationMs =
-        viewState.lastReportedDurationByDelay.get(delay) ?? 0;
-      const durationDelta = viewDurationMs - lastReportedDurationMs;
-
-      if (durationDelta <= 0) {
-        return;
-      }
-
-      if (!forceReport && durationDelta < this.minimumHeartbeatIncrementMs) {
-        return;
-      }
-
-      this._options.onElementSeen(
-        element,
-        delay,
-        viewDurationMs,
-        viewState.viewId
-      );
-      viewState.lastReportedDurationByDelay.set(delay, viewDurationMs);
+    viewState.pendingStartTimers.forEach((timerId) => {
+      window.clearTimeout(timerId);
     });
+    viewState.pendingStartTimers.clear();
+
+    if (viewState.sessionStartTimestamp === null || viewState.viewId === null) {
+      return;
+    }
+
+    const viewDurationMs = now - viewState.sessionStartTimestamp;
+    const viewId = viewState.viewId;
+
+    viewState.startedDelays.forEach((delay) => {
+      this._options.onElementSeen(element, delay, viewDurationMs, viewId);
+    });
+
+    viewState.startedDelays.clear();
+    viewState.sessionStartTimestamp = null;
+    viewState.viewId = null;
   }
 }

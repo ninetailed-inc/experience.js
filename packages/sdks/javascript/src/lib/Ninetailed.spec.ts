@@ -165,6 +165,27 @@ describe('Ninetailed core class', () => {
         expect(pageHiddenPlugin.onPageHiddenMock).toHaveBeenCalledTimes(2);
       });
     });
+    it('should not register a beforeunload listener when no plugin is interested in page hidden events', () => {
+      const windowAddEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const documentAddEventListenerSpy = jest.spyOn(
+        document,
+        'addEventListener'
+      );
+
+      mockProfile([]);
+
+      const registeredWindowEventTypes =
+        windowAddEventListenerSpy.mock.calls.map(([eventType]) => eventType);
+      const registeredDocumentEventTypes =
+        documentAddEventListenerSpy.mock.calls.map(([eventType]) => eventType);
+
+      expect(registeredDocumentEventTypes).toContain('visibilitychange');
+      expect(registeredWindowEventTypes).toContain('pagehide');
+      expect(registeredWindowEventTypes).not.toContain('beforeunload');
+
+      windowAddEventListenerSpy.mockRestore();
+      documentAddEventListenerSpy.mockRestore();
+    });
   });
   describe('Sending of events', () => {
     beforeEach(() => {
@@ -308,7 +329,7 @@ describe('Ninetailed core class', () => {
       });
       // Simulate the intersection of the element with the viewport
       intersect(element, true);
-      // Advance to the first heartbeat where all default thresholds are eligible.
+      // Advance past the default view-tracking threshold so the start event fires.
       jest.advanceTimersByTime(2_100);
       await waitFor(() => {
         expect(testPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(1);
@@ -473,7 +494,7 @@ describe('Ninetailed core class', () => {
       expect(uniqueViewIds.size).toBe(2);
       expect(Math.max(...durations)).toBeLessThan(4_000);
     });
-    it('should switch to a slower heartbeat cadence after long views', async () => {
+    it('should emit exactly a start and an end event for a single view session', async () => {
       const element = document.body.appendChild(document.createElement('div'));
       const seenPlugin = new TestElementSeenPlugin();
       const { ninetailed } = mockProfile([seenPlugin]);
@@ -488,26 +509,83 @@ describe('Ninetailed core class', () => {
       });
 
       intersect(element, true);
-      jest.advanceTimersByTime(10_500);
-      await waitFor(() => {
-        expect(seenPlugin.onElementSeenMock.mock.calls.length).toBeGreaterThan(
-          0
-        );
-      });
-      const callsBeforeSlowCadence =
-        seenPlugin.onElementSeenMock.mock.calls.length;
+      jest.advanceTimersByTime(2_100);
+      // No further events should be emitted while the view stays active;
+      // only the start event fires until the session actually ends.
+      jest.advanceTimersByTime(60_000);
+      intersect(element, false);
+      jest.runAllTimers();
 
-      jest.advanceTimersByTime(9_000);
-      expect(seenPlugin.onElementSeenMock.mock.calls.length).toBe(
-        callsBeforeSlowCadence
+      await waitFor(() => {
+        expect(seenPlugin.onElementSeenMock).toHaveBeenCalledTimes(2);
+      });
+
+      const payloads = seenPlugin.onElementSeenMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementSeenPayload[];
+
+      expect(payloads[0].viewDurationMs).toBe(0);
+      expect(payloads[1].viewDurationMs).toBeGreaterThanOrEqual(62_100);
+      expect(payloads[0].viewId).toBe(payloads[1].viewId);
+    });
+    it('should not emit a view end event when the element never met the view threshold', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const seenPlugin = new TestElementSeenPlugin();
+      const { ninetailed } = mockProfile([seenPlugin]);
+      getObserverOf(element);
+      const experience = generateExperience();
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+        componentType: 'Entry',
+      });
+
+      intersect(element, true);
+      jest.advanceTimersByTime(250);
+      intersect(element, false);
+      await jest.runAllTimersAsync();
+
+      expect(seenPlugin.onElementSeenMock).toHaveBeenCalledTimes(0);
+    });
+    it('should emit a view end event when unobserveElement is called mid-session', async () => {
+      const element = document.body.appendChild(document.createElement('div'));
+      const seenPlugin = new TestElementSeenPlugin();
+      const { ninetailed } = mockProfile([seenPlugin]);
+      getObserverOf(element);
+      const experience = generateExperience();
+      ninetailed.observeElement({
+        element,
+        variant: { id: 'variant-id' },
+        variantIndex: 1,
+        experience,
+        componentType: 'Entry',
+      });
+
+      intersect(element, true);
+      jest.advanceTimersByTime(2_100);
+      ninetailed.unobserveElement(element);
+      jest.runAllTimers();
+
+      await waitFor(() => {
+        expect(seenPlugin.onElementSeenMock).toHaveBeenCalledTimes(2);
+      });
+
+      const payloads = seenPlugin.onElementSeenMock.mock.calls.map(
+        ([payload]) => payload
+      ) as ElementSeenPayload[];
+
+      expect(payloads[1].viewDurationMs).toBeGreaterThanOrEqual(2_100);
+      // unobserveElement must unobserve before deleting stored payloads, so
+      // the synchronous end event it triggers can still find them.
+      expect(payloads[1]).toEqual(
+        expect.objectContaining({
+          variant: expect.objectContaining({ id: 'variant-id' }),
+          variantIndex: 1,
+          experience: expect.objectContaining({ id: experience.id }),
+        })
       );
-
-      jest.advanceTimersByTime(1_500);
-      await waitFor(() => {
-        expect(seenPlugin.onElementSeenMock.mock.calls.length).toBeGreaterThan(
-          callsBeforeSlowCadence
-        );
-      });
     });
     it('should track component clicks when trackClicks is enabled and the observed element is clickable', async () => {
       const element = document.body.appendChild(
@@ -746,7 +824,7 @@ describe('Ninetailed core class', () => {
         ).toBeGreaterThanOrEqual(10_000);
       });
 
-      it('should emit a final hover heartbeat on mouseleave for unsent hover duration', async () => {
+      it('should emit exactly a start and an end event for a single hover session', async () => {
         const element = document.body.appendChild(
           document.createElement('div')
         );
@@ -771,9 +849,7 @@ describe('Ninetailed core class', () => {
         jest.runAllTimers();
 
         await waitFor(() => {
-          expect(
-            hoverPlugin.onElementHoveredMock.mock.calls.length
-          ).toBeGreaterThan(1);
+          expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(2);
         });
 
         const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
@@ -790,15 +866,12 @@ describe('Ninetailed core class', () => {
           );
         });
 
-        const hoverDurations = hoverPayloads.map(
-          (hoverPayload) => hoverPayload.hoverDurationMs
-        );
-
-        expect(hoverDurations).toEqual(expect.arrayContaining([2_000]));
-        expect(Math.max(...hoverDurations)).toBeGreaterThan(2_000);
+        expect(hoverPayloads[0].hoverDurationMs).toBe(0);
+        expect(hoverPayloads[1].hoverDurationMs).toBeGreaterThanOrEqual(2_500);
+        expect(hoverPayloads[0].hoverId).toBe(hoverPayloads[1].hoverId);
       });
 
-      it('should not track component hovers when hover duration is below the minimum threshold', () => {
+      it('should not track component hovers when hover duration is below the minimum threshold', async () => {
         const element = document.body.appendChild(
           document.createElement('div')
         );
@@ -818,7 +891,7 @@ describe('Ninetailed core class', () => {
         element.dispatchEvent(new MouseEvent('mouseenter'));
         jest.advanceTimersByTime(1);
         element.dispatchEvent(new MouseEvent('mouseleave'));
-        jest.runAllTimers();
+        await jest.runAllTimersAsync();
         expect(hoverPlugin.onElementHoveredMock).toHaveBeenCalledTimes(0);
       });
 
@@ -970,6 +1043,96 @@ describe('Ninetailed core class', () => {
             }),
           ])
         );
+      });
+
+      it('should resume hover tracking when re-observed while the pointer is still over the element', async () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        jest
+          .spyOn(element, 'matches')
+          .mockImplementation((selector) => selector === ':hover');
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        const observe = () =>
+          ninetailed.observeElement(
+            {
+              element,
+              variant: { id: 'variant-id' },
+              variantIndex: 1,
+              experience,
+              componentType: 'Entry',
+            },
+            { trackHovers: true }
+          );
+
+        observe();
+        // Simulate a React re-render that unobserves and re-observes the
+        // same element while the pointer never left it, so mouseenter never
+        // re-fires.
+        ninetailed.unobserveElement(element);
+        observe();
+
+        jest.advanceTimersByTime(2_500);
+        await jest.runAllTimersAsync();
+
+        expect(
+          hoverPlugin.onElementHoveredMock.mock.calls.length
+        ).toBeGreaterThan(0);
+      });
+
+      it('should resume an active hover session after the tab returns to the foreground', async () => {
+        const element = document.body.appendChild(
+          document.createElement('div')
+        );
+        const hoverPlugin = new TestElementHoverPlugin();
+        const { ninetailed } = mockProfile([hoverPlugin]);
+        const experience = generateExperience();
+        ninetailed.observeElement(
+          {
+            element,
+            variant: { id: 'variant-id' },
+            variantIndex: 1,
+            experience,
+            componentType: 'Entry',
+          },
+          { trackHovers: true }
+        );
+
+        element.dispatchEvent(new MouseEvent('mouseenter'));
+        jest.advanceTimersByTime(2_500);
+
+        // The tab hides while the pointer is still over the element: the
+        // session ends (emitting an end event), but mouseleave never fires.
+        jest
+          .spyOn(element, 'matches')
+          .mockImplementation((selector) => selector === ':hover');
+        Object.defineProperty(document, 'visibilityState', {
+          configurable: true,
+          value: 'hidden',
+        });
+        document.dispatchEvent(new Event('visibilitychange'));
+
+        Object.defineProperty(document, 'visibilityState', {
+          configurable: true,
+          value: 'visible',
+        });
+        document.dispatchEvent(new Event('visibilitychange'));
+
+        jest.advanceTimersByTime(2_500);
+        await jest.runAllTimersAsync();
+
+        const hoverPayloads = hoverPlugin.onElementHoveredMock.mock.calls.map(
+          ([payload]) => payload as ElementHoveredPayload
+        );
+        const hoverIds = new Set(
+          hoverPayloads.map((payload) => payload.hoverId)
+        );
+
+        // One start+end pair for the session ended on hide, and a second,
+        // distinct hoverId for the session resumed on foreground.
+        expect(hoverIds.size).toBe(2);
       });
     });
 
