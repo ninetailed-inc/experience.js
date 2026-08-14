@@ -73,7 +73,10 @@ export class ElementSeenObserver {
       });
     } else if (!viewState.delays.has(delay)) {
       viewState.delays.add(delay);
-      this.scheduleDelayStart(element, viewState, delay);
+
+      if (viewState.viewId !== null) {
+        this.scheduleDelayStart(element, viewState, delay, viewState.viewId);
+      }
     }
 
     this._intersectionObserver?.observe(element);
@@ -126,20 +129,22 @@ export class ElementSeenObserver {
     viewState: ElementViewState,
     now: number
   ) {
-    viewState.viewId = crypto.randomUUID();
+    const viewId = crypto.randomUUID();
+    viewState.viewId = viewId;
     viewState.sessionStartTimestamp = now;
     viewState.startedDelays = new Set();
     viewState.pendingStartTimers = new Map();
 
     viewState.delays.forEach((delay) => {
-      this.scheduleDelayStart(element, viewState, delay);
+      this.scheduleDelayStart(element, viewState, delay, viewId);
     });
   }
 
   private scheduleDelayStart(
     element: Element,
     viewState: ElementViewState,
-    delay: number
+    delay: number,
+    viewId: string
   ) {
     if (viewState.sessionStartTimestamp === null) {
       return;
@@ -149,13 +154,13 @@ export class ElementSeenObserver {
     const remaining = delay - elapsed;
 
     if (remaining <= 0) {
-      this.emitStart(element, viewState, delay);
+      this.emitStart(element, viewState, delay, viewId);
       return;
     }
 
     const timerId = window.setTimeout(() => {
       viewState.pendingStartTimers.delete(delay);
-      this.emitStart(element, viewState, delay);
+      this.emitStart(element, viewState, delay, viewId);
     }, remaining);
 
     viewState.pendingStartTimers.set(delay, timerId);
@@ -164,7 +169,8 @@ export class ElementSeenObserver {
   private emitStart(
     element: Element,
     viewState: ElementViewState,
-    delay: number
+    delay: number,
+    viewId: string
   ) {
     if (
       viewState.sessionStartTimestamp === null ||
@@ -174,7 +180,7 @@ export class ElementSeenObserver {
     }
 
     viewState.startedDelays.add(delay);
-    this._options.onElementSeen(element, delay, 0, viewState.viewId as string);
+    this._options.onElementSeen(element, delay, 0, viewId);
   }
 
   private endSession(
@@ -187,12 +193,12 @@ export class ElementSeenObserver {
     });
     viewState.pendingStartTimers.clear();
 
-    if (viewState.sessionStartTimestamp === null) {
+    if (viewState.sessionStartTimestamp === null || viewState.viewId === null) {
       return;
     }
 
     const viewDurationMs = now - viewState.sessionStartTimestamp;
-    const viewId = viewState.viewId as string;
+    const viewId = viewState.viewId;
 
     viewState.startedDelays.forEach((delay) => {
       this._options.onElementSeen(element, delay, viewDurationMs, viewId);
