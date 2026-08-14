@@ -5,21 +5,13 @@ export type ElementHoverObserverOptions = {
     hoverId: string
   ) => void;
   componentHoverTrackingThreshold?: number;
-  heartbeatIntervalMs?: number;
-  minimumHeartbeatIncrementMs?: number;
 };
 
 type ElementHoverSession = {
   hoverId: string;
   hoverStartTimestamp: number;
-  lastReportedMs: number;
-};
-
-type EmitHoverIfNeededParams = {
-  element: Element;
-  hoverSession: ElementHoverSession;
-  now: number;
-  forceReport: boolean;
+  startEmitted: boolean;
+  startTimer: number | null;
 };
 
 export class ElementHoverObserver {
@@ -31,21 +23,14 @@ export class ElementHoverObserver {
     }
   >;
   private _activeHoverSessions: Map<Element, ElementHoverSession>;
-  private _heartbeatTimer: number | null;
 
   private readonly componentHoverTrackingThreshold: number;
-  private readonly heartbeatIntervalMs: number;
-  private readonly minimumHeartbeatIncrementMs: number;
 
   constructor(private _options: ElementHoverObserverOptions) {
     this._elementHandlers = new WeakMap();
     this._activeHoverSessions = new Map();
-    this._heartbeatTimer = null;
     this.componentHoverTrackingThreshold =
       _options.componentHoverTrackingThreshold ?? 2000;
-    this.heartbeatIntervalMs = _options.heartbeatIntervalMs ?? 2000;
-    this.minimumHeartbeatIncrementMs =
-      _options.minimumHeartbeatIncrementMs ?? 1000;
   }
 
   public observe(element: Element) {
@@ -58,17 +43,11 @@ export class ElementHoverObserver {
         return;
       }
 
-      this._activeHoverSessions.set(element, {
-        hoverId: crypto.randomUUID(),
-        hoverStartTimestamp: Date.now(),
-        lastReportedMs: 0,
-      });
-
-      this.startHeartbeatIfNeeded();
+      this.startSession(element);
     };
 
     const onMouseLeave = () => {
-      this.endHoverSession(element, true);
+      this.endSession(element, Date.now());
     };
 
     element.addEventListener('mouseenter', onMouseEnter);
@@ -91,101 +70,70 @@ export class ElementHoverObserver {
     element.removeEventListener('mouseleave', handlers.mouseleave);
 
     this._elementHandlers.delete(element);
-    this.endHoverSession(element, false);
+    this.endSession(element, Date.now());
   }
 
-  public flushActiveHovers() {
+  /**
+   * Ends every active hover session immediately (e.g. on tab hide) so a
+   * final hover event is emitted rather than left dangling.
+   */
+  public endActiveSessions() {
     const now = Date.now();
 
-    this._activeHoverSessions.forEach((hoverSession, element) => {
-      this.emitHoverIfNeeded({
-        element,
-        hoverSession,
-        now,
-        forceReport: true,
-      });
+    Array.from(this._activeHoverSessions.keys()).forEach((element) => {
+      this.endSession(element, now);
     });
-
-    this._activeHoverSessions.clear();
-    this.stopHeartbeatIfIdle();
   }
 
-  private startHeartbeatIfNeeded() {
-    if (this._heartbeatTimer !== null || this._activeHoverSessions.size === 0) {
+  private startSession(element: Element) {
+    const now = Date.now();
+    const session: ElementHoverSession = {
+      hoverId: crypto.randomUUID(),
+      hoverStartTimestamp: now,
+      startEmitted: false,
+      startTimer: null,
+    };
+
+    this._activeHoverSessions.set(element, session);
+
+    if (this.componentHoverTrackingThreshold <= 0) {
+      this.emitStart(element, session);
       return;
     }
 
-    this._heartbeatTimer = window.setInterval(() => {
-      const now = Date.now();
-
-      this._activeHoverSessions.forEach((hoverSession, element) => {
-        this.emitHoverIfNeeded({
-          element,
-          hoverSession,
-          now,
-          forceReport: false,
-        });
-      });
-    }, this.heartbeatIntervalMs);
+    session.startTimer = window.setTimeout(() => {
+      session.startTimer = null;
+      this.emitStart(element, session);
+    }, this.componentHoverTrackingThreshold);
   }
 
-  private stopHeartbeatIfIdle() {
-    if (this._activeHoverSessions.size > 0 || this._heartbeatTimer === null) {
+  private emitStart(element: Element, session: ElementHoverSession) {
+    if (session.startEmitted) {
       return;
     }
 
-    window.clearInterval(this._heartbeatTimer);
-    this._heartbeatTimer = null;
+    session.startEmitted = true;
+    this._options.onElementHover(element, 0, session.hoverId);
   }
 
-  private endHoverSession(element: Element, emitFinalHeartbeat: boolean) {
-    const hoverSession = this._activeHoverSessions.get(element);
+  private endSession(element: Element, now: number) {
+    const session = this._activeHoverSessions.get(element);
 
-    if (!hoverSession) {
-      this.stopHeartbeatIfIdle();
+    if (!session) {
       return;
     }
 
-    if (emitFinalHeartbeat) {
-      this.emitHoverIfNeeded({
-        element,
-        hoverSession,
-        now: Date.now(),
-        forceReport: true,
-      });
+    if (session.startTimer !== null) {
+      window.clearTimeout(session.startTimer);
     }
 
     this._activeHoverSessions.delete(element);
-    this.stopHeartbeatIfIdle();
-  }
 
-  private emitHoverIfNeeded({
-    element,
-    hoverSession,
-    now,
-    forceReport,
-  }: EmitHoverIfNeededParams) {
-    const hoverDurationMs = now - hoverSession.hoverStartTimestamp;
-
-    if (hoverDurationMs < this.componentHoverTrackingThreshold) {
+    if (!session.startEmitted) {
       return;
     }
 
-    const durationDelta = hoverDurationMs - hoverSession.lastReportedMs;
-
-    if (durationDelta <= 0) {
-      return;
-    }
-
-    if (!forceReport && durationDelta < this.minimumHeartbeatIncrementMs) {
-      return;
-    }
-
-    this._options.onElementHover(
-      element,
-      hoverDurationMs,
-      hoverSession.hoverId
-    );
-    hoverSession.lastReportedMs = hoverDurationMs;
+    const hoverDurationMs = now - session.hoverStartTimestamp;
+    this._options.onElementHover(element, hoverDurationMs, session.hoverId);
   }
 }
