@@ -86,7 +86,7 @@
     "@nx/webpack": "22.7.2",
     "@nx/workspace": "22.7.2",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.7",
-    "@rollup/plugin-replace": "5.0.2",
+    "@rollup/plugin-replace": "5.0.7",
     "@segment/analytics-next": "1.48.0",
     "@svgr/webpack": "8.1.0",
     "@swc-node/register": "~1.11.1",
