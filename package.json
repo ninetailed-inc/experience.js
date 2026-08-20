@@ -116,7 +116,7 @@
     "babel-jest": "30.0.5",
     "babel-plugin-module-resolver": "4.1.0",
     "contentful-export": "7.22.5",
-    "contentful-import": "9.4.130",
+    "contentful-import": "9.4.140",
     "contentful-management": "11.69.3",
     "contentful-typescript-codegen": "3.4.0",
     "css-loader": "6.4.0",
