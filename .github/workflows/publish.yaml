@@ -36,6 +36,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      id-token: write # required to obtain the OIDC JWT for Doppler auth
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -56,14 +57,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@4819d808ab99e5cde19a0637a16536a4038fad73 # v4
+      - name: Fetch Doppler secrets
+        uses: dopplerhq/secrets-fetch-action@451892f16195f9ac360e1a5bcbf0b5fd0e957534 # v2.0.0
+        with:
+          auth-method: oidc
+          doppler-identity-id: ${{ vars.DOPPLER_IDENTITY_ID }}
+          doppler-project: experience-js-sdks
+          doppler-config: dev
+          inject-env-vars: true
 
       - name: Build 📦
         run: >
-          doppler run --mount .env -- pnpm nx run-many --target=build
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          pnpm nx run-many --target=build
 
   lint:
     name: Lint 🎨
@@ -109,6 +114,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      id-token: write # required to obtain the OIDC JWT for Doppler auth
     steps:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -129,14 +135,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@4819d808ab99e5cde19a0637a16536a4038fad73 # v4
+      - name: Fetch Doppler secrets
+        uses: dopplerhq/secrets-fetch-action@451892f16195f9ac360e1a5bcbf0b5fd0e957534 # v2.0.0
+        with:
+          auth-method: oidc
+          doppler-identity-id: ${{ vars.DOPPLER_IDENTITY_ID }}
+          doppler-project: experience-js-sdks
+          doppler-config: dev
+          inject-env-vars: true
 
       - name: Test 🧪
         run: >
-          doppler run --mount .env -- pnpm nx run-many --target=test
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          pnpm nx run-many --target=test
 
   license-check:
     name: License check 📄
@@ -212,16 +222,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@4819d808ab99e5cde19a0637a16536a4038fad73 # v4
+      - name: Fetch Doppler secrets
+        uses: dopplerhq/secrets-fetch-action@451892f16195f9ac360e1a5bcbf0b5fd0e957534 # v2.0.0
+        with:
+          auth-method: oidc
+          doppler-identity-id: ${{ vars.DOPPLER_IDENTITY_ID }}
+          doppler-project: experience-js-sdks
+          doppler-config: dev
+          inject-env-vars: true
 
       - name: Echo github event release metadatas
         run: echo "$JOB_CONTEXT"
         env:
           JOB_CONTEXT: ${{ toJson(github.event.release) }}
 
-      - run: doppler run --mount .env -- ./tools/bump_and_publish_sdks.sh
+      - run: ./tools/bump_and_publish_sdks.sh
         env:
           GITHUB_TAG: ${{ github.event.release.tag_name }}
-          # we run nx build in the script, so we might need some env vars
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
