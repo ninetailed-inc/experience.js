@@ -73,6 +73,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read # required by nrwl/nx-set-shas to query the Actions API
+      id-token: write # required to obtain the OIDC JWT for Doppler auth
     steps:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -95,26 +99,32 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@4819d808ab99e5cde19a0637a16536a4038fad73 # v4
+      - name: Fetch Doppler secrets
+        uses: dopplerhq/secrets-fetch-action@451892f16195f9ac360e1a5bcbf0b5fd0e957534 # v2.0.0
+        with:
+          auth-method: oidc
+          doppler-identity-id: ${{ vars.DOPPLER_IDENTITY_ID }}
+          doppler-project: experience-js-sdks
+          doppler-config: dev
+          inject-env-vars: true
 
       - name: Test 🧪
         run: >
-          doppler run --mount .env -- pnpm nx affected --target=test
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          pnpm nx affected --target=test
 
       - name: Generated package snapshots 🧪
         run: >
-          doppler run --mount .env -- pnpm nx run tests-generated-packages:test
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          pnpm nx run tests-generated-packages:test
 
   build:
     name: Build 📦
     runs-on: ubuntu-latest
     needs: setup
     timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read # required by nrwl/nx-set-shas to query the Actions API
+      id-token: write # required to obtain the OIDC JWT for Doppler auth
     steps:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -137,14 +147,18 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@4819d808ab99e5cde19a0637a16536a4038fad73 # v4
+      - name: Fetch Doppler secrets
+        uses: dopplerhq/secrets-fetch-action@451892f16195f9ac360e1a5bcbf0b5fd0e957534 # v2.0.0
+        with:
+          auth-method: oidc
+          doppler-identity-id: ${{ vars.DOPPLER_IDENTITY_ID }}
+          doppler-project: experience-js-sdks
+          doppler-config: dev
+          inject-env-vars: true
 
       - name: Build 📦
         run: >
-          doppler run --mount .env -- pnpm nx affected --target=build
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          pnpm nx affected --target=build
 
   license-check:
     name: License check 📄
