@@ -115,7 +115,7 @@
     "autoprefixer": "10.4.14",
     "babel-jest": "30.0.5",
     "babel-plugin-module-resolver": "4.1.0",
-    "contentful-export": "7.22.1",
+    "contentful-export": "7.22.5",
     "contentful-import": "9.4.130",
     "contentful-management": "11.69.3",
     "contentful-typescript-codegen": "3.4.0",
