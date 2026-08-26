@@ -362,8 +362,8 @@ importers:
         specifier: 30.0.5
         version: 30.0.5
       '@next/eslint-plugin-next':
-        specifier: ^16.2.6
-        version: 16.2.6
+        specifier: ^16.3.2
+        version: 16.3.2(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))
       '@nx/cypress':
         specifier: 22.7.2
         version: 22.7.2(eeaffb2788b06a1785786cef6fdeeb0f)
@@ -2486,6 +2486,9 @@ packages:
 
   '@next/eslint-plugin-next@16.2.6':
     resolution: {integrity: sha512-Z8l6o4JWKUl755x4R+wogD86KPeU+Ckw4K+SYG4kHeOJtRenDeK+OSbGcqZpDtbwn9DsJVdir2UxmwXuinUbUw==}
+
+  '@next/eslint-plugin-next@16.3.2':
+    resolution: {integrity: sha512-z+HW1cZgt8QhByw8p2EbxF94AImgsKIYUbtSkA7Zld2T9yrKAlys4jNOcAOCtv6csX2CoA/5qCVyesL5pHmJ0A==}
 
   '@next/swc-darwin-arm64@16.2.6':
     resolution: {integrity: sha512-ZJGkkcNfYgrrMkqOdZ7zoLa1TOy0qpcMfk/z4Mh/FKUz40gVO+HNQWqmLxf67Z5WB64DRp0dhEbyHfel+6sJUg==}
@@ -6543,6 +6546,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -13529,6 +13533,13 @@ snapshots:
   '@next/eslint-plugin-next@16.2.6':
     dependencies:
       fast-glob: 3.3.1
+
+  '@next/eslint-plugin-next@16.3.2(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))':
+    dependencies:
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0)(supports-color@8.1.1))
+      fast-glob: 3.3.1
+    transitivePeerDependencies:
+      - eslint
 
   '@next/swc-darwin-arm64@16.2.6':
     optional: true
