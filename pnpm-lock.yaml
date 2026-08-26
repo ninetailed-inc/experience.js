@@ -437,8 +437,8 @@ importers:
         specifier: 1.4.5
         version: 1.4.5
       '@types/dot':
-        specifier: 1.1.5
-        version: 1.1.5
+        specifier: 1.1.7
+        version: 1.1.7
       '@types/jest':
         specifier: 30.0.0
         version: 30.0.0
@@ -4216,8 +4216,8 @@ packages:
   '@types/dlv@1.1.5':
     resolution: {integrity: sha512-JHOWNfiWepAhfwlSw17kiWrWrk6od2dEQgHltJw9AS0JPFoLZJBge5+Dnil2NfdjAvJ/+vGSX60/BRW20PpUXw==}
 
-  '@types/dot@1.1.5':
-    resolution: {integrity: sha512-fguu7IaFdubwG18Y6GbjVM9yItNeQezVCvsXn/QFPe/+Vsbjpz+Rddi3Fg/YX11+xqeaB0sPSfP3ebLI4NNGGw==}
+  '@types/dot@1.1.7':
+    resolution: {integrity: sha512-RhMcnI18Y+401Nceh2pW5gTGgsdfZdvg9g0P/5HIBJ0jmZEv5KlkYvfQiHhw4/Vnb8NdePi/4UCs92ITExLxuQ==}
 
   '@types/eslint-scope@3.7.7':
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
@@ -6543,6 +6543,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -15661,7 +15662,7 @@ snapshots:
 
   '@types/dlv@1.1.5': {}
 
-  '@types/dot@1.1.5': {}
+  '@types/dot@1.1.7': {}
 
   '@types/eslint-scope@3.7.7':
     dependencies:
