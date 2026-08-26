@@ -22,4 +22,3 @@ External services, credentials, and deployment environments are not represented 
 ## Failure and verification
 
 Start with the narrowest affected command, inspect its direct inputs, and expand to repository-level validation. If a required external system is unavailable, record that verification gap instead of claiming success.
-

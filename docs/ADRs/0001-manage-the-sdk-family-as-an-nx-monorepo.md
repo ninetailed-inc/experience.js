@@ -14,4 +14,3 @@ Use pnpm workspaces with Nx targets to coordinate builds, tests, linting, and ca
 ## Consequences
 
 Package changes should be validated through affected Nx targets, and cross-package contracts must remain compatible.
-
