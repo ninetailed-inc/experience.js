@@ -18,7 +18,7 @@ allowBuilds:
   unrs-resolver: true
 
 overrides:
-  minimatch@7: 7.4.8
+  minimatch@7: 7.4.9
   underscore: 1.13.8
   '@types/react': 19.2.14
   '@contentful/rich-text-types': 17.2.5
