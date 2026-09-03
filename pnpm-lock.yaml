@@ -214,8 +214,8 @@ importers:
   .:
     dependencies:
       '@aaronhayes/react-use-hubspot-form':
-        specifier: 2.1.1
-        version: 2.1.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: 2.1.2
+        version: 2.1.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@contentful/rich-text-react-renderer':
         specifier: 16.1.6
         version: 16.1.6(babel-plugin-macros@3.1.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -631,8 +631,8 @@ importers:
 
 packages:
 
-  '@aaronhayes/react-use-hubspot-form@2.1.1':
-    resolution: {integrity: sha512-K1ybIAa6b49hTnr08OcYZWI9yqpI/bGzjh2Vnk+H3Lt1udpToa0wJnP9ONmfs+wUdefzX2v0BwQPxtZ7yE6E8A==}
+  '@aaronhayes/react-use-hubspot-form@2.1.2':
+    resolution: {integrity: sha512-SfQQap4T+D4S/epRE5fw0m2QOrD0vgUfZguWk9nlL6IRre1UQklCuns+9Ck/K//TA95xiTbW3WFY1RfgGkzRQQ==}
     engines: {node: '>=10.16'}
     peerDependencies:
       react: '>=16.8.0'
@@ -11311,7 +11311,7 @@ packages:
 
 snapshots:
 
-  '@aaronhayes/react-use-hubspot-form@2.1.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@aaronhayes/react-use-hubspot-form@2.1.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
