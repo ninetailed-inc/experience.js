@@ -449,8 +449,8 @@ importers:
         specifier: 2.0.6
         version: 2.0.6
       '@types/lodash':
-        specifier: 4.17.23
-        version: 4.17.23
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/murmurhash-js':
         specifier: 1.0.3
         version: 1.0.3
@@ -4276,8 +4276,8 @@ packages:
   '@types/loader-utils@2.0.6':
     resolution: {integrity: sha512-cgu0Xefgq9O5FjFR78jgI6X31aPjDWCaJ6LCfRtlj6BtyVVWiXagysSYlPACwGKAzRwsFLjKXcj4iGfcVt6cLw==}
 
-  '@types/lodash@4.17.23':
-    resolution: {integrity: sha512-RDvF6wTulMPjrNdCoYRC8gNR880JNGT8uB+REUpC2Ns4pRqQJhGz90wh7rgdXDPpCczF3VGktDuFGVnz8zP7HA==}
+  '@types/lodash@4.17.25':
+    resolution: {integrity: sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ==}
 
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
@@ -15736,7 +15736,7 @@ snapshots:
       '@types/node': 18.19.99
       '@types/webpack': 4.41.40
 
-  '@types/lodash@4.17.23': {}
+  '@types/lodash@4.17.25': {}
 
   '@types/mime@1.3.5': {}
 
