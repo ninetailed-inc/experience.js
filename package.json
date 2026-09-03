@@ -96,7 +96,7 @@
     "@testing-library/dom": "8.19.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.1.0",
-    "@types/async-retry": "1.4.5",
+    "@types/async-retry": "1.4.9",
     "@types/dot": "1.1.7",
     "@types/jest": "30.0.0",
     "@types/js-cookie": "3.0.6",
