@@ -250,8 +250,8 @@ importers:
         specifier: 4.2.2
         version: 4.2.2
       diary:
-        specifier: 0.4.4
-        version: 0.4.4
+        specifier: 0.4.5
+        version: 0.4.5
       dot:
         specifier: 1.1.3
         version: 1.1.3
@@ -6125,8 +6125,8 @@ packages:
   diacritics@1.3.0:
     resolution: {integrity: sha512-wlwEkqcsaxvPJML+rDh/2iS824jbREk6DUMUKkEaSlxdYHeS43cClJtsWglvw2RfeXGm6ohKDqsXteJ5sP5enA==}
 
-  diary@0.4.4:
-    resolution: {integrity: sha512-CTIivFihV6Y0gik2Y9HIOoB9hnUEPej5z4lkSMkmGBZSdUhjfYB7qtLVCHWr0g2RwtR98prF8aFdUaeth0kVgg==}
+  diary@0.4.5:
+    resolution: {integrity: sha512-dUtG/AVG5bt9Mi+23TgTvjZ0NDJaszjs1GpYooM5cbEzk2xoqdvxCOlVw0xkenQXZw/DFxp23tj5VkP6YmlRmw==}
 
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
@@ -17916,7 +17916,7 @@ snapshots:
 
   diacritics@1.3.0: {}
 
-  diary@0.4.4: {}
+  diary@0.4.5: {}
 
   didyoumean@1.2.2: {}
 
