@@ -452,8 +452,8 @@ importers:
         specifier: 4.17.25
         version: 4.17.25
       '@types/murmurhash-js':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.7
+        version: 1.0.7
       '@types/node':
         specifier: 18.19.99
         version: 18.19.99
@@ -4285,8 +4285,8 @@ packages:
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
-  '@types/murmurhash-js@1.0.3':
-    resolution: {integrity: sha512-PxJwTlcFOBRPqv9pSoC3O1FpKN8GnM5hMJIkG6U3omH8b4GAh28fO1c+TMR4oxj0BG43/ICbrIK3KBfzad2heg==}
+  '@types/murmurhash-js@1.0.7':
+    resolution: {integrity: sha512-XM6078Du3jaEJVwpxmPZsJQDMzWabjY4ILQQvW4VPBzTULd+Fjs2Z54s+OrLzDRxgs6J09YyDISnZDlltYAchw==}
 
   '@types/node-fetch@2.6.13':
     resolution: {integrity: sha512-QGpRVpzSaUs30JBSGPjOg4Uveu384erbHBoT1zeONvyCfwQxIkUshLAOqN/k9EjGviPRmWTTe6aH2qySWKTVSw==}
@@ -15742,7 +15742,7 @@ snapshots:
 
   '@types/minimist@1.2.5': {}
 
-  '@types/murmurhash-js@1.0.3': {}
+  '@types/murmurhash-js@1.0.7': {}
 
   '@types/node-fetch@2.6.13':
     dependencies:
