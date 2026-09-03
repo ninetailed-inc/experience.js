@@ -339,7 +339,7 @@ importers:
     devDependencies:
       '@anatine/zod-mock':
         specifier: 3.8.1
-        version: 3.8.1(@faker-js/faker@7.6.0)
+        version: 3.8.1(@faker-js/faker@10.5.0)
       '@babel/core':
         specifier: ^7.29.7
         version: 7.29.7(supports-color@8.1.1)
@@ -356,8 +356,8 @@ importers:
         specifier: ~9.39.4
         version: 9.39.4
       '@faker-js/faker':
-        specifier: 7.6.0
-        version: 7.6.0
+        specifier: 10.5.0
+        version: 10.5.0
       '@jest/globals':
         specifier: 30.0.5
         version: 30.0.5
@@ -1698,9 +1698,9 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@faker-js/faker@7.6.0':
-    resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
-    engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+  '@faker-js/faker@10.5.0':
+    resolution: {integrity: sha512-bsxD8WLS5lIj7aaoCx1YJkktqYj5vlBUE6HWzu2Q51ksrGJ0H737ECCKlFU7Yf8Br45z9t99frBp/J7kzbMPAg==}
+    engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
 
   '@hapi/address@5.1.1':
     resolution: {integrity: sha512-A+po2d/dVoY7cYajycYI43ZbYMXukuopIsqCjh5QzsBCipDtdofHntljDlpccMjIfTy6UOkg+5KPriwYch2bXA==}
@@ -11354,9 +11354,9 @@ snapshots:
 
   '@analytics/type-utils@0.6.4': {}
 
-  '@anatine/zod-mock@3.8.1(@faker-js/faker@7.6.0)':
+  '@anatine/zod-mock@3.8.1(@faker-js/faker@10.5.0)':
     dependencies:
-      '@faker-js/faker': 7.6.0
+      '@faker-js/faker': 10.5.0
       randexp: 0.5.3
 
   '@asamuzakjp/css-color@3.2.0':
@@ -12565,7 +12565,7 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@faker-js/faker@7.6.0': {}
+  '@faker-js/faker@10.5.0': {}
 
   '@hapi/address@5.1.1':
     dependencies:
