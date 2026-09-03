@@ -434,8 +434,8 @@ importers:
         specifier: 16.1.0
         version: 16.1.0(@testing-library/dom@8.19.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/async-retry':
-        specifier: 1.4.5
-        version: 1.4.5
+        specifier: 1.4.9
+        version: 1.4.9
       '@types/dot':
         specifier: 1.1.7
         version: 1.1.7
@@ -4180,8 +4180,8 @@ packages:
   '@types/aria-query@4.2.2':
     resolution: {integrity: sha512-HnYpAE1Y6kRyKM/XkEuiRQhTHvkzMBurTHnpFLYLBGPIylZNPs9jJcuOOYWxPLJCSEtmZT0Y8rHDokKN7rRTig==}
 
-  '@types/async-retry@1.4.5':
-    resolution: {integrity: sha512-YrdjSD+yQv7h6d5Ip+PMxh3H6ZxKyQk0Ts+PvaNRInxneG9PFVZjFg77ILAN+N6qYf7g4giSJ1l+ZjQ1zeegvA==}
+  '@types/async-retry@1.4.9':
+    resolution: {integrity: sha512-s1ciZQJzRh3708X/m3vPExr5KJlzlZJvXsKpbtE2luqNcbROr64qU+3KpJsYHqWMeaxI839OvXf9PrUSw1Xtyg==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -15599,7 +15599,7 @@ snapshots:
 
   '@types/aria-query@4.2.2': {}
 
-  '@types/async-retry@1.4.5':
+  '@types/async-retry@1.4.9':
     dependencies:
       '@types/retry': 0.12.5
 
