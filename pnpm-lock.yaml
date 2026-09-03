@@ -262,8 +262,8 @@ importers:
         specifier: 7.5.0
         version: 7.5.0
       js-cookie:
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.0.7
+        version: 3.0.7
       loader-utils:
         specifier: 2.0.4
         version: 2.0.4
@@ -7904,6 +7904,10 @@ packages:
   js-cookie@3.0.1:
     resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
     engines: {node: '>=12'}
+
+  js-cookie@3.0.7:
+    resolution: {integrity: sha512-z/wZZgDrkNV1eA0ULjM/F9/50Ya8fbzgKneSpoPsXSGd0KnpdtHfOZWK+GcwLk+EZbS4F9RBhU+K2RgzuDaItw==}
+    engines: {node: '>=20'}
 
   js-sha256@0.10.1:
     resolution: {integrity: sha512-5obBtsz9301ULlsgggLg542s/jqtddfOpV5KJc4hajc9JV8GeY2gZHSVpYBn4nWqAUTJ9v+xwtbJ1mIBgIH5Vw==}
@@ -20362,6 +20366,8 @@ snapshots:
       '@standard-schema/spec': 1.1.0
 
   js-cookie@3.0.1: {}
+
+  js-cookie@3.0.7: {}
 
   js-sha256@0.10.1: {}
 
