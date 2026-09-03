@@ -232,8 +232,8 @@ importers:
         specifier: 0.5.18
         version: 0.5.18
       analytics:
-        specifier: 0.8.1
-        version: 0.8.1(@types/dlv@1.1.5)
+        specifier: 0.8.19
+        version: 0.8.19(@types/dlv@1.1.5)
       async-retry:
         specifier: 1.3.3
         version: 1.3.3
@@ -648,8 +648,8 @@ packages:
   '@analytics/cookie-utils@0.2.14':
     resolution: {integrity: sha512-x51x2cLqvP5Fb1ydgNvTCX+SVv0ALK/yTNwp/53++yk4kLhxb850krWtQ4aASN0612oXrIGotwfmdJIttnLiPQ==}
 
-  '@analytics/core@0.11.1':
-    resolution: {integrity: sha512-vHuiMpeGV6jGRRoOuScUJ4CHpVd1Zu9M+fjEWgN+boMAxIwFCtRTkSbhhIP337JuEBLpMT8w37OxA4Yh3NZFZw==}
+  '@analytics/core@0.13.2':
+    resolution: {integrity: sha512-ejvfoPP8TEh2hA2szMEq9c4TdeX8FAeY1j/7MxJVZjzDaq8BDHOyaAAQzTFiLMHvV0WcU2YC0smJ5Ids5Ll5ng==}
 
   '@analytics/global-storage-utils@0.1.9':
     resolution: {integrity: sha512-+xm6CDnWsVOQIKkqbPRPRdYDXKk3PNgr/bCZWSI+7tEDT5PCDgI0QSBZe+FqCVkCRtTkgOrjFOY7wOM8Gq+ndA==}
@@ -4891,8 +4891,8 @@ packages:
     peerDependencies:
       '@types/dlv': ^1.0.0
 
-  analytics@0.8.1:
-    resolution: {integrity: sha512-mXOe8zTGDfiYqw9MZsgul8HrOBmHsIwk/0xbrkGZr75yvWqAcyKfZA0WjOalwI9tzIKv8WNfHV5yhnrtQcXJpw==}
+  analytics@0.8.19:
+    resolution: {integrity: sha512-JFgasxpWFiAoqm5UHaGQv9j9OGz+f1KAeQkABYr3Z7YGhiqhQrBpPhIVAIEyttBRJZmew1QwMhN9/bOGGBnpJA==}
 
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
@@ -11324,7 +11324,7 @@ snapshots:
     dependencies:
       '@analytics/global-storage-utils': 0.1.9
 
-  '@analytics/core@0.11.1(@types/dlv@1.1.5)':
+  '@analytics/core@0.13.2(@types/dlv@1.1.5)':
     dependencies:
       '@analytics/global-storage-utils': 0.1.9
       '@analytics/type-utils': 0.6.4
@@ -16527,9 +16527,9 @@ snapshots:
       '@types/dlv': 1.1.5
       dlv: 1.1.3
 
-  analytics@0.8.1(@types/dlv@1.1.5):
+  analytics@0.8.19(@types/dlv@1.1.5):
     dependencies:
-      '@analytics/core': 0.11.1(@types/dlv@1.1.5)
+      '@analytics/core': 0.13.2(@types/dlv@1.1.5)
       '@analytics/storage-utils': 0.4.4
     transitivePeerDependencies:
       - '@types/dlv'
