@@ -99,7 +99,7 @@
     "@types/async-retry": "1.4.5",
     "@types/dot": "1.1.7",
     "@types/jest": "30.0.0",
-    "@types/js-cookie": "3.0.2",
+    "@types/js-cookie": "3.0.6",
     "@types/loader-utils": "2.0.6",
     "@types/lodash": "4.17.23",
     "@types/murmurhash-js": "1.0.3",
