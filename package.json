@@ -58,7 +58,7 @@
     "ts-toolbelt": "9.6.0",
     "tslib": "2.4.1",
     "uuid": "9.0.0",
-    "wildcard-match": "5.1.2",
+    "wildcard-match": "5.1.4",
     "yup": "1.2.0",
     "zod": "3.23.0",
     "zoid": "9.0.86"
