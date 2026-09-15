@@ -30,7 +30,7 @@
   "dependencies": {
     "@anatine/zod-mock": "3.8.1",
     "@ninetailed/experience.js-shared": "*",
-    "analytics": "0.8.1",
+    "analytics": "0.8.19",
     "zod": "3.23.0"
   }
 }
