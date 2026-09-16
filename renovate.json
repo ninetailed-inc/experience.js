@@ -1,4 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>contentful/renovate-config:defaultNxMonorepo"]
+  "extends": ["local>contentful/renovate-config:defaultNxMonorepo"],
+  "platformAutomerge": false,
+  "rebaseWhen": "behind-base-branch",
+  "updateNotScheduled": true
 }
