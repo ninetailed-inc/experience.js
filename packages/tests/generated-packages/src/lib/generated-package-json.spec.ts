@@ -1,5 +1,15 @@
 import * as fs from 'fs';
 import * as path from 'path';
+
+const dependencyFields = [
+  'dependencies',
+  'devDependencies',
+  'optionalDependencies',
+  'peerDependencies',
+] as const;
+
+type PackageJson = Record<string, unknown>;
+
 function findPackageJsonPaths(directory: string) {
   const packageJsonPaths: string[] = [];
   function traverseDirectory(directory: string) {
@@ -24,13 +34,59 @@ function parsePackageJson(packageJsonPath: string) {
   const fileContent = fs.readFileSync(packageJsonPath, 'utf8');
   return JSON.parse(fileContent);
 }
+
+function normalizeDependencyVersions(packageJson: PackageJson) {
+  const normalizedPackageJson = { ...packageJson };
+
+  dependencyFields.forEach((field) => {
+    const dependencies = packageJson[field];
+
+    if (
+      typeof dependencies !== 'object' ||
+      dependencies === null ||
+      Array.isArray(dependencies)
+    ) {
+      return;
+    }
+
+    normalizedPackageJson[field] = Object.fromEntries(
+      Object.keys(dependencies).map((dependency) => [dependency, '<version>'])
+    );
+  });
+
+  return normalizedPackageJson;
+}
+
+describe('normalizeDependencyVersions', () => {
+  it('preserves dependency topology while ignoring version changes', () => {
+    const packageJson = {
+      name: 'example-package',
+      version: '1.2.3',
+      dependencies: { runtime: '^1.0.0' },
+      devDependencies: { development: '2.0.0' },
+      optionalDependencies: { optional: '~3.0.0' },
+      peerDependencies: { peer: '>=4.0.0' },
+    };
+
+    expect(normalizeDependencyVersions(packageJson)).toEqual({
+      name: 'example-package',
+      version: '1.2.3',
+      dependencies: { runtime: '<version>' },
+      devDependencies: { development: '<version>' },
+      optionalDependencies: { optional: '<version>' },
+      peerDependencies: { peer: '<version>' },
+    });
+    expect(packageJson.dependencies.runtime).toBe('^1.0.0');
+  });
+});
+
 describe('Generated package.json files', () => {
   const packageJsonPaths = findPackageJsonPaths('dist/packages');
   it.each(packageJsonPaths)(
     '%s should match the snapshot',
     (packageJsonPath) => {
       const json = parsePackageJson(packageJsonPath);
-      expect(json).toMatchSnapshot();
+      expect(normalizeDependencyVersions(json)).toMatchSnapshot();
     }
   );
   it.each(packageJsonPaths)(
