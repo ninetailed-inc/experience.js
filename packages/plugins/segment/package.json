@@ -25,6 +25,6 @@
     "jsonc-eslint-parser": "3.0.0"
   },
   "devDependencies": {
-    "@segment/analytics-next": "1.48.0"
+    "@segment/analytics-next": "1.84.3"
   }
 }
