@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "analytics": "0.8.1",
-    "wildcard-match": "5.1.2",
+    "wildcard-match": "5.1.4",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-shared": "*",
     "@ninetailed/experience.js-plugin-analytics": "*",
