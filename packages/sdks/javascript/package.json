@@ -11,7 +11,7 @@
   "dependencies": {
     "@ninetailed/experience.js-plugin-analytics": "*",
     "@ninetailed/experience.js-shared": "*",
-    "analytics": "0.8.1",
+    "analytics": "0.8.19",
     "uuid": "9.0.0"
   },
   "devDependencies": {

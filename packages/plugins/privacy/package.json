@@ -16,7 +16,7 @@
     "a/b testing"
   ],
   "dependencies": {
-    "analytics": "0.8.1",
+    "analytics": "0.8.19",
     "wildcard-match": "5.1.2",
     "@ninetailed/experience.js": "*",
     "@ninetailed/experience.js-shared": "*",
