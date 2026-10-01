@@ -23,6 +23,10 @@ Using a framework we don't currently support? No problem! Our [Experience API](
 
 <!--Insert template end-->
 
+## Supported Next.js versions
+
+The `next` peer dependency is `^15.5.24 || >=16.3.3`. These are the first releases that fix the Next.js image optimization AVIF vulnerability ([GHSA-2xp9-vwfh-vxw4](https://github.com/advisories/GHSA-2xp9-vwfh-vxw4)). No Next.js 14 release has the fix, so 14.x is not supported. A peer range only declares compatibility: upgrade and redeploy your own application to be protected.
+
 ## Building
 
 Run `nx build sdks-nextjs` to build the library.
