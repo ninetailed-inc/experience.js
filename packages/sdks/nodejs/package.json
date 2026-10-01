@@ -7,7 +7,7 @@
     "node": ">=24"
   },
   "dependencies": {
-    "uuid": "9.0.0",
+    "uuid": "11.1.1",
     "@ninetailed/experience.js-shared": "*",
     "@eslint/eslintrc": "^2.1.1",
     "@eslint/js": "~9.39.2",
