@@ -325,8 +325,8 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
       wildcard-match:
-        specifier: 5.1.2
-        version: 5.1.2
+        specifier: 5.1.6
+        version: 5.1.6
       yup:
         specifier: 1.2.0
         version: 1.2.0
@@ -11128,8 +11128,8 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
-  wildcard-match@5.1.2:
-    resolution: {integrity: sha512-qNXwI591Z88c8bWxp+yjV60Ch4F8Riawe3iGxbzquhy8Xs9m+0+SLFBGb/0yCTIDElawtaImC37fYZ+dr32KqQ==}
+  wildcard-match@5.1.6:
+    resolution: {integrity: sha512-Dh5N543my42ynFsbT0v6iPpaqJt95MOK1n/lhojVTe/hS3gpP6e938bbzsfaS0goLlJbhEOCIJPe/Tc3hckoaQ==}
 
   wildcard@2.0.1:
     resolution: {integrity: sha512-CC1bOL87PIWSBhDcTrdeLo6eGT7mCFtrg0uIJtqJUFyK+eJnzl8A1niH56uu7KMa5XFrtiV+AQuHO3n7DsHnLQ==}
@@ -24082,7 +24082,7 @@ snapshots:
       stackback: 0.0.2
     optional: true
 
-  wildcard-match@5.1.2: {}
+  wildcard-match@5.1.6: {}
 
   wildcard@2.0.1: {}
 
