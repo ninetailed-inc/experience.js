@@ -121,7 +121,7 @@
     "contentful-typescript-codegen": "3.4.0",
     "css-loader": "6.11.0",
     "cypress": "15.21.1",
-    "dotenv": "16.3.1",
+    "dotenv": "16.6.1",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.2.6",
     "eslint-config-prettier": "10.1.8",
