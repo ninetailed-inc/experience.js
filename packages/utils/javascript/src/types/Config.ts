@@ -43,7 +43,7 @@ export function isEntryReplacementComponent(
 export const InlineVariableComponentSchema = z.object({
   type: z.literal(ComponentTypeEnum.InlineVariable),
   key: z.string(),
-  valueType: z.nativeEnum(InlineVariableComponentValueTypeEnum),
+  valueType: z.enum(InlineVariableComponentValueTypeEnum),
   baseline: variableVariantSchema,
   variants: z.array(variableVariantSchema),
 });

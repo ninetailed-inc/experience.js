@@ -33,8 +33,8 @@ type JsonLiteral = z.infer<typeof JsonLiteral>;
 
 export type Json = JsonLiteral | { [key: string]: Json } | Json[];
 export const Json: z.ZodType<Json> = z.lazy(() =>
-  z.union([JsonLiteral, z.array(Json), z.record(Json)])
+  z.union([JsonLiteral, z.array(Json), z.record(z.string(), Json)])
 );
 
 export type JsonObject = { [key: string]: Json };
-export const JsonObject: z.ZodType<JsonObject> = z.record(Json);
+export const JsonObject: z.ZodType<JsonObject> = z.record(z.string(), Json);

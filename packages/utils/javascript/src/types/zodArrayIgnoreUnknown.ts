@@ -1,4 +1,4 @@
-import { z, ZodTypeAny } from 'zod';
+import { z, ZodType } from 'zod';
 
 /**
  * Zod helper for parsing arrays and ignore items not specified in the schema
@@ -12,7 +12,7 @@ import { z, ZodTypeAny } from 'zod';
  * const binaryArray: BinaryArray = binaryArraySchema.parse(['0', '1', '2', '0'])
  * console.log(binaryArray) // ['0', '1', '0']
  */
-export function zodArrayIgnoreUnknown<T extends ZodTypeAny>(zodType: T) {
+export function zodArrayIgnoreUnknown<T extends ZodType>(zodType: T) {
   const isKnownItem = (item: unknown) => zodType.safeParse(item).success;
 
   return z.preprocess(
