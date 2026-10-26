@@ -72,16 +72,13 @@ export const ExperienceConfigComponentSchema = z.preprocess((input) => {
 export const Config = z.object({
   distribution: z.array(z.number()).optional().default([0.5, 0.5]),
   traffic: z.number().optional().default(0),
-  components: z
-    .array(ExperienceConfigComponentSchema)
-    .optional()
-    .default([
-      {
-        type: ComponentTypeEnum.EntryReplacement,
-        baseline: { id: '' },
-        variants: [{ id: '' }],
-      },
-    ]),
+  components: z.array(ExperienceConfigComponentSchema).prefault([
+    {
+      type: ComponentTypeEnum.EntryReplacement,
+      baseline: { id: '' },
+      variants: [{ id: '' }],
+    },
+  ]),
   sticky: z.boolean().optional().default(false),
 });
 
