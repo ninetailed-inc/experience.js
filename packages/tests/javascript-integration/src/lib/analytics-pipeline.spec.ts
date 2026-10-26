@@ -1,4 +1,4 @@
-import { generateMock } from '@anatine/zod-mock';
+import { zocker } from 'zocker';
 import { TestAnalyticsPlugin } from '@ninetailed/experience.js-plugin-analytics/test';
 import { Ninetailed } from '@ninetailed/experience.js';
 import { waitFor } from '@testing-library/dom';
@@ -22,7 +22,12 @@ describe('Analytics pipeline', () => {
   });
   it('Should be able to send track experience events which will be received from the TestAnalyticsPlugin', async () => {
     const data = {
-      ...generateMock(ElementSeenPayloadSchema),
+      // Populate every field so expectations match what the plugin sanitizes
+      ...zocker(ElementSeenPayloadSchema)
+        .optional({ undefined_chance: 0 })
+        .nullable({ null_chance: 0 })
+        .default({ default_chance: 0 })
+        .generate(),
       componentType: 'Entry' as const,
       element: document.createElement('div'),
       variantIndex: 1,
@@ -46,7 +51,7 @@ describe('Analytics pipeline', () => {
     });
   });
   it('Should be able to send track component events which will be received from the TestAnalyticsPlugin', async () => {
-    const data = generateMock(TrackComponentPropertiesSchema);
+    const data = zocker(TrackComponentPropertiesSchema).generate();
     await ninetailed.trackHasSeenComponent(data);
     await waitFor(() => {
       expect(testAnalyticsPlugin.onTrackComponentMock).toHaveBeenCalledTimes(1);

@@ -1,4 +1,4 @@
-import { generateMock } from '@anatine/zod-mock';
+import { zocker } from 'zocker';
 import {
   pickExperimentTraits,
   selectActiveExperiments,
@@ -6,7 +6,7 @@ import {
 import { ExperienceConfiguration } from '../../types/ExperienceDefinition';
 import { Profile } from '../../types/Profile/Profile';
 import { EXPERIENCE_TRAIT_PREFIX } from './constants';
-const profile = { ...generateMock(Profile), audiences: ['audience1'] };
+const profile = { ...zocker(Profile).generate(), audiences: ['audience1'] };
 const experiences: ExperienceConfiguration[] = [
   {
     id: 'experience1',

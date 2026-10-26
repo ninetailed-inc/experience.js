@@ -1,8 +1,8 @@
-import { generateMock } from '@anatine/zod-mock';
+import { zocker } from 'zocker';
 import { Profile } from '../../types/Profile/Profile';
 import { ExperienceConfiguration } from '../../types/ExperienceDefinition';
 import { isExperienceMatch } from './isExperienceMatch';
-const profile = { ...generateMock(Profile), audiences: ['audience1'] };
+const profile = { ...zocker(Profile).generate(), audiences: ['audience1'] };
 const experience: ExperienceConfiguration = {
   id: 'experience1',
   audience: {

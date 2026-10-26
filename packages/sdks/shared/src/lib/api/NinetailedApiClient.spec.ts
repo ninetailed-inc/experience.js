@@ -1,11 +1,21 @@
 import fetchMock from 'jest-fetch-mock';
-import { generateMock } from '@anatine/zod-mock';
+import { zocker } from 'zocker';
 import { waitFor } from '@testing-library/dom';
 import { logger } from '../logger/Logger';
 import { LogSink } from '../logger/LogSink';
 import { FEATURES, NinetailedApiClient } from './NinetailedApiClient';
 import { CreateProfileResponse } from '../types/Endpoints/CreateProfile';
+import { Json, JsonObject } from '../types/generic/Json';
 import { LogEvent } from 'diary';
+// Stubbing the recursive JSON schemas keeps each mock at ~1ms instead of ~100ms
+const mockCreateProfileResponse = () =>
+  JSON.stringify(
+    zocker(CreateProfileResponse)
+      .supply(Json, {})
+      .supply(JsonObject, {})
+      .generate()
+  );
+
 class MockLogSink implements LogSink {
   public name = 'MockErrorLogSink';
   public onWarnMock = jest.fn();
@@ -136,9 +146,7 @@ describe('NinetailedApiClient', () => {
   });
   describe('Enabled features', () => {
     it('should not add the enabled features to the request if no feature is enabled', async () => {
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.createProfile(
         {
           events: [],
@@ -153,9 +161,7 @@ describe('NinetailedApiClient', () => {
       );
     });
     it('createProfile should add the enabled features to the request', async () => {
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.createProfile(
         {
           events: [],
@@ -172,9 +178,7 @@ describe('NinetailedApiClient', () => {
       );
     });
     it('updateProfile should add the enabled features to the request', async () => {
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.updateProfile(
         {
           profileId: 'test',
@@ -192,9 +196,7 @@ describe('NinetailedApiClient', () => {
       );
     });
     it('upsertProfile should add the enabled features to the request', async () => {
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.upsertProfile(
         {
           profileId: 'test',
@@ -212,9 +214,7 @@ describe('NinetailedApiClient', () => {
       );
     });
     it('upsertManyProfiles should add the enabled features to the request', async () => {
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.upsertManyProfiles(
         {
           events: [],
@@ -238,9 +238,7 @@ describe('NinetailedApiClient', () => {
         environment: 'test-env',
         url: 'https://local-service/api/ninetailed',
       });
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.createProfile({
         events: [],
       });
@@ -254,9 +252,7 @@ describe('NinetailedApiClient', () => {
         environment: 'test-env',
         url: 'https://local-service/api/ninetailed/',
       });
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.createProfile({
         events: [],
       });
@@ -269,9 +265,7 @@ describe('NinetailedApiClient', () => {
         clientId: 'test-client',
         environment: 'test-env',
       });
-      fetchMock.mockResponseOnce(
-        JSON.stringify(generateMock(CreateProfileResponse))
-      );
+      fetchMock.mockResponseOnce(mockCreateProfileResponse());
       await client.createProfile({
         events: [],
       });

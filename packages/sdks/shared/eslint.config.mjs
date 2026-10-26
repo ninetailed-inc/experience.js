@@ -39,7 +39,7 @@ export default [
           checkMissingDependencies: true,
           checkObsoleteDependencies: true,
           checkVersionMismatches: true,
-          ignoredDependencies: ['@testing-library/dom', '@nx/react'],
+          ignoredDependencies: ['@testing-library/dom', '@nx/react', 'zocker'],
           ignoredFiles: [
             '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
             '{projectRoot}/eslint.config.mjs',
