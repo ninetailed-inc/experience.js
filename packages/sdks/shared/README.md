@@ -23,6 +23,11 @@ Using a framework we don't currently support? No problem! Our [Experience API](
 
 <!--Insert template end-->
 
+## Compatibility
+
+The `LEGACY_ANONYMOUS_ID` constant has been removed from the exports. Use
+`ANONYMOUS_ID` (`__nt_anonymous_id__`) for the current profile ID storage key.
+
 ## Building
 
 Run `nx build sdks-shared` to build the library.

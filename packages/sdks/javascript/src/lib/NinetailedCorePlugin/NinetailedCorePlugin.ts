@@ -31,7 +31,6 @@ import {
   DEBUG_FLAG,
   EMPTY_MERGE_ID,
   EXPERIENCES_FALLBACK_CACHE,
-  LEGACY_ANONYMOUS_ID,
   PROFILE_CHANGE,
   PROFILE_FALLBACK_CACHE,
   PROFILE_RESET,
@@ -138,17 +137,6 @@ export class NinetailedCorePlugin
     if (instance.storage.getItem(DEBUG_FLAG)) {
       logger.addSink(new ConsoleLogSink());
       logger.info('Ninetailed Debug Mode is enabled.');
-    }
-
-    // legacy support for the old anonymousId
-    const legacyAnonymousId = instance.storage.getItem(LEGACY_ANONYMOUS_ID);
-    if (legacyAnonymousId) {
-      logger.debug(
-        'Found legacy anonymousId, migrating to new one.',
-        legacyAnonymousId
-      );
-      this.setAnonymousId(legacyAnonymousId);
-      instance.storage.removeItem(LEGACY_ANONYMOUS_ID);
     }
 
     if (typeof this.onInitProfileId === 'function') {

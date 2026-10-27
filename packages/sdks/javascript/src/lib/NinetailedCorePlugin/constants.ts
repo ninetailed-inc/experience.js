@@ -1,4 +1,3 @@
-export const LEGACY_ANONYMOUS_ID = '__anon_id';
 export const ANONYMOUS_ID = '__nt_anonymous_id__';
 
 export const DEBUG_FLAG = '__nt_debug__';
