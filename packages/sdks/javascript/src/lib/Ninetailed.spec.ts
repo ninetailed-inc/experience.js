@@ -107,6 +107,41 @@ describe('Ninetailed core class', () => {
     localStorage.clear();
   });
   describe('Instantiation of the Ninetailed core class', () => {
+    it.each([undefined, 'current-profile-id'])(
+      'should ignore the legacy profile ID when the current profile ID is %s',
+      async (currentProfileId) => {
+        const legacyProfileId = JSON.stringify('legacy-profile-id');
+        localStorage.setItem('__anon_id', legacyProfileId);
+        if (currentProfileId) {
+          localStorage.setItem(
+            '__nt_anonymous_id__',
+            JSON.stringify(currentProfileId)
+          );
+        }
+
+        const apiClient = new NinetailedApiClient({ clientId: 'test' });
+        apiClient.upsertProfile = jest.fn().mockResolvedValue({
+          profile: { id: 'api-profile-id' },
+          experiences: [],
+          changes: [],
+        });
+        const onInitProfileId = jest.fn();
+        const instance = new Ninetailed(apiClient, { onInitProfileId });
+
+        await instance.page();
+
+        expect(onInitProfileId).toHaveBeenCalledWith(currentProfileId);
+        expect(onInitProfileId).not.toHaveBeenCalledWith('legacy-profile-id');
+        expect(apiClient.upsertProfile).toHaveBeenCalledWith(
+          expect.objectContaining({ profileId: currentProfileId }),
+          expect.anything()
+        );
+        expect(localStorage.getItem('__anon_id')).toBe(legacyProfileId);
+        expect(localStorage.getItem('__nt_anonymous_id__')).toBe(
+          JSON.stringify('api-profile-id')
+        );
+      }
+    );
     it('should be able to create a new instance with ApiClient Options', () => {
       const instance = new Ninetailed({
         clientId: 'test',

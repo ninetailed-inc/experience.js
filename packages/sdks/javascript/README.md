@@ -23,6 +23,13 @@ Using a framework we don't currently support? No problem! Our [Experience API](
 
 <!--Insert template end-->
 
+## Profile ID storage
+
+The SDK stores profile IDs under `__nt_anonymous_id__`. Initialization no longer
+reads, migrates, or removes the legacy `__anon_id` key. Visitors with only a legacy
+ID receive a new profile when an event is sent, unless `onInitProfileId` supplies
+an ID. The callback receives the current stored ID, or `undefined` if none exists.
+
 ## Building
 
 Run `nx build sdks-javascript` to build the library.
