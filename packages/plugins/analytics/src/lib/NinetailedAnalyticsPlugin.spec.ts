@@ -181,6 +181,18 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
+    it('should not receive the has_seen_element event if the element is missing', async () => {
+      const { element: _element, ...data } = generateHasSeenElementMock();
+      await analytics.dispatch({
+        type: HAS_SEEN_ELEMENT,
+        ...data,
+      });
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          0
+        );
+      });
+    });
   });
   describe('trackComponent', () => {
     it(`should receive the has_seen_component event`, async () => {
