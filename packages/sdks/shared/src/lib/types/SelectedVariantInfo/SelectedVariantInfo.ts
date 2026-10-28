@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const SelectedVariantInfo = z.object({
   experienceId: z.string(),
   variantIndex: z.number(),
-  variants: z.record(z.string()),
+  variants: z.record(z.string(), z.string()),
   sticky: z.boolean().optional().default(false),
 });
 

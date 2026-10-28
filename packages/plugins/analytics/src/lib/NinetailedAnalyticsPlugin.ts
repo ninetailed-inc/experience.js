@@ -121,6 +121,12 @@ export abstract class NinetailedAnalyticsPlugin<
       return;
     }
 
+    // The schema allows a missing element, but it is the WeakMap key below
+    if (typeof payload.element !== 'object' || payload.element === null) {
+      logger.error('Invalid payload for has_seen_element event: no element');
+      return;
+    }
+
     if (!sanitizedPayload.data.experience || !sanitizedPayload.data.audience) {
       return;
     }

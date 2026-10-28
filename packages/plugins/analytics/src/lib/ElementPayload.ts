@@ -13,7 +13,8 @@ const BaseElementPayloadSchema = z.object({
 });
 
 const BaseElementInteractionPayloadSchema = BaseElementPayloadSchema.extend({
-  element: z.any(),
+  // Zod 4 requires z.any() keys at parse time; keep the Zod 3 behavior of not rejecting payloads without an element
+  element: z.any().optional(),
   experience: z
     .object({
       id: z.string(),

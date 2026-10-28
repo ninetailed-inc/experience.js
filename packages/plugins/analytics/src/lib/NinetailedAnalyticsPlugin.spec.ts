@@ -1,5 +1,5 @@
 import { Analytics } from 'analytics';
-import { generateMock } from '@anatine/zod-mock';
+import { zocker } from 'zocker';
 import { waitFor } from '@testing-library/dom';
 import {
   type ElementSeenPayload,
@@ -28,7 +28,12 @@ describe('NinetailedAnalyticsPlugin', () => {
     ({ analytics, testAnalyticsPlugin } = setup());
   });
   const generateHasSeenElementMock = (): ElementSeenPayload => {
-    const mock = generateMock(ElementSeenPayloadSchema);
+    // Populate every field so expectations match what the plugin sanitizes
+    const mock = zocker(ElementSeenPayloadSchema)
+      .optional({ undefined_chance: 0 })
+      .nullable({ null_chance: 0 })
+      .default({ default_chance: 0 })
+      .generate();
     return {
       ...mock,
       componentType: 'Entry',
@@ -176,10 +181,22 @@ describe('NinetailedAnalyticsPlugin', () => {
         );
       });
     });
+    it('should not receive the has_seen_element event if the element is missing', async () => {
+      const { element: _element, ...data } = generateHasSeenElementMock();
+      await analytics.dispatch({
+        type: HAS_SEEN_ELEMENT,
+        ...data,
+      });
+      await waitFor(() => {
+        expect(testAnalyticsPlugin.onTrackExperienceMock).toHaveBeenCalledTimes(
+          0
+        );
+      });
+    });
   });
   describe('trackComponent', () => {
     it(`should receive the has_seen_component event`, async () => {
-      const data = generateMock(TrackComponentPropertiesSchema);
+      const data = zocker(TrackComponentPropertiesSchema).generate();
       await analytics.dispatch({
         type: HAS_SEEN_COMPONENT,
         ...data,

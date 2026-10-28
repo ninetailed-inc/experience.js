@@ -32,7 +32,7 @@ export const ExperienceSchema = z.object({
   /**
    * The config of the experience (JSON)
    */
-  config: Config.default({}),
+  config: Config.prefault({}),
 
   /**
    * The audience of the experience (Audience)

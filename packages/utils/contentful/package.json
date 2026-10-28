@@ -32,7 +32,7 @@
     "@contentful/rich-text-types": "17.2.5",
     "@ninetailed/experience.js-utils": "*",
     "@ninetailed/experience.js-shared": "*",
-    "zod": "3.23.0"
+    "zod": "4.6.7"
   },
   "resolutions": {
     "@contentful/rich-text-types": "17.2.5"

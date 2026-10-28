@@ -1,10 +1,10 @@
-import { generateMock } from '@anatine/zod-mock';
+import { zocker } from 'zocker';
 import { Profile } from '../../types/Profile/Profile';
 import { selectDistribution } from './selectDistribution';
 // this is the profile that will be in the < 50% range -> distributionRandom 0.1082723711403721
-const profileControl = { ...generateMock(Profile), stableId: '123' };
+const profileControl = { ...zocker(Profile).generate(), stableId: '123' };
 // this is the profile that will be in the > 50% range -> distributionRandom 0.6206237130380756
-const profileVariant = { ...generateMock(Profile), stableId: '456' };
+const profileVariant = { ...zocker(Profile).generate(), stableId: '456' };
 const experience = {
   id: 'experience1',
   audience: {

@@ -1,4 +1,4 @@
-import { SafeParseError, SafeParseSuccess, z } from 'zod';
+import { ZodSafeParseError, ZodSafeParseSuccess, z } from 'zod';
 import {
   ExperienceEntrySchema,
   ExperienceEntry,
@@ -27,8 +27,8 @@ const parse = <T extends EntryFields>(
 export const safeParse = <T extends EntryFields>(
   input: ExperienceEntryLike<T>
 ):
-  | SafeParseError<ExperienceEntryLike<T>>
-  | SafeParseSuccess<ExperienceEntry<T>> => {
+  | ZodSafeParseError<ExperimentEntry>
+  | ZodSafeParseSuccess<ExperienceEntry<T>> => {
   const output = ExperimentEntrySchema.safeParse(input);
 
   if (!output.success) {

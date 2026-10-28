@@ -14,6 +14,10 @@ module.exports = {
     ],
   },
   globals: {},
+  // @faker-js/faker (used by zocker) is ESM-only, so it has to go through the transformer
+  transformIgnorePatterns: [
+    '/node_modules/(?!\\.pnpm/@faker-js\\+faker|@faker-js/faker)',
+  ],
   setupFilesAfterEnv: [path.join(__dirname, 'jest.setup.ts')],
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {

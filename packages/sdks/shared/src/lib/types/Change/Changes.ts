@@ -7,7 +7,7 @@ export enum ChangeTypes {
 
 const ChangeBase = z.object({
   key: z.string(),
-  type: z.nativeEnum(ChangeTypes),
+  type: z.enum(ChangeTypes),
   meta: z.object({
     experienceId: z.string(),
     variantIndex: z.number(),

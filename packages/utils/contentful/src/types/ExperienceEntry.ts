@@ -1,4 +1,4 @@
-import { SafeParseError, SafeParseSuccess, z } from 'zod';
+import { ZodSafeParseError, ZodSafeParseSuccess, z } from 'zod';
 import { Config, ConfigLike } from '@ninetailed/experience.js-utils';
 
 import { EntrySchema, EntryLike, Entry } from './Entry';
@@ -89,8 +89,8 @@ const parse = <T extends EntryFields>(
 const safeParse = <T extends EntryFields>(
   input: ExperienceEntryLike<T>
 ):
-  | SafeParseError<ExperienceEntryLike<T>>
-  | SafeParseSuccess<ExperienceEntry<T>> => {
+  | ZodSafeParseError<ExperienceEntryOutput>
+  | ZodSafeParseSuccess<ExperienceEntry<T>> => {
   const output = ExperienceEntrySchema.safeParse(input);
 
   if (!output.success) {
