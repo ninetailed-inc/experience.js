@@ -142,7 +142,7 @@
     "jsonc-eslint-parser": "3.0.0",
     "license-checker": "25.0.1",
     "lint-staged": "15.5.2",
-    "postcss": "8.5.28",
+    "postcss": "8.5.32",
     "prettier": "2.8.0",
     "react-refresh": "0.10.0",
     "rollup-plugin-multi-input": "1.9.0",
