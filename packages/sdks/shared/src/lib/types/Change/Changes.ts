@@ -22,3 +22,15 @@ export const VariableChange = ChangeBase.extend({
 export const Change = z.discriminatedUnion('type', [VariableChange]);
 
 export type Change = z.infer<typeof Change>;
+
+/**
+ * Forward-compatible list of changes. The Experience API may return change
+ * types this SDK does not know about (e.g. `Experience`, `Fragment`); those
+ * entries are dropped instead of failing the whole response.
+ */
+export const Changes = z.array(z.unknown()).transform((items) =>
+  items.flatMap((item) => {
+    const result = Change.safeParse(item);
+    return result.success ? [result.data] : [];
+  })
+);
