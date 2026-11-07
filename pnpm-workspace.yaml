@@ -22,3 +22,5 @@ overrides:
   underscore: 1.13.8
   '@types/react': 19.2.14
   '@contentful/rich-text-types': 17.2.5
+minimumReleaseAge: 2880
+ignoreScripts: true
