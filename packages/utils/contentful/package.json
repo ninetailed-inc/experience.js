@@ -29,12 +29,12 @@
   "sideEffects": false,
   "dependencies": {
     "contentful": "^11.10.2",
-    "@contentful/rich-text-types": "17.2.5",
+    "@contentful/rich-text-types": "17.2.7",
     "@ninetailed/experience.js-utils": "*",
     "@ninetailed/experience.js-shared": "*",
     "zod": "4.6.7"
   },
   "resolutions": {
-    "@contentful/rich-text-types": "17.2.5"
+    "@contentful/rich-text-types": "17.2.7"
   }
 }
