@@ -2,7 +2,7 @@
   "name": "@ninetailed/root",
   "version": "0.0.0",
   "license": "MIT",
-  "packageManager": "pnpm@11.28.10",
+  "packageManager": "pnpm@11.28.11",
   "scripts": {
     "clean:cache": "nx reset && nx run-many --target=clean-cache --all",
     "nx": "nx",
