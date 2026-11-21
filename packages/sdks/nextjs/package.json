@@ -34,7 +34,7 @@
     "@ninetailed/experience.js-shared": "*"
   },
   "peerDependencies": {
-    "next": "^16.4.1 >=16.4.1",
+    "next": "^16.4.5 >=16.4.5",
     "react": ">=16.8.0"
   }
 }
